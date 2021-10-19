@@ -37,7 +37,7 @@
   left: 0;
   width: 26em;
   height: 6.5em;
-  background-image:  url('assets/header_eab.svg');
+  background-image:  url('assets/header.svg');
   background-repeat: no-repeat;
 }
 .header__emblem{
@@ -199,7 +199,7 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size:  5.4em  5.4em;
-  background-image:  url('assets/Flag_map_of_Bavaria.svg');
+  background-image:  url('assets/ba.svg');
 }
 .animated-action-button__border{
   background:linear-gradient(to right, rgb(58,132,195) 0%,rgb(65,154,214) 50%,rgb(75,184,240) 51%,rgb(58,139,194) 100%);
@@ -293,7 +293,7 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: 22.7em;
-  background-image:  url('assets/header_eab.svg');
+  background-image:  url('assets/header.svg');
   display: none;
   transition:opacity 500ms ease-out;
 }

@@ -9,7 +9,7 @@ document.head.appendChild(style);
 import * as config from './injection/config';
 
 // register modules
-import './modules/header';
+import './modules/ea/header';
 import './modules/footer';
 import './modules/map';
 import './modules/menu';
