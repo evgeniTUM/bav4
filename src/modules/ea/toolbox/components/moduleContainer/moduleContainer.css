@@ -1,0 +1,48 @@
+
+.module-container{               
+    top: 0;
+    right: 0;           
+    position: fixed;    
+    z-index: calc(var(--z-toolbox) + 20);    
+    background-color: var(--primary-bg-color);
+    max-width: 40em;
+    height: 100%;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);   
+}
+.module-container__tools-nav{
+    position: absolute;
+    top: 0;   
+    right: 0;
+    padding:0
+}
+.module-container__close-button{
+    margin: 0;
+    background-color: var(--secondary-bg-color);   
+    padding: 0;
+    width: 2.5em;
+    height: 2.5em;
+    border: 0;
+    opacity: .8;
+    font-weight: bold;
+}
+.module-container__close-button:hover{
+    opacity: 1;
+}
+.module-container__content{
+    transition: transform 0.3s ease-out;
+    display: none;
+}
+.is-portrait .module-container{               
+    bottom: 0;
+    right: 0;           
+    left: 0;           
+    width:100%;
+    top: unset;
+    position: fixed;    
+    background-color: var(--primary-bg-color);
+    max-width: unset;
+}
+ .is-open {
+    display: block;
+    height:100%;
+}
