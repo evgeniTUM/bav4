@@ -1,5 +1,5 @@
 {
-  "name": "bav4-nomigration",
+  "name": "eab-frontend-bav4",
   "dependencies": {
     "lit-html": "^1.4.1",
     "ol": "^6.9.0",
