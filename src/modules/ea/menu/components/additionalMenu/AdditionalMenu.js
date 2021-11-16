@@ -2,7 +2,7 @@ import { html } from 'lit-html';
 import { BaElement } from '../../../../BaElement';
 import css from './additionalMenu.css';
 import { MixerModuleContent } from '../../../toolbox/components/mixerModuleContent/MixerModuleContent';
-import { toggleToolContainer, setContainerContent, openToolContainer } from '../../../../toolbox/store/toolContainer.action';
+import { openToolContainer, setContainerContent, toggleToolContainer } from '../../../../../store/toolContainer/toolContainer.action';
 import { $injector } from '../../../../../injection';
 
 

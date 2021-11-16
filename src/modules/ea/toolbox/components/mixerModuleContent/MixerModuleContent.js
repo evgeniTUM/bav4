@@ -19,10 +19,10 @@ export class MixerModuleContent extends AbstractModuleContent {
 //		this._shareService = shareService;
 		this._urlService = urlService;
 		this._tool = {
-			name: 'measure',
+			name: 'mixer',
 			active: false,
-			title: 'toolbox_measureTool_measure',
-			icon: 'measure'
+			title: 'toolbox_mixerTool_mixer',
+			icon: 'mixer'
 		};
 		this._isFirstMeasurement = true;
 		this._shareAsReadOnly = false;

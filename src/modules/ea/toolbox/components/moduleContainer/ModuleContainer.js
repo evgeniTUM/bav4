@@ -2,7 +2,7 @@ import { html, nothing } from 'lit-html';
 import { BaElement } from '../../../../BaElement';
 import { $injector } from '../../../../../injection';
 import { MixerModuleContent } from '../mixerModuleContent/MixerModuleContent';
-import { closeToolContainer } from '../../../../toolbox/store/toolContainer.action';
+import { closeToolContainer } from '../../../../../store/toolContainer/toolContainer.action';
 //import { activate as activateMeasurement, deactivate as deactivateMeasurement } from '../../../map/store/measurement.action';
 //import { activate as activateDraw, deactivate as deactivateDraw } from '../../../map/store/draw.action';
 import css from './moduleContainer.css';

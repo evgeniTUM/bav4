@@ -1,5 +1,5 @@
 import { html } from 'lit-html';
-import { BaElement } from '../../../../BaElement';
+import { MvuElement } from '../../../../MvuElement';
 import contentPanelCss from './abstractContentPanel.css';
 
 /**
@@ -9,7 +9,7 @@ import contentPanelCss from './abstractContentPanel.css';
  * @author taulinger
  * @abstract
  */
-export class AbstractContentPanel extends BaElement {
+export class AbstractContentPanel extends MvuElement {
 
 	constructor() {
 		super();
