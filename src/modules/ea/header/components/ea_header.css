@@ -33,6 +33,13 @@
   transition:opacity 500ms ease-out;
 }
 
+:host .header__emblem {
+        background-image: url('assets/BayerischeStaatsregierung.svg');
+        right: 1em;
+        width: 35em;
+        height: 28em;
+}
+
 :host .header__background {
 	position: absolute;
 	z-index: -1;
@@ -43,5 +50,10 @@
 	background: var(--header-background-color);
 	mask: url('assets/background-icons-eab_inverted-sw.svg');
 	-webkit-mask-image: url('assets/background-icons-eab_inverted-sw.svg');
+}
+
+.header_action_link:focus {
+  outline: none;
+  box-shadow: none;
 }
 
