@@ -2,7 +2,7 @@ import { $injector } from '.';
 import { StoreService } from '../services/StoreService';
 import { OlCoordinateService } from '../services/OlCoordinateService';
 import { EnvironmentService } from '../services/EnvironmentService';
-import { ProcessEnvConfigService } from '../services/ProcessEnvConfigService';
+import { EaProcessEnvConfigService } from '../services_ea/EaProcessEnvConfigService';
 import { NetworkStateSyncHttpService } from '../services/HttpService';
 import { TranslationService } from '../services/TranslationService';
 import { ShareService } from '../services/ShareService';
@@ -33,7 +33,7 @@ import { MainMenuPlugin } from '../plugins/MainMenuPlugin';
 
 $injector
 	.registerSingleton('HttpService', new NetworkStateSyncHttpService())
-	.registerSingleton('ConfigService', new ProcessEnvConfigService())
+	.registerSingleton('ConfigService', new EaProcessEnvConfigService())
 	.registerSingleton('TranslationService', new TranslationService)
 	.registerSingleton('CoordinateService', new OlCoordinateService())
 	.registerSingleton('EnvironmentService', new EnvironmentService())
