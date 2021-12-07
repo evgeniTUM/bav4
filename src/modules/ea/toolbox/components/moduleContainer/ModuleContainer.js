@@ -3,6 +3,10 @@ import { BaElement } from '../../../../BaElement';
 import { $injector } from '../../../../../injection';
 import { MixerModuleContent } from '../mixerModuleContent/MixerModuleContent';
 import { closeToolContainer } from '../../../../../store/toolContainer/toolContainer.action';
+import { LevelTypes } from '../../../../../store/notifications/notifications.action';
+import { emitNotification } from '../../../../../store/notifications/notifications.action';
+import { unsafeHTML } from 'lit-html/directives/unsafe-html';
+
 //import { activate as activateMeasurement, deactivate as deactivateMeasurement } from '../../../map/store/measurement.action';
 //import { activate as activateDraw, deactivate as deactivateDraw } from '../../../map/store/draw.action';
 import css from './moduleContainer.css';
@@ -17,11 +21,14 @@ export class ModuleContainer extends BaElement {
 		super();
 
 		const {
-			EnvironmentService: environmentService
+			EnvironmentService: environmentService,
+			TranslationService: translationService
+
 		}
-			= $injector.inject('EnvironmentService');
+		= $injector.inject('EnvironmentService', 'TranslationService');
 
 		this._environmentService = environmentService;
+		this._translationService = translationService;
 		this._lastContentId = false;
 	}
 
@@ -34,27 +41,43 @@ export class ModuleContainer extends BaElement {
 
 		const { open, contentId, portrait, minWidth } = state;
                 
-                console.log('createView ModuleContainer' + contentId);
+                console.log('createView ModuleContainer contentId' + contentId + ' open ' + open );
+                
+		const translate = (key) => this._translationService.translate(key);
 
-		let content;
-		switch (contentId) {
-			case MixerModuleContent.tag:
-				content = html`<ea-module-mixer-content></ea-module-mixer-content>`;
-				break;
-			default:
-				return nothing;
-		}
+		const getContent = (contentId) => {
+			switch (contentId) {
+				case MixerModuleContent.tag:
+					return html`${unsafeHTML(`<${MixerModuleContent.tag}/>`)}`;
+				default:
+					return null;
+			}
+		};
 
-		if (this._lastContentId !== contentId && open) {
-			this._deactivateByContentId(this._lastContentId);
-			this._activateByContentId(contentId);
-		}
+		const getNextActiveContent = () => {
+			if (this._lastContentId !== contentId && open) {
+				if (this._lastContentId) {
+					return this._lastContentId;
+				}
 
-		if (!open) {
-			this._deactivateByContentId(this._lastContentId);
+			}
+			if (!open) {
+				return null;
+			}
+			return contentId;
+		};
+		const nextActiveContentId = getNextActiveContent();
+		if (nextActiveContentId === this._lastContentId) {
+			emitNotification(translate('module_prevent_switching_tool'), LevelTypes.WARN);
 		}
 		else {
-			this._lastContentId = contentId;
+			if (nextActiveContentId) {
+				this._lastContentId = nextActiveContentId;
+				this._activateByContentId(nextActiveContentId);
+			}
+			else {
+				this._deactivateByContentId(this._lastContentId);
+			}
 		}
 
 		const getOrientationClass = () => {
@@ -68,7 +91,12 @@ export class ModuleContainer extends BaElement {
 		const getOverlayClass = () => {
 			return open ? 'is-open' : '';
 		};
-
+                
+		const content = getContent(nextActiveContentId);
+		if (content == null) {
+			return nothing;
+		}
+                
 		return html`
 			<style>${css}</style>		
 			<div class=" ${getOrientationClass()} ${getMinWidthClass()}">  	
@@ -79,7 +107,7 @@ export class ModuleContainer extends BaElement {
                             x
                         </button>                             
                 </div>		
-					${content}    				               				 				           					 				               				               				 				            				               				               				 				           
+					${content}
 				</div>		
 			</div>		
 			</div>		
