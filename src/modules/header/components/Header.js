@@ -75,10 +75,10 @@ export class Header extends MvuElement {
 	isRenderingSkipped() {
 		return this._environmentService.isEmbedded();
 	}
-
-	createView(model) {
-
-		const { isOpen, tabIndex, isFetching, layers, isPortrait, hasMinWidth, hasSearchTerm } = model;
+        
+        //TODO FittingProvider einführen
+        getViewAttrProvider(model) {
+           	const { isOpen, tabIndex, isFetching, layers, isPortrait, hasMinWidth, hasSearchTerm } = model;
 
 		const showModalInfo = () => {
 			openModal('Showcase', html`<ba-showcase>`);
@@ -165,13 +165,34 @@ export class Header extends MvuElement {
 			input.dispatchEvent(new Event('input'));
 		};
 
+                return { isOpen, tabIndex, isFetching, layers, isPortrait, hasMinWidth, hasSearchTerm,showModalInfo,
+		 getOrientationClass,
+		 getMinWidthClass,
+		 getOverlayClass,
+		 getAnimatedBorderClass,
+		 getActiveClass,
+		 getIsClearClass,
+		 layerCount,
+		 onInputFocus,
+		 onInput,
+		 onInputBlur,
+		 openTopicsTab,
+		 openMapLayerTab,
+		 openMoreTab,
+		 clearSearchInput
+                }
+    }
+	createView(model) {
+            
+                const viewAttrProvider = this.getViewAttrProvider(model);
+            
 		const translate = (key) => this._translationService.translate(key);
 		return html`
 			<style>${css}</style>
-			<div class="preload ${getOrientationClass()} ${getMinWidthClass()}">
+			<div class="preload ${viewAttrProvider.getOrientationClass()} ${viewAttrProvider.getMinWidthClass()}">
 				<div class='header__logo'>				
 					<div class="action-button">
-						<div class="action-button__border animated-action-button__border ${getAnimatedBorderClass()}">
+						<div class="action-button__border animated-action-button__border ${viewAttrProvider.getAnimatedBorderClass()}">
 						</div>
 						<div class="action-button__icon">
 							<div class="ba">
@@ -185,32 +206,32 @@ export class Header extends MvuElement {
 				</div>
 				<div class='header__emblem'>
 				</div>
-				<div  class="header ${getOverlayClass()}">   
+				<div  class="header ${viewAttrProvider.getOverlayClass()}">   
 					<div class="header__background">
 					</div>
 					<div class='header__search-container'>
-						<input id='input' @focus="${onInputFocus}" @blur="${onInputBlur}" @input="${onInput}" class='header__search' type="search" placeholder="" />          
-						<span class="header__search-clear ${getIsClearClass()}" @click="${clearSearchInput}">        							
+						<input id='input' @focus="${viewAttrProvider.onInputFocus}" @blur="${viewAttrProvider.onInputBlur}" @input="${viewAttrProvider.onInput}" class='header__search' type="search" placeholder="" />          
+						<span class="header__search-clear ${viewAttrProvider.getIsClearClass()}" @click="${viewAttrProvider.clearSearchInput}">        							
 						</span>       
-						<button @click="${showModalInfo}" class="header__modal-button" title="modal">
+						<button @click="${viewAttrProvider.showModalInfo}" class="header__modal-button" title="modal">
 						&nbsp;
 						</button>
 					</div>
 					<div  class="header__button-container">
-						<button class="${getActiveClass(0)}" title=${translate('header_tab_topics_title')} @click="${openTopicsTab}">
+						<button class="${viewAttrProvider.getActiveClass(0)}" title=${translate('header_tab_topics_title')} @click="${viewAttrProvider.openTopicsTab}">
 							<span>
 								${translate('header_tab_topics_button')}
 							</span>
 						</button>
-						<button class="${getActiveClass(1)}" title=${translate('header_tab_maps_title')}  @click="${openMapLayerTab}">
+						<button class="${viewAttrProvider.getActiveClass(1)}" title=${translate('header_tab_maps_title')}  @click="${viewAttrProvider.openMapLayerTab}">
 							<span>
 								${translate('header_tab_maps_button')}
 							</span>
 							 <div class="badges">
-							 	${layerCount}
+							 	${viewAttrProvider.layerCount}
 							</div>
 						</button>
-						<button class="${getActiveClass(2)}" title=${translate('header_tab_more_title')}  @click="${openMoreTab}">
+						<button class="${viewAttrProvider.getActiveClass(2)}" title=${translate('header_tab_more_title')}  @click="${viewAttrProvider.openMoreTab}">
 							<span>
 								${translate('header_tab_more_button')}
 							</span>
