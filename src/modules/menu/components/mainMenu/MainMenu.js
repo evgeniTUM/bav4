@@ -12,7 +12,7 @@ import { unsafeHTML } from 'lit-html/directives/unsafe-html';
 /**
  * @enum
  */
-export const MainMenuTabIndex = Object.freeze({
+export const MainMenuTabIndex = Object({
 	TOPICS: { id: 0, component: TopicsContentPanel },
 	MAPS: { id: 1, component: null },
 	MORE: { id: 2, component: null },

@@ -7,7 +7,8 @@ export const provide = (lang) => {
 				toolbox_mixer_header : "Mischpult \"Energiemix Bayern vor Ort\"",
 				toolbox_analyse3d : "3D-Analyse Windenergieanlagen",
 				toolbox_recherche : "Daten-Recherche und Download",
-				toolbox_geotherm : "Standortcheck Oberflächennahe Geothermie"
+				toolbox_geotherm : "Standortcheck Oberflächennahe Geothermie",
+				module_prevent_switching_tool: 'Please close the current tool first',
 			};
 
 		case 'de':
@@ -16,7 +17,8 @@ export const provide = (lang) => {
 				toolbox_mixer_header : "Mischpult \"Energiemix Bayern vor Ort\"",
 				toolbox_analyse3d : "3D-Analyse Windenergieanlagen",
 				toolbox_recherche : "Daten-Recherche und Download",
-				toolbox_geotherm : "Standortcheck Oberflächennahe Geothermie"
+				toolbox_geotherm : "Standortcheck Oberflächennahe Geothermie",
+				module_prevent_switching_tool: 'Bitte zuerst das aktuelle Werkzeug schließen/beenden',
 		};
 
 		default:

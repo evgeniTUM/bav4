@@ -1,7 +1,21 @@
 import { html, nothing } from 'lit-html';
 import { $injector } from '../../../../../injection';
-import { MainMenu } from '../../../../menu/components/mainMenu/MainMenu';
+import { BaElement, renderTagOf } from '../../../../BaElement';
+import css          from '../../../../menu/components/mainMenu/mainMenu.css';
+import { MainMenu, MainMenuTabIndex } from '../../../../menu/components/mainMenu/MainMenu';
+import { DevInfo } from '../../../../utils/components/devInfo/DevInfo';
+import { TopicsContentPanel } from '../../../../topics/components/menu/TopicsContentPanel';
+import { SearchResultsPanel } from '../../../../search/components/menu/SearchResultsPanel';
+import { toggle } from '../../../../../store/mainMenu/mainMenu.action';
+import { FeatureInfoPanel } from '../../../../featureInfo/components/FeatureInfoPanel';
+import { unsafeHTML } from 'lit-html/directives/unsafe-html';
+
 import { AdditionalMenu } from '../additionalMenu/';
+
+
+const EaMainMenuTabIndex = Object.freeze({
+	EXTENSION: { id: 6, component: null }
+});
 
 /**
  *
@@ -14,14 +28,16 @@ export class EaMainMenu extends MainMenu {
 		super();
                 const { EnvironmentService: environmentService, TranslationService: translationService } = $injector.inject('EnvironmentService', 'TranslationService');
 		this._translationService = translationService;
+                MainMenuTabIndex.EXTENSION = { id: 6, component: null }
+                
         
         }
-	
-	_demoMoreContent() {
-		return html`
-		${this._extendEabContent()} ${super._demoMoreContent()}
-		`;
-         }
+        
+//	_demoMoreContent() {
+//		return html`
+//		${this._extendEabContent()} ${super._demoMoreContent()}
+//		`;
+//         }
          
         _extendEabContent() {
 //		return html`
@@ -108,6 +124,16 @@ export class EaMainMenu extends MainMenu {
 		return html`
 		<ea-additional-menu></ea-additional-menu>
 	`;
+	}
+        _getContentPanel(definition) {
+		//Todo: can be removed when all content panels are real components
+		switch (definition) {
+			case MainMenuTabIndex.EXTENSION:
+                          console.log('EXTENSION');
+				return this._extendEabContent();
+			default:
+				return super._getContentPanel(definition);
+		}
 	}
         
 	static get tag() {
