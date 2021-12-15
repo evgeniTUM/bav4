@@ -4,6 +4,8 @@ export const provide = (lang) => {
 		case 'en':
 			return {
 				//the first part of the snake_case key should be the name of the related module
+				ea_menu_report : "Mitmachen und Börsen",
+				ea_menu_report_tooltip : "Hier Korrekturen und neue Objekte melden",
 				ea_menu_analyse3d : "EN -3D-Analyse Windenergieanlagen",
 				ea_menu_analyse3d_tooltip : "EN -Hier eine realitätsnahe Darstellung von Windenergieanlagen in der Landschaft erstellen",
 				ea_menu_recherche : "EN -Daten-Recherche und Download",
@@ -18,6 +20,8 @@ export const provide = (lang) => {
 		case 'de':
 			return {
 				//the first part of the snake_case key should be the name of the related module
+				ea_menu_report : "Mitmachen und Börsen",
+				ea_menu_report_tooltip : "Mitmachen und Börsen",
 				ea_menu_analyse3d : "3D-Analyse Windenergieanlagen",
 				ea_menu_analyse3d_tooltip : "Hier eine realitätsnahe Darstellung von Windenergieanlagen in der Landschaft erstellen",
 				ea_menu_recherche : "Daten-Recherche und Download",

@@ -82,53 +82,38 @@ export class AdditionalMenu extends BaElement {
 		</li>
 		<li class="ba-list-item">
 			<span class="ba-list-item__text ">
-				<span class="ba-list-item__primary-text">
-				Mitmachen und Börsen
-				</span>
-				<span class="ba-list-item__secondary-text">
-					Hier Korrekturen und neue Objekte melden
+				<span class="ba-list-item__primary-text" title=${translate('ea_menu_report_tooltip')}>
+					${translate('ea_menu_report')}
 				</span>
 			</span>
 		</li>
 		<li class="ba-list-item">
 			<span class="ba-list-item__text ">
-				<span class="ba-list-item__primary-text">
-				Daten-Recherche und Download
-				</span>
-				<span class="ba-list-item__secondary-text">
-					Hier Daten durchsuchen und exportieren
+				<span class="ba-list-item__primary-text" title=${translate('ea_menu_recherche_tooltip')}>
+						${translate('ea_menu_recherche')}
 				</span>
 			</span>
 		</li>
 		<li class="ba-list-item">
-			<div  @click="${toggleMixerModule}" class="tool-bar__button">
+			<div  @click="${toggleMixerModule}" class="tool-bar__button" title=${translate('ea_menu_mixer_tooltip')}>
 				<span class="ba-list-item__text ">
 					<span class="ba-list-item__primary-text">
-						Mischpult "Energiemix Bayern vor Ort"
-					</span>
-					<span class="ba-list-item__secondary-text">
-						Hier Strom- und Wärmemix, Potenziale und Szenarien einer Kommune abrufen
+						${translate('ea_menu_mixer')}
 					</span>
 				</span>
 			</div>
 		</li>
 		<li class="ba-list-item">
 			<span class="ba-list-item__text ">
-				<span class="ba-list-item__primary-text">
+				<span class="ba-list-item__primary-text" title=${translate('ea_menu_analyse3d_tooltip')}>
 				${translate('ea_menu_analyse3d')}
-				</span>
-				<span class="ba-list-item__secondary-text">
-				${translate('ea_menu_analyse3d_tooltip')}
 				</span>
 			</span>
 		</li>
 		<li class="ba-list-item">
 			<span class="ba-list-item__text ">
-				<span class="ba-list-item__primary-text">
-				Standortcheck Oberfl. Geothermie
-				</span>
-				<span class="ba-list-item__secondary-text">
-					Hier die Standorteignung für oberflächennahe Geothermie prüfen
+				<span class="ba-list-item__primary-text" title=${translate('ea_menu_geotherm_tooltip')}>
+				${translate('ea_menu_geotherm_short')}
 				</span>
 			</span>
 		</li>
