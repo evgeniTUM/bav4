@@ -47,7 +47,7 @@ export class TopicsContentPanel extends AbstractContentPanel {
 				document.head.appendChild(styleElement);
 			}
 			const style = document.getElementById(TopicsContentPanel.Global_Topic_Hue_Style_Id);
-			style.innerHTML = `*{--topic-hue: ${topic.style.hue || 0};} *{--topic-saturation: ${topic.style.sat || 0}%;}`;
+			style.innerHTML = `*{--topic-hue: ${topic.style.hue || 0};} *{--topic-saturation: ${topic.style.sat || 0}%;} *{--topic-lightness: ${topic.style.light || 0}%;}`;
 		});
 	}
 
@@ -88,10 +88,11 @@ export class TopicsContentPanel extends AbstractContentPanel {
 
 			const renderTopicStyle = (topic) => {
 				const hue = topic.style.hue || 0;
-                                const sat = topic.style.sat || 60;
+                                const sat = topic.style.sat;
+                                const light = topic.style.light || 40;
 				return `
 				.topic-${topic.id}{		
-					--topic-theme: hsl(${hue} ${sat}% var(--topic-lightness));			
+					--topic-theme: hsl(${hue} ${sat}% ${light}%);
 				}	
 				`;
 			};
