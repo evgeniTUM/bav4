@@ -47,7 +47,7 @@ export class TopicsContentPanel extends AbstractContentPanel {
 				document.head.appendChild(styleElement);
 			}
 			const style = document.getElementById(TopicsContentPanel.Global_Topic_Hue_Style_Id);
-			style.innerHTML = `*{--topic-hue: ${topic.style.hue || 0};}`;
+			style.innerHTML = `*{--topic-hue: ${topic.style.hue || 0};} *{--topic-saturation: ${topic.style.sat || 0}%;}`;
 		});
 	}
 
@@ -61,15 +61,9 @@ export class TopicsContentPanel extends AbstractContentPanel {
 			document.head.appendChild(style);
 		}
 	}
-
-	/**
-	 * @override
-	 */
-	createView(state) {
-
+        
+        createViewHelper(state) {
 		const { currentTopicId, topicsReady, contentIndex } = state;
-
-		if (topicsReady) {
 
 			const topics = this._topicsService.all();
 
@@ -94,9 +88,10 @@ export class TopicsContentPanel extends AbstractContentPanel {
 
 			const renderTopicStyle = (topic) => {
 				const hue = topic.style.hue || 0;
+                                const sat = topic.style.sat || 60;
 				return `
 				.topic-${topic.id}{		
-					--topic-theme: hsl(${hue} var(--topic-saturation) var(--topic-lightness));			
+					--topic-theme: hsl(${hue} ${sat}% var(--topic-lightness));			
 				}	
 				`;
 			};
@@ -111,19 +106,34 @@ export class TopicsContentPanel extends AbstractContentPanel {
 				}
 				return nothing;
 			};
+        return { topics , getActiveClass, getTabIndex,
+                        getVisibilityClass,
+                        changeTopic,
+                        renderTopicStyle,
+                        renderTopicIcon
+		}
+        }
+
+	/**
+	 * @override
+	 */
+	createView(state) {
+            const { currentTopicId, topicsReady, contentIndex } = state;
+		if (topicsReady) {
+                        let helper = this.createViewHelper(state);
 
 			return html`
         	<style>${css}</style>
-			<div class="topics-content-panel ${getVisibilityClass()}">
+			<div class="topics-content-panel ${helper.getVisibilityClass()}">
 				<div class="col">
-				${topics.map(topic => html`
+				${helper.topics.map(topic => html`
 					<style>
-					${renderTopicStyle(topic)}
+					${helper.renderTopicStyle(topic)}
 					</style>
-					<button tabindex='${getTabIndex()}' class="topic topic-${topic.id} ba-list-item  ${getActiveClass(topic.id)}" @click=${() => changeTopic(topic)}>
+					<button tabindex='${helper.getTabIndex()}' class="topic topic-${topic.id} ba-list-item  ${helper.getActiveClass(topic.id)}" @click=${() => helper.changeTopic(topic)}>
 						<span class="ba-list-item__pre">
 							<span class="ba-list-item__icon icon-${topic.id}">
-							${renderTopicIcon(topic)}
+							${helper.renderTopicIcon(topic)}
 							</span>											
 						</span>
 						</span>
@@ -138,7 +148,7 @@ export class TopicsContentPanel extends AbstractContentPanel {
 				`)}
 				</div>
 				<div class="col">
-					${topics.map(topic => html`
+					${helper.topics.map(topic => html`
 						<ba-catalog-content-panel .data=${topic.id}></ba-catalog-content-panel>
 					`)}
 				</div>
