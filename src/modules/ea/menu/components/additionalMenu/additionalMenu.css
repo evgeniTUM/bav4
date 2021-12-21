@@ -442,3 +442,23 @@
    -ms-transition: none !important;
    -o-transition: none !important;
  }
+ 
+ .icon-mitmachboerse::before {
+  content: url("./assets/mitmachen_icon.svg");
+}
+
+.icon-3d_wind::before {
+    content: url("./assets/3d_windanalyse_icon.svg");
+}
+
+.icon-recherche::before {
+    content: url("./assets/recherche_icon.svg");
+}
+
+.icon-mischpult::before  {
+    content: url("./assets/mischpult_icon.svg");
+}
+
+.icon-standortcheck::before {
+    content: url("./assets/standortcheck_icon.svg");
+}

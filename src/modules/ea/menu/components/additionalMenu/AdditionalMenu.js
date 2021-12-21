@@ -81,6 +81,10 @@ export class AdditionalMenu extends BaElement {
 			</span>
 		</li>
 		<li class="ba-list-item">
+			<span class="ba-list-item__pre">
+				<span class="ba-list-item__icon icon-mitmachboerse">
+				</span>
+			</span>
 			<span class="ba-list-item__text ">
 				<span class="ba-list-item__primary-text" title=${translate('ea_menu_report_tooltip')}>
 					${translate('ea_menu_report')}
@@ -88,22 +92,32 @@ export class AdditionalMenu extends BaElement {
 			</span>
 		</li>
 		<li class="ba-list-item">
+			<span class="ba-list-item__pre">
+				<span class="ba-list-item__icon icon-recherche">
+				</span>
+			</span>
 			<span class="ba-list-item__text ">
 				<span class="ba-list-item__primary-text" title=${translate('ea_menu_recherche_tooltip')}>
 						${translate('ea_menu_recherche')}
 				</span>
 			</span>
 		</li>
-		<li class="ba-list-item">
-			<div  @click="${toggleMixerModule}" class="tool-bar__button" title=${translate('ea_menu_mixer_tooltip')}>
+		<li class="ba-list-item" @click="${toggleMixerModule}" title=${translate('ea_menu_mixer_tooltip')}>
+				<span class="ba-list-item__pre">
+					<span class="ba-list-item__icon icon-mischpult">
+					</span>
+				</span>
 				<span class="ba-list-item__text ">
 					<span class="ba-list-item__primary-text">
 						${translate('ea_menu_mixer')}
 					</span>
 				</span>
-			</div>
 		</li>
 		<li class="ba-list-item">
+			<span class="ba-list-item__pre">
+				<span class="ba-list-item__icon icon-3d_wind">
+				</span>
+			</span>
 			<span class="ba-list-item__text ">
 				<span class="ba-list-item__primary-text" title=${translate('ea_menu_analyse3d_tooltip')}>
 				${translate('ea_menu_analyse3d')}
@@ -111,6 +125,10 @@ export class AdditionalMenu extends BaElement {
 			</span>
 		</li>
 		<li class="ba-list-item">
+			<span class="ba-list-item__pre">
+				<span class="ba-list-item__icon icon-standortcheck">
+				</span>
+			</span>
 			<span class="ba-list-item__text ">
 				<span class="ba-list-item__primary-text" title=${translate('ea_menu_geotherm_tooltip')}>
 				${translate('ea_menu_geotherm_short')}
