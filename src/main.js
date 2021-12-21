@@ -9,11 +9,8 @@ document.head.appendChild(style);
 import * as config from './injection/config';
 
 // register modules
-import './modules/ea/header';
 import './modules/footer';
 import './modules/map';
-import './modules/ea/menu';
-import './modules/ea/toolbox';
 import './modules/toolbox';
 import './modules/commons';
 import './modules/search';
@@ -27,3 +24,7 @@ import './modules/layerManager';
 import './modules/notifications';
 import './modules/examples';
 import './modules/featureInfo';
+import './modules/ea/header';
+import './ea/modules/toolbox';
+import './modules/ea/menu';
+import './modules/ea/toolbox';
