@@ -181,60 +181,61 @@ export class Header extends MvuElement {
 		 openMoreTab,
 		 clearSearchInput
                 }
-    }
+    };
+    
 	createView(model) {
             
-                const viewAttrProvider = this.getViewAttrProvider(model);
+            let helper = this.getViewAttrProvider(model);
             
 		const translate = (key) => this._translationService.translate(key);
 		return html`
 			<style>${css}</style>
-			<div class="preload ${viewAttrProvider.getOrientationClass()} ${viewAttrProvider.getMinWidthClass()}">
+			<div class="preload ${helper.getOrientationClass()} ${helper.getMinWidthClass()}">
 				<div class='header__logo'>				
 					<div class="action-button">
-						<div class="action-button__border animated-action-button__border ${viewAttrProvider.getAnimatedBorderClass()}">
+						<div class="action-button__border animated-action-button__border ${helper.getAnimatedBorderClass()}">
 						</div>
 						<div class="action-button__icon">
 							<div class="ba">
 							</div>
 						</div>
 					</div>
-					<div id='header__text' class='${getOverlayClass()} header__text'>
+					<div id='header__text' class='${helper.getOverlayClass()} header__text'>
 					</div>
 				</div>			
-				<div id='headerMobile' class='${getOverlayClass()} header__text-mobile'>	
+				<div id='headerMobile' class='${helper.getOverlayClass()} header__text-mobile'>	
 				</div>
 				<div class='header__emblem'>
 				</div>
-				<div  class="header ${getOverlayClass()}">  
+				<div  class="header ${helper.getOverlayClass()}">  
 					<button class="close-menu" title=${translate('header_close_button_title')}  @click="${toggle}"">
 						<i class="resize-icon "></i>
 					</button> 
 					<div class="header__background">
 					</div>
 					<div class='header__search-container'>
-						<input id='input' @focus="${viewAttrProvider.onInputFocus}" @blur="${viewAttrProvider.onInputBlur}" @input="${viewAttrProvider.onInput}" class='header__search' type="search" placeholder="" />          
-						<span class="header__search-clear ${viewAttrProvider.getIsClearClass()}" @click="${viewAttrProvider.clearSearchInput}">        							
+						<input id='input' @focus="${helper.onInputFocus}" @blur="${helper.onInputBlur}" @input="${helper.onInput}" class='header__search' type="search" placeholder="" />          
+						<span class="header__search-clear ${helper.getIsClearClass()}" @click="${helper.clearSearchInput}">        							
 						</span>       
-						<button @click="${viewAttrProvider.showModalInfo}" class="header__modal-button" title="modal">
+						<button @click="${helper.showModalInfo}" class="header__modal-button" title="modal">
 						&nbsp;
 						</button>
 					</div>
 					<div  class="header__button-container">
-						<button class="${getActiveClass(TabKey.TOPICS)}" title=${translate('header_tab_topics_title')} @click="${openTopicsTab}">
+						<button class="${helper.getActiveClass(TabKey.TOPICS)}" title=${translate('header_tab_topics_title')} @click="${helper.openTopicsTab}">
 							<span>
 								${translate('header_tab_topics_button')}
 							</span>
 						</button>
-						<button class="${getActiveClass(TabKey.MAPS)}" title=${translate('header_tab_maps_title')}  @click="${openMapLayerTab}">
+						<button class="${helper.getActiveClass(TabKey.MAPS)}" title=${translate('header_tab_maps_title')}  @click="${helper.openMapLayerTab}">
 							<span>
 								${translate('header_tab_maps_button')}
 							</span>
 							 <div class="badges">
-							 	${viewAttrProvider.layerCount}
+							 	${helper.layerCount}
 							</div>
 						</button>
-						<button class="${getActiveClass(TabKey.MORE)}" title=${translate('header_tab_more_title')}  @click="${openMoreTab}">
+						<button class="${helper.getActiveClass(TabKey.MORE)}" title=${translate('header_tab_more_title')}  @click="${helper.openMoreTab}">
 							<span>
 								${translate('header_tab_more_button')}
 							</span>

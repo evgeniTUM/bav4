@@ -1,7 +1,7 @@
 :host  .header__text{
   position: relative;
   top: 0.5em;
-  left: 0;
+  left: -26em;
   width: 26em;
   height: 6.5em;
   background-image:  url('assets/header_eab.svg');

@@ -55,7 +55,8 @@ export const TabKey = Object.freeze({
 	MORE: 'more',
 	ROUTING: 'routing',
 	SEARCH: 'search',
-	FEATUREINFO: 'featureinfo'
+	FEATUREINFO: 'featureinfo',
+	EXTENSION: 'extension'
 });
 
 /**

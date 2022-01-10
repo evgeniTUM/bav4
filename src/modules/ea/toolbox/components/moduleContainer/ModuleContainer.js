@@ -5,7 +5,7 @@ import { MixerModuleContent } from '../mixerModuleContent/MixerModuleContent';
 import { closeToolContainer } from '../../../../../store/toolContainer/toolContainer.action';
 import { LevelTypes } from '../../../../../store/notifications/notifications.action';
 import { emitNotification } from '../../../../../store/notifications/notifications.action';
-import { unsafeHTML } from 'lit-html/directives/unsafe-html';
+import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 
 //import { activate as activateMeasurement, deactivate as deactivateMeasurement } from '../../../map/store/measurement.action';
 //import { activate as activateDraw, deactivate as deactivateDraw } from '../../../map/store/draw.action';

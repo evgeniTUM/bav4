@@ -36,7 +36,7 @@ import { GeoResourceInfoService } from '../modules/geoResourceInfo/services/GeoR
 
 $injector
 	.register('HttpService', NetworkStateSyncHttpService)
-	.registerSingleton('ConfigService', new ProcessEnvConfigService())
+	.registerSingleton('ConfigService', new EaProcessEnvConfigService())
 	.registerSingleton('TranslationService', new TranslationService)
 	.register('CoordinateService', OlCoordinateService)
 	.register('EnvironmentService', EnvironmentService)

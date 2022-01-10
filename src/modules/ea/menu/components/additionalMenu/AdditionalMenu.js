@@ -1,21 +1,29 @@
 import { html } from 'lit-html';
-import { BaElement } from '../../../../BaElement';
+import { MvuElement } from '../../../../MvuElement';
 import css from './additionalMenu.css';
 import { MixerModuleContent } from '../../../toolbox/components/mixerModuleContent/MixerModuleContent';
 import { openToolContainer, setContainerContent, toggleToolContainer } from '../../../../../store/toolContainer/toolContainer.action';
 import { $injector } from '../../../../../injection';
 
 
+const Update_IsOpen = 'update_isOpen';
+const Update_Fetching = 'update_fetching';
+const Update_IsPortrait_HasMinWidth = 'update_isPortrait_hasMinWidth';
 /**
  * Container for Tools
  *
  * @class
  * @author alsturm
  */
-export class AdditionalMenu extends BaElement {
+export class AdditionalMenu extends MvuElement {
 
 	constructor() {
-		super();
+		super({
+			isOpen: false,
+			isFetching: false,
+			isPortrait: false,
+			hasMinWidth: false
+		});
 
 		const {
 			EnvironmentService: environmentService,
@@ -25,46 +33,76 @@ export class AdditionalMenu extends BaElement {
 
 		this._environmentService = environmentService;
 		this._translationService = translationService;
+		this._toolId = null;
 	}
 
-	/**
+	update(type, data, model) {
+		switch (type) {
+			case Update_IsOpen:
+				return { ...model, isOpen: data };
+			case Update_Fetching:
+				return { ...model, isFetching: data };
+			case Update_IsPortrait_HasMinWidth:
+				return { ...model, ...data };
+		}
+	}
+
+	onInitialize() {
+		this.observe(state => state.network.fetching, fetching => this.signal(Update_Fetching, fetching));
+		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
+		this.observe(state => state.toolContainer.contentId, contentId => this._toolId = contentId);
+	}
+
+		/**
 	 * @override
 	 */
-	createView(state) {
+	createView(model) {
 
-		const { toolBar, toolContainer, fetching, portrait, minWidth } = state;
+		const { isFetching, isPortrait, hasMinWidth, isOpen } = model;
 
-		const toolBarOpen = toolBar.open;
-		const activeToolId = toolContainer.contentId;
 		const getOrientationClass = () => {
-			return portrait ? 'is-portrait' : 'is-landscape';
+			return isPortrait ? 'is-portrait' : 'is-landscape';
 		};
 
 		const getMinWidthClass = () => {
-			return minWidth ? 'is-desktop' : 'is-tablet';
+			return hasMinWidth ? 'is-desktop' : 'is-tablet';
 		};
 
 		const getOverlayClass = () => {
-			return toolBarOpen ? 'is-open' : '';
+			return isOpen ? 'is-open' : '';
 		};
 
-		const toggleTool = (toolId) => {
-                        this.log('toggleTool --> Toolid:  ' + toolId); 
-			setContainerContent(toolId);
-			if (activeToolId === toolId) {
+		const toggleTool = (id) => {
+			if (this._toolId === id) {
 				toggleToolContainer();
 			}
 			else {
+				setContainerContent(id);
 				openToolContainer();
 			}
 		};
-		const toggleMixerModule = () => {
-			const toolId = MixerModuleContent.tag;
+		const toggleDrawTool = () => {
+			const toolId = DrawToolContent.tag;
+			toggleTool(toolId);
+		};
+
+		const toggleMeasureTool = () => {
+			const toolId = MeasureToolContent.tag;
+			toggleTool(toolId);
+		};
+
+		const toggleShareTool = () => {
+			const toolId = ShareToolContent.tag;
 			toggleTool(toolId);
 		};
 
 		const getAnimatedBorderClass = () => {
-			return fetching ? 'animated-action-button__border__running' : '';
+			return isFetching ? 'animated-action-button__border__running' : '';
+		};
+
+		const toggleMixerModule = () => {
+			const toolId = MixerModuleContent.tag;
+			toggleTool(toolId);
 		};
 
 		const translate = (key) => this._translationService.translate(key);
@@ -141,15 +179,6 @@ export class AdditionalMenu extends BaElement {
 
 	isRenderingSkipped() {
 		return this._environmentService.isEmbedded();
-	}
-
-	/**
-		 * @override
-		 * @param {Object} globalState
-		 */
-	extractState(globalState) {
-		const { toolBar, toolContainer, network: { fetching }, media: { portrait, minWidth } } = globalState;
-		return { toolBar, toolContainer, fetching, portrait, minWidth };
 	}
 
 	static get tag() {
