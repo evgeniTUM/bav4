@@ -1,5 +1,5 @@
 import { html } from 'lit-html';
-import { open as openMainMenu, setTabIndex, TabIndex, toggle } from '../../../store/mainMenu/mainMenu.action';
+import { open as openMainMenu, setTab, TabKey, toggle } from '../../../store/mainMenu/mainMenu.action';
 import { $injector } from '../../../injection';
 import css from './header.css';
 import { setQuery } from '../../../store/search/search.action';
@@ -24,7 +24,7 @@ export class Header extends MvuElement {
 	constructor() {
 		super({
 			isOpen: false,
-			tabIndex: 0,
+			tabIndex: null,
 			isFetching: false,
 			layers: [],
 			isPortrait: false,
@@ -60,7 +60,7 @@ export class Header extends MvuElement {
 	}
 
 	onInitialize() {
-		this.observe(state => state.mainMenu, mainMenu => this.signal(Update_IsOpen_TabIndex, { isOpen: mainMenu.open, tabIndex: mainMenu.tabIndex }));
+		this.observe(state => state.mainMenu, mainMenu => this.signal(Update_IsOpen_TabIndex, { isOpen: mainMenu.open, tabIndex: mainMenu.tab }));
 		this.observe(state => state.network.fetching, fetching => this.signal(Update_Fetching, fetching));
 		this.observe(state => state.layers.active, active => this.signal(Update_Layers, active.filter(l => l.constraints.hidden === false)));
 		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
@@ -112,7 +112,7 @@ export class Header extends MvuElement {
 
 		const onInputFocus = () => {
 			disableResponsiveParameterObservation();
-			setTabIndex(TabIndex.SEARCH);
+			setTab(TabKey.SEARCH);
 			if (isPortrait || !hasMinWidth) {
 				const popup = this.shadowRoot.getElementById('headerMobile');
 				popup.style.display = 'none';
@@ -144,17 +144,17 @@ export class Header extends MvuElement {
 		};
 
 		const openTopicsTab = () => {
-			setTabIndex(TabIndex.TOPICS);
+			setTab(TabKey.TOPICS);
 			openMainMenu();
 		};
 
 		const openMapLayerTab = () => {
-			setTabIndex(TabIndex.MAPS);
+			setTab(TabKey.MAPS);
 			openMainMenu();
 		};
 
 		const openMoreTab = () => {
-			setTabIndex(TabIndex.MORE);
+			setTab(TabKey.MORE);
 			openMainMenu();
 		};
 
@@ -199,14 +199,17 @@ export class Header extends MvuElement {
 							</div>
 						</div>
 					</div>
-					<div class='header__text'>
+					<div id='header__text' class='${getOverlayClass()} header__text'>
 					</div>
 				</div>			
-				<div id='headerMobile' class='header__text-mobile'>	
+				<div id='headerMobile' class='${getOverlayClass()} header__text-mobile'>	
 				</div>
 				<div class='header__emblem'>
 				</div>
-				<div  class="header ${viewAttrProvider.getOverlayClass()}">   
+				<div  class="header ${getOverlayClass()}">  
+					<button class="close-menu" title=${translate('header_close_button_title')}  @click="${toggle}"">
+						<i class="resize-icon "></i>
+					</button> 
 					<div class="header__background">
 					</div>
 					<div class='header__search-container'>
@@ -218,12 +221,12 @@ export class Header extends MvuElement {
 						</button>
 					</div>
 					<div  class="header__button-container">
-						<button class="${viewAttrProvider.getActiveClass(0)}" title=${translate('header_tab_topics_title')} @click="${viewAttrProvider.openTopicsTab}">
+						<button class="${getActiveClass(TabKey.TOPICS)}" title=${translate('header_tab_topics_title')} @click="${openTopicsTab}">
 							<span>
 								${translate('header_tab_topics_button')}
 							</span>
 						</button>
-						<button class="${viewAttrProvider.getActiveClass(1)}" title=${translate('header_tab_maps_title')}  @click="${viewAttrProvider.openMapLayerTab}">
+						<button class="${getActiveClass(TabKey.MAPS)}" title=${translate('header_tab_maps_title')}  @click="${openMapLayerTab}">
 							<span>
 								${translate('header_tab_maps_button')}
 							</span>
@@ -231,15 +234,12 @@ export class Header extends MvuElement {
 							 	${viewAttrProvider.layerCount}
 							</div>
 						</button>
-						<button class="${viewAttrProvider.getActiveClass(2)}" title=${translate('header_tab_more_title')}  @click="${viewAttrProvider.openMoreTab}">
+						<button class="${getActiveClass(TabKey.MORE)}" title=${translate('header_tab_more_title')}  @click="${openMoreTab}">
 							<span>
 								${translate('header_tab_more_button')}
 							</span>
 						</button>
 					</div>
-					<button class="close-menu" title=${translate('header_close_button_title')}  @click="${toggle}"">
-						<span class='arrow'></span>	
-					</button>
 				</div>				
             </div>
 		`;

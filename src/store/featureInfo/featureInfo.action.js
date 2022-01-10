@@ -2,7 +2,7 @@
  * Action creators to change/update the properties of featureInfo state.
  * @module featureInfo/action
  */
-import { COORDINATE_UPDATED, FEATURE_INFO_ADDED, FEATURE_INFO_CLEARED } from './featureInfo.reducer';
+import { FEATURE_INFO_REQUEST_START, FEATURE_INFO_ADDED, FEATURE_INFO_REQUEST_ABORT, QUERY_REGISTERED, QUERY_RESOLVED } from './featureInfo.reducer';
 import { $injector } from '../../injection';
 import { EventLike } from '../../utils/storeUtils';
 
@@ -38,6 +38,7 @@ export const FeatureInfoGeometryTypes = Object.freeze({
 /**
   * Adds (appends) a single or an array of {@link FeatureInfo} items
   * @param {Array.<FeatureInfo>|FeatureInfo} featureInfo
+  * @function
   */
 export const addFeatureInfoItems = (featureInfo) => {
 
@@ -50,24 +51,53 @@ export const addFeatureInfoItems = (featureInfo) => {
 };
 
 /**
-  * Removes all  {@link FeatureInfo} items
-  * @param {FeatureInfo} featureInfo
-  */
-export const clearFeatureInfoItems = () => {
+ * Starts a new FeatureInfo request.
+ * @param {coordinate} coordinate
+ * @function
+ */
+export const startRequest = (coordinate) => {
 
 	getStore().dispatch({
-		type: FEATURE_INFO_CLEARED
+		type: FEATURE_INFO_REQUEST_START,
+		payload: new EventLike(coordinate)
 	});
 };
 
 /**
- * Updates the coordinate.
+ * Aborts the current FeatureInfo request and/or resets the result.
  * @param {coordinate} coordinate
+ * @function
  */
-export const updateCoordinate = (coordinate) => {
+export const abortOrReset = () => {
 
 	getStore().dispatch({
-		type: COORDINATE_UPDATED,
-		payload: new EventLike(coordinate)
+		type: FEATURE_INFO_REQUEST_ABORT,
+		payload: new EventLike()
+	});
+};
+
+/**
+ * Registers an active FeatureInfo query
+ * @param {string} id id of that query
+ * @function
+ */
+export const registerQuery = (id) => {
+
+	getStore().dispatch({
+		type: QUERY_REGISTERED,
+		payload: id
+	});
+};
+
+/**
+ * Marks a FeatureInfo query as resolved.
+ * @param {string} id
+ * @function
+ */
+export const resolveQuery = (id) => {
+
+	getStore().dispatch({
+		type: QUERY_RESOLVED,
+		payload: id
 	});
 };

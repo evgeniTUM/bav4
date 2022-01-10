@@ -1,38 +1,23 @@
 /* eslint-disable no-undef */
 
-import { MainMenu, MainMenuTabIndex } from '../../../../../src/modules/menu/components/mainMenu/MainMenu';
+import { MainMenu } from '../../../../../src/modules/menu/components/mainMenu/MainMenu';
 import { createNoInitialStateMainMenuReducer } from '../../../../../src/store/mainMenu/mainMenu.reducer';
-import { TabIndex, toggle } from '../../../../../src/store/mainMenu/mainMenu.action';
+import { TabKey, toggle } from '../../../../../src/store/mainMenu/mainMenu.action';
 import { TestUtils } from '../../../../test-utils';
 import { $injector } from '../../../../../src/injection';
-import { setTabIndex } from '../../../../../src/store/mainMenu/mainMenu.action';
+import { setTab } from '../../../../../src/store/mainMenu/mainMenu.action';
 import { DevInfo } from '../../../../../src/modules/utils/components/devInfo/DevInfo';
 import { SearchResultsPanel } from '../../../../../src/modules/search/components/menu/SearchResultsPanel';
 import { TopicsContentPanel } from '../../../../../src/modules/topics/components/menu/TopicsContentPanel';
 import { createNoInitialStateMediaReducer } from '../../../../../src/store/media/media.reducer';
 import { disableResponsiveParameterObservation, enableResponsiveParameterObservation } from '../../../../../src/store/media/media.action';
 import { FeatureInfoPanel } from '../../../../../src/modules/featureInfo/components/FeatureInfoPanel';
+import { MapsContentPanel } from '../../../../../src/modules/menu/components/mainMenu/content/maps/MapsContentPanel';
+import { MoreContentPanel } from '../../../../../src/modules/menu/components/mainMenu/content/more/MoreContentPanel';
 
 window.customElements.define(MainMenu.tag, MainMenu);
 
-describe('MainMenuTabIndex', () => {
-
-	it('is an enum with an id and a tag property', () => {
-
-		expect(Object.entries(MainMenuTabIndex).length).toBe(6);
-		expect(Object.isFrozen(MainMenuTabIndex)).toBeTrue();
-		expect(MainMenuTabIndex.TOPICS).toEqual({ id: 0, component: TopicsContentPanel });
-		expect(MainMenuTabIndex.MAPS).toEqual({ id: 1, component: null });
-		expect(MainMenuTabIndex.MORE).toEqual({ id: 2, component: null });
-		expect(MainMenuTabIndex.ROUTING).toEqual({ id: 3, component: null });
-		expect(MainMenuTabIndex.SEARCH).toEqual({ id: 4, component: SearchResultsPanel });
-		expect(MainMenuTabIndex.FEATUREINFO).toEqual({ id: 5, component: FeatureInfoPanel });
-	});
-});
-
-
 describe('MainMenu', () => {
-
 
 	const setup = (state = {}, config = {}) => {
 
@@ -41,7 +26,7 @@ describe('MainMenu', () => {
 		const initialState = {
 			mainMenu: {
 				open: true,
-				tabIndex: 0
+				tab: null
 			},
 			media: {
 				portrait: false,
@@ -135,6 +120,7 @@ describe('MainMenu', () => {
 			const element = await setup();
 			expect(element.shadowRoot.querySelector('.main-menu.is-open')).toBeTruthy();
 			expect(element.shadowRoot.querySelector('.main-menu__close-button')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('.main-menu__close-button').title).toBe('menu_main_open_button');
 			expect(element.shadowRoot.querySelector('.main-menu__close-button-text').innerText).toBe('menu_main_open_button');
 		});
 
@@ -155,15 +141,23 @@ describe('MainMenu', () => {
 			const element = await setup();
 
 			const contentPanels = element.shadowRoot.querySelectorAll('.tabcontent');
-			expect(contentPanels.length).toBe(Object.keys(MainMenuTabIndex).length);
+			expect(contentPanels.length).toBe(Object.keys(TabKey).length);
 			for (let i = 0; i < contentPanels.length; i++) {
-				// Todo check all content panels when implemented
 				switch (i) {
-					case MainMenuTabIndex.SEARCH.id:
+					case TabKey.SEARCH:
 						expect(contentPanels[i].innerHTML.toString().includes(SearchResultsPanel.tag)).toBeTrue();
 						break;
-					case MainMenuTabIndex.TOPICS.id:
+					case TabKey.TOPICS:
 						expect(contentPanels[i].innerHTML.toString().includes(TopicsContentPanel.tag)).toBeTrue();
+						break;
+					case TabKey.FEATUREINFO:
+						expect(contentPanels[i].innerHTML.toString().includes(FeatureInfoPanel.tag)).toBeTrue();
+						break;
+					case TabKey.MAPS:
+						expect(contentPanels[i].innerHTML.toString().includes(MapsContentPanel.tag)).toBeTrue();
+						break;
+					case TabKey.MORE:
+						expect(contentPanels[i].innerHTML.toString().includes(MoreContentPanel.tag)).toBeTrue();
 						break;
 				}
 			}
@@ -173,27 +167,38 @@ describe('MainMenu', () => {
 			const element = await setup();
 
 			const contentPanels = element.shadowRoot.querySelectorAll('.tabcontent');
-			expect(contentPanels.length).toBe(Object.keys(MainMenuTabIndex).length);
+			expect(contentPanels.length).toBe(Object.keys(TabKey).length);
 			for (let i = 0; i < contentPanels.length; i++) {
-				expect(contentPanels[i].classList.contains('is-active')).toBe(i === 0);
+				expect(contentPanels[i].classList.contains('is-active')).toBe(Object.values(TabKey)[i] === 0);
 			}
 		});
 
 		it('displays the content panel for non default index', async () => {
-			const activeTabIndex = 2;
+			const activeTabIndex = TabKey.MORE;
 			const state = {
 				mainMenu: {
 					open: true,
-					tabIndex: activeTabIndex
+					tab: activeTabIndex
 				}
 			};
 			const element = await setup(state);
 
 			const contentPanels = element.shadowRoot.querySelectorAll('.tabcontent');
-			expect(contentPanels.length).toBe(Object.keys(MainMenuTabIndex).length);
+			expect(contentPanels.length).toBe(Object.keys(TabKey).length);
 			for (let i = 0; i < contentPanels.length; i++) {
-				expect(contentPanels[i].classList.contains('is-active')).toBe(i === activeTabIndex);
+				expect(contentPanels[i].classList.contains('is-active')).toBe(Object.values(TabKey)[i] === activeTabIndex);
 			}
+		});
+
+		it('adds a slider to resize width', async () => {
+			const element = await setup();
+			const slider = element.shadowRoot.querySelector('.slider-container input');
+
+			expect(slider.type).toBe('range');
+			expect(slider.value).toBe('28');
+			expect(slider.min).toBe('28');
+			expect(slider.max).toBe('100');
+			expect(slider.draggable).toBeTrue();
 		});
 
 		it('contains a dev info', async () => {
@@ -221,7 +226,7 @@ describe('MainMenu', () => {
 
 		const check = (index, panels) => {
 			for (let i = 0; i < panels.length; i++) {
-				expect(panels[i].classList.contains('is-active')).toBe(i === index.id);
+				expect(panels[i].classList.contains('is-active')).toBe(Object.values(TabKey)[i] === index);
 			}
 		};
 
@@ -229,23 +234,39 @@ describe('MainMenu', () => {
 			const element = await setup();
 			const contentPanels = element.shadowRoot.querySelectorAll('.tabcontent');
 
-			setTabIndex(TabIndex.MAPS);
-			check(MainMenuTabIndex.MAPS, contentPanels);
+			setTab(TabKey.MAPS);
+			check(TabKey.MAPS, contentPanels);
 
-			setTabIndex(TabIndex.MORE);
-			check(MainMenuTabIndex.MORE, contentPanels);
+			setTab(TabKey.MORE);
+			check(TabKey.MORE, contentPanels);
 
-			setTabIndex(TabIndex.ROUTING);
-			check(MainMenuTabIndex.ROUTING, contentPanels);
+			setTab(TabKey.ROUTING);
+			check(TabKey.ROUTING, contentPanels);
 
-			setTabIndex(TabIndex.SEARCH);
-			check(MainMenuTabIndex.SEARCH, contentPanels);
+			setTab(TabKey.SEARCH);
+			check(TabKey.SEARCH, contentPanels);
 
-			setTabIndex(TabIndex.FEATUREINFO);
-			check(MainMenuTabIndex.FEATUREINFO, contentPanels);
+			setTab(TabKey.FEATUREINFO);
+			check(TabKey.FEATUREINFO, contentPanels);
 
-			setTabIndex(TabIndex.TOPICS);
-			check(MainMenuTabIndex.TOPICS, contentPanels);
+			setTab(TabKey.TOPICS);
+			check(TabKey.TOPICS, contentPanels);
+		});
+
+		it('adds or removes a special Css class for the FeatureInfoContentPanel', async () => {
+			const element = await setup();
+
+			setTab(TabKey.MAPS);
+
+			expect(element.shadowRoot.querySelectorAll('.main-menu.is-full-size')).toHaveSize(0);
+
+			setTab(TabKey.FEATUREINFO);
+
+			expect(element.shadowRoot.querySelectorAll('.main-menu.is-full-size')).toHaveSize(1);
+
+			setTab(TabKey.MAPS);
+
+			expect(element.shadowRoot.querySelectorAll('.main-menu.is-full-size')).toHaveSize(0);
 		});
 	});
 
@@ -283,6 +304,70 @@ describe('MainMenu', () => {
 			enableResponsiveParameterObservation();
 
 			expect(element.shadowRoot.querySelector('.main-menu').parentElement.classList.contains('prevent-transition')).toBeFalse();
+		});
+	});
+
+	describe('when slider changes', () => {
+
+		it('adjusts the main menu width', async () => {
+			const value = 50;
+			const state = {
+				mainMenu: {
+					open: true,
+					tab: TabKey.FEATUREINFO
+				}
+			};
+			const element = await setup(state);
+			const mainMenu = element.shadowRoot.querySelector('#mainmenu');
+			const slider = element.shadowRoot.querySelector('.slider-container input');
+
+			slider.value = value;
+			slider.dispatchEvent(new Event('input'));
+
+			expect(mainMenu.style.width).toBe(`${value}em`);
+		});
+
+		it('saves and restores width values', async () => {
+			const value = 50;
+			const element = await setup();
+			const mainMenu = element.shadowRoot.querySelector('#mainmenu');
+			const slider = element.shadowRoot.querySelector('.slider-container input');
+			const initialWidthInPx = window.getComputedStyle(mainMenu).width;
+
+			//open FeatureInfo panel and adjust width
+			setTab(TabKey.FEATUREINFO);
+			slider.value = value;
+			slider.dispatchEvent(new Event('input'));
+			const adjustedWidthInPx = window.getComputedStyle(mainMenu).width;
+
+			//open another panel
+			setTab(TabKey.MAPS);
+
+			expect(window.getComputedStyle(mainMenu).width).toBe(initialWidthInPx);
+
+			//open FeatureInfo panel again
+			setTab(TabKey.FEATUREINFO);
+
+			expect(window.getComputedStyle(mainMenu).width).toBe(adjustedWidthInPx);
+		});
+
+		it('prevents default event handling and stops its propagation', async () => {
+			const state = {
+				mainMenu: {
+					open: true,
+					tab: TabKey.FEATUREINFO
+				}
+			};
+			const element = await setup(state);
+			const slider = element.shadowRoot.querySelector('.slider-container input');
+			const event = new Event('dragstart');
+			const preventDefaultSpy = spyOn(event, 'preventDefault');
+			const stopPropagationSpy = spyOn(event, 'stopPropagation');
+
+			slider.dispatchEvent(event);
+
+			expect(preventDefaultSpy).toHaveBeenCalled();
+			expect(stopPropagationSpy).toHaveBeenCalled();
 		});
 	});
 });

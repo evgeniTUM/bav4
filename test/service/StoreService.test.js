@@ -90,13 +90,13 @@ describe('StoreService', () => {
 			expect(reducerKeys.includes('pointer')).toBeTrue();
 			expect(reducerKeys.includes('position')).toBeTrue();
 			expect(reducerKeys.includes('mainMenu')).toBeTrue();
-			expect(reducerKeys.includes('toolBar')).toBeTrue();
 			expect(reducerKeys.includes('toolContainer')).toBeTrue();
 			expect(reducerKeys.includes('modal')).toBeTrue();
 			expect(reducerKeys.includes('layers')).toBeTrue();
 			expect(reducerKeys.includes('mapContextMenu')).toBeTrue();
 			expect(reducerKeys.includes('measurement')).toBeTrue();
 			expect(reducerKeys.includes('draw')).toBeTrue();
+			expect(reducerKeys.includes('shared')).toBeTrue();
 			expect(reducerKeys.includes('geolocation')).toBeTrue();
 			expect(reducerKeys.includes('topics')).toBeTrue();
 			expect(reducerKeys.includes('network')).toBeTrue();

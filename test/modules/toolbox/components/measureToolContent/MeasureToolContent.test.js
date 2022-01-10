@@ -6,8 +6,13 @@ import { EventLike } from '../../../../../src/utils/storeUtils';
 import { Icon } from '../../../../../src/modules/commons/components/icon/Icon';
 import { AbstractToolContent } from '../../../../../src/modules/toolbox/components/toolContainer/AbstractToolContent';
 import { modalReducer } from '../../../../../src/store/modal/modal.reducer';
+import { sharedReducer } from '../../../../../src/store/shared/shared.reducer';
 import { measurementReducer } from '../../../../../src/store/measurement/measurement.reducer';
+import { ShareButton } from '../../../../../src/modules/toolbox/components/shareButton/ShareButton';
+import { notificationReducer } from '../../../../../src/store/notifications/notifications.reducer';
+import { LevelTypes } from '../../../../../src/store/notifications/notifications.action';
 
+window.customElements.define(ShareButton.tag, ShareButton);
 window.customElements.define(MeasureToolContent.tag, MeasureToolContent);
 window.customElements.define(Checkbox.tag, Checkbox);
 window.customElements.define(Icon.tag, Icon);
@@ -25,7 +30,9 @@ describe('MeasureToolContent', () => {
 			fileSaveResult: null,
 			reset: null,
 			remove: null
-		}
+		},
+		shared: { termsOfUseAcknowledged: false,
+			fileSaveResult: null }
 	};
 	const shareServiceMock = {
 		copyToClipboard() {
@@ -59,7 +66,7 @@ describe('MeasureToolContent', () => {
 			}
 		}
 
-		store = TestUtils.setupStoreAndDi(state, { measurement: measurementReducer, modal: modalReducer });
+		store = TestUtils.setupStoreAndDi(state, { measurement: measurementReducer, modal: modalReducer, shared: sharedReducer, notifications: notificationReducer });
 		$injector
 			.registerSingleton('EnvironmentService', {
 				isEmbedded: () => embed,
@@ -192,7 +199,8 @@ describe('MeasureToolContent', () => {
 			expect(unitSpan.textContent).toBe('m');
 		});
 
-		it('copies the measurement values to the clipboard', async (done) => {
+		it('copies the measurement length value to the clipboard', async (done) => {
+			const length = '42 m';
 			const state = {
 				measurement: {
 					statistic: { length: 42, area: 2 },
@@ -201,23 +209,44 @@ describe('MeasureToolContent', () => {
 				}
 			};
 			const element = await setup(state);
-			const copySpy = spyOn(shareServiceMock, 'copyToClipboard').and.callFake(() => Promise.resolve());
+			const copyToClipboardMock = spyOn(shareServiceMock, 'copyToClipboard').withArgs(length).and.returnValue(Promise.resolve());
 
 			const copyDistanceElement = element.shadowRoot.querySelector('.tool-container__text-item .close');
-			const copyAreaElement = element.shadowRoot.querySelector('.tool-container__text-item.area.is-area .close');
-
 			copyDistanceElement.click();
-			copyAreaElement.click();
 
 			setTimeout(() => {
 				expect(copyDistanceElement).toBeTruthy();
-				expect(copyAreaElement).toBeTruthy();
-				expect(copySpy).toHaveBeenCalledTimes(2);
-				expect(copySpy).toHaveBeenCalledWith('42 m');
-				expect(copySpy).toHaveBeenCalledWith('2 m²');
+				expect(copyToClipboardMock).toHaveBeenCalledWith(length);
+				//check notification
+				expect(store.getState().notifications.latest.payload.content).toBe('toolbox_measureTool_clipboard_measure_distance_notification_text toolbox_clipboard_success');
+				expect(store.getState().notifications.latest.payload.level).toEqual(LevelTypes.INFO);
 				done();
 			});
+		});
 
+		it('copies the measurement area value to the clipboard', async (done) => {
+			const area = '2 m²';
+			const state = {
+				measurement: {
+					statistic: { length: 42, area: 2 },
+					reset: null,
+					remove: null
+				}
+			};
+			const element = await setup(state);
+			const copyToClipboardMock = spyOn(shareServiceMock, 'copyToClipboard').withArgs(area).and.returnValue(Promise.resolve());
+
+			const copyAreaElement = element.shadowRoot.querySelector('.tool-container__text-item.area.is-area .close');
+			copyAreaElement.click();
+
+			setTimeout(() => {
+				expect(copyAreaElement).toBeTruthy();
+				expect(copyToClipboardMock).toHaveBeenCalledWith(area);
+				//check notification
+				expect(store.getState().notifications.latest.payload.content).toBe('toolbox_measureTool_clipboard_measure_area_notification_text toolbox_clipboard_success');
+				expect(store.getState().notifications.latest.payload.level).toEqual(LevelTypes.INFO);
+				done();
+			});
 		});
 
 		it('logs a warning when copyToClipboard fails', async (done) => {
@@ -238,6 +267,9 @@ describe('MeasureToolContent', () => {
 
 			setTimeout(() => {
 				expect(copySpy).toHaveBeenCalledWith('42 m');
+				//check notification
+				expect(store.getState().notifications.latest.payload.content).toBe('toolbox_clipboard_error');
+				expect(store.getState().notifications.latest.payload.level).toEqual(LevelTypes.WARN);
 				expect(warnSpy).toHaveBeenCalledWith('Clipboard API not available');
 				done();
 			});
@@ -258,7 +290,7 @@ describe('MeasureToolContent', () => {
 
 
 			expect(subTextElement).toBeTruthy();
-			expect(subTextElement.textContent).toBe('toolbox_drawTool_info');
+			expect(subTextElement.textContent).toBe('');
 		});
 
 		it('shows the measurement share-button', async () => {
@@ -271,74 +303,9 @@ describe('MeasureToolContent', () => {
 				}
 			};
 			const element = await setup(state);
-			const shareButton = element.shadowRoot.querySelector('#share');
+			const shareButton = element.shadowRoot.querySelector('ba-share-button');
 
 			expect(shareButton).toBeTruthy();
-		});
-
-		it('shows NOT the measurement share-container for invalid fileSaveResult', async () => {
-			const state = {
-				measurement: {
-					statistic: { length: 42, area: 0 },
-					fileSaveResult: { adminId: 'a_fooBar', fileId: null },
-					reset: null,
-					remove: null
-				}
-			};
-			const element = await setup(state);
-			const shareButton = element.shadowRoot.querySelector('#share');
-
-			expect(shareButton).toBeFalsy();
-		});
-
-		it('opens the modal with shortened share-urls on click', async (done) => {
-			const state = {
-				measurement: {
-					statistic: { length: 42, area: 0 },
-					fileSaveResult: { adminId: 'a_fooBar', fileId: 'f_fooBar' },
-					reset: null,
-					remove: null
-				}
-			};
-			const shortenerSpy = spyOn(urlServiceMock, 'shorten').and.callFake(() => Promise.resolve('http://shorten.foo'));
-			const element = await setup(state);
-
-			const shareButton = element.shadowRoot.querySelector('#share');
-			shareButton.click();
-
-			setTimeout(() => {
-				expect(shareButton).toBeTruthy();
-				expect(shortenerSpy).toHaveBeenCalledTimes(2);
-				expect(store.getState().modal.data.title).toBe('toolbox_measureTool_share');
-				done();
-			});
-
-		});
-
-		it('logs a warning, when shortener fails', async (done) => {
-			const state = {
-				measurement: {
-					statistic: { length: 42, area: 0 },
-					fileSaveResult: { adminId: 'a_fooBar', fileId: 'f_fooBar' },
-					reset: null,
-					remove: null
-				}
-			};
-			const shortenerSpy = spyOn(urlServiceMock, 'shorten').and.callFake(() => Promise.reject('not available'));
-			const warnSpy = spyOn(console, 'warn');
-			const element = await setup(state);
-
-			const shareButton = element.shadowRoot.querySelector('#share');
-			shareButton.click();
-
-			setTimeout(() => {
-				expect(shareButton).toBeTruthy();
-				expect(shortenerSpy).toHaveBeenCalledTimes(2);
-				expect(warnSpy).toHaveBeenCalledTimes(2);
-				expect(warnSpy).toHaveBeenCalledWith('Could shortener-service is not working:', 'not available');
-				done();
-			});
-
 		});
 
 		describe('with touch-device', () => {

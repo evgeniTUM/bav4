@@ -10,6 +10,7 @@ import { UnitsService } from '../services/UnitsService';
 import { GeoResourceService } from '../services/GeoResourceService';
 import { AltitudeService } from '../services/AltitudeService';
 import { UrlService } from '../services/UrlService';
+import { IconService } from '../services/IconService';
 import { MapService } from '../services/MapService';
 import { mapModule } from '../modules/map/injection';
 import { AdministrationService } from '../services/AdministrationService';
@@ -29,25 +30,30 @@ import { GeolocationPlugin } from '../plugins/GeolocationPlugin';
 import { NotificationPlugin } from '../plugins/NotificationPlugin';
 import { FeatureInfoPlugin } from '../plugins/FeatureInfoPlugin';
 import { MainMenuPlugin } from '../plugins/MainMenuPlugin';
+import { FeatureInfoService } from '../services/FeatureInfoService';
+import { GeoResourceInfoService } from '../modules/geoResourceInfo/services/GeoResourceInfoService';
 
 
 $injector
-	.registerSingleton('HttpService', new NetworkStateSyncHttpService())
-	.registerSingleton('ConfigService', new EaProcessEnvConfigService())
+	.register('HttpService', NetworkStateSyncHttpService)
+	.registerSingleton('ConfigService', new ProcessEnvConfigService())
 	.registerSingleton('TranslationService', new TranslationService)
-	.registerSingleton('CoordinateService', new OlCoordinateService())
-	.registerSingleton('EnvironmentService', new EnvironmentService())
-	.registerSingleton('MapService', new MapService())
+	.register('CoordinateService', OlCoordinateService)
+	.register('EnvironmentService', EnvironmentService)
+	.register('MapService', MapService)
 	.registerSingleton('StoreService', new StoreService())
 	.registerSingleton('GeoResourceService', new GeoResourceService())
 	.registerSingleton('TopicsService', new TopicsService())
-	.registerSingleton('AltitudeService', new AltitudeService())
-	.registerSingleton('SearchResultService', new SearchResultService())
-	.registerSingleton('ShareService', new ShareService())
+	.register('AltitudeService', AltitudeService)
+	.register('SearchResultService', SearchResultService)
+	.register('ShareService', ShareService)
 	.register('UnitsService', UnitsService)
 	.register('FileStorageService', BvvFileStorageService)
 	.register('UrlService', UrlService)
-	.registerSingleton('AdministrationService', new AdministrationService())
+	.registerSingleton('IconService', new IconService())
+	.register('AdministrationService', AdministrationService)
+	.register('FeatureInfoService', FeatureInfoService)
+	.registerSingleton('GeoResourceInfoService', new GeoResourceInfoService())
 
 	.registerSingleton('DrawPlugin', new DrawPlugin())
 	.registerSingleton('TopicsPlugin', new TopicsPlugin())

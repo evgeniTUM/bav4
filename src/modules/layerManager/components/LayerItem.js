@@ -8,6 +8,7 @@ import arrowDownSvg from './assets/arrow-down-short.svg';
 import removeSvg from './assets/trash.svg';
 import infoSvg from './assets/info.svg';
 import { AbstractContentPanel } from '../../menu/components/mainMenu/content/AbstractContentPanel';
+import { openModal } from '../../../../src/store/modal/modal.action';
 
 /**
  * Child element of the LayerManager. Represents one layer and its state.
@@ -15,6 +16,7 @@ import { AbstractContentPanel } from '../../menu/components/mainMenu/content/Abs
  * @author thiloSchlemmer
  * @author taulinger
  * @author alsturm
+ * @author costa_gi
  */
 export class LayerItem extends AbstractContentPanel {
 
@@ -128,14 +130,18 @@ export class LayerItem extends AbstractContentPanel {
 			iscollapse: this._layer.collapsed
 		};
 
+		const openGeoResourceInfoPanel = async () => {
+			const content = html`<ba-georesourceinfo-panel .geoResourceId=${this._layer.id}></ba-georesourceinfo-panel>`;
+			openModal(this._layer.label, content);
+		};
 
 		return html`
         <style>${css}</style>
         <div class='ba-section divider'>
             <div class='ba-list-item'>          
-                <span  class='ba-list-item__text'>
-                    <ba-checkbox .title='${getVisibilityTitle()}' .checked=${this._layer.visible} @toggle=${toggleVisibility}>${currentLabel}</ba-checkbox>                                                   
-                </span>                                         
+
+                    <ba-checkbox .title='${getVisibilityTitle()}'  class='ba-list-item__text' tabindex='0' .checked=${this._layer.visible} @toggle=${toggleVisibility}>${currentLabel}</ba-checkbox>                                                   
+                                       
                 <button class='ba-list-item__after' title="${getCollapseTitle()}" @click="${toggleCollapse}">
                     <i class='icon chevron icon-rotate-90 ${classMap(iconCollapseClass)}'></i>
                 </button>   
@@ -149,7 +155,7 @@ export class LayerItem extends AbstractContentPanel {
 						<ba-icon id='decrease' .icon='${arrowDownSvg}' .color=${'var(--primary-color)'} .color_hover=${'var(--text3)'} .size=${2.6} .title=${translate('layerManager_move_down')} @click=${decreaseIndex}></ba-icon>                                
 					</div>                                                                                              
 					<div>                                                                                              
-						<ba-icon id='info' .icon='${infoSvg}' .color=${'var(--primary-color)'} .color_hover=${'var(--text3)'} .size=${2.6}></ba-icon>                 
+						<ba-icon id='info' .icon='${infoSvg}' .color=${'var(--primary-color)'} .color_hover=${'var(--text3)'} .size=${2.6} @click=${openGeoResourceInfoPanel}></ba-icon>                 
 					</div>                                                                                              
 					<div>                                                                                              
 						<ba-icon id='remove' .icon='${removeSvg}' .color=${'var(--primary-color)'} .color_hover=${'var(--text3)'} .size=${2.6} .title=${translate('layerManager_remove')} @click=${remove}></ba-icon>               

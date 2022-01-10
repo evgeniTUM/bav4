@@ -1,6 +1,6 @@
 import { observe } from '../utils/storeUtils';
 import { BaPlugin } from '../plugins/BaPlugin';
-import { close, open, setTabIndex, TabIndex } from '../store/mainMenu/mainMenu.action';
+import { close, open, setTab, TabKey } from '../store/mainMenu/mainMenu.action';
 
 
 /**
@@ -9,38 +9,57 @@ import { close, open, setTabIndex, TabIndex } from '../store/mainMenu/mainMenu.a
  */
 export class MainMenuPlugin extends BaPlugin {
 
+	constructor() {
+		super();
+		this._previousTab = null;
+		this._open = null;
+	}
+
 	/**
 	 * @override
 	 * @param {Store} store
 	 */
 	async register(store) {
 
-		let previousTabIndex = 0;
-		let wasOpen = null;
+		this._open = store.getState().mainMenu.open;
+		this._previousTab = store.getState().mainMenu.tab;
 
-		const onFeatureInfoChanged = current => {
-			if (current.length === 0) {
-				if (!wasOpen) {
-					close();
+		const onFeatureInfoQueryingChanged = (querying, state) => {
+			const { featureInfo: { current } } = state;
+			if (!querying) {
+
+				if (current.length === 0) {
+					if (!this._open) {
+						close();
+					}
+					setTab(this._previousTab);
 				}
-				setTabIndex(previousTabIndex);
-			}
-			else {
-				setTabIndex(TabIndex.FEATUREINFO);
-				open();
-			}
-		};
-
-		const onTabIndexChanged = (tabIndex, state) => {
-			if (tabIndex === TabIndex.FEATUREINFO) {
-				wasOpen = state.mainMenu.open;
-			}
-			else {
-				previousTabIndex = tabIndex;
+				else {
+					setTab(TabKey.FEATUREINFO);
+					open();
+				}
 			}
 		};
 
-		observe(store, state => state.featureInfo.current, onFeatureInfoChanged);
-		observe(store, store => store.mainMenu.tabIndex, onTabIndexChanged, false);
+		const onFeatureInfoAbortedChanged = () => {
+
+			if (!this._open) {
+				close();
+			}
+			setTab(this._previousTab);
+		};
+
+		const onTabChanged = (tab, state) => {
+			if (tab === TabKey.FEATUREINFO) {
+				this._open = state.mainMenu.open;
+			}
+			else {
+				this._previousTab = tab;
+			}
+		};
+
+		observe(store, state => state.featureInfo.querying, onFeatureInfoQueryingChanged);
+		observe(store, state => state.featureInfo.aborted, onFeatureInfoAbortedChanged);
+		observe(store, store => store.mainMenu.tab, onTabChanged, false);
 	}
 }

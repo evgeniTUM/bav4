@@ -24,6 +24,8 @@ import { getModifyOptions, getSelectableFeatures, getSelectOptions, getSnapState
 import { emitNotification, LevelTypes } from '../../../../../../store/notifications/notifications.action';
 import { OlSketchHandler } from '../OlSketchHandler';
 import { MEASUREMENT_LAYER_ID, MEASUREMENT_TOOL_ID } from '../../../../../../plugins/MeasurementPlugin';
+import { acknowledgeTermsOfUse } from '../../../../../../store/shared/shared.action';
+import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 
 const Debounce_Delay = 1000;
 
@@ -39,7 +41,7 @@ const Temp_Session_Id = 'temp_measure_id';
 export class OlMeasurementHandler extends OlLayerHandler {
 	constructor() {
 		super(MEASUREMENT_LAYER_ID);
-		const { TranslationService, MapService, EnvironmentService, StoreService, GeoResourceService, OverlayService, StyleService, MeasurementStorageService } = $injector.inject('TranslationService', 'MapService', 'EnvironmentService', 'StoreService', 'GeoResourceService', 'OverlayService', 'StyleService', 'MeasurementStorageService');
+		const { TranslationService, MapService, EnvironmentService, StoreService, GeoResourceService, OverlayService, StyleService, InteractionStorageService } = $injector.inject('TranslationService', 'MapService', 'EnvironmentService', 'StoreService', 'GeoResourceService', 'OverlayService', 'StyleService', 'InteractionStorageService');
 		this._translationService = TranslationService;
 		this._mapService = MapService;
 		this._environmentService = EnvironmentService;
@@ -47,7 +49,7 @@ export class OlMeasurementHandler extends OlLayerHandler {
 		this._geoResourceService = GeoResourceService;
 		this._overlayService = OverlayService;
 		this._styleService = StyleService;
-		this._storageHandler = MeasurementStorageService;
+		this._storageHandler = InteractionStorageService;
 
 		this._vectorLayer = null;
 		this._draw = false;
@@ -69,7 +71,7 @@ export class OlMeasurementHandler extends OlLayerHandler {
 		this._helpTooltip = new HelpTooltip();
 		this._helpTooltip.messageProvideFunction = messageProvide;
 		this._measureStateChangedListeners = [];
-		this._registeredObservers = this._register(this._storeService.getStore());
+		this._registeredObservers = [];
 	}
 
 	/**
@@ -77,7 +79,14 @@ export class OlMeasurementHandler extends OlLayerHandler {
 	 * @override
 	 */
 	onActivate(olMap) {
-
+		const translate = (key) => this._translationService.translate(key);
+		if (!this._storeService.getStore().getState().shared.termsOfUseAcknowledged && !this._environmentService.isStandalone()) {
+			const termsOfUse = translate('map_olMap_handler_termsOfUse');
+			if (termsOfUse) {
+				emitNotification(unsafeHTML(termsOfUse), LevelTypes.INFO);
+			}
+			acknowledgeTermsOfUse();
+		}
 		const getOldLayer = (map) => {
 			return map.getLayers().getArray().find(l => l.get('id') && (
 				this._storageHandler.isStorageId(l.get('id')) ||
@@ -85,7 +94,6 @@ export class OlMeasurementHandler extends OlLayerHandler {
 		};
 
 		const createLayer = () => {
-			const translate = (key) => this._translationService.translate(key);
 			const source = new VectorSource({ wrapX: false });
 			const layer = new VectorLayer({
 				source: source,
@@ -102,25 +110,24 @@ export class OlMeasurementHandler extends OlLayerHandler {
 				if (vgr) {
 
 					this._storageHandler.setStorageId(oldLayer.get('id'));
-					vgr.getData().then(data => {
-						const oldFeatures = readFeatures(data);
-						const onFeatureChange = (event) => {
-							const measureGeometry = this._createMeasureGeometry(event.target);
-							this._styleService.updateStyle(event.target, olMap, { geometry: measureGeometry }, StyleTypes.MEASURE);
-							this._setStatistics(event.target);
-						};
-						oldFeatures.forEach(f => {
-							f.getGeometry().transform('EPSG:' + vgr.srid, 'EPSG:' + this._mapService.getSrid());
-							f.set('srid', this._mapService.getSrid(), true);
-							layer.getSource().addFeature(f);
-							this._styleService.removeStyle(f, olMap);
-							this._styleService.addStyle(f, olMap);
-							f.on('change', onFeatureChange);
-						});
-					})
-						.then(() => removeLayer(oldLayer.get('id')))
-						.then(() => this._finish())
-						.then(() => this._updateMeasureState());
+					const data = await vgr.getData();
+					const oldFeatures = readFeatures(data);
+					const onFeatureChange = (event) => {
+						const measureGeometry = this._createMeasureGeometry(event.target);
+						this._styleService.updateStyle(event.target, olMap, { geometry: measureGeometry }, StyleTypes.MEASURE);
+						this._setStatistics(event.target);
+					};
+					oldFeatures.forEach(f => {
+						f.getGeometry().transform('EPSG:' + vgr.srid, 'EPSG:' + this._mapService.getSrid());
+						f.set('srid', this._mapService.getSrid(), true);
+						layer.getSource().addFeature(f);
+						this._styleService.removeStyle(f, olMap);
+						this._styleService.addStyle(f, olMap);
+						f.on('change', onFeatureChange);
+					});
+					removeLayer(oldLayer.get('id'));
+					this._finish();
+					this._updateMeasureState();
 				}
 			}
 		};
@@ -213,6 +220,7 @@ export class OlMeasurementHandler extends OlLayerHandler {
 			this._listeners.push(olMap.on(MapBrowserEventType.POINTERUP, pointerUpHandler));
 			this._listeners.push(olMap.on(MapBrowserEventType.DBLCLICK, () => false));
 			this._listeners.push(document.addEventListener('keyup', (e) => this._removeLast(e)));
+			this._registeredObservers = this._register(this._storeService.getStore());
 
 			olMap.addInteraction(this._select);
 			olMap.addInteraction(this._modify);
@@ -242,8 +250,8 @@ export class OlMeasurementHandler extends OlLayerHandler {
 		this._helpTooltip.deactivate();
 
 		this._unreg(this._listeners);
-		this._unreg(this._registeredObservers);
 		this._unreg(this._measureStateChangedListeners);
+		this._unsubscribe(this._registeredObservers);
 
 		this._convertToPermanentLayer();
 		this._vectorLayer.getSource().getFeatures().forEach(f => this._overlayService.remove(f, this._map));
@@ -261,6 +269,11 @@ export class OlMeasurementHandler extends OlLayerHandler {
 	_unreg(listeners) {
 		unByKey(listeners);
 		listeners = [];
+	}
+
+	_unsubscribe(observers) {
+		observers.forEach(unsubscribe => unsubscribe());
+		observers = [];
 	}
 
 	_setMeasureState(value) {
