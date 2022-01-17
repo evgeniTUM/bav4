@@ -1,5 +1,5 @@
 
-import { ProcessEnvConfigService } from '../../src/services/ProcessEnvConfigService';
+import { ProcessEnvConfigService } from '../../services/ProcessEnvConfigService';
 /**
  * customized Service for external configuration properties.
  * @class
