@@ -1,5 +1,5 @@
 import { html } from 'lit-html';
-import { MvuElement } from '../../../../MvuElement';
+import { MvuElement } from '../../../../../modules/MvuElement';
 import toolContentCss from './abstractModuleContent.css';
 
 /**

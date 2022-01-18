@@ -47,7 +47,7 @@ export class TopicsContentPanel extends AbstractContentPanel {
 				document.head.appendChild(styleElement);
 			}
 			const style = document.getElementById(TopicsContentPanel.Global_Topic_Hue_Style_Id);
-			style.innerHTML = `*{--topic-hue: ${topic.style.hue || 0};} *{--topic-saturation: ${topic.style.sat || 0}%;} *{--topic-lightness: ${topic.style.light || 0}%;}`;
+			style.innerHTML = `*{--topic-hue: ${topic.style.hue || 0};}`;
 		});
 	}
 
@@ -61,7 +61,7 @@ export class TopicsContentPanel extends AbstractContentPanel {
 			document.head.appendChild(style);
 		}
 	}
-        
+
         createViewHelper(state) {
 		const { currentTopicId, topicsReady, contentIndex } = state;
 
@@ -88,11 +88,9 @@ export class TopicsContentPanel extends AbstractContentPanel {
 
 			const renderTopicStyle = (topic) => {
 				const hue = topic.style.hue || 0;
-                                const sat = topic.style.sat;
-                                const light = topic.style.light || 40;
 				return `
 				.topic-${topic.id}{		
-					--topic-theme: hsl(${hue} ${sat}% ${light}%);
+					--topic-theme: hsl(${hue} var(--topic-saturation) var(--topic-lightness));			
 				}	
 				`;
 			};

@@ -1,5 +1,5 @@
 import { html } from 'lit-html';
-import { MvuElement } from '../../../../MvuElement';
+import { MvuElement } from '../../../../../modules/MvuElement';
 import css from './additionalMenu.css';
 import { MixerModuleContent } from '../../../toolbox/components/mixerModuleContent/MixerModuleContent';
 import { openToolContainer, setContainerContent, toggleToolContainer } from '../../../../../store/toolContainer/toolContainer.action';
@@ -123,7 +123,7 @@ export class AdditionalMenu extends MvuElement {
 				<span class="ba-list-item__icon icon-mitmachboerse">
 				</span>
 			</span>
-			<span class="ba-list-item__text ">
+			<span class="ba-list-item__text vertical-center">
 				<span class="ba-list-item__primary-text" title=${translate('ea_menu_report_tooltip')}>
 					${translate('ea_menu_report')}
 				</span>
@@ -134,7 +134,7 @@ export class AdditionalMenu extends MvuElement {
 				<span class="ba-list-item__icon icon-recherche">
 				</span>
 			</span>
-			<span class="ba-list-item__text ">
+			<span class="ba-list-item__text vertical-center">
 				<span class="ba-list-item__primary-text" title=${translate('ea_menu_recherche_tooltip')}>
 						${translate('ea_menu_recherche')}
 				</span>
@@ -145,7 +145,7 @@ export class AdditionalMenu extends MvuElement {
 					<span class="ba-list-item__icon icon-mischpult">
 					</span>
 				</span>
-				<span class="ba-list-item__text ">
+				<span class="ba-list-item__text vertical-center">
 					<span class="ba-list-item__primary-text">
 						${translate('ea_menu_mixer')}
 					</span>
@@ -156,7 +156,7 @@ export class AdditionalMenu extends MvuElement {
 				<span class="ba-list-item__icon icon-3d_wind">
 				</span>
 			</span>
-			<span class="ba-list-item__text ">
+			<span class="ba-list-item__text vertical-center">
 				<span class="ba-list-item__primary-text" title=${translate('ea_menu_analyse3d_tooltip')}>
 				${translate('ea_menu_analyse3d')}
 				</span>
@@ -167,7 +167,7 @@ export class AdditionalMenu extends MvuElement {
 				<span class="ba-list-item__icon icon-standortcheck">
 				</span>
 			</span>
-			<span class="ba-list-item__text ">
+			<span class="ba-list-item__text vertical-center">
 				<span class="ba-list-item__primary-text" title=${translate('ea_menu_geotherm_tooltip')}>
 				${translate('ea_menu_geotherm_short')}
 				</span>

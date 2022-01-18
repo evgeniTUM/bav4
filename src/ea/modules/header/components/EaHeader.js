@@ -1,11 +1,11 @@
-import '../../../header/i18n';
+import '../../../../modules/header/i18n';
 import { open as openMainMenu, setTab, TabKey, toggle } from '../../../../store/mainMenu/mainMenu.action';
 //import { TabIndex as TabIndex } from '../../../../store_ea/mainMenu/mainMenu.action';
 import { html } from 'lit-html';
-import { Header } from '../../../header/components/Header';
+import { Header } from '../../../../modules/header/components/Header';
 import { $injector } from '../../../../injection';
 import css from './ea_header.css';
-import baCss from '../../../header/components/header.css';
+import baCss from '../../../../modules/header/components/header.css';
 
 
 /**

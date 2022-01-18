@@ -1,5 +1,5 @@
 import { html, nothing } from 'lit-html';
-import { BaElement } from '../../../../BaElement';
+import { BaElement } from '../../../../../modules/BaElement';
 import { $injector } from '../../../../../injection';
 import { MixerModuleContent } from '../mixerModuleContent/MixerModuleContent';
 import { closeToolContainer } from '../../../../../store/toolContainer/toolContainer.action';
