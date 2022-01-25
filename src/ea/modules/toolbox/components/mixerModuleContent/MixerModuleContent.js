@@ -68,10 +68,10 @@ export class MixerModuleContent extends AbstractModuleContent {
     setPopupPosition(popup) {
 
         popup.style.setProperty('height', '95%', '');
-        popup.style.setProperty('width', '670px', '');
+        popup.style.setProperty('width', '100%', '');
         popup.style.setProperty('max-height', '100%', '');
-        popup.style.setProperty('max-width', '600px', '');
-        popup.style.setProperty('resize', 'both', '');
+//        popup.style.setProperty('max-width', '600px', '');
+//        popup.style.setProperty('resize', 'both', '');
         popup.setAttribute('align', 'right');
     }
 

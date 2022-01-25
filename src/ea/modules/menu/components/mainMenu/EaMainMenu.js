@@ -1,4 +1,5 @@
 import { html, nothing } from 'lit-html';
+import { AdditionalMenu } from '../additionalMenu/AdditionalMenu';
 import { $injector } from '../../../../../injection';
 import { BaElement, renderTagOf } from '../../../../../modules/BaElement';
 import css  from '../../../../../modules/menu/components/mainMenu/mainMenu.css'
@@ -10,8 +11,6 @@ import { SearchResultsPanel } from   '../../../../../modules/search/components/m
 import { TabKey, toggle } from '../../../../../store/mainMenu/mainMenu.action';
 import { FeatureInfoPanel } from '../../../../../modules/featureInfo/components/FeatureInfoPanel';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
-
-import { AdditionalMenu } from '../additionalMenu/';
 
 
 /**
@@ -31,15 +30,10 @@ export class EaMainMenu extends MainMenu {
         }
         
          
-        _extendEabContent() {
-		return html`
-		<ea-additional-menu></ea-additional-menu>
-	`;
-	}
         _getContentPanel(definition) {
 		switch (definition) {
 			case TabKey.EXTENSION:
-				return this._extendEabContent();
+				return html`${unsafeHTML(`<${AdditionalMenu.tag}/>`)}`;
 			case TabKey.TOPICS:
                             window.console.log('Topics EaTopicsContentPanel ');
 				return html`${unsafeHTML(`<${EaTopicsContentPanel.tag}/>`)}`;

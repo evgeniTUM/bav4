@@ -109,7 +109,7 @@ export class AdditionalMenu extends MvuElement {
 
 		return html`
 			<style>${css}</style>		
-		<div class="${getOrientationClass()} ${getMinWidthClass()}"> 
+		<div class="${getOrientationClass()} "> 
 			<ul class="ba-list">
 			<li class="ba-list-item  ba-list-item__header">
 				<span class="ba-list-item__text ">
