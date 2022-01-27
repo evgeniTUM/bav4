@@ -6,10 +6,10 @@ import { closeToolContainer } from '../../../../../store/toolContainer/toolConta
 import { LevelTypes } from '../../../../../store/notifications/notifications.action';
 import { emitNotification } from '../../../../../store/notifications/notifications.action';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
-import { changeRotation, changeZoomAndCenter, setFit } from '../../../../../../src/store/position/position.action';
+import { changeCenter, setFit } from '../../../../../../src/store/position/position.action';
+import { getLayerById } from '../../../../../modules/map/components/olMap/olMapUtils';
+import {getCenter} from 'ol/extent';
 
-//import { activate as activateMeasurement, deactivate as deactivateMeasurement } from '../../../map/store/measurement.action';
-//import { activate as activateDraw, deactivate as deactivateDraw } from '../../../map/store/draw.action';
 import css from './moduleContainer.css';
 
 /**
@@ -42,12 +42,37 @@ export class ModuleContainer extends BaElement {
     }
     
     
+          tileMap = (prozent) => {
+              let leftPart = (100.0 - prozent).toString() + '%';
+              let rightPart = prozent + '%';
+              const container = this.shadowRoot.getElementById('module-container');
+              if ( container ) {
+                  let popup = window.getComputedStyle(container);
+                  container.style.width =  rightPart;
+                  container.style.left =   leftPart;
+              }
+              else {
+                  leftPart = '100%';
+              }
+              let map = document.querySelector("ea-map-container");
+              let mapContainer = map.shadowRoot.querySelector('.map-container');
+              mapContainer.style.width = leftPart;
+              
+//              let extentArray = this._mapService.getDefaultMapExtent();
+//              setFit(this._mapService.getDefaultMapExtent());
+//              let extent = new Extent(extentArray);
+//                setFit(getActiveBaseLayer().getExtent());
+//                 changeCenter( getCenter(extentArray));
+
+//              setFit ( extent ) ;
+            };
     /**
      * @override
      */
     createView(state) {
 
-        const {open, contentId, portrait, minWidth} = state;
+//        console.log(state);
+        const {open, contentId, portrait, minWidth, activeLayers, zoom } = state;
 
         const translate = (key) => this._translationService.translate(key);
 
@@ -83,7 +108,7 @@ export class ModuleContainer extends BaElement {
                 this._deactivateByContentId(this._lastContentId);
             }
         }
-
+        
         const getOrientationClass = () => {
             return portrait ? 'is-portrait' : 'is-landscape';
         };
@@ -96,36 +121,16 @@ export class ModuleContainer extends BaElement {
             return open ? 'is-open' : '';
         };
         
-            const tileMap = (width) => {
-
-              let wGesamt = window.innerWidth;
-              
-              const container = this.shadowRoot.getElementById('module-container');
-              
-            let popup = window.getComputedStyle(container);
-
-              let prozent = width / wGesamt * 100;
-              // prozent = prozent < 10 ? 10 : prozent ;
-              let leftPart = (100.0 - prozent).toString() + '%';
-              let rightPart = prozent + '%';
-              //              window.console.log('tileMap : body width ' + wGesamt + ' rightPart ' + rightPart + ' leftPart ' + leftPart);
-              popup.css('width', rightPart);
-              popup.css('left', leftPart);
-              let map = document.querySelector("map");
-              map.style.width = leftPart;
-              
-//	      setFit(extent, { maxZoom: CpResultItem._maxZoomLevel });
-          
-              setFit ( extent ) ;
-            };
-                
+        
+        const closeModuleContainer = () => {
+            closeToolContainer();
+            this.tileMap(100 );
+        }
 
         const changeWidth = (event) => {
             let sliderValue = parseFloat(event.target.value);
-            let newWidth = this.calcContainerWidth(sliderValue);
-            const container = this.shadowRoot.getElementById('module-container');
-            let style = window.getComputedStyle(container);
-            container.style.width = 100 - sliderValue + 'vw';
+            let prozent = 100 - sliderValue;
+            this.tileMap( prozent);
         };
 
         const getSlider = () => {
@@ -154,12 +159,12 @@ export class ModuleContainer extends BaElement {
                 
         return html`
 			<style>${css}</style>		
-			<div class=" ${getOrientationClass()}">
+			<div class=" ${getOrientationClass()} ${getOrientationClass()}">
                                         ${getSlider()} 
 			<div id ="module-container" class="module-container">
 				<div class="module-container__content ${getOverlayClass()}">    
 				<div class="module-container__tools-nav">                        
-                        <button @click=${closeToolContainer} class="module-container__close-button">
+                        <button @click=${closeModuleContainer} class="module-container__close-button">
                             x
                         </button>
                 </div>		
@@ -179,8 +184,8 @@ export class ModuleContainer extends BaElement {
      * @param {Object} globalState
      */
     extractState(globalState) {
-        const {toolContainer: {open, contentId}, media: {portrait, minWidth}} = globalState;
-        return {open, contentId, portrait, minWidth};
+        const {toolContainer: {open, contentId}, media: {portrait, minWidth}, layers: { active: activeLayers, ready: layersStoreReady }, position: { zoom }} = globalState;
+        return {open, contentId, portrait, minWidth, activeLayers, zoom };
     }
     
      onAfterRender(first) {
@@ -193,7 +198,6 @@ export class ModuleContainer extends BaElement {
             let bodyWidth = parseFloat(window.innerWidth) / parseFloat(bodyStyle.fontSize);
             let containerWidth = parseFloat(modulecontainerStyle.width) / parseFloat(modulecontainerStyle.fontSize);
              containerWidth = containerWidth + 0.3;
-//             console.log( ' containerWidth ' + containerWidth + ' bodyWith ' + bodyWidth + ' bodyStyle.fontsize ' + bodyStyle.fontSize) ;
              //calcSliderValue
              let ratio = 100.0 * containerWidth / bodyWidth ;
              let factor = 100 - ratio; 
@@ -202,10 +206,8 @@ export class ModuleContainer extends BaElement {
 //           hier müssten mal Experten befragt werden
              element.style.width = containerWidth + 'em';
             const sliderInput = this.shadowRoot.querySelector('.slider-container input');
-             sliderInput.value = factor; 
-        }
-        else {
-            console.log('module-container not yet created');
+            sliderInput.value = factor; 
+            this.tileMap(ratio);
         }
     }
 

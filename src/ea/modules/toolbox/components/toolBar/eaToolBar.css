@@ -7,3 +7,7 @@
   background-size:  5.4em  5.4em;
   background-image:  url('assets/karte.svg');
 }
+
+:host .is-desktop .tool-bar {
+    position: absolute;
+}
