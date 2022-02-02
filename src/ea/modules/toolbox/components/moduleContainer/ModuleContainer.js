@@ -225,8 +225,12 @@ export class ModuleContainer extends BaElement {
     }
 
             _deactivateByContentId(contentId) {
-        switch (contentId) {
-            case MixerModuleContent.tag:
+		let map = document.querySelector("ea-map-container");
+		let mapContainer = map.shadowRoot.querySelector('.map-container');
+		mapContainer.style.width = '100%';
+		updateSize(100);
+		switch (contentId) {
+		case MixerModuleContent.tag:
 //				deactivateMeasurement();
                 break;
 //			case DrawToolContent.tag:
