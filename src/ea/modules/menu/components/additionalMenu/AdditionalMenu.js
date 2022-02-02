@@ -2,6 +2,8 @@ import { html } from 'lit-html';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import css from './additionalMenu.css';
 import { MixerModuleContent } from '../../../toolbox/components/mixerModuleContent/MixerModuleContent';
+import { RedesignModuleContent } from '../../../toolbox/components/redesignModuleContent/RedesignModuleContent';
+
 import { openToolContainer, setContainerContent, toggleToolContainer } from '../../../../../store/toolContainer/toolContainer.action';
 import { $injector } from '../../../../../injection';
 
@@ -81,27 +83,18 @@ export class AdditionalMenu extends MvuElement {
 				openToolContainer();
 			}
 		};
-		const toggleDrawTool = () => {
-			const toolId = DrawToolContent.tag;
-			toggleTool(toolId);
-		};
-
-		const toggleMeasureTool = () => {
-			const toolId = MeasureToolContent.tag;
-			toggleTool(toolId);
-		};
-
-		const toggleShareTool = () => {
-			const toolId = ShareToolContent.tag;
-			toggleTool(toolId);
-		};
-
-		const getAnimatedBorderClass = () => {
-			return isFetching ? 'animated-action-button__border__running' : '';
-		};
+//
+//		const getAnimatedBorderClass = () => {
+//			return isFetching ? 'animated-action-button__border__running' : '';
+//		};
 
 		const toggleMixerModule = () => {
 			const toolId = MixerModuleContent.tag;
+			toggleTool(toolId);
+		};
+
+		const toggleRedesignModule = () => {
+			const toolId = RedesignModuleContent.tag;
 			toggleTool(toolId);
 		};
 
@@ -148,6 +141,17 @@ export class AdditionalMenu extends MvuElement {
 				<span class="ba-list-item__text vertical-center">
 					<span class="ba-list-item__primary-text">
 						${translate('ea_menu_mixer')}
+					</span>
+				</span>
+		</li>
+		<li class="ba-list-item" @click="${toggleRedesignModule}" title=${translate('ea_menu_redesign_tooltip')}>
+				<span class="ba-list-item__pre">
+					<span class="ba-list-item__icon icon-mischpult">
+					</span>
+				</span>
+				<span class="ba-list-item__text vertical-center">
+					<span class="ba-list-item__primary-text">
+						${translate('ea_menu_redesign')}
 					</span>
 				</span>
 		</li>

@@ -14,7 +14,9 @@ export const provide = (lang) => {
 				ea_menu_mixer_tooltip : "EN -Hier Strom- und Wärmemix, Potenziale und Szenarien einer Kommune abrufen",
 				ea_menu_geotherm : "EN -Standortcheck Oberflächennahe Geothermie",
 				ea_menu_geotherm_short : "EN -Standortcheck Oberfl. Geothermie",
-				ea_menu_geotherm_tooltip : "EN -Hier die Standorteignung für oberflächennahe Geothermie prüfen"
+				ea_menu_geotherm_tooltip : "EN -Hier die Standorteignung für oberflächennahe Geothermie prüfen",
+				ea_menu_redesign : "Mischpult \"Redesign\"",
+				ea_menu_redesign_tooltip : "Dieses Modul dient zur Entwicklung und Redesign der Zusatzmodule"
 			};
 
 		case 'de':
@@ -30,7 +32,9 @@ export const provide = (lang) => {
 				ea_menu_mixer_tooltip : "Hier Strom- und Wärmemix, Potenziale und Szenarien einer Kommune abrufen",
 				ea_menu_geotherm : "Standortcheck Oberflächennahe Geothermie",
 				ea_menu_geotherm_short : "Standortcheck Oberfl. Geothermie",
-				ea_menu_geotherm_tooltip : "Hier die Standorteignung für oberflächennahe Geothermie prüfen"
+				ea_menu_geotherm_tooltip : "Hier die Standorteignung für oberflächennahe Geothermie prüfen",
+				ea_menu_redesign : "Mischpult \"Redesign\"",
+				ea_menu_redesign_tooltip : "Dieses Modul dient zur Entwicklung und Redesign der Zusatzmodule"
 			};
 
 		default:

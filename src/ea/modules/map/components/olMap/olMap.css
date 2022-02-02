@@ -1,3 +1,4 @@
+/*override position is essential for adapting map-size dynamically */
 :host #ol-map {
 	position: absolute;
 }

@@ -8,7 +8,7 @@ export const provide = (lang) => {
 				toolbox_analyse3d : "3D-Analyse Windenergieanlagen",
 				toolbox_recherche : "Daten-Recherche und Download",
 				toolbox_geotherm : "Standortcheck Oberflächennahe Geothermie",
-				module_prevent_switching_tool: 'Please close the current tool first',
+				module_prevent_switching_tool: 'Module Please close the current tool first',
 			};
 
 		case 'de':
@@ -18,7 +18,7 @@ export const provide = (lang) => {
 				toolbox_analyse3d : "3D-Analyse Windenergieanlagen",
 				toolbox_recherche : "Daten-Recherche und Download",
 				toolbox_geotherm : "Standortcheck Oberflächennahe Geothermie",
-				module_prevent_switching_tool: 'Bitte zuerst das aktuelle Werkzeug schließen/beenden',
+				module_prevent_switching_tool: 'Module Bitte zuerst das aktuelle Werkzeug schließen/beenden',
 		};
 
 		default:

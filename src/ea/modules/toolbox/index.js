@@ -1,4 +1,5 @@
-import './components/toolBar';
+import './i18n';
 import './components/moduleContainer';
 import './components/mixerModuleContent';
-import './i18n';
+import './components/redesignModuleContent';
+import './components/toolBar';

@@ -1,21 +1,30 @@
 import { html } from 'lit-html';
-import { OlMap }  from '../../../../../modules/map/components/olMap/OlMap'
+import { OlMap }  from '../../../../../modules/map/components/olMap/OlMap';
 import css from './olMap.css';
 
-
-const Update_Position = 'update_position';
-const Update_Layers = 'update_layers';
-
 /**
- * Element which renders the ol map.
+ * Element which extendedrenders the ol map.
  * @class
  * @author kunze
  */
 export class EaOlMap extends OlMap {
 
-
 	constructor() {
 		super();
+        }
+        
+	/**
+	 * @override
+         * observeModel('updateSize' .. ) is no longer needed if this behavior is implemented 
+         *  in the parent class
+	 */
+	onInitialize() {
+            super.onInitialize();
+              this.observeModel('updateSize', () => {
+			this._viewSyncBlocked = true;
+			this._map.updateSize();
+                        this._viewSyncBlocked = false;
+		});
         }
 
 	extendedCss() {
@@ -25,7 +34,6 @@ export class EaOlMap extends OlMap {
 		</style>
 		`;
 	}
-
         
         //    Erweiterung des CSS Imports um EAB spezifische Style definitionen
         defaultCss() {
