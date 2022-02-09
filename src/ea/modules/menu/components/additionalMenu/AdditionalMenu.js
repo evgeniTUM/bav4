@@ -117,8 +117,11 @@ export class AdditionalMenu extends MvuElement {
 				</span>
 			</span>
 			<span class="ba-list-item__text vertical-center">
-				<span class="ba-list-item__primary-text" title=${translate('ea_menu_report_tooltip')}>
+				<span class="ba-list-item__primary-text">
 					${translate('ea_menu_report')}
+				</span>
+				<span class="ba-list-item__secondary-text">
+					${translate('ea_menu_report_tooltip')}
 				</span>
 			</span>
 		</li>
@@ -128,12 +131,15 @@ export class AdditionalMenu extends MvuElement {
 				</span>
 			</span>
 			<span class="ba-list-item__text vertical-center">
-				<span class="ba-list-item__primary-text" title=${translate('ea_menu_recherche_tooltip')}>
+				<span class="ba-list-item__primary-text">
 						${translate('ea_menu_recherche')}
+				</span>
+				<span class="ba-list-item__secondary-text">
+					${translate('ea_menu_recherche_tooltip')}
 				</span>
 			</span>
 		</li>
-		<li class="ba-list-item" @click="${toggleMixerModule}" title=${translate('ea_menu_mixer_tooltip')}>
+		<li class="ba-list-item" @click="${toggleMixerModule}">
 				<span class="ba-list-item__pre">
 					<span class="ba-list-item__icon icon-mischpult">
 					</span>
@@ -142,9 +148,12 @@ export class AdditionalMenu extends MvuElement {
 					<span class="ba-list-item__primary-text">
 						${translate('ea_menu_mixer')}
 					</span>
+					<span class="ba-list-item__secondary-text">
+						${translate('ea_menu_mixer_tooltip')}
+					</span>
 				</span>
 		</li>
-		<li class="ba-list-item" @click="${toggleRedesignModule}" title=${translate('ea_menu_redesign_tooltip')}>
+		<li class="ba-list-item" @click="${toggleRedesignModule}">
 				<span class="ba-list-item__pre">
 					<span class="ba-list-item__icon icon-mischpult">
 					</span>
@@ -152,6 +161,9 @@ export class AdditionalMenu extends MvuElement {
 				<span class="ba-list-item__text vertical-center">
 					<span class="ba-list-item__primary-text">
 						${translate('ea_menu_redesign')}
+					</span>
+					<span class="ba-list-item__secondary-text">
+						${translate('ea_menu_redesign_tooltip')}
 					</span>
 				</span>
 		</li>
@@ -161,8 +173,11 @@ export class AdditionalMenu extends MvuElement {
 				</span>
 			</span>
 			<span class="ba-list-item__text vertical-center">
-				<span class="ba-list-item__primary-text" title=${translate('ea_menu_analyse3d_tooltip')}>
+				<span class="ba-list-item__primary-text">
 				${translate('ea_menu_analyse3d')}
+					<span class="ba-list-item__secondary-text">
+						${translate('ea_menu_analyse3d_tooltip')}
+					</span>
 				</span>
 			</span>
 		</li>
@@ -172,9 +187,12 @@ export class AdditionalMenu extends MvuElement {
 				</span>
 			</span>
 			<span class="ba-list-item__text vertical-center">
-				<span class="ba-list-item__primary-text" title=${translate('ea_menu_geotherm_tooltip')}>
+				<span class="ba-list-item__primary-text">
 				${translate('ea_menu_geotherm_short')}
 				</span>
+					<span class="ba-list-item__secondary-text">
+						${translate('ea_menu_geotherm_tooltip')}
+					</span>
 			</span>
 		</li>
 		</div>

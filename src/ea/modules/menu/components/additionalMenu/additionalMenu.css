@@ -425,6 +425,7 @@
 .ba-list-item__primary-text{    
    display:block;           
    font-size: 1rem;
+   font-weight: bold;
 }
 .ba-list-item__secondary-text{
    font-size: .95rem;
