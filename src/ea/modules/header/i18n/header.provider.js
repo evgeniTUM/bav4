@@ -3,20 +3,27 @@ export const provide = (lang) => {
 
 		case 'en':
 			return {
-				//the first part of the snake_case key should be the name of the related module
 				header_action_button_title : 'to startpage of Energie-Atlas',
-				ea_header_tab_maps_button: 'layers',
-				header_tab_additional_title : "additional functions for research, simulation and analysis",
-				header_tab_additional_button : "analysis"
+				ea_header_tab_topics_button : "Maps",
+				ea_header_tab_topics_title: " Kartenauswahl öffnen",
+				ea_header_tab_additional_button : "Analyse",
+				ea_header_tab_additional_title : " Datenrecherche, Mischpult, 3D-Analyse Wind und mehr nutzen",
+				ea_header_tab_maps_button: "Auswahl",
+                                ea_header_tab_maps_title : "Ihre Kartenauswahl und Hintergrundkarte anzeigen",
+                                ea_header_tab_more_title: 'Weitere Infos, Links und Hilfe finden'
 			};
 
 		case 'de':
 			return {
 				//the first part of the snake_case key should be the name of the related module
 				header_action_button_title : 'zur Energie-Atlas-Startseite',
-				ea_header_tab_maps_button: 'Ebenen',
-				header_tab_additional_title : "Zusatzfunktionen für Recherche, Simulation und Analyse",
-				header_tab_additional_button : "Analyse"
+				ea_header_tab_topics_button : "Karten",
+				ea_header_tab_topics_title: " Kartenauswahl öffnen",
+				ea_header_tab_additional_button : "Analyse",
+				ea_header_tab_additional_title : " Datenrecherche, Mischpult, 3D-Analyse Wind und mehr nutzen",
+				ea_header_tab_maps_button: "Auswahl",
+				ea_header_tab_maps_title : "Ihre Kartenauswahl und Hintergrundkarte anzeigen",
+				ea_header_tab_more_title: 'Weitere Infos, Links und Hilfe finden'
 			};
 
 		default:
