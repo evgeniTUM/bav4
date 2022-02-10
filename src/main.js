@@ -32,4 +32,5 @@ import './modules/iconSelect';
 import './modules/geoResourceInfo';
 import './modules/survey';
 import './modules/dndImport';
+import './modules/ea';
 import { QueryParameters } from './services/domain/queryParameters';
