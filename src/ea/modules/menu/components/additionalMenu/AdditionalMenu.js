@@ -175,9 +175,9 @@ export class AdditionalMenu extends MvuElement {
 			<span class="ba-list-item__text vertical-center">
 				<span class="ba-list-item__primary-text">
 				${translate('ea_menu_analyse3d')}
-					<span class="ba-list-item__secondary-text">
-						${translate('ea_menu_analyse3d_tooltip')}
-					</span>
+				</span>
+				<span class="ba-list-item__secondary-text">
+					${translate('ea_menu_analyse3d_tooltip')}
 				</span>
 			</span>
 		</li>
@@ -190,9 +190,9 @@ export class AdditionalMenu extends MvuElement {
 				<span class="ba-list-item__primary-text">
 				${translate('ea_menu_geotherm_short')}
 				</span>
-					<span class="ba-list-item__secondary-text">
-						${translate('ea_menu_geotherm_tooltip')}
-					</span>
+				<span class="ba-list-item__secondary-text">
+					${translate('ea_menu_geotherm_tooltip')}
+				</span>
 			</span>
 		</li>
 		</div>
