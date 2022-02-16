@@ -5,6 +5,8 @@ const style = document.createElement('style');
 style.innerHTML = globalCss;
 document.head.appendChild(style);
 
+//Import Energieatlas Plugins für Erweiterung
+import * as eaConfig from './ea/injection/eaConfig';
 // eslint-disable-next-line no-unused-vars
 import * as config from './injection/config';
 
@@ -28,9 +30,6 @@ import './modules/iconSelect';
 import './modules/geoResourceInfo';
 import './modules/header';
 import './modules/menu';
-import './ea/modules/header';
-import './ea/modules/menu';
-import './ea/modules/toolbox';
-import './ea/modules/topics';
-import './ea/modules/map';
-//import './ea/modules/toolbox/components/moduleContainer';
+//Import der Erweiterung für Energieatlas
+import './ea/main';
+

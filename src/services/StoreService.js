@@ -20,6 +20,7 @@ import { pointerReducer } from '../store/pointer/pointer.reducer';
 import { mapContextMenuReducer } from '../store/mapContextMenu/mapContextMenu.reducer';
 import { createMainMenuReducer } from '../store/mainMenu/mainMenu.reducer';
 import { featureInfoReducer } from '../store/featureInfo/featureInfo.reducer';
+import { fnModuleCommReducer } from '../ea/store/fnModuleComm/fnModuleComm.reducer';
 
 
 
@@ -56,6 +57,7 @@ export class StoreService {
 			highlight: highlightReducer,
 			notifications: notificationReducer,
 			featureInfo: featureInfoReducer,
+			fnModuleComm: fnModuleCommReducer,
 			media: createMediaReducer()
 		});
 
@@ -76,6 +78,7 @@ export class StoreService {
 				MediaPlugin: mediaPlugin,
 				FeatureInfoPlugin: featureInfoPlugin,
 				MainMenuPlugin: mainMenuPlugin,
+				FnModulePlugin: fnModulePlugin,
 				EnvironmentService: environmentService
 			}
 				= $injector.inject(
@@ -91,7 +94,8 @@ export class StoreService {
 					'MediaPlugin',
 					'EnvironmentService',
 					'FeatureInfoPlugin',
-					'MainMenuPlugin'
+					'MainMenuPlugin',
+					'FnModulePlugin'
 				);
 
 			setTimeout(async () => {
@@ -108,6 +112,7 @@ export class StoreService {
 				await highlightPlugin.register(this._store);
 				await featureInfoPlugin.register(this._store);
 				await mainMenuPlugin.register(this._store);
+				await fnModulePlugin.register(this._store);
 				//we remove all query params shown in the browsers address bar
 				environmentService.getWindow().history.replaceState(null, '', location.href.split('?')[0]);
 			});

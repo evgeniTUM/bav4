@@ -11,6 +11,7 @@ import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { changeCenter, updateSize } from '../../../../../../src/store/position/position.action';
 import { getLayerById } from '../../../../../modules/map/components/olMap/olMapUtils';
 import {getCenter} from 'ol/extent';
+import { closeFnModules  } from '../../../../store/fnModuleComm/fnModuleComm.action';
 
 import css from './moduleContainer.css';
 
@@ -47,7 +48,6 @@ export class ModuleContainer extends BaElement {
      */
     createView(state) {
 
-//        throw new Exception('jhjkhjkjk');
         console.log('createView of ModuleContainer');
         console.log(state);
         const {open, contentId, portrait, minWidth, activeLayers, zoom} = state;
@@ -101,11 +101,6 @@ export class ModuleContainer extends BaElement {
         };
 
 
-        const closeModuleContainer = () => {
-            closeToolContainer();
-            this.tileMap(100 );
-        }
-
         const changeWidth = (event) => {
             let sliderValue = parseFloat(event.target.value);
             let prozent = 100 - sliderValue;
@@ -136,6 +131,10 @@ export class ModuleContainer extends BaElement {
             return nothing;
         }
 
+	const closeModule = () => {
+		closeFnModules();
+		closeToolContainer();
+	}
         return html`
 			<style>${css}</style>		
 			<div class=" ${getOrientationClass()}  ${getMinWidthClass()}">
@@ -143,7 +142,7 @@ export class ModuleContainer extends BaElement {
 			<div id ="module-container" class="module-container">
 				<div class="module-container__content ${getOverlayClass()}">    
 				<div class="module-container__tools-nav">                        
-                        <button @click=${closeModuleContainer} class="module-container__close-button">
+                        <button @click=${closeModule} class="module-container__close-button">
                                             x
                         </button>
                 </div>		
