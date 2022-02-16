@@ -80,7 +80,7 @@ export const positionReducer = (state = initialState, action) => {
 
 		case UPDATE_SIZE: {
 			return {
-				state,
+				...state,
 				updateSize: payload
 			};
 		}
