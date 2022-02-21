@@ -28,10 +28,11 @@
 }
 
 :host .header__emblem {
-        background-image: url('assets/BayerischeStaatsregierung.svg');
-        right: 1em;
-        width: 35em;
-        height: 28em;
+	width: 497px;
+	    height: 80px;
+	    background-repeat: no-repeat;
+	    right: 1em;
+            background-image: url('assets/BayerischeStaatsregierung.svg');
 }
 
 :host .header__background {
