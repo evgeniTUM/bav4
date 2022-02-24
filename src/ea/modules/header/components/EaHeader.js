@@ -42,25 +42,24 @@ export class EaHeader extends Header {
 		return html`
 			<style>${baCss}</style>
 			<div class="preload ${viewAttrProvider.getOrientationClass()} ${viewAttrProvider.getMinWidthClass()}">
-			<a  title=${translate('header_action_button_title')} class="header_action_link" target="_blank" href="https://www.energieatlas.bayern.de/">
-				<div class='header__logo'>				
-					<div class="action-button">
-						<div class="action-button__border animated-action-button__border ${viewAttrProvider.getAnimatedBorderClass()}">
-						</div>
-						<div class="action-button__icon">
+				<a  title=${translate('header_action_button_title')} class="header_action_link" target="_blank" href="https://www.energieatlas.bayern.de/">
+					<div class='header__logo'>				
+						<div class="action-button">
+							<div class="action-button__border animated-action-button__border ${viewAttrProvider.getAnimatedBorderClass()}">
+							</div>
+							<div class="action-button__icon">
 							<div class="ba">
 							</div>
 						</div>
+						</div>
+						<div id='header__text' class='${viewAttrProvider.getOverlayClass()} header__text'>
+						</div>
 					</div>
-					<div id='header__text' class='${viewAttrProvider.getOverlayClass()} header__text'>
+					<div id='headerMobile' class='${viewAttrProvider.getOverlayClass()} header__text-mobile'>	
 					</div>
-				</div>			
-				<div id='headerMobile' class='${viewAttrProvider.getOverlayClass()} header__text-mobile'>	
-				</div>
+				</a>
 				<div class='header__emblem'>
 				</div>
-                                                 </a>
-
 				<div  class="header ${viewAttrProvider.getOverlayClass()}">  
 					<button class="close-menu" title=${translate('header_close_button_title')}  @click="${toggle}"">
 						<i class="resize-icon "></i>
@@ -70,7 +69,7 @@ export class EaHeader extends Header {
 					<div class='header__search-container'>
 						<input id='input' @focus="${viewAttrProvider.onInputFocus}" @blur="${viewAttrProvider.onInputBlur}" @input="${viewAttrProvider.onInput}" class='header__search' type="search" placeholder="" />          
 						<span class="header__search-clear ${viewAttrProvider.getIsClearClass()}" @click="${viewAttrProvider.clearSearchInput}">        							
-						</span>       
+						</span>
 						<button @click="${viewAttrProvider.showModalInfo}" class="header__modal-button" title="modal">
 						&nbsp;
 						</button>
@@ -101,7 +100,7 @@ export class EaHeader extends Header {
 						</button>
 					</div>
 				</div>				
-            </div>
+			</div>
 		`;
 	}
 
