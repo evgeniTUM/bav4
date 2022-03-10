@@ -1,5 +1,5 @@
 import { html } from 'lit-html';
-import { open as openMainMenu, setTab, TabKey, toggle } from '../../../store/mainMenu/mainMenu.action';
+import { open as openMainMenu, setTab, TabId, toggle } from '../../../store/mainMenu/mainMenu.action';
 import { $injector } from '../../../injection';
 import css from './header.css';
 import { setQuery } from '../../../store/search/search.action';
@@ -112,7 +112,7 @@ export class Header extends MvuElement {
 
 		const onInputFocus = () => {
 			disableResponsiveParameterObservation();
-			setTab(TabKey.SEARCH);
+			setTab(TabId.SEARCH);
 			if (isPortrait || !hasMinWidth) {
 				const popup = this.shadowRoot.getElementById('headerMobile');
 				popup.style.display = 'none';
@@ -144,17 +144,17 @@ export class Header extends MvuElement {
 		};
 
 		const openTopicsTab = () => {
-			setTab(TabKey.TOPICS);
+			setTab(TabId.TOPICS);
 			openMainMenu();
 		};
 
 		const openMapLayerTab = () => {
-			setTab(TabKey.MAPS);
+			setTab(TabId.MAPS);
 			openMainMenu();
 		};
 
-		const openMoreTab = () => {
-			setTab(TabKey.MORE);
+		const openMiscTab = () => {
+			setTab(TabId.MISC);
 			openMainMenu();
 		};
 
@@ -178,7 +178,7 @@ export class Header extends MvuElement {
 		 onInputBlur,
 		 openTopicsTab,
 		 openMapLayerTab,
-		 openMoreTab,
+		 openMiscTab,
 		 clearSearchInput
                 }
     };
@@ -202,7 +202,10 @@ export class Header extends MvuElement {
 					</div>
 					<div id='header__text' class='${helper.getOverlayClass()} header__text'>
 					</div>
-				</div>			
+					<div class='header__logo-badge'>										
+						${translate('header_logo_badge')}
+					</div>	
+				</div>		
 				<div id='headerMobile' class='${helper.getOverlayClass()} header__text-mobile'>	
 				</div>
 				<div class='header__emblem'>
@@ -222,12 +225,12 @@ export class Header extends MvuElement {
 						</button>
 					</div>
 					<div  class="header__button-container">
-						<button class="${helper.getActiveClass(TabKey.TOPICS)}" title=${translate('header_tab_topics_title')} @click="${helper.openTopicsTab}">
+						<button id="topics_button" data-test-id class="${helper.getActiveClass(TabId.TOPICS)}" title=${translate('header_tab_topics_title')} @click="${helper.openTopicsTab}">
 							<span>
 								${translate('header_tab_topics_button')}
 							</span>
 						</button>
-						<button class="${helper.getActiveClass(TabKey.MAPS)}" title=${translate('header_tab_maps_title')}  @click="${helper.openMapLayerTab}">
+						<button id="maps_button" data-test-id class="${helper.getActiveClass(TabId.MAPS)}" title=${translate('header_tab_maps_title')}  @click="${helper.openMapLayerTab}">
 							<span>
 								${translate('header_tab_maps_button')}
 							</span>
@@ -235,9 +238,9 @@ export class Header extends MvuElement {
 							 	${helper.layerCount}
 							</div>
 						</button>
-						<button class="${helper.getActiveClass(TabKey.MORE)}" title=${translate('header_tab_more_title')}  @click="${helper.openMoreTab}">
+						<button id="misc_button" data-test-id class="${helper.getActiveClass(TabId.MISC)}" title=${translate('header_tab_more_title')}  @click="${helper.openMiscTab}">
 							<span>
-								${translate('header_tab_more_button')}
+								${translate('header_tab_misc_button')}
 							</span>
 						</button>
 					</div>

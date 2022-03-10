@@ -1,4 +1,4 @@
-import { getGeometryLength, getArea, canShowAzimuthCircle, getCoordinateAt, getAzimuth, isVertexOfGeometry, getPartitionDelta, isValidGeometry } from '../../../../../src/modules/map/components/olMap/olGeometryUtils';
+import { getGeometryLength, getArea, canShowAzimuthCircle, getCoordinateAt, getAzimuth, isVertexOfGeometry, getPartitionDelta, isValidGeometry, moveParallel, calculatePartitionResidualOfSegments, getStats } from '../../../../../src/modules/map/components/olMap/olGeometryUtils';
 import { Point, MultiPoint, LineString, Polygon, Circle, LinearRing } from 'ol/geom';
 import proj4 from 'proj4';
 import { register } from 'ol/proj/proj4';
@@ -88,9 +88,10 @@ describe('getAzimuth', () => {
 		});
 
 		it('calculates angle for a Polygon', () => {
-			const polygon = new Polygon([[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]]);
-
-			expect(getAzimuth(polygon)).toBe(90);
+			const polygonCounterClockwise = new Polygon([[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]]);
+			const polygonClockwise = new Polygon([[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]]);
+			expect(getAzimuth(polygonCounterClockwise)).toBe(0);
+			expect(getAzimuth(polygonClockwise)).toBe(0);
 		});
 
 		it('calculates NO angle for a imcomplete LineString', () => {
@@ -320,7 +321,7 @@ describe('isVertexOfGeometry', () => {
 
 describe('getPartitionDelta', () => {
 
-	it('calculates a default delta', () => {
+	it('calculates a sub delta', () => {
 		const lineString = new LineString([[0, 0], [15, 0]]);
 
 		const delta = getPartitionDelta(lineString);
@@ -349,7 +350,7 @@ describe('getPartitionDelta', () => {
 		const resolution = 50;
 		const delta = getPartitionDelta(lineString, resolution);
 
-		expect(delta).toBe(0.02);
+		expect(delta).toBe(0.2);
 	});
 });
 
@@ -362,6 +363,81 @@ describe('isValidGeometry', () => {
 
 		expect(isValidGeometry(null)).toBeFalse();
 		expect(isValidGeometry(new Circle([0, 0], 10))).toBeFalse();
+	});
+});
+
+describe('moveParallel', () => {
+
+	it('move lines parallel', () => {
+		expect(moveParallel([0, 0], [1, 0], 1).getCoordinates()).toEqual([[0, -1], [1, -1]]);
+		expect(moveParallel([0, 0], [1, 0], 3).getCoordinates()).toEqual([[0, -3], [1, -3]]);
+	});
+});
+
+describe('calculatePartitionResidualOfSegments', () => {
+	it('calculates no residuals for a Point', () => {
+		expect(calculatePartitionResidualOfSegments(new Point([0, 0]))).toEqual([]);
+	});
+
+	it('calculates residuals for a LineString', () => {
+		expect(calculatePartitionResidualOfSegments(new LineString([[0, 0], [15, 0]]), 10)).toEqual([0]);
+		expect(calculatePartitionResidualOfSegments(new LineString([[0, 0], [15, 0]]), 16)).toEqual([0]);
+	});
+
+	it('calculates residuals for a LinearRing', () => {
+		expect(calculatePartitionResidualOfSegments(new LinearRing([[0, 0], [15, 0], [15, 15]]), 5)).toEqual([0, 0.1]);
+		expect(calculatePartitionResidualOfSegments(new LinearRing([[0, 0], [15, 0], [15, 15]]), 10)).toEqual([0, 0.05]);
+	});
+
+	it('calculates residuals for a Polygon', () => {
+		expect(calculatePartitionResidualOfSegments(new Polygon([[[0, 0], [15, 0], [15, 15]]]), 5)).toEqual([0, 0.1]);
+		expect(calculatePartitionResidualOfSegments(new Polygon([[[0, 0], [15, 0], [15, 15]]]), 10)).toEqual([0, 0.05]);
+	});
+});
+describe('getStats', () => {
+	it('returns a empty statistic-object', () => {
+
+		const statsForNoGeometry = getStats(null);
+		expect(statsForNoGeometry.coordinate).toBeNull();
+		expect(statsForNoGeometry.azimuth).toBeNull();
+		expect(statsForNoGeometry.length).toBeNull();
+		expect(statsForNoGeometry.area).toBeNull();
+	});
+
+	it('returns a statistic-object for point', () => {
+
+		const statsForNoGeometry = getStats(new Point([42, 42]));
+		expect(statsForNoGeometry.coordinate).toEqual([42, 42]);
+		expect(statsForNoGeometry.azimuth).toBeNull();
+		expect(statsForNoGeometry.length).toBeNull();
+		expect(statsForNoGeometry.area).toBeNull();
+	});
+
+	it('returns a statistic-object for two-point lineString', () => {
+
+		const statsForNoGeometry = getStats(new LineString([[0, 0], [42, 42]]));
+		expect(statsForNoGeometry.coordinate).toBeNull();
+		expect(statsForNoGeometry.azimuth).toBeTruthy();
+		expect(statsForNoGeometry.length).toBeTruthy();
+		expect(statsForNoGeometry.area).toBeNull();
+	});
+
+	it('returns a statistic-object for n-point (2<n) lineString', () => {
+
+		const statsForNoGeometry = getStats(new LineString([[0, 0], [42, 42], [3, 5]]));
+		expect(statsForNoGeometry.coordinate).toBeNull();
+		expect(statsForNoGeometry.azimuth).toBeNull();
+		expect(statsForNoGeometry.length).toBeTruthy();
+		expect(statsForNoGeometry.area).toBeNull();
+	});
+
+	it('returns a statistic-object for polygon', () => {
+
+		const statsForNoGeometry = getStats(new Polygon([[[0, 0], [15, 0], [15, 15]]]));
+		expect(statsForNoGeometry.coordinate).toBeNull();
+		expect(statsForNoGeometry.azimuth).toBeNull();
+		expect(statsForNoGeometry.length).toBeTruthy();
+		expect(statsForNoGeometry.area).toBeTruthy();
 	});
 });
 

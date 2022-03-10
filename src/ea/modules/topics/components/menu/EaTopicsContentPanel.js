@@ -46,7 +46,7 @@ export class EaTopicsContentPanel extends TopicsContentPanel {
         createViewHelper(state) {
 		const { currentTopicId, topicsReady, contentIndex } = state;
                 
-                let viewHelper = super.createViewHelper(state) 
+                const viewHelper = super.createViewHelper(state) ;
 
 		const renderTopicStyle = (topic) => {
                          window.console.log('EaTopicsContentPanel.renderTopicStyle');

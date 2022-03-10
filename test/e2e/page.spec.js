@@ -68,6 +68,10 @@ test.describe('page', () => {
 			expect(await page.$$('ba-footer')).toHaveLength(1);
 		});
 
+		test('should contain a <ba-survey> component', async ({ page }) => {
+			expect(await page.$$('ba-survey')).toHaveLength(1);
+		});
+
 		test('should contain a <ba-tool-container> component', async ({ page }) => {
 			expect(await page.$$('ba-tool-container')).toHaveLength(1);
 		});
@@ -90,6 +94,10 @@ test.describe('page', () => {
 
 		test('should contain a <ba-map-context-menu> component', async ({ page }) => {
 			expect(await page.$$('ba-map-context-menu')).toHaveLength(1);
+		});
+
+		test('should contain a <ba-dnd-import-panel> component', async ({ page }) => {
+			expect(await page.$$('ba-dnd-import-panel')).toHaveLength(1);
 		});
 	});
 });

@@ -33,8 +33,8 @@ export class ShareToolContent extends AbstractToolContent {
 		const shareApi = {
 			id: 1,
 			name: 'share-api',
-			title: translate('toolbox_shareTool_share'),
-			icon: 'share'
+			title: (this._isShareApiAvailable()) ? translate('toolbox_shareTool_share') : translate('toolbox_shareTool_link'),
+			icon: (this._isShareApiAvailable()) ? 'share' : 'link'
 		};
 
 		const mail = {
@@ -77,8 +77,7 @@ export class ShareToolContent extends AbstractToolContent {
 	async _generateShortUrl() {
 		const url = this._shareService.encodeState();
 		try {
-			const shortenUrl = await this._urlService.shorten(url);
-			return shortenUrl;
+			return await this._urlService.shorten(url);
 		}
 		catch (e) {
 			console.warn('Could not shorten url: ' + e);

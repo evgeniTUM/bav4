@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { GeoResourceTypes, GeoResource, WmsGeoResource, WMTSGeoResource, VectorGeoResource, VectorSourceType, AggregateGeoResource } from '../../../src/services/domain/geoResources';
+import { GeoResourceTypes, GeoResource, WmsGeoResource, WMTSGeoResource, VectorGeoResource, VectorSourceType, AggregateGeoResource, GeoResourceFuture, observable } from '../../../src/services/domain/geoResources';
 import { getDefaultAttribution, getMinimalAttribution } from '../../../src/services/provider/attribution.provider';
 
 
@@ -60,7 +60,7 @@ describe('GeoResource', () => {
 				const minimalAttribution = getMinimalAttribution();
 				const spy = jasmine.createSpy().and.returnValue(minimalAttribution);
 				const grs = new GeoResourceImpl('id');
-				grs.attribution = 'foo';
+				grs.setAttribution('foo');
 				grs._attributionProvider = spy;
 
 				const result = grs.getAttribution(42);
@@ -73,7 +73,7 @@ describe('GeoResource', () => {
 				const minimalAttribution = getMinimalAttribution();
 				const spy = jasmine.createSpy().and.returnValue([minimalAttribution]);
 				const grs = new GeoResourceImpl('id');
-				grs.attribution = 'foo';
+				grs.setAttribution('foo');
 				grs._attributionProvider = spy;
 
 				const result = grs.getAttribution(42);
@@ -85,7 +85,7 @@ describe('GeoResource', () => {
 			it('returns null when provider returns null', () => {
 				const spy = jasmine.createSpy().and.returnValue(null);
 				const grs = new GeoResourceImpl('id');
-				grs.attribution = 'foo';
+				grs.setAttribution('foo');
 				grs._attributionProvider = spy;
 
 				const result = grs.getAttribution(42);
@@ -97,7 +97,7 @@ describe('GeoResource', () => {
 			it('returns null when provider returns an empyt array', () => {
 				const spy = jasmine.createSpy().and.returnValue([]);
 				const grs = new GeoResourceImpl('id');
-				grs.attribution = 'foo';
+				grs.setAttribution('foo');
 				grs._attributionProvider = spy;
 
 				const result = grs.getAttribution(42);
@@ -108,7 +108,7 @@ describe('GeoResource', () => {
 
 			it('throws an error when no provider found', () => {
 				const grs = new GeoResourceImpl('id');
-				grs.attribution = 'foo';
+				grs.setAttribution('foo');
 				grs._attributionProvider = null;
 
 				expect(() => {
@@ -124,26 +124,107 @@ describe('GeoResource', () => {
 				expect(georesource.label).toBe('');
 				expect(georesource.background).toBeFalse();
 				expect(georesource.opacity).toBe(1);
+				expect(georesource.minZoom).toBeNull();
+				expect(georesource.maxZoom).toBeNull();
+				expect(georesource.hidden).toBeFalse();
 				expect(georesource.attribution).toBeNull();
 				expect(georesource._attributionProvider).toBe(getDefaultAttribution);
 			});
 
-			it('provides setter and getters', () => {
+			it('provides set methods and getters', () => {
 				const georesource = new GeoResourceNoImpl('id');
 
-				georesource.opacity = .5;
-				georesource.background = true;
-				georesource.label = 'some label';
-				georesource.label = 'some label';
-				georesource.attribution = 'some attribution';
+				georesource
+					.setBackground(true)
+					.setOpacity(.5)
+					.setMinZoom(5)
+					.setMaxZoom(19)
+					.setHidden(true)
+					.setLabel('some label')
+					.setAttribution('some attribution');
+
 
 				expect(georesource.background).toBeTrue();
+				expect(georesource.hidden).toBeTrue();
 				expect(georesource.opacity).toBe(.5);
+				expect(georesource.minZoom).toBe(5);
+				expect(georesource.maxZoom).toBe(19);
 				expect(georesource.label).toBe('some label');
 				expect(georesource.attribution).toBe('some attribution');
 			});
 		});
 
+	});
+
+	describe('GeoResourceFuture', () => {
+
+		it('instantiates a GeoResourceFuture', () => {
+			const loader = async () => { };
+
+			const future = new GeoResourceFuture('id', loader, 'label');
+			const futureWithoutLabel = new GeoResourceFuture('id', loader);
+
+			expect(future.getType()).toEqual(GeoResourceTypes.FUTURE);
+			expect(future._loader).toBe(loader);
+			expect(future.label).toBe('label');
+			expect(futureWithoutLabel.label).toHaveSize(0);
+		});
+
+		it('returns the real GeoResource by calling loader', async () => {
+			const id = 'id';
+			const expectedGeoResource = new WmsGeoResource(id, 'label', 'url', 'layers', 'format');
+			const loader = jasmine.createSpy().withArgs(id).and.resolveTo(expectedGeoResource);
+			const future = new GeoResourceFuture(id, loader);
+
+			const geoResource = await future.get();
+
+			expect(geoResource).toEqual(expectedGeoResource);
+		});
+
+		it('rejects when the loader rejects', async () => {
+			const id = 'id';
+			const message = 'error';
+			const loader = jasmine.createSpy().withArgs(id).and.rejectWith(message);
+			const future = new GeoResourceFuture(id, loader);
+
+			try {
+				await future.get();
+				throw new Error('Promise should not be resolved');
+			}
+			catch (error) {
+				expect(error).toBe(message);
+			}
+		});
+
+		it('calls the onResolve callback', async () => {
+			const id = 'id';
+			const expectedGeoResource = new WmsGeoResource(id, 'label', 'url', 'layers', 'format');
+			const loader = jasmine.createSpy().withArgs(id).and.resolveTo(expectedGeoResource);
+			const onResolveCallback = jasmine.createSpy();
+			const future = new GeoResourceFuture(id, loader);
+			future.onResolve(onResolveCallback);
+
+			await future.get();
+
+			expect(onResolveCallback).toHaveBeenCalledWith(expectedGeoResource, future);
+		});
+
+		it('calls the onReject callback', async () => {
+			const id = 'id';
+			const loader = jasmine.createSpy().withArgs(id).and.rejectWith('error');
+			const onResolveCallback = jasmine.createSpy();
+			const future = new GeoResourceFuture(id, loader);
+			future.onReject(onResolveCallback);
+
+			try {
+				await future.get();
+				throw new Error('Promise should not be resolved');
+
+			}
+			catch (error) {
+				expect(onResolveCallback).toHaveBeenCalledWith(future);
+			}
+		});
 	});
 
 	describe('WmsGeoResource', () => {
@@ -185,7 +266,7 @@ describe('GeoResource', () => {
 
 	describe('VectorGeoResource', () => {
 
-		it('instantiates a VectorGeoResource', async () => {
+		it('instantiates a VectorGeoResource', () => {
 
 			const vectorGeoResource = new VectorGeoResource('id', 'label', VectorSourceType.KML);
 
@@ -195,103 +276,25 @@ describe('GeoResource', () => {
 			expect(vectorGeoResource.url).toBeNull();
 			expect(vectorGeoResource.srid).toBeNull();
 			expect(vectorGeoResource.sourceType).toEqual(VectorSourceType.KML);
-			const data = await vectorGeoResource.getData();
-			expect(data).toBeNull();
+			expect(vectorGeoResource.data).toBeNull();
 		});
 
-		it('sets the url of an external VectorGeoResource', async () => {
+		it('sets the url of an external VectorGeoResource', () => {
 
 			const vectorGeoResource = new VectorGeoResource('id', 'label', VectorSourceType.KML).setUrl('someUrl');
 
 			expect(vectorGeoResource.url).toBe('someUrl');
 			expect(vectorGeoResource.srid).toBeNull();
-			const data = await vectorGeoResource.getData();
-			expect(data).toBeNull();
+			expect(vectorGeoResource.data).toBeNull();
 		});
 
-		it('sets the source of an internal VectorGeoResource by a string', async () => {
+		it('sets the source of an internal VectorGeoResource by a string', () => {
 
 			const vectorGeoResource = new VectorGeoResource('id', 'label', VectorSourceType.KML).setSource('someData', 1234);
 
-			const data = await vectorGeoResource.getData();
-			expect(data).toBe('someData');
+			expect(vectorGeoResource.data).toBe('someData');
 			expect(vectorGeoResource.srid).toBe(1234);
 			expect(vectorGeoResource.url).toBeNull();
-		});
-
-		it('sets the source of an internal VectorGeoResource by a promise', async () => {
-
-			const vectorGeoResource = new VectorGeoResource('id', 'label', VectorSourceType.KML).setSource(Promise.resolve('someData'), 1234);
-
-			const data = await vectorGeoResource.getData();
-			expect(data).toBe('someData');
-			expect(vectorGeoResource.srid).toBe(1234);
-			expect(vectorGeoResource.url).toBeNull();
-		});
-
-		it('caches the data resolved by a source promise', async () => {
-
-			const vectorGeoResource = new VectorGeoResource('id', 'label', VectorSourceType.KML).setSource(Promise.resolve('someData'), 1234);
-
-			await vectorGeoResource.getData();
-			expect(vectorGeoResource._data).toBe('someData');
-		});
-
-		it('passes the reason of a rejected source promise', async () => {
-
-			const vectorGeoResource = new VectorGeoResource('id', 'label', VectorSourceType.KML).setSource(Promise.reject('somethingGotWrong'), 1234);
-
-			try {
-				await vectorGeoResource.getData();
-				throw new Error('Promise should not be resolved');
-			}
-			catch (error) {
-				expect(error).toBe('somethingGotWrong');
-			}
-		});
-
-		it('sets the source of an internal VectorGeoResource by a loader', async () => {
-
-			const vectorGeoResource = new VectorGeoResource('id', 'label', null)
-				.setLoader(() => Promise.resolve({
-					data: 'someData',
-					srid: 1234,
-					sourceType: VectorSourceType.KML
-				}));
-
-			const data = await vectorGeoResource.getData();
-			expect(data).toBe('someData');
-			expect(vectorGeoResource.srid).toBe(1234);
-			expect(vectorGeoResource.sourceType).toEqual(VectorSourceType.KML);
-			expect(vectorGeoResource.url).toBeNull();
-		});
-
-		it('caches the data resolved by a loader', async () => {
-
-			const vectorGeoResource = new VectorGeoResource('id', 'label', null)
-				.setLoader(() => Promise.resolve({
-					data: 'someData',
-					srid: 1234,
-					sourceType: VectorSourceType.KML
-				}));
-
-			await vectorGeoResource.getData();
-			expect(vectorGeoResource._data).toBe('someData');
-		});
-
-		it('passes the reason of a rejected loader', async () => {
-
-			const vectorGeoResource = new VectorGeoResource('id', 'label', null)
-				.setLoader(() => Promise.reject('somethingGotWrong'));
-
-			try {
-				await vectorGeoResource.getData();
-				throw new Error('Promise should not be resolved');
-
-			}
-			catch (error) {
-				expect(error).toBe('somethingGotWrong');
-			}
 		});
 	});
 
@@ -310,5 +313,22 @@ describe('GeoResource', () => {
 			expect(aggregateGeoResource.geoResourceIds[1].id).toBe('wmtsId');
 		});
 
+	});
+
+	describe('observableGeoResource', () => {
+
+		it('observes changes', () => {
+
+			const modifiedLabel = 'modified';
+			const callback = jasmine.createSpy();
+			const wmtsGeoResource = observable(new WMTSGeoResource('wmtsId', 'label', 'url'), callback);
+
+			wmtsGeoResource.setLabel(modifiedLabel);
+			wmtsGeoResource.setLabel(modifiedLabel);
+			wmtsGeoResource.unknown = modifiedLabel;
+
+			expect(callback).toHaveBeenCalledOnceWith('_label', modifiedLabel);
+			expect(wmtsGeoResource.label).toBe(modifiedLabel);
+		});
 	});
 });

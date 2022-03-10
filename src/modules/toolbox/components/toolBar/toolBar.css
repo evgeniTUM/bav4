@@ -65,6 +65,10 @@
 	mask-image: url('assets/share.svg');
 	-webkit-mask-image: url('assets/share.svg');
 }
+.import {
+	mask-image: url('assets/upload.svg');
+	-webkit-mask-image: url('assets/upload.svg');
+}
 
 .pencil {
 	mask-image: url('assets/pencil.svg');

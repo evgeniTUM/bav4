@@ -1,18 +1,16 @@
 import { $injector } from '../../../../../../src/injection';
-import { AggregateGeoResource, VectorGeoResource, VectorSourceType, WmsGeoResource, WMTSGeoResource } from '../../../../../../src/services/domain/geoResources';
-import VectorSource from 'ol/source/Vector';
+import { AggregateGeoResource, GeoResourceFuture, VectorGeoResource, VectorSourceType, WmsGeoResource, WMTSGeoResource } from '../../../../../../src/services/domain/geoResources';
 import { LayerService } from '../../../../../../src/modules/map/components/olMap/services/LayerService';
 import { TestUtils } from '../../../../../test-utils';
 import { networkReducer } from '../../../../../../src/store/network/network.reducer';
 import { Map } from 'ol';
+import VectorLayer from 'ol/layer/Vector';
 
 
 describe('LayerService', () => {
 
-	const vectorImportService = {
-		vectorSourceFromInternalData: () => { },
-		vectorSourceFromExternalData: () => { },
-		applyStyles: () => { }
+	const vectorLayerService = {
+		createVectorLayer: () => { }
 	};
 	const georesourceService = {
 		byId: () => { }
@@ -27,7 +25,7 @@ describe('LayerService', () => {
 			network: networkReducer
 		});
 		$injector
-			.registerSingleton('VectorImportService', vectorImportService)
+			.registerSingleton('VectorLayerService', vectorLayerService)
 			.registerSingleton('GeoResourceService', georesourceService);
 
 		instanceUnderTest = new LayerService();
@@ -35,38 +33,33 @@ describe('LayerService', () => {
 
 	describe('toOlLayer', () => {
 
+		describe('GeoResourceFuture', () => {
+
+			it('converts a GeoResourceFuture to a placeholder olLayer', () => {
+				const id = 'id';
+				const wmsGeoresource = new GeoResourceFuture(id, () => { });
+
+				const placeholderOlLayer = instanceUnderTest.toOlLayer(wmsGeoresource);
+
+				expect(placeholderOlLayer.get('id')).toBe(id);
+				expect(placeholderOlLayer.get('placeholder')).toBeTrue();
+				expect(placeholderOlLayer.getSource()).toBeNull();
+				expect(placeholderOlLayer.render()).toBeUndefined();
+				expect(placeholderOlLayer.constructor.name).toBe('Layer');
+			});
+		});
+
 		describe('VectorGeoresource', () => {
 
-			it('converts an external VectorGeoresource to an olLayer by calling #vectorSourceFromExternalData', () => {
+			it('converts a VectorGeoresource to an olLayer', () => {
 				const olMap = new Map();
-				const olSource = new VectorSource();
-				const vectorGeoresource = new VectorGeoResource('someId', 'Label', VectorSourceType.KML).setUrl('https://some.url');
-				const vectorSourceFromExternalDataSpy = spyOn(vectorImportService, 'vectorSourceFromExternalData').and.returnValue(olSource);
-				const applyStylesSpy = spyOn(vectorImportService, 'applyStyles').and.callFake(olLayer => olLayer);
+				const olLayer = new VectorLayer();
+				const vectorGeoresource = new VectorGeoResource('someId', 'Label', VectorSourceType.KML);
+				const vectorSourceForUrlSpy = spyOn(vectorLayerService, 'createVectorLayer').and.returnValue(olLayer);
 
-				const vectorOlLayer = instanceUnderTest.toOlLayer(vectorGeoresource, olMap);
+				instanceUnderTest.toOlLayer(vectorGeoresource, olMap);
 
-				expect(vectorOlLayer.get('id')).toBe('someId');
-				expect(vectorOlLayer.constructor.name).toBe('VectorLayer');
-				expect(vectorOlLayer.getSource().constructor.name).toBe('VectorSource');
-				expect(vectorSourceFromExternalDataSpy).toHaveBeenCalledWith(vectorGeoresource);
-				expect(applyStylesSpy).toHaveBeenCalledWith(vectorOlLayer, olMap);
-			});
-
-			it('converts an internal VectorGeoresource to an olLayer by calling #vectorSourceFromInternalData', () => {
-				const olMap = new Map();
-				const olSource = new VectorSource();
-				const vectorGeoresource = new VectorGeoResource('someId', 'geoResourceLabel', VectorSourceType.KML).setSource('<kml></kml>', 4326);
-				const vectorSourceFromInternalDataSpy = spyOn(vectorImportService, 'vectorSourceFromInternalData').and.returnValue(olSource);
-				const applyStylesSpy = spyOn(vectorImportService, 'applyStyles').and.callFake(olLayer => olLayer);
-
-				const vectorOlLayer = instanceUnderTest.toOlLayer(vectorGeoresource, olMap);
-
-				expect(vectorOlLayer.get('id')).toBe('someId');
-				expect(vectorOlLayer.constructor.name).toBe('VectorLayer');
-				expect(vectorOlLayer.getSource().constructor.name).toBe('VectorSource');
-				expect(vectorSourceFromInternalDataSpy).toHaveBeenCalledWith(vectorGeoresource);
-				expect(applyStylesSpy).toHaveBeenCalledWith(vectorOlLayer, olMap);
+				expect(vectorSourceForUrlSpy).toHaveBeenCalledWith(vectorGeoresource, olMap);
 			});
 		});
 
@@ -78,6 +71,29 @@ describe('LayerService', () => {
 				const wmsOlLayer = instanceUnderTest.toOlLayer(wmsGeoresource);
 
 				expect(wmsOlLayer.get('id')).toBe('someId');
+				expect(wmsOlLayer.getMinZoom()).toBeNegativeInfinity();
+				expect(wmsOlLayer.getMaxZoom()).toBePositiveInfinity();
+				const wmsSource = wmsOlLayer.getSource();
+				expect(wmsOlLayer.constructor.name).toBe('ImageLayer');
+				expect(wmsSource.constructor.name).toBe('ImageWMS');
+				expect(wmsSource.getUrl()).toBe('https://some.url');
+				expect(wmsSource.getParams().LAYERS).toBe('layer');
+				expect(wmsSource.getParams().FORMAT).toBe('image/png');
+				expect(wmsSource.getParams().VERSION).toBe('1.1.1');
+			});
+
+			it('converts a WmsGeoresource containing optional properties to a olLayer', () => {
+				const wmsGeoresource = new WmsGeoResource('someId', 'Label', 'https://some.url', 'layer', 'image/png')
+					.setOpacity(.5)
+					.setMinZoom(5)
+					.setMaxZoom(19);
+
+				const wmsOlLayer = instanceUnderTest.toOlLayer(wmsGeoresource);
+
+				expect(wmsOlLayer.get('id')).toBe('someId');
+				expect(wmsOlLayer.getOpacity()).toBe(.5);
+				expect(wmsOlLayer.getMinZoom()).toBe(5);
+				expect(wmsOlLayer.getMaxZoom()).toBe(19);
 				const wmsSource = wmsOlLayer.getSource();
 				expect(wmsOlLayer.constructor.name).toBe('ImageLayer');
 				expect(wmsSource.constructor.name).toBe('ImageWMS');
@@ -110,6 +126,28 @@ describe('LayerService', () => {
 				const wmtsOlLayer = instanceUnderTest.toOlLayer(wmtsGeoresource);
 
 				expect(wmtsOlLayer.get('id')).toBe('someId');
+				expect(wmtsOlLayer.getPreload()).toBe(3);
+				expect(wmtsOlLayer.getMinZoom()).toBeNegativeInfinity();
+				expect(wmtsOlLayer.getMaxZoom()).toBePositiveInfinity();
+				const wmtsSource = wmtsOlLayer.getSource();
+				expect(wmtsOlLayer.constructor.name).toBe('TileLayer');
+				expect(wmtsSource.constructor.name).toBe('XYZ');
+				expect(wmtsSource.getUrls()).toEqual(['https://some1/layer/{z}/{x}/{y}', 'https://some2/layer/{z}/{x}/{y}']);
+			});
+
+			it('converts a WmtsGeoresource containing optional properties to a olLayer', () => {
+				const wmtsGeoresource = new WMTSGeoResource('someId', 'Label', 'https://some{1-2}/layer/{z}/{x}/{y}')
+					.setOpacity(.5)
+					.setMinZoom(5)
+					.setMaxZoom(19);
+
+				const wmtsOlLayer = instanceUnderTest.toOlLayer(wmtsGeoresource);
+
+				expect(wmtsOlLayer.get('id')).toBe('someId');
+				expect(wmtsOlLayer.getPreload()).toBe(3);
+				expect(wmtsOlLayer.getOpacity()).toBe(.5);
+				expect(wmtsOlLayer.getMinZoom()).toBe(5);
+				expect(wmtsOlLayer.getMaxZoom()).toBe(19);
 				const wmtsSource = wmtsOlLayer.getSource();
 				expect(wmtsOlLayer.constructor.name).toBe('TileLayer');
 				expect(wmtsSource.constructor.name).toBe('XYZ');
@@ -149,6 +187,37 @@ describe('LayerService', () => {
 			const olLayerGroup = instanceUnderTest.toOlLayer(aggreggateGeoResource);
 
 			expect(olLayerGroup.get('id')).toBe('someId');
+			expect(olLayerGroup.getMinZoom()).toBeNegativeInfinity();
+			expect(olLayerGroup.getMaxZoom()).toBePositiveInfinity();
+			expect(olLayerGroup.constructor.name).toBe('LayerGroup');
+			const layers = olLayerGroup.getLayers();
+			expect(layers.item(0).get('id')).toBe(wmtsGeoresource.id);
+			expect(layers.item(1).get('id')).toBe(wmtsGeoresource.id);
+		});
+
+		it('converts a AggregateGeoresource containing optional properties to a olLayer(Group)', () => {
+
+			const wmtsGeoresource = new WMTSGeoResource('wmtsId', 'Label', 'https://some{1-2}/layer/{z}/{x}/{y}');
+			const wmsGeoresource = new WmsGeoResource('wmsId', 'Label', 'https://some.url', 'layer', 'image/png');
+			spyOn(georesourceService, 'byId').and.callFake((id) => {
+				switch (id) {
+					case wmtsGeoresource.id:
+						return wmtsGeoresource;
+					case wmsGeoresource.id:
+						return wmsGeoresource;
+				}
+			});
+			const aggreggateGeoResource = new AggregateGeoResource('someId', 'label', [wmtsGeoresource.id, wmtsGeoresource.id])
+				.setOpacity(.5)
+				.setMinZoom(5)
+				.setMaxZoom(19);
+
+			const olLayerGroup = instanceUnderTest.toOlLayer(aggreggateGeoResource);
+
+			expect(olLayerGroup.get('id')).toBe('someId');
+			expect(olLayerGroup.getOpacity()).toBe(.5);
+			expect(olLayerGroup.getMinZoom()).toBe(5);
+			expect(olLayerGroup.getMaxZoom()).toBe(19);
 			expect(olLayerGroup.constructor.name).toBe('LayerGroup');
 			const layers = olLayerGroup.getLayers();
 			expect(layers.item(0).get('id')).toBe(wmtsGeoresource.id);

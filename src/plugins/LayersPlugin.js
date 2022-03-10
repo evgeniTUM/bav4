@@ -1,7 +1,6 @@
 import { $injector } from '../injection';
-import { VectorGeoResource, VectorSourceType } from '../services/domain/geoResources';
+import { GeoResourceTypes } from '../services/domain/geoResources';
 import { QueryParameters } from '../services/domain/queryParameters';
-import { FileStorageServiceDataTypes } from '../services/FileStorageService';
 import { BaPlugin } from './BaPlugin';
 import { addLayer, modifyLayer, setReady } from '../store/layers/layers.action';
 import { provide as provider } from './i18n/layersPlugin.provider';
@@ -19,76 +18,9 @@ export class LayersPlugin extends BaPlugin {
 		translationService.register('layersPluginProvider', provider);
 	}
 
-	_newLabelUpdateHandler(id) {
-		return {
-			set: function (target, prop, value) {
-				if (prop === '_label') {
-					modifyLayer(id, { label: value });
-				}
-				return Reflect.set(...arguments);
-			}
-		};
-	}
-
-	async _getFileId(id) {
-		const { FileStorageService: fileStorageService }
-			= $injector.inject('FileStorageService');
-
-		if (fileStorageService.isAdminId(id)) {
-			return fileStorageService.getFileId(id);
-		}
-		else if (fileStorageService.isFileId(id)) {
-			return id;
-		}
-		throw new Error(`${id} is not a valid fileId or adminId`);
-	}
-
-	_newVectorGeoResourceLoader(id) {
-		const { FileStorageService: fileStorageService }
-			= $injector.inject('FileStorageService');
-
-		return async () => {
-
-			const fileId = await this._getFileId(id);
-			const { data, type, srid } = await fileStorageService.get(fileId);
-			if (type === FileStorageServiceDataTypes.KML) {
-				return {
-					sourceType: VectorSourceType.KML,
-					data: data,
-					srid: srid
-				};
-			}
-			throw new Error('No VectorGeoResourceLoader available for ' + type);
-		};
-	}
-
-	_registerUnkownGeoResource(id) {
-		const {
-			GeoResourceService: geoResourceService,
-			TranslationService: translationService
-		}
-			= $injector.inject('GeoResourceService', 'TranslationService');
-
-		if (!geoResourceService.byId(id)) {
-
-			//no source type here, we let the loader decide which kind of source we are loading
-			const vgr = new VectorGeoResource(id, translationService.translate('layersPlugin_store_layer_default_layer_name'), null)
-				.setLoader(this._newVectorGeoResourceLoader(id));
-			/**
-			 * The definitive label value will be extracted later from the source.
-			 * Therefore we observe changes of the georesource's label property using a proxy and then update the layer
-			 */
-			const proxyVgr = new Proxy(vgr, this._newLabelUpdateHandler(id));
-			//register georesource
-			geoResourceService.addOrReplace(proxyVgr);
-		}
-		return id;
-	}
-
 	_addLayersFromQueryParams(queryParams) {
 		const { GeoResourceService: geoResourceService } = $injector.inject('GeoResourceService');
 
-		//layer
 		const parseLayer = (layerValue, layerVisibilityValue, layerOpacityValue) => {
 
 			//Todo: parse KML and WMS layer from query params like layerIdOrType||layerLabel||layerUrl||layerOptions
@@ -97,27 +29,36 @@ export class LayersPlugin extends BaPlugin {
 			const layerOpacity = layerOpacityValue ? layerOpacityValue.split(',') : [];
 
 			return layer
-				.map(l => this._registerUnkownGeoResource(l))
-				.map((l, i) => {
-					const geoResource = geoResourceService.byId(l);
-					if (geoResource) {
-						const layerProperties = {};
-						layerProperties.label = geoResource.label;
+				.map((layerId, index) => {
+					if (layerId) {
 
-						if (layerVisibility[i] === 'false') {
-							layerProperties.visible = false;
-						}
-						if (isFinite(layerOpacity[i]) && layerOpacity[i] >= 0 && layerOpacity[i] <= 1) {
-							layerProperties.opacity = parseFloat(layerOpacity[i]);
-						}
+						const geoResource = geoResourceService.byId(layerId) ?? geoResourceService.asyncById(layerId);
 
-						return { id: l, layerProperties };
+						if (geoResource) {
+							//if we have a GeoResource future, we update the label property after we know it
+							if (geoResource.getType() === GeoResourceTypes.FUTURE) {
+								geoResource.onResolve((geoResource) => {
+									modifyLayer(layerId, { label: geoResource.label });
+								});
+							}
+
+							const layerProperties = {};
+							layerProperties.label = geoResource.label;
+
+							if (layerVisibility[index] === 'false') {
+								layerProperties.visible = false;
+							}
+							if (isFinite(layerOpacity[index]) && layerOpacity[index] >= 0 && layerOpacity[index] <= 1) {
+								layerProperties.opacity = parseFloat(layerOpacity[index]);
+							}
+
+							return { id: layerId, layerProperties };
+						}
 					}
 				})
 				//remove undefined 'layer'
 				.filter(l => !!l);
 		};
-
 
 		const parsedLayers = parseLayer(
 			queryParams.get(QueryParameters.LAYER),
@@ -127,10 +68,6 @@ export class LayersPlugin extends BaPlugin {
 		parsedLayers.forEach(l => {
 			addLayer(l.id, l.layerProperties);
 		});
-		//fallback
-		if (parsedLayers.length === 0) {
-			this._addLayersFromConfig();
-		}
 	}
 
 	_addLayersFromConfig() {

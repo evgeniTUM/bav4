@@ -4,12 +4,22 @@ export const TYPE_CHANGED = 'draw/type';
 export const GEOMETRY_IS_VALID_CHANGED = 'draw/geometryIsValid';
 export const STYLE_CHANGED = 'draw/style';
 export const SELECTED_STYLE_CHANGED = 'draw/selectedStyle';
+export const CLEAR_TEXT = 'draw/clearText';
+export const CLEAR_DESCRIPTION = 'draw/clearDescription';
 export const DESCRIPTION_CHANGED = 'draw/description';
 export const FILE_SAVE_RESULT_CHANGED = 'draw/fileSaveResult';
+export const SELECTION_CHANGED = 'draw/selection';
 export const FINISH_REQUESTED = 'draw/finish';
 export const RESET_REQUESTED = 'draw/reset';
 export const REMOVE_REQUESTED = 'draw/remove';
 
+
+export const INITIAL_STYLE = {
+	symbolSrc: null,
+	scale: null,
+	color: null,
+	text: null
+};
 
 export const initialState = {
 	/**
@@ -31,7 +41,7 @@ export const initialState = {
 	/**
 	 * @type {Object}
 	 */
-	style: null,
+	style: INITIAL_STYLE,
 	/**
 	 * @type {Object}
 	 */
@@ -44,6 +54,10 @@ export const initialState = {
 	 * @type {DrawFileSaveResult}
 	 */
 	fileSaveResult: null,
+	/**
+	 * @type {Array<String>}
+	 */
+	selection: [],
 	/**
 	 * @type EventLike
 	 */
@@ -118,11 +132,36 @@ export const drawReducer = (state = initialState, action) => {
 
 			};
 		}
+		case CLEAR_DESCRIPTION: {
+
+			return {
+				...state,
+				description: null
+
+			};
+		}
+		case CLEAR_TEXT: {
+
+			return {
+				...state,
+				style: { ...state.style, text: null },
+				selectedStyle: state.selectedStyle ? { ...state.selectedStyle, style: { ...state.selectedStyle.style, text: null } } : null
+
+			};
+		}
 		case FILE_SAVE_RESULT_CHANGED: {
 
 			return {
 				...state,
 				fileSaveResult: payload
+
+			};
+		}
+		case SELECTION_CHANGED: {
+
+			return {
+				...state,
+				selection: [...payload]
 
 			};
 		}

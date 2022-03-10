@@ -4,7 +4,7 @@ import { $injector } from '../../../../../injection';
 import css  from '../../../../../modules/menu/components/mainMenu/mainMenu.css'
 import { MainMenu } from '../../../../../modules/menu/components/mainMenu/MainMenu';
 import { EaTopicsContentPanel } from '../../../../../ea/modules/topics/components/menu/EaTopicsContentPanel';
-import { TabKey, toggle } from '../../../../../store/mainMenu/mainMenu.action';
+import { TabId, toggle } from '../../../../../store/mainMenu/mainMenu.action';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 
 
@@ -27,9 +27,9 @@ export class EaMainMenu extends MainMenu {
          
         _getContentPanel(definition) {
 		switch (definition) {
-			case TabKey.EXTENSION:
+			case TabId.EXTENSION:
 				return html`${unsafeHTML(`<${AdditionalMenu.tag}/>`)}`;
-			case TabKey.TOPICS:
+			case TabId.TOPICS:
                             window.console.log('Topics EaTopicsContentPanel ');
 				return html`${unsafeHTML(`<${EaTopicsContentPanel.tag}/>`)}`;
 			default:

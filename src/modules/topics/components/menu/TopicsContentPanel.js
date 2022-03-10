@@ -105,12 +105,7 @@ export class TopicsContentPanel extends AbstractContentPanel {
 				}
 				return nothing;
 			};
-        return { topics , getActiveClass, getTabIndex,
-                        getVisibilityClass,
-                        changeTopic,
-                        renderTopicStyle,
-                        renderTopicIcon
-		}
+        return { topics , getActiveClass, getTabIndex,getVisibilityClass, changeTopic,renderTopicStyle,renderTopicIcon }
         }
 
 	/**
@@ -129,7 +124,7 @@ export class TopicsContentPanel extends AbstractContentPanel {
 					<style>
 					${helper.renderTopicStyle(topic)}
 					</style>
-					<button tabindex='${helper.getTabIndex()}' class="topic topic-${topic.id} ba-list-item  ${helper.getActiveClass(topic.id)}" @click=${() => helper.changeTopic(topic)}>
+					<button id='button-${topic.id}' data-test-id tabindex='${helper.getTabIndex()}' class="topic topic-${topic.id} ba-list-item  ${helper.getActiveClass(topic.id)}" @click=${() => helper.changeTopic(topic)}>
 						<span class="ba-list-item__pre">
 							<span class="ba-list-item__icon icon-${topic.id}">
 							${helper.renderTopicIcon(topic)}

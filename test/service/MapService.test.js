@@ -22,7 +22,8 @@ describe('MapService', () => {
 				srid: 3857,
 				defaultSridForView: 4326,
 				sridDefinitionsForView: () => [{ label: 'WGS88', code: 4326 }, { label: 'Something', code: 9999 }],
-				defaultGeodeticSrid: 9999
+				defaultGeodeticSrid: 9999,
+				maxZoomLevel: 21
 			};
 		};
 		return new MapService(definitionsProvider);
@@ -85,6 +86,12 @@ describe('MapService', () => {
 		expect(instanceUnderTest.getDefaultGeodeticSrid()).toBe(9999);
 	});
 
+	it('provides the max zoom level', () => {
+		const instanceUnderTest = setup();
+
+		expect(instanceUnderTest.getMaxZoomLevel()).toBe(21);
+	});
+
 	it('provides minimal angle for rotation', () => {
 		const instanceUnderTest = setup();
 
@@ -140,6 +147,37 @@ describe('MapService', () => {
 
 				expect(() => instanceUnderTest.calcResolution(zoomLevel)).toThrowError(`Unsupported SRID ${srid}`);
 			});
+		});
+	});
+
+	describe('getScaleLineContainer', () => {
+
+		it('returns an HTMLElement when available', () => {
+			const mockFooter = {
+				shadowRoot: {
+					querySelector() { }
+				}
+			};
+			const mockHTMElement = {};
+			spyOn(document, 'querySelector').withArgs('ba-footer').and.returnValue(mockFooter);
+			spyOn(mockFooter.shadowRoot, 'querySelector').withArgs('.scale').and.returnValue(mockHTMElement);
+			const instanceUnderTest = setup();
+
+			const element = instanceUnderTest.getScaleLineContainer();
+
+			expect(document.querySelector).toHaveBeenCalled();
+			expect(mockFooter.shadowRoot.querySelector).toHaveBeenCalled();
+			expect(element).toEqual(mockHTMElement);
+		});
+
+		it('returns null when element is not available', () => {
+			spyOn(document, 'querySelector').withArgs('ba-footer');
+			const instanceUnderTest = setup();
+
+			const element = instanceUnderTest.getScaleLineContainer();
+
+			expect(document.querySelector).toHaveBeenCalled();
+			expect(element).toBeNull();
 		});
 	});
 });

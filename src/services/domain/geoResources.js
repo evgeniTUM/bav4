@@ -1,4 +1,3 @@
-import { isPromise } from '../../utils/checks';
 import { getDefaultAttribution } from '../provider/attribution.provider';
 
 
@@ -26,10 +25,14 @@ export const GeoResourceTypes = Object.freeze({
 	WMTS: Symbol.for('wmts'),
 	VECTOR: Symbol.for('vector'),
 	VECTOR_TILES: Symbol.for('vector_tiles'),
-	AGGREGATE: Symbol.for('aggregate')
+	AGGREGATE: Symbol.for('aggregate'),
+	FUTURE: Symbol.for('future')
 });
 
 /**
+* Parent class of all GeoResource types.
+* Obligatory fields are set in the constructor.
+* Optional fields have a setter method which returns the GeoResource instance for chaining.
 * @abstract
 * @class
 */
@@ -46,6 +49,9 @@ export class GeoResource {
 		this._label = label;
 		this._background = false;
 		this._opacity = 1.0;
+		this._hidden = false;
+		this._minZoom = null;
+		this._maxZoom = null;
 		this._attribution = null;
 		this._attributionProvider = getDefaultAttribution;
 	}
@@ -77,24 +83,55 @@ export class GeoResource {
 		return this._opacity;
 	}
 
+	get minZoom() {
+		return this._minZoom;
+	}
+
+	get maxZoom() {
+		return this._maxZoom;
+	}
+
+	get hidden() {
+		return this._hidden;
+	}
+
 	get attribution() {
 		return this._attribution;
 	}
 
-	set label(label) {
+	setLabel(label) {
 		this._label = label;
+		return this;
 	}
 
-	set background(background) {
+	setBackground(background) {
 		this._background = background;
+		return this;
 	}
 
-	set opacity(opacity) {
+	setOpacity(opacity) {
 		this._opacity = opacity;
+		return this;
 	}
 
-	set attribution(attribution) {
+	setMinZoom(minZoom) {
+		this._minZoom = minZoom;
+		return this;
+	}
+
+	setMaxZoom(maxZoom) {
+		this._maxZoom = maxZoom;
+		return this;
+	}
+
+	setHidden(hidden) {
+		this._hidden = hidden;
+		return this;
+	}
+
+	setAttribution(attribution) {
 		this._attribution = attribution;
+		return this;
 	}
 
 	/**
@@ -133,6 +170,72 @@ export class GeoResource {
 		throw new TypeError('Please implement abstract method #getType or do not call super.getType from child.');
 	}
 
+}
+
+/**
+ * An async function that loads a  {@link GeoResource}.
+ *
+ * @param {string} id Id of the requested GeoResource
+ * @typedef {function(id) : (Promise<GeoResource>)} asyncGeoResourceLoader
+ */
+
+/**
+ * Wrapper for a GeoResource that can be loaded from an external source by calling `get()`.
+ */
+export class GeoResourceFuture extends GeoResource {
+
+	/**
+	 *
+	 * @param {string} id
+	 * @param {asyncGeoResourceLoader} loader
+	 */
+	constructor(id, loader, label = '') {
+		super(id, label);
+		this._loader = loader;
+		this._onResolve = [];
+		this._onReject = [];
+	}
+
+	/**
+	 * Registers a function called when the loader resolves.
+	 * The callback function will be called with two arguments: the loaded `GeoResource` and the current `GeoResourceFuture`.
+	 * @param {function (GeoResouce, GeoResourceFuture): GeoResource|undefined} callback
+	 */
+	onResolve(callback) {
+		this._onResolve.push(callback);
+	}
+
+	/**
+	 * Registers a function called when the loader function rejected.
+	 * @param {function (GeoResourceFuture)} callback
+	 */
+	onReject(callback) {
+		this._onReject.push(callback);
+	}
+
+	/**
+	 * @override
+	 */
+	getType() {
+		return GeoResourceTypes.FUTURE;
+	}
+
+	/**
+	 * Calls the loader function and returns the real GeoResource.
+	 * Will be typically called by map implementations.
+	 * @returns GeoResource
+	 */
+	async get() {
+		try {
+			const resolvedGeoResource = await this._loader(this.id);
+			this._onResolve.forEach(f => f(resolvedGeoResource, this));
+			return resolvedGeoResource;
+		}
+		catch (error) {
+			this._onReject.forEach(f => f(this));
+			throw error;
+		}
+	}
 }
 
 /**
@@ -199,18 +302,6 @@ export const VectorSourceType = Object.freeze({
 });
 
 
-/**
- * Loads the data for VectorGeoResources.
- * @callback VectorGeoResourceLoader
- * @returns {Promise<VectorGeoResourceLoadResult>} load result
- */
-
-/**
- * @typedef {Object} VectorGeoResourceLoadResult
- * @property {string} data The raw data of a VectorGeoResource
- * @property {VectorSourceType} sourceType The source type of the data
- * @property {number} srid The srid of the data
- */
 
 /**
  * GeoResource for vector data.
@@ -234,39 +325,8 @@ export class VectorGeoResource extends GeoResource {
 		return this._sourceType;
 	}
 
-	/**
-	 * Loads and caches the data, additionally updates the source type and srid of this Georesource
-	 * based on the result of the loader.
-	 * @returns {Promise<string>}
-	 * @private
-	 */
-	async _load() {
-		if (!this._data) {
-			const { sourceType, data, srid } = await this._loader();
-			this._sourceType = sourceType;
-			this._data = data;
-			this._srid = srid;
-		}
+	get data() {
 		return this._data;
-	}
-
-	/**
-	 * Gets the data of this 'internal' GeoResource.
-	 * If the GeoResource has a loader, it will be used to load the data and determine the source type.
-	 * If the data object is a Promise, it will be resolved
-	 * and the resolved data will be cached internally.
-	 * @returns {Promise<string>} data
-	 */
-	async getData() {
-		if (this._loader) {
-			return await this._load();
-		}
-
-		if (!isPromise(this._data)) {
-			return this._data;
-		}
-		//cache the data
-		return this._data = await Promise.resolve(this._data);
 	}
 
 	get srid() {
@@ -288,28 +348,13 @@ export class VectorGeoResource extends GeoResource {
 	/**
 	 * Sets the source of this 'internal' GeoResource.
 	 * @param {Promise<string>|string} data
-	 * @param {number} srid
+	 * @param {number} srid of the data
 	 * @returns `this` for chaining
 	 */
 	setSource(data, srid) {
 		this._url = null;
 		this._data = data;
 		this._srid = srid;
-		return this;
-	}
-
-
-	/**
-	 * Sets the loader of this 'internal' GeoResource.
-	 * @param {VectorGeoResourceLoader} loader
-	 * @returns `this` for chaining
-	 */
-	setLoader(loader) {
-		this._sourceType = null;
-		this._url = null;
-		this._data = null;
-		this._srid = null;
-		this._loader = loader;
 		return this;
 	}
 
@@ -341,3 +386,23 @@ export class AggregateGeoResource extends GeoResource {
 		return GeoResourceTypes.AGGREGATE;
 	}
 }
+
+
+/**
+ * Returns an observable GeoResource.
+ * All of its fields can be observed for changes.
+ * @param {GeoResource} geoResource
+ * @param {function (property, value)} onChange callback function
+ * @returns proxified GeoResource
+ */
+export const observable = (geoResource, onChange) => {
+
+	return new Proxy(geoResource, {
+		set: function (target, prop, value) {
+			if (Object.keys(target).includes(prop) && target[prop] !== value) {
+				onChange(prop, value);
+			}
+			return Reflect.set(...arguments);
+		}
+	});
+};

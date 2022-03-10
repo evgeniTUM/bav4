@@ -27,11 +27,13 @@ import { DrawPlugin } from '../plugins/DrawPlugin';
 import { MeasurementPlugin } from '../plugins/MeasurementPlugin';
 import { ContextClickPlugin } from '../plugins/ContextClickPlugin';
 import { GeolocationPlugin } from '../plugins/GeolocationPlugin';
-import { NotificationPlugin } from '../plugins/NotificationPlugin';
 import { FeatureInfoPlugin } from '../plugins/FeatureInfoPlugin';
 import { MainMenuPlugin } from '../plugins/MainMenuPlugin';
 import { FeatureInfoService } from '../services/FeatureInfoService';
 import { GeoResourceInfoService } from '../modules/geoResourceInfo/services/GeoResourceInfoService';
+import { ImportVectorDataService } from '../services/ImportVectorDataService';
+import { SourceTypeService } from '../services/SourceTypeService';
+import { ImportPlugin } from '../plugins/ImportPlugin';
 
 
 $injector
@@ -54,6 +56,8 @@ $injector
 	.register('AdministrationService', AdministrationService)
 	.register('FeatureInfoService', FeatureInfoService)
 	.registerSingleton('GeoResourceInfoService', new GeoResourceInfoService())
+	.register('ImportVectorDataService', ImportVectorDataService)
+	.register('SourceTypeService', SourceTypeService)
 
 	.registerSingleton('DrawPlugin', new DrawPlugin())
 	.registerSingleton('TopicsPlugin', new TopicsPlugin())
@@ -62,11 +66,11 @@ $injector
 	.registerSingleton('HighlightPlugin', new HighlightPlugin())
 	.registerSingleton('MediaPlugin', new MediaPlugin())
 	.registerSingleton('MeasurementPlugin', new MeasurementPlugin())
-	.registerSingleton('NotificationPlugin', new NotificationPlugin())
 	.registerSingleton('GeolocationPlugin', new GeolocationPlugin())
 	.registerSingleton('ContextClickPlugin', new ContextClickPlugin())
 	.registerSingleton('FeatureInfoPlugin', new FeatureInfoPlugin())
 	.registerSingleton('MainMenuPlugin', new MainMenuPlugin())
+	.registerSingleton('ImportPlugin', new ImportPlugin())
 	.registerModule(mapModule)
 	.registerModule(topicsModule)
 	.ready();

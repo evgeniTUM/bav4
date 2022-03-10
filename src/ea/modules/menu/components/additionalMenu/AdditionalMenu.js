@@ -3,8 +3,7 @@ import { MvuElement } from '../../../../../modules/MvuElement';
 import css from './additionalMenu.css';
 import { MixerModuleContent } from '../../../toolbox/components/mixerModuleContent/MixerModuleContent';
 import { RedesignModuleContent } from '../../../toolbox/components/redesignModuleContent/RedesignModuleContent';
-
-import { openToolContainer, setContainerContent, toggleToolContainer } from '../../../../../store/toolContainer/toolContainer.action';
+import { setCurrentTool, ToolId } from '../../../../../store/tools/tools.action';
 import { $injector } from '../../../../../injection';
 
 
@@ -52,7 +51,7 @@ export class AdditionalMenu extends MvuElement {
 	onInitialize() {
 		this.observe(state => state.network.fetching, fetching => this.signal(Update_Fetching, fetching));
 		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
-		this.observe(state => state.toolContainer.contentId, contentId => this._toolId = contentId);
+		this.observe(state => state.tools.current, current => this._toolId = current);
 	}
 
 		/**
@@ -76,11 +75,10 @@ export class AdditionalMenu extends MvuElement {
 
 		const toggleTool = (id) => {
 			if (this._toolId === id) {
-				toggleToolContainer();
+				setCurrentTool(null);
 			}
 			else {
-				setContainerContent(id);
-				openToolContainer();
+				setCurrentTool(id);
 			}
 		};
 //

@@ -10,8 +10,9 @@ import { setFetching } from '../../../../src/store/network/network.action';
 import { searchReducer } from '../../../../src/store/search/search.reducer';
 import { EventLike } from '../../../../src/utils/storeUtils';
 import { createNoInitialStateMediaReducer } from '../../../../src/store/media/media.reducer';
-import { TabKey } from '../../../../src/store/mainMenu/mainMenu.action';
+import { TabId } from '../../../../src/store/mainMenu/mainMenu.action';
 import { modalReducer } from '../../../../src/store/modal/modal.reducer';
+import { TEST_ID_ATTRIBUTE_NAME } from '../../../../src/utils/markup';
 
 window.customElements.define(Header.tag, Header);
 
@@ -26,7 +27,7 @@ describe('Header', () => {
 		const initialState = {
 			mainMenu: {
 				open: true,
-				tab: TabKey.TOPICS
+				tab: TabId.TOPICS
 			},
 			network: {
 				fetching: false,
@@ -179,7 +180,7 @@ describe('Header', () => {
 			expect(element.shadowRoot.querySelector('.header__button-container').children[1].children[1].innerText).toBe('1');
 			expect(element.shadowRoot.querySelector('.header__button-container').children[1].classList.contains('is-active')).toBeFalse();
 
-			expect(element.shadowRoot.querySelector('.header__button-container').children[2].innerText).toBe('header_tab_more_button');
+			expect(element.shadowRoot.querySelector('.header__button-container').children[2].innerText).toBe('header_tab_misc_button');
 			expect(element.shadowRoot.querySelector('.header__button-container').children[2].classList.contains('is-active')).toBeFalse();
 		});
 
@@ -195,7 +196,6 @@ describe('Header', () => {
 			expect(element.shadowRoot.children.length).toBe(0);
 		});
 
-
 		it('displays 2 active Layers', async () => {
 			//we add one hidden layer
 			const hiddenLayer = createDefaultLayer('test2');
@@ -208,6 +208,15 @@ describe('Header', () => {
 			const element = await setup(state);
 
 			expect(element.shadowRoot.querySelector('.header__button-container').children[1].children[1].innerText).toBe('2');
+		});
+
+		it('contains test-id attributes', async () => {
+			const element = await setup();
+
+			expect(element.shadowRoot.querySelectorAll(`[${TEST_ID_ATTRIBUTE_NAME}]`)).toHaveSize(3);
+			expect(element.shadowRoot.querySelector('#topics_button').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
+			expect(element.shadowRoot.querySelector('#maps_button').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
+			expect(element.shadowRoot.querySelector('#misc_button').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 		});
 
 	});
@@ -271,11 +280,11 @@ describe('Header', () => {
 		it('updates the store', async () => {
 			const element = await setup();
 			expect(element.shadowRoot.querySelector('.header__button-container').children[0].click());
-			expect(store.getState().mainMenu.tab).toBe(TabKey.TOPICS);
+			expect(store.getState().mainMenu.tab).toBe(TabId.TOPICS);
 			expect(element.shadowRoot.querySelector('.header__button-container').children[1].click());
-			expect(store.getState().mainMenu.tab).toBe(TabKey.MAPS);
+			expect(store.getState().mainMenu.tab).toBe(TabId.MAPS);
 			expect(element.shadowRoot.querySelector('.header__button-container').children[2].click());
-			expect(store.getState().mainMenu.tab).toBe(TabKey.MORE);
+			expect(store.getState().mainMenu.tab).toBe(TabId.MISC);
 		});
 
 	});
@@ -487,7 +496,7 @@ describe('Header', () => {
 				const element = await setup(state);
 				element.shadowRoot.querySelector('#input').focus();
 
-				expect(store.getState().mainMenu.tab).toBe(TabKey.SEARCH);
+				expect(store.getState().mainMenu.tab).toBe(TabId.SEARCH);
 			});
 
 			describe('in portrait mode and min-width < 80em', () => {

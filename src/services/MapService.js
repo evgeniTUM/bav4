@@ -13,6 +13,7 @@ import { getBvvMapDefinitions } from './provider/mapDefinitions.provider';
 /**
 * Service for managing map related meta data.
 * @class
+* @author taulinger
 */
 export class MapService {
 
@@ -77,6 +78,14 @@ export class MapService {
 	}
 
 	/**
+	 * Return the max. zoom level the map supports
+	 * @returns {Number} zoom level
+	 */
+	getMaxZoomLevel() {
+		return this._definitions.maxZoomLevel;
+	}
+
+	/**
 	 * Returns the minimal angle in radians when rotation of the map should be accepted and applied.
 	 * @returns threshold value for rotating the map in radians.
 	 */
@@ -100,5 +109,14 @@ export class MapService {
 				return calc3857MapResolution(this._coordinateService.toLonLat(coordinateInMapProjection)[1], zoom, tileSize);
 		}
 		throw new Error(`Unsupported SRID ${srid}`);
+	}
+
+	/**
+	 * Returns an HTMLElement acting as a container for a scale line component.
+	 * @returns {HTMLElement|null} element or `null`;
+	 */
+	getScaleLineContainer() {
+		const element = document.querySelector('ba-footer')?.shadowRoot.querySelector('.scale');
+		return element ?? null;
 	}
 }

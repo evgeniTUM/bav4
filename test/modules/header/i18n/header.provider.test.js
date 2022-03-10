@@ -11,9 +11,10 @@ describe('i18n for header module', () => {
 		expect(map.header_tab_topics_title).toBe('Themen öffnen');
 		expect(map.header_tab_maps_button).toBe('Ebenenverwaltung');
 		expect(map.header_tab_maps_title).toBe('Ebenenverwaltung öffnen');
-		expect(map.header_tab_more_button).toBe('Mehr...');
-		expect(map.header_tab_more_title).toBe('Mehr anzeigen');
+		expect(map.header_tab_misc_button).toBe('Mehr...');
+		expect(map.header_tab_misc_title).toBe('Mehr anzeigen');
 		expect(map.header_close_button_title).toBe('Menü schließen');
+		expect(map.header_logo_badge).toBe('Beta');
 	});
 
 	it('provides translation for en', () => {
@@ -24,13 +25,14 @@ describe('i18n for header module', () => {
 		expect(map.header_tab_topics_title).toBe('Open topics');
 		expect(map.header_tab_maps_button).toBe('Layers configuration');
 		expect(map.header_tab_maps_title).toBe('Open layers configuration');
-		expect(map.header_tab_more_button).toBe('More...');
-		expect(map.header_tab_more_title).toBe('Show more');
+		expect(map.header_tab_misc_button).toBe('More...');
+		expect(map.header_tab_misc_title).toBe('Show more');
 		expect(map.header_close_button_title).toBe('Close menu');
+		expect(map.header_logo_badge).toBe('Beta');
 	});
 
 	it('have the expected amount of translations', () => {
-		const expectedSize = 7;
+		const expectedSize = 8;
 		const deMap = provide('de');
 		const enMap = provide('en');
 

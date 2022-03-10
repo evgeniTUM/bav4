@@ -3,7 +3,7 @@ import { MvuElement } from '../../../MvuElement';
 import olCss from 'ol/ol.css';
 import css from './olMap.css';
 import { Map as MapOl, View } from 'ol';
-import { defaults as defaultControls } from 'ol/control';
+import { defaults as defaultControls, ScaleLine } from 'ol/control';
 import { defaults as defaultInteractions, PinchRotate } from 'ol/interaction';
 import { removeLayer } from '../../../../store/layers/layers.action';
 import { changeLiveRotation, changeZoomCenterAndRotation } from '../../../../store/position/position.action';
@@ -13,6 +13,7 @@ import { setBeingDragged, setClick, setContextClick, setPointerMove } from '../.
 import { setBeingMoved, setMoveEnd, setMoveStart } from '../../../../store/map/map.action';
 import VectorSource from 'ol/source/Vector';
 import { Group as LayerGroup } from 'ol/layer';
+import { GeoResourceTypes } from '../../../../services/domain/geoResources';
 
 const Update_Position = 'update_position';
 const Update_Layers = 'update_layers';
@@ -90,7 +91,8 @@ export class OlMap extends MvuElement {
 		this._view = new View({
 			center: center,
 			zoom: zoom,
-			rotation: rotation
+			rotation: rotation,
+			maxZoom: this._mapService.getMaxZoomLevel()
 		});
 
 		this._view.on('change:rotation', (evt) => {
@@ -105,7 +107,7 @@ export class OlMap extends MvuElement {
 				attribution: false,
 				zoom: false,
 				rotate: false
-			}),
+			}).extend([new ScaleLine({ target: this._mapService.getScaleLineContainer() })]),
 			moveTolerance: this._environmentService.isTouch() ? 3 : 1,
 			interactions: defaultInteractions({
 				//for embedded mode
@@ -268,18 +270,44 @@ export class OlMap extends MvuElement {
 		});
 
 		toBeAdded.forEach(id => {
-			const resource = this._geoResourceService.byId(id);
-			const olLayer = resource ? this._layerService.toOlLayer(resource, this._map) : (this._layerHandler.has(id) ? toOlLayerFromHandler(id, this._layerHandler.get(id), this._map) : null);
 
-			if (olLayer) {
-				const layer = layers.find(layer => layer.geoResourceId === id);
-				updateOlLayer(olLayer, layer);
-				this._map.getLayers().insertAt(layer.zIndex, olLayer);
+			const toOlLayer = (geoResource, id) => {
+				const olLayer = geoResource ? this._layerService.toOlLayer(geoResource, this._map) : (this._layerHandler.has(id) ? toOlLayerFromHandler(id, this._layerHandler.get(id), this._map) : null);
+
+				if (olLayer) {
+					const layer = layers.find(layer => layer.geoResourceId === id);
+					updateOlLayer(olLayer, layer);
+					this._map.getLayers().insertAt(layer.zIndex, olLayer);
+				}
+				else {
+					console.warn('Could not add an olLayer for id \'' + id + '\'');
+					//Todo: we should also inform the user by a notification
+					removeLayer(id);
+				}
+			};
+
+			const geoResource = this._geoResourceService.byId(id);
+			//if geoResource is a future, we insert a placeholder olLayer replacing it after the geoResource was resolved
+			if (geoResource?.getType() === GeoResourceTypes.FUTURE) {
+				// eslint-disable-next-line promise/prefer-await-to-then
+				geoResource.get().then(lazyLoadedGeoResource => {
+					// replace the future GeoResource by the real GeoResource in the chache
+					this._geoResourceService.addOrReplace(lazyLoadedGeoResource);
+					// replace the placeholder olLayer by the real the olLayer
+					const layer = layers.find(layer => layer.geoResourceId === id);
+					const realOlLayer = this._layerService.toOlLayer(lazyLoadedGeoResource, this._map);
+					updateOlLayer(realOlLayer, layer);
+					this._map.getLayers().remove(getLayerById(this._map, id));
+					this._map.getLayers().insertAt(layer.zIndex, realOlLayer);
+				})
+					// eslint-disable-next-line promise/prefer-await-to-then
+					.catch(error => {
+						console.warn(error);
+						//Todo: we should also inform the user by a notification
+						removeLayer(id);
+					});
 			}
-			else {
-				console.warn('Could not add an olLayer for id \'' + id + '\'');
-				removeLayer(id);
-			}
+			toOlLayer(geoResource, id);
 		});
 
 		toBeUpdated.forEach(id => {

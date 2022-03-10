@@ -10,6 +10,8 @@ import { sharedReducer } from '../../../../../src/store/shared/shared.reducer';
 import { IconResult } from '../../../../../src/services/IconService';
 import { IconSelect } from '../../../../../src/modules/iconSelect/components/IconSelect';
 import { Icon } from '../../../../../src/modules/commons/components/icon/Icon';
+import { createNoInitialStateMediaReducer } from '../../../../../src/store/media/media.reducer';
+import { TEST_ID_ATTRIBUTE_NAME } from '../../../../../src/utils/markup';
 
 window.customElements.define(Icon.tag, Icon);
 window.customElements.define(IconSelect.tag, IconSelect);
@@ -60,13 +62,18 @@ describe('DrawToolContent', () => {
 	const setup = async (drawState = drawDefaultState, config = {}) => {
 		const state = {
 			draw: drawState,
-			shared: { termsOfUseAcknowledged: false,
-				fileSaveResult: null }
+			shared: {
+				termsOfUseAcknowledged: false,
+				fileSaveResult: null
+			},
+			media: {
+				portrait: false
+			}
 		};
 
 		const { embed = false, isTouch = false } = config;
 
-		store = TestUtils.setupStoreAndDi(state, { draw: drawReducer, modal: modalReducer, shared: sharedReducer });
+		store = TestUtils.setupStoreAndDi(state, { draw: drawReducer, modal: modalReducer, shared: sharedReducer, media: createNoInitialStateMediaReducer() });
 		$injector
 			.registerSingleton('EnvironmentService', {
 				isEmbedded: () => embed,
@@ -90,6 +97,26 @@ describe('DrawToolContent', () => {
 		});
 	});
 
+	describe('when instantiated', () => {
+
+		it('has a model with default values', async () => {
+			const element = await setup();
+			const model = element.getModel();
+			expect(model).toEqual({
+				type: null,
+				style: null,
+				description: null,
+				selectedStyle: null,
+				mode: null,
+				fileSaveResult: null,
+				validGeometry: null,
+				tools: jasmine.any(Array),
+				collapsedInfo: null,
+				collapsedStyle: null
+			});
+		});
+	});
+
 	describe('when initialized', () => {
 
 		it('builds list of tools', async () => {
@@ -104,54 +131,62 @@ describe('DrawToolContent', () => {
 		it('activates the Line draw tool', async () => {
 
 			const element = await setup();
-			const toolButton = element.shadowRoot.querySelector('#line');
+			const toolButton = element.shadowRoot.querySelector('#line-button');
 
 			toolButton.click();
 
 			expect(toolButton.classList.contains('is-active')).toBeTrue();
 			expect(store.getState().draw.type).toBe('line');
+			expect(element.shadowRoot.querySelectorAll(`[${TEST_ID_ATTRIBUTE_NAME}]`)).toHaveSize(4);
+			expect(element.shadowRoot.querySelector('#line-button').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 		});
 
 		it('activates the marker draw tool', async () => {
 
 			const element = await setup();
-			const toolButton = element.shadowRoot.querySelector('#marker');
+			const toolButton = element.shadowRoot.querySelector('#marker-button');
 
 			toolButton.click();
 
 			expect(toolButton.classList.contains('is-active')).toBeTrue();
 			expect(store.getState().draw.type).toBe('marker');
+			expect(element.shadowRoot.querySelectorAll(`[${TEST_ID_ATTRIBUTE_NAME}]`)).toHaveSize(4);
+			expect(element.shadowRoot.querySelector('#marker-button').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 		});
 
 		it('activates the Text draw tool', async () => {
 
 			const element = await setup();
-			const toolButton = element.shadowRoot.querySelector('#text');
+			const toolButton = element.shadowRoot.querySelector('#text-button');
 
 			toolButton.click();
 
 			expect(toolButton.classList.contains('is-active')).toBeTrue();
 			expect(store.getState().draw.type).toBe('text');
+			expect(element.shadowRoot.querySelectorAll(`[${TEST_ID_ATTRIBUTE_NAME}]`)).toHaveSize(4);
+			expect(element.shadowRoot.querySelector('#text-button').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 		});
 
 		it('activates the Polygon draw tool', async () => {
 
 			const element = await setup();
-			const toolButton = element.shadowRoot.querySelector('#polygon');
+			const toolButton = element.shadowRoot.querySelector('#polygon-button');
 
 			toolButton.click();
 
 			expect(toolButton.classList.contains('is-active')).toBeTrue();
 			expect(store.getState().draw.type).toBe('polygon');
+			expect(element.shadowRoot.querySelectorAll(`[${TEST_ID_ATTRIBUTE_NAME}]`)).toHaveSize(4);
+			expect(element.shadowRoot.querySelector('#polygon-button').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 		});
 
 		it('deactivates last tool, when activate another', async () => {
 			const element = await setup();
 
-			const lastButton = element.shadowRoot.querySelector('#polygon');
+			const lastButton = element.shadowRoot.querySelector('#polygon-button');
 			lastButton.click();
 
-			const toolButton = element.shadowRoot.querySelector('#line');
+			const toolButton = element.shadowRoot.querySelector('#line-button');
 			toolButton.click();
 
 			expect(toolButton.classList.contains('is-active')).toBeTrue();
@@ -160,7 +195,7 @@ describe('DrawToolContent', () => {
 
 		it('toggles a tool', async () => {
 			const element = await setup();
-			const toolButton = element.shadowRoot.querySelector('#line');
+			const toolButton = element.shadowRoot.querySelector('#line-button');
 
 			toolButton.click();
 
@@ -207,6 +242,145 @@ describe('DrawToolContent', () => {
 			expect(store.getState().draw.style.color).toBe(newColor);
 		});
 
+		it('collapse container', async () => {
+
+			const style = { ...StyleOptionTemplate, color: '#f00ba3', symbolSrc: 'data:image/svg+xml;base64,foobar' };
+
+			const element = await setup({ ...drawDefaultState, style });
+
+			setType('marker');
+			const sections = element.shadowRoot.querySelectorAll('.tool-section');
+			expect(sections.length).toBe(2);
+
+			const collapseButton = element.shadowRoot.querySelectorAll('.sub-header');
+			expect(collapseButton.length).toBe(2);
+
+			const isCollapse = element.shadowRoot.querySelectorAll('.iscollapse');
+			expect(isCollapse.length).toBe(2);
+
+			collapseButton[0].click();
+
+			const isCollapse1 = element.shadowRoot.querySelectorAll('.iscollapse');
+			expect(isCollapse1.length).toBe(1);
+
+			collapseButton[1].click();
+
+			const isCollapse2 = element.shadowRoot.querySelectorAll('.iscollapse');
+			expect(isCollapse2.length).toBe(0);
+
+			collapseButton[0].click();
+			collapseButton[1].click();
+
+			const isCollapse3 = element.shadowRoot.querySelectorAll('.iscollapse');
+			expect(isCollapse3.length).toBe(2);
+		});
+
+		it('sets the style, after color changes in ColorPalette (with LOCAL icon-asset)', async () => {
+			const style = { ...StyleOptionTemplate, color: '#f00ba3', symbolSrc: 'data:image/svg+xml;base64,foobar' };
+
+			const element = await setup({ ...drawDefaultState, style });
+
+			setType('marker');
+			const colorInput = element.shadowRoot.querySelector('#style_color');
+
+			const redButton = element.shadowRoot.querySelector('.red');
+			expect(redButton).toBeTruthy();
+			redButton.click();
+			expect(colorInput.value.toUpperCase()).toBe('#FF0000');
+			expect(store.getState().draw.style.color.toUpperCase()).toBe('#FF0000');
+
+			const yellowButton = element.shadowRoot.querySelector('.yellow');
+			expect(yellowButton).toBeTruthy();
+			yellowButton.click();
+			expect(colorInput.value.toUpperCase()).toBe('#FFFF00');
+			expect(store.getState().draw.style.color.toUpperCase()).toBe('#FFFF00');
+
+			const limeButton = element.shadowRoot.querySelector('.lime');
+			expect(limeButton).toBeTruthy();
+			limeButton.click();
+			expect(colorInput.value.toUpperCase()).toBe('#00FF00');
+			expect(store.getState().draw.style.color.toUpperCase()).toBe('#00FF00');
+
+			const aquaButton = element.shadowRoot.querySelector('.aqua');
+			expect(aquaButton).toBeTruthy();
+			aquaButton.click();
+			expect(colorInput.value.toUpperCase()).toBe('#00FFFF');
+			expect(store.getState().draw.style.color.toUpperCase()).toBe('#00FFFF');
+
+			const blueButton = element.shadowRoot.querySelector('.blue');
+			expect(blueButton).toBeTruthy();
+			blueButton.click();
+			expect(colorInput.value.toUpperCase()).toBe('#0000FF');
+			expect(store.getState().draw.style.color.toUpperCase()).toBe('#0000FF');
+
+			const fuchsiaButton = element.shadowRoot.querySelector('.fuchsia');
+			expect(fuchsiaButton).toBeTruthy();
+			fuchsiaButton.click();
+			expect(colorInput.value.toUpperCase()).toBe('#FF00FF');
+			expect(store.getState().draw.style.color.toUpperCase()).toBe('#FF00FF');
+
+			const whiteButton = element.shadowRoot.querySelector('.white');
+			expect(whiteButton).toBeTruthy();
+			whiteButton.click();
+			expect(colorInput.value.toUpperCase()).toBe('#FFFFFF');
+			expect(store.getState().draw.style.color.toUpperCase()).toBe('#FFFFFF');
+
+			const greyButton = element.shadowRoot.querySelector('.grey');
+			expect(greyButton).toBeTruthy();
+			greyButton.click();
+			expect(colorInput.value.toUpperCase()).toBe('#808080');
+			expect(store.getState().draw.style.color.toUpperCase()).toBe('#808080');
+
+			const maroonButton = element.shadowRoot.querySelector('.maroon');
+			expect(maroonButton).toBeTruthy();
+			maroonButton.click();
+			expect(colorInput.value.toUpperCase()).toBe('#800000');
+			expect(store.getState().draw.style.color.toUpperCase()).toBe('#800000');
+
+			const oliveButton = element.shadowRoot.querySelector('.olive');
+			expect(oliveButton).toBeTruthy();
+			oliveButton.click();
+			expect(colorInput.value.toUpperCase()).toBe('#808000');
+			expect(store.getState().draw.style.color.toUpperCase()).toBe('#808000');
+
+			const greenButton = element.shadowRoot.querySelector('.green');
+			expect(greenButton).toBeTruthy();
+			greenButton.click();
+			expect(colorInput.value.toUpperCase()).toBe('#008000');
+			expect(store.getState().draw.style.color.toUpperCase()).toBe('#008000');
+
+			const tealButton = element.shadowRoot.querySelector('.teal');
+			expect(tealButton).toBeTruthy();
+			tealButton.click();
+			expect(colorInput.value.toUpperCase()).toBe('#008080');
+			expect(store.getState().draw.style.color.toUpperCase()).toBe('#008080');
+
+			const navyButton = element.shadowRoot.querySelector('.navy');
+			expect(navyButton).toBeTruthy();
+			navyButton.click();
+			expect(colorInput.value.toUpperCase()).toBe('#000080');
+			expect(store.getState().draw.style.color.toUpperCase()).toBe('#000080');
+
+			const purpleButton = element.shadowRoot.querySelector('.purple');
+			expect(purpleButton).toBeTruthy();
+			purpleButton.click();
+			expect(colorInput.value.toUpperCase()).toBe('#800080');
+			expect(store.getState().draw.style.color.toUpperCase()).toBe('#800080');
+
+			const silverButton = element.shadowRoot.querySelector('.silver');
+			expect(silverButton).toBeTruthy();
+			silverButton.click();
+			expect(colorInput.value.toUpperCase()).toBe('#C0C0C0');
+			expect(store.getState().draw.style.color.toUpperCase()).toBe('#C0C0C0');
+
+			const blackButton = element.shadowRoot.querySelector('.black');
+			expect(blackButton).toBeTruthy();
+			blackButton.click();
+			expect(colorInput.value.toUpperCase()).toBe('#000000');
+			expect(store.getState().draw.style.color.toUpperCase()).toBe('#000000');
+
+		});
+
 		it('sets the style, after color changes in color-input (with REMOTE icon-asset)', async () => {
 			const style = { ...StyleOptionTemplate, color: '#f00ba3', symbolSrc: 'https://some.url/foo/bar/0,0,0/foobar' };
 			const getIconResultSpy = spyOn(iconServiceMock, 'getIconResult').and.callFake(() => {
@@ -233,7 +407,8 @@ describe('DrawToolContent', () => {
 			const style = { ...StyleOptionTemplate, color: '#f00ba3', symbolSrc: 'https://some.url/foo/bar/0,0,0/foobar' };
 			const newColor = '#ffffff';
 			const element = await setup({ ...drawDefaultState, style });
-
+			const iconResultMock = { getUrl: () => 'https://some.url/foo/bar/255,255,255/foobar' };
+			spyOn(iconServiceMock, 'getIconResult').and.callFake(() => iconResultMock);
 			setType('line');
 			const colorInput = element.shadowRoot.querySelector('#style_color');
 			expect(colorInput).toBeTruthy();
@@ -243,7 +418,7 @@ describe('DrawToolContent', () => {
 			colorInput.dispatchEvent(new Event('input'));
 
 			expect(store.getState().draw.style.color).toBe(newColor);
-			expect(store.getState().draw.style.symbolSrc).toBeNull();
+			expect(store.getState().draw.style.symbolSrc).toBe('https://some.url/foo/bar/255,255,255/foobar');
 		});
 
 		it('sets the style, after scale changes in scale-input', async () => {
@@ -289,7 +464,7 @@ describe('DrawToolContent', () => {
 			// wait to get icons loaded....
 			setTimeout(() => {
 				// ..then perform ui-actions
-				const iconButton = iconSelect.shadowRoot.querySelector('ba-icon');
+				const iconButton = iconSelect.shadowRoot.querySelector('.iconselect__toggle-button');
 				iconButton.click();
 
 				const selectableIcon = iconSelect.shadowRoot.querySelector('#svg_foo');
@@ -299,6 +474,22 @@ describe('DrawToolContent', () => {
 				done();
 			});
 
+		});
+
+		it('sets the description, after description changes in textarea', async () => {
+
+			const newText = 'bar';
+			const element = await setup({ ...drawDefaultState, description: 'Foo', style: StyleOptionTemplate });
+
+			setType('text');
+			const descriptionTextArea = element.shadowRoot.querySelector('textarea');
+			expect(descriptionTextArea).toBeTruthy();
+			expect(descriptionTextArea.value).toBe('Foo');
+
+			descriptionTextArea.value = newText;
+			descriptionTextArea.dispatchEvent(new Event('input'));
+
+			expect(store.getState().draw.description).toBe(newText);
 		});
 
 		it('sets the style-inputs for symbol-tool', async () => {
@@ -367,38 +558,38 @@ describe('DrawToolContent', () => {
 		it('displays the finish-button for polygon', async () => {
 			const element = await setup({ ...drawDefaultState, mode: 'draw', type: 'polygon', validGeometry: true });
 
-			expect(element.shadowRoot.querySelector('#cancel')).toBeFalsy();
-			expect(element.shadowRoot.querySelector('#finish')).toBeTruthy();
-			expect(element.shadowRoot.querySelector('#finish').label).toBe('toolbox_drawTool_finish');
+			expect(element.shadowRoot.querySelector('#cancel-button')).toBeFalsy();
+			expect(element.shadowRoot.querySelector('#finish-button')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#finish-button').label).toBe('toolbox_drawTool_finish');
 		});
 
 		it('displays the finish-button for line', async () => {
 			const element = await setup({ ...drawDefaultState, mode: 'draw', type: 'line', validGeometry: true });
 
-			expect(element.shadowRoot.querySelector('#cancel')).toBeFalsy();
-			expect(element.shadowRoot.querySelector('#finish')).toBeTruthy();
-			expect(element.shadowRoot.querySelector('#finish').label).toBe('toolbox_drawTool_finish');
+			expect(element.shadowRoot.querySelector('#cancel-button')).toBeFalsy();
+			expect(element.shadowRoot.querySelector('#finish-button')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#finish-button').label).toBe('toolbox_drawTool_finish');
 		});
 
 		it('displays NOT the finish-button for marker', async () => {
 			const element = await setup({ ...drawDefaultState, mode: 'draw', type: 'marker' });
 
-			expect(element.shadowRoot.querySelector('#cancel')).toBeTruthy();
-			expect(element.shadowRoot.querySelector('#finish')).toBeFalsy();
-			expect(element.shadowRoot.querySelector('#cancel').label).toBe('toolbox_drawTool_cancel');
+			expect(element.shadowRoot.querySelector('#cancel-button')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#finish-button')).toBeFalsy();
+			expect(element.shadowRoot.querySelector('#cancel-button').label).toBe('toolbox_drawTool_cancel');
 		});
 
 		it('displays NOT the finish-button for text', async () => {
 			const element = await setup({ ...drawDefaultState, mode: 'draw', type: 'marker' });
 
-			expect(element.shadowRoot.querySelector('#cancel')).toBeTruthy();
-			expect(element.shadowRoot.querySelector('#finish')).toBeFalsy();
-			expect(element.shadowRoot.querySelector('#cancel').label).toBe('toolbox_drawTool_cancel');
+			expect(element.shadowRoot.querySelector('#cancel-button')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#finish-button')).toBeFalsy();
+			expect(element.shadowRoot.querySelector('#cancel-button').label).toBe('toolbox_drawTool_cancel');
 		});
 
 		it('finishes the drawing', async () => {
 			const element = await setup({ ...drawDefaultState, mode: 'draw', type: 'line', validGeometry: true });
-			const finishButton = element.shadowRoot.querySelector('#finish');
+			const finishButton = element.shadowRoot.querySelector('#finish-button');
 
 			finishButton.click();
 
@@ -407,7 +598,7 @@ describe('DrawToolContent', () => {
 
 		it('resets the measurement', async () => {
 			const element = await setup({ ...drawDefaultState, mode: 'draw', type: 'marker' });
-			const resetButton = element.shadowRoot.querySelector('#cancel');
+			const resetButton = element.shadowRoot.querySelector('#cancel-button');
 
 			resetButton.click();
 			expect(resetButton.label).toBe('toolbox_drawTool_cancel');
@@ -416,7 +607,7 @@ describe('DrawToolContent', () => {
 
 		it('removes the selected drawing', async () => {
 			const element = await setup({ ...drawDefaultState, mode: 'modify', type: 'line' });
-			const removeButton = element.shadowRoot.querySelector('#remove');
+			const removeButton = element.shadowRoot.querySelector('#remove-button');
 
 			removeButton.click();
 			expect(removeButton.label).toBe('toolbox_drawTool_delete_drawing');
@@ -425,7 +616,7 @@ describe('DrawToolContent', () => {
 
 		it('deletes the last drawn point of drawing', async () => {
 			const element = await setup({ ...drawDefaultState, mode: 'draw', type: 'line', validGeometry: true });
-			const removeButton = element.shadowRoot.querySelector('#remove');
+			const removeButton = element.shadowRoot.querySelector('#remove-button');
 
 			removeButton.click();
 			expect(removeButton.label).toBe('toolbox_drawTool_delete_point');

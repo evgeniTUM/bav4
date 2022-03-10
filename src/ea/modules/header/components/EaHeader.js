@@ -1,5 +1,5 @@
 import '../../../../modules/header/i18n';
-import { open as openMainMenu, setTab, TabKey, toggle } from '../../../../store/mainMenu/mainMenu.action';
+import { open as openMainMenu, setTab, TabId, toggle } from '../../../../store/mainMenu/mainMenu.action';
 //import { TabIndex as TabIndex } from '../../../../store_ea/mainMenu/mainMenu.action';
 import { html } from 'lit-html';
 import { Header } from '../../../../modules/header/components/Header';
@@ -34,7 +34,7 @@ export class EaHeader extends Header {
                 const viewAttrProvider = super.getViewAttrProvider(model);
                 
 		const openExtendedTab = () => {
-			setTab(TabKey.EXTENSION);
+			setTab(TabId.EXTENSION);
 			openMainMenu();
 		};
 
@@ -75,17 +75,17 @@ export class EaHeader extends Header {
 						</button>
 					</div>
 					<div  class="header__button-container">
-						<button class="${viewAttrProvider.getActiveClass(TabKey.TOPICS)}" title=${translate('ea_header_tab_topics_title')} @click="${viewAttrProvider.openTopicsTab}">
+						<button class="${viewAttrProvider.getActiveClass(TabId.TOPICS)}" title=${translate('ea_header_tab_topics_title')} @click="${viewAttrProvider.openTopicsTab}">
 							<span>
 								${translate('ea_header_tab_topics_button')}
 							</span>
 						</button>
-						<button class="${viewAttrProvider.getActiveClass(TabKey.EXTENSION)}" title=${translate('ea_header_tab_additional_title')}  @click="${openExtendedTab}">
+						<button class="${viewAttrProvider.getActiveClass(TabId.EXTENSION)}" title=${translate('ea_header_tab_additional_title')}  @click="${openExtendedTab}">
 							<span>
 								${translate('ea_header_tab_additional_button')}
 							</span>
 						</button>
-						<button class="${viewAttrProvider.getActiveClass(TabKey.MAPS)}" title=${translate('ea_header_tab_maps_title')}  @click="${viewAttrProvider.openMapLayerTab}">
+						<button class="${viewAttrProvider.getActiveClass(TabId.MAPS)}" title=${translate('ea_header_tab_maps_title')}  @click="${viewAttrProvider.openMapLayerTab}">
 							<span>
 								${translate('ea_header_tab_maps_button')}
 							</span>
@@ -93,9 +93,9 @@ export class EaHeader extends Header {
 							 	${viewAttrProvider.layerCount}
 							</div>
 						</button>
-						<button class="${viewAttrProvider.getActiveClass(TabKey.MORE)}" title=${translate('ea_header_tab_more_title')}  @click="${viewAttrProvider.openMoreTab}">
+						<button class="${viewAttrProvider.getActiveClass(TabId.MORE)}" title=${translate('ea_header_tab_more_title')}  @click="${viewAttrProvider.openMiscTab}">
 							<span>
-								${translate('header_tab_more_button')}
+								${translate('header_tab_misc_button')}
 							</span>
 						</button>
 					</div>
