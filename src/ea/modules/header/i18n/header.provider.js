@@ -4,6 +4,7 @@ export const provide = (lang) => {
 		case 'en':
 			return {
 				header_action_button_title : 'to startpage of Energie-Atlas',
+				header_emblem_action_title : 'to site of Bavarian Goverment',
 				ea_header_tab_topics_button : "Maps",
 				ea_header_tab_topics_title: " Kartenauswahl öffnen",
 				ea_header_tab_additional_button : "Analyse",
@@ -17,6 +18,7 @@ export const provide = (lang) => {
 			return {
 				//the first part of the snake_case key should be the name of the related module
 				header_action_button_title : 'zur Energie-Atlas-Startseite',
+				header_emblem_action_title : 'zur Bayerischen Staatsregierung',
 				ea_header_tab_topics_button : "Karten",
 				ea_header_tab_topics_title: " Kartenauswahl öffnen",
 				ea_header_tab_additional_button : "Analyse",
