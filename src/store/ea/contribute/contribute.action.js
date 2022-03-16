@@ -2,9 +2,8 @@
  * Action creators to handle user contributions of new energy facilities
  * @module ea/contribute/action
  */
-import { FINISH_REQUESTED, DESCRIPTION_CHANGED, REMOVE_REQUESTED } from './contribute.reducer';
+import { SET_LOCATION, DESCRIPTION_CHANGED, TAGGING_MODE_CHANGED } from './contribute.reducer';
 import { $injector } from '../../../injection';
-import { EventLike } from '../../../utils/storeUtils';
 
 
 const getStore = () => {
@@ -13,19 +12,9 @@ const getStore = () => {
 };
 
 
-/**
- * Set the finish request.
- * @function
- */
-export const finish = () => {
-	getStore().dispatch({
-		type: FINISH_REQUESTED,
-		payload: new EventLike('finish')
-	});
-};
 
 /**
- * Set the description of a drawing.
+ * Set the description 
  * @function
  * @param {string} description the description of a drawing
  */
@@ -37,12 +26,23 @@ export const setDescription = (description) => {
 };
 
 /**
- * Set the delete request.
+ * Set the location. 
  * @function
  */
-export const remove = () => {
+export const setLocation = (position) => {
 	getStore().dispatch({
-		type: REMOVE_REQUESTED,
-		payload: new EventLike('remove')
+		type: SET_LOCATION,
+		payload: position
+	});
+};
+
+/**
+ * Set the location. 
+ * @function
+ */
+export const setTaggingMode = (enabled) => {
+	getStore().dispatch({
+		type: TAGGING_MODE_CHANGED,
+		payload: enabled 
 	});
 };

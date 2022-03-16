@@ -1,21 +1,23 @@
 export const DESCRIPTION_CHANGED = 'ea/contribute/description';
-export const FINISH_REQUESTED = 'ea/contribute/finish';
-export const REMOVE_REQUESTED = 'ea/contribute/remove';
+export const SET_LOCATION = 'ea/contribute/set_location';
+export const TAGGING_MODE_CHANGED = 'ea/contribute/tagging_mode';
 
 
 export const initialState = {
+	/** 
+	 * @type {Boolean}
+	 */
+	active: false,
+
+	/** 
+	 * @type {Boolean}
+	 */
+	tagging: false,
+
 	/**
 	 * @type {String}
 	 */
 	description: null,
-	/**
-	 * @type EventLike
-	 */
-	finish: null,
-	/**
-	 * @type EventLike
-	 */
-	remove: null
 };
 
 export const contributeReducer = (state = initialState, action) => {
@@ -30,20 +32,17 @@ export const contributeReducer = (state = initialState, action) => {
 
 			};
 		}
-		case FINISH_REQUESTED: {
+		case SET_LOCATION: {
 
 			return {
 				...state,
-				finish: payload
-
+				position: payload,
 			};
 		}
-		case REMOVE_REQUESTED: {
-
+		case TAGGING_MODE_CHANGED: {
 			return {
 				...state,
-				remove: payload
-
+				tagging: payload
 			};
 		}
 	}

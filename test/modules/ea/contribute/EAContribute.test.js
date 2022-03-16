@@ -1,7 +1,7 @@
 import { TestUtils } from '../../../test-utils';
 import { $injector } from '../../../../src/injection';
 import { EAContribute } from '../../../../src/modules/ea/components/contribute/EAContribute';
-import { contributeReducer } from '../../../../src/store/ea/contribute/contribute.reducer';
+import { contributeReducer, initialState } from '../../../../src/store/ea/contribute/contribute.reducer';
 import { modalReducer } from '../../../../src/store/modal/modal.reducer';
 import { MvuElement } from '../../../../src/modules/MvuElement';
 
@@ -11,13 +11,9 @@ window.customElements.define(EAContribute.tag, EAContribute);
 describe('EAContribute', () => {
 	let store;
 
-	const defaultState = {
-		coordinates: "",
-		email: "",
-		text: ""
-	};
+	const defaultState = initialState;
 
-	const setup = async (contributeState = {}, config = {}) => {
+	const setup = async (contributeState = defaultState, config = {}) => {
 		const state = {
 			contribute: contributeState
 		};
@@ -49,10 +45,11 @@ describe('EAContribute', () => {
 	describe('when initialized', () => {
 
 		it('all fields are shown', async () => {
-			const element = await setup(defaultState);
+			const element = await setup();
 
-			expect(element.shadowRoot.querySelector('textarea')).toBeTruthy();
-			expect(element.shadowRoot.querySelector('#mark')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#description')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#tag')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#select')).toBeTruthy();
 
 		});
 
@@ -70,7 +67,15 @@ describe('EAContribute', () => {
 			expect(store.getState().contribute.description).toBe(newText);
 		});
 
+		it('activates tagging mode when tag button is clicked', async () => {
+			const element = await setup();
 
+			expect(store.getState().contribute.tagging).toBe(false);
+			element.shadowRoot.querySelector('#tag').click();
+
+			expect(store.getState().contribute.tagging).toBe(true);
+		});
 	});
+
 
 });
