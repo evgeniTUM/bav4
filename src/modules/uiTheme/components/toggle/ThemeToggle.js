@@ -3,6 +3,7 @@ import { $injector } from '../../../../injection';
 import css from './themeToggle.css';
 import { toggleSchema } from '../../../../store/media/media.action';
 import { MvuElement } from '../../../MvuElement';
+import { setState } from '../../../../store/ea/contribute/contribute.action';
 
 const Update_Schema = 'update_schema';
 
@@ -36,10 +37,16 @@ export class ThemeToggle extends MvuElement {
 		const { darkSchema } = model;
 		const titleSuffix = darkSchema ? 'dark' : 'light';
 		const title = this._translationService.translate(`uiTheme_toggle_tooltip_${titleSuffix}`);
+		let contributionIsActive = false;
+		const toggleContribution = () => {
+			contributionIsActive = !contributionIsActive;
+			setState(contributionIsActive);
+		}
 
 		return html`
 		<style>${css}</style>
 		<ba-toggle .title='${title}' .checked=${darkSchema} @toggle=${toggleSchema}><div class='container'><i class='icon adjust'></i></div></ba-toggle>
+		<ba-toggle .title='Mitmachfunktion' .checked=${contributionIsActive} @toggle=${toggleContribution}><div class='container'><i class='icon adjust'></i></div></ba-toggle>
 		`;
 	}
 

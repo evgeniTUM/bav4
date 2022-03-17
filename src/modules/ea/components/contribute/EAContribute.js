@@ -18,7 +18,7 @@ export class EAContribute extends MvuElement {
 			description: "",
 			isPortrait: false,
 			hasMinWidth: false,
-			toolId: null
+			active: false
 		});
 
 		const {
@@ -40,7 +40,7 @@ export class EAContribute extends MvuElement {
 			case Update:
 				return {
 					...model,
-					description: data.description
+					...data
 				};
 		}
 	}
@@ -97,6 +97,9 @@ export class EAContribute extends MvuElement {
 			const state = getStore().getState();
 			setLocation(state.position.center);
 		};
+
+		if (!model.active)
+			return null;
 
 		return html`
 			<style>${css}</style>		

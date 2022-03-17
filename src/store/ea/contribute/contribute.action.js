@@ -2,7 +2,7 @@
  * Action creators to handle user contributions of new energy facilities
  * @module ea/contribute/action
  */
-import { SET_LOCATION, DESCRIPTION_CHANGED, TAGGING_MODE_CHANGED } from './contribute.reducer';
+import { SET_STATE, SET_LOCATION, DESCRIPTION_CHANGED, TAGGING_MODE_CHANGED } from './contribute.reducer';
 import { $injector } from '../../../injection';
 
 
@@ -10,6 +10,20 @@ const getStore = () => {
 	const { StoreService: storeService } = $injector.inject('StoreService');
 	return storeService.getStore();
 };
+
+
+/**
+ * Enable/Disable contribution dialog
+ * @function
+ * @param {bool} enabled flag
+ */
+export const setState = (enabled) => {
+	getStore().dispatch({
+		type: SET_STATE,
+		payload: enabled
+	});
+};
+
 
 
 

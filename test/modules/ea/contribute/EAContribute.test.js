@@ -11,11 +11,10 @@ window.customElements.define(EAContribute.tag, EAContribute);
 describe('EAContribute', () => {
 	let store;
 
-	const defaultState = initialState;
-
-	const setup = async (contributeState = defaultState, config = {}) => {
+	const testState = { ...initialState, ...{ active: true } };
+	const setup = async (customProperties, config = {}) => {
 		const state = {
-			contribute: contributeState
+			contribute: { ...testState, ...customProperties }
 		};
 
 		const { embed = false, isTouch = false } = config;
@@ -43,6 +42,20 @@ describe('EAContribute', () => {
 	});
 
 	describe('when initialized', () => {
+		it('is shown when enabled', async () => {
+			const element = await setup({ active: true });
+
+			expect(element.shadowRoot.children.length).toBeGreaterThan(0);
+		});
+
+		it('is not shown when disabled', async () => {
+			const element = await setup({ active: false });
+
+			expect(element.shadowRoot.children.length).toBe(0);
+		});
+	});
+
+	describe('when initialized and shown', () => {
 
 		it('all fields are shown', async () => {
 			const element = await setup();
@@ -53,9 +66,16 @@ describe('EAContribute', () => {
 
 		});
 
-		it('sets the description, after description changes in textarea', async () => {
+		it('shows no tag location when not present', async () => {
+
+		});
+
+		it('shows tag location when present', async () => {
+		});
+
+		it('sets the description, after changes in textarea', async () => {
 			const newText = 'bar';
-			const element = await setup({ ...defaultState, description: 'Foo' });
+			const element = await setup({ description: 'Foo' });
 
 			const descriptionTextArea = element.shadowRoot.querySelector('textarea');
 			expect(descriptionTextArea).toBeTruthy();
@@ -66,6 +86,8 @@ describe('EAContribute', () => {
 
 			expect(store.getState().contribute.description).toBe(newText);
 		});
+
+
 
 		it('activates tagging mode when tag button is clicked', async () => {
 			const element = await setup();
