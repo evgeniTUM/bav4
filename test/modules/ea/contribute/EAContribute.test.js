@@ -12,6 +12,9 @@ describe('EAContribute', () => {
 	let store;
 
 	const testState = { ...initialState, ...{ active: true } };
+
+	const coordinateServiceMock = { stringify: (coords) => coords  };
+
 	const setup = async (customProperties, config = {}) => {
 		const state = {
 			contribute: { ...testState, ...customProperties }
@@ -27,6 +30,7 @@ describe('EAContribute', () => {
 				isTouch: () => isTouch
 			})
 			.registerSingleton('TranslationService', { translate: (key) => key })
+			.registerSingleton('CoordinateService', coordinateServiceMock)
 		return TestUtils.render(EAContribute.tag);
 	};
 
@@ -61,16 +65,22 @@ describe('EAContribute', () => {
 			const element = await setup();
 
 			expect(element.shadowRoot.querySelector('#description')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#coordinates')).toBeTruthy();
 			expect(element.shadowRoot.querySelector('#tag')).toBeTruthy();
 			expect(element.shadowRoot.querySelector('#select')).toBeTruthy();
 
 		});
 
 		it('shows no tag location when not present', async () => {
+			const element = await setup();
 
+			expect(element.shadowRoot.querySelector('#coordinates').textContent).toEqual('');
 		});
 
 		it('shows tag location when present', async () => {
+			const element = await setup({ position: [42.0, 24.0]});
+
+			expect(element.shadowRoot.querySelector('#coordinates').textContent).toEqual('42 24');
 		});
 
 		it('sets the description, after changes in textarea', async () => {

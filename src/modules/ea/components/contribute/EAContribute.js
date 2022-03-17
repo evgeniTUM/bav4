@@ -1,12 +1,11 @@
-import { html, nothing } from 'lit-html';
+import { html } from 'lit-html';
 import { $injector } from '../../../../injection';
-import css from './eaContribute.css';
 import { setDescription, setLocation, setTaggingMode } from '../../../../store/ea/contribute/contribute.action';
-import closeIcon from './assets/x-square.svg';
-import { MvuElement } from '../../../MvuElement';
-import { SET_LOCATION } from '../../../../store/ea/contribute/contribute.reducer';
-import { CONTRIBUTION_LAYER_ID } from '../../../map/components/olMap/handler/contribution/OlContributionHandler';
 import { addLayer } from '../../../../store/layers/layers.action';
+import { CONTRIBUTION_LAYER_ID } from '../../../map/components/olMap/handler/contribution/OlContributionHandler';
+import { MvuElement } from '../../../MvuElement';
+import closeIcon from './assets/x-square.svg';
+import css from './eaContribute.css';
 
 
 const Update = 'update';
@@ -23,12 +22,14 @@ export class EAContribute extends MvuElement {
 
 		const {
 			EnvironmentService: environmentService,
-			TranslationService: translationService
+			TranslationService: translationService,
+			CoordinateService: coordinateService,
 		}
-			= $injector.inject('EnvironmentService', 'TranslationService');
+			= $injector.inject('EnvironmentService', 'TranslationService', 'CoordinateService');
 
 		this._environmentService = environmentService;
 		this._translationService = translationService;
+		this._coordinateService = coordinateService;
 	}
 
 
@@ -70,32 +71,24 @@ export class EAContribute extends MvuElement {
 			setDescription(e.target.value);
 		};
 
-		const getOrientationClass = () => {
-			// TODO
-			//			return isPortrait ? 'is-portrait' : 'is-landscape';
-			return 'is-landscape';
-		};
-
-		const getMinWidthClass = () => {
-			// TODO
-			//return hasMinWidth ? 'is-desktop' : 'is-tablet';
-			return 'is-desktop';
-		};
-		
 		const getStore = () => {
 			const { StoreService: storeService } = $injector.inject('StoreService');
 			return storeService.getStore();
 		};
 
 		const onClickTagButton = () => {
-			setTaggingMode(true);			
+			setTaggingMode(true);
 		};
 
 		const onClickSetLocationButton = () => {
-			addLayer(CONTRIBUTION_LAYER_ID, { label: "contribution_layer", constraints: { hidden: true, alwaysTop: false} });
+			addLayer(CONTRIBUTION_LAYER_ID, { label: "contribution_layer", constraints: { hidden: true, alwaysTop: false } });
 
 			const state = getStore().getState();
 			setLocation(state.position.center);
+		};
+
+		const getCoordinatesString = () => {
+			return model.position ? model.position[0] + " " + model.position[1] : '';
 		};
 
 		if (!model.active)
@@ -103,20 +96,18 @@ export class EAContribute extends MvuElement {
 
 		return html`
 			<style>${css}</style>		
-			<div class=" ${getOrientationClass()} ${getMinWidthClass()}">  	
 			<div class="tool-container"> 			
-				<div class="tool-container__content is-open">    
+				<div class="tool-container__content is-open" id='container'>    
 					<div class="tool-container__tools-nav">                         
 						<ba-icon class='tool-container__close-button' .icon='${closeIcon}' .size=${1.5} .color=${'var(--text2)'} .color_hover=${'var(--text2)'} @click=${close}>						
                 	</div>
-					
 					<div class="tool-container__style_desc" title="${translate('ea_contribute_desc')}">
 						<label for="description">${translate('ea_contribute_desc')}</label>	
 						<textarea id="description" name="${translate('ea_contribute_desc')}" .value=${description} @input=${onChangeDescription}></textarea>
 					</div>	
 					<div class="tool-container__style_desc" title="${translate('ea_contribute_coordinates_text')}">
 						<label for="coordinates">${translate('ea_contribute_coordinates_text')}</label>	
-						<ba-coordinate-select id="coordinates"></ba-coordinate-select>
+						<div id='coordinates'>${getCoordinatesString()}</div>
 					</div>
 					<ba-button id="tag" 
 						class="tool-container__button" 
