@@ -22,6 +22,25 @@ export const geolocationStyleFunction = () => [new Style({
 	})
 })];
 
+export const taggingStyleFunction = () => [new Style({
+	fill: new Fill({
+		color: [255, 0, 0, 0.1]
+	}),
+	stroke: new Stroke({
+		color: [255, 0, 0, 0.9],
+		width: 3
+	}),
+	image: new CircleStyle({
+		radius: 5,
+		fill: new Fill({
+			color: [0, 0, 0, 0.9]
+		}),
+		stroke: new Stroke({
+			color: [255, 255, 255, 1],
+			width: 2
+		})
+	})
+})];
 export const nullStyleFunction = () => [new Style({})];
 
 /**

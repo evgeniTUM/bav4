@@ -81,6 +81,8 @@ export class EAContribute extends MvuElement {
 
 		const onClickFinish = () => {
 			alert(JSON.stringify(model));
+			setTaggingMode(false);
+			removeLayer(CONTRIBUTION_LAYER_ID);
 		}
 
 		const getCoordinatesString = () => {

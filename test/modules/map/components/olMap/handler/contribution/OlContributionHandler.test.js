@@ -1,9 +1,11 @@
+import { View } from 'ol';
 import { DrawEvent } from 'ol/interaction/Draw';
+import TileLayer from 'ol/layer/Tile';
+import { fromLonLat } from 'ol/proj';
+import { OSM, TileDebug } from 'ol/source';
 import { Style } from 'ol/style';
 import { $injector } from '../../../../../../../src/injection';
 import { CONTRIBUTION_LAYER_ID, OlContributionHandler } from '../../../../../../../src/modules/map/components/olMap/handler/contribution/OlContributionHandler';
-import { OverlayService } from '../../../../../../../src/modules/map/components/olMap/services/OverlayService';
-import { DRAW_LAYER_ID } from '../../../../../../../src/plugins/DrawPlugin';
 import { IconResult } from '../../../../../../../src/services/IconService';
 import { drawReducer, INITIAL_STYLE } from '../../../../../../../src/store/draw/draw.reducer';
 import { layersReducer } from '../../../../../../../src/store/layers/layers.reducer';
@@ -144,7 +146,41 @@ describe('OlContribution', () => {
 		expect(handler.id).toBe(CONTRIBUTION_LAYER_ID);
 	});
 
+	describe('when activated over olMap', () => {
+		const initialCenter = fromLonLat([11.57245, 48.14021]);
+
+		const getTarget = () => {
+			const target = document.createElement('div');
+			target.style.height = '100px';
+			target.style.width = '100px';
+			return target;
+		};
+
+		const setupMap = () => {
+			return new Map({
+				layers: [
+					new TileLayer({
+						source: new OSM()
+					}),
+					new TileLayer({
+						source: new TileDebug()
+					})],
+				target: getTarget(),
+				view: new View({
+					center: initialCenter,
+					zoom: 1
+				})
+			});
+
+		};
+
+		it('creates a layer to draw', () => {
+			setup();
+			const classUnderTest = new OlContributionHandler();
+			const map = setupMap();
+			const layer = classUnderTest.activate(map);
+
+			expect(layer).toBeTruthy();
+		});
+	});
 });
-
-
-
