@@ -3,9 +3,11 @@ import { Point } from 'ol/geom';
 import { Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource } from 'ol/source';
 import { $injector } from '../../../../../../injection';
+import { setLocation } from '../../../../../../store/ea/contribute/contribute.action';
 import { observe } from '../../../../../../utils/storeUtils';
 import { OlLayerHandler } from '../OlLayerHandler';
 import { geolocationStyleFunction } from './styleUtils';
+
 
 
 
@@ -52,16 +54,16 @@ export class OlContributionHandler extends OlLayerHandler {
 	}
 
 	_register(store) {
-		const extract = (state) => {
-			return state.contribute.position;
-		};
 
-		const onChange = (changedState) => {
+		const onClick = (changedState) => {
+			const position = changedState.payload.coordinate;
+			setLocation(position);
 			this._positionFeature.setStyle(geolocationStyleFunction);
-			this._positionFeature.setGeometry(new Point(changedState));
+			this._positionFeature.setGeometry(new Point(position));
 			this._map.renderSync();
+
 		};
 
-		return observe(store, extract, onChange);
+		return observe(store, state => state.pointer.click, onClick);
 	}
 }

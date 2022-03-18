@@ -1,17 +1,17 @@
-import { TestUtils } from '../../../../test-utils';
 import { $injector } from '../../../../../src/injection';
+import { Icon } from '../../../../../src/modules/commons/components/icon/Icon';
+import { IconSelect } from '../../../../../src/modules/iconSelect/components/IconSelect';
 import { DrawToolContent } from '../../../../../src/modules/toolbox/components/drawToolContent/DrawToolContent';
 import { AbstractToolContent } from '../../../../../src/modules/toolbox/components/toolContainer/AbstractToolContent';
-import { drawReducer } from '../../../../../src/store/draw/draw.reducer';
+import { IconResult } from '../../../../../src/services/IconService';
 import { setSelectedStyle, setStyle, setType } from '../../../../../src/store/draw/draw.action';
-import { EventLike } from '../../../../../src/utils/storeUtils';
+import { drawReducer } from '../../../../../src/store/draw/draw.reducer';
+import { createNoInitialStateMediaReducer } from '../../../../../src/store/media/media.reducer';
 import { modalReducer } from '../../../../../src/store/modal/modal.reducer';
 import { sharedReducer } from '../../../../../src/store/shared/shared.reducer';
-import { IconResult } from '../../../../../src/services/IconService';
-import { IconSelect } from '../../../../../src/modules/iconSelect/components/IconSelect';
-import { Icon } from '../../../../../src/modules/commons/components/icon/Icon';
-import { createNoInitialStateMediaReducer } from '../../../../../src/store/media/media.reducer';
 import { TEST_ID_ATTRIBUTE_NAME } from '../../../../../src/utils/markup';
+import { EventLike } from '../../../../../src/utils/storeUtils';
+import { TestUtils } from '../../../../test-utils';
 
 window.customElements.define(Icon.tag, Icon);
 window.customElements.define(IconSelect.tag, IconSelect);

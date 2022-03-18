@@ -1,7 +1,7 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../injection';
 import { setDescription, setLocation, setTaggingMode } from '../../../../store/ea/contribute/contribute.action';
-import { addLayer } from '../../../../store/layers/layers.action';
+import { addLayer, removeLayer } from '../../../../store/layers/layers.action';
 import { CONTRIBUTION_LAYER_ID } from '../../../map/components/olMap/handler/contribution/OlContributionHandler';
 import { MvuElement } from '../../../MvuElement';
 import closeIcon from './assets/x-square.svg';
@@ -50,9 +50,6 @@ export class EAContribute extends MvuElement {
 	 * @override
 	 */
 	onInitialize() {
-		// this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
-
-		// this.observe(state => state.tools.current, current => this.signal(Update_ToolId, current));
 		this.observe(state => state.contribute, data => this.signal(Update, data));
 	}
 
@@ -62,8 +59,6 @@ export class EAContribute extends MvuElement {
 	createView(model) {
 		const translate = (key) => this._translationService.translate(key);
 
-		const { description } = model;
-
 		const close = () => {
 		};
 
@@ -71,21 +66,22 @@ export class EAContribute extends MvuElement {
 			setDescription(e.target.value);
 		};
 
-		const getStore = () => {
-			const { StoreService: storeService } = $injector.inject('StoreService');
-			return storeService.getStore();
-		};
 
 		const onClickTagButton = () => {
-			setTaggingMode(true);
+
+			const taggingActive = !model.tagging;
+			setTaggingMode(taggingActive);
+
+			if (taggingActive)
+				addLayer(CONTRIBUTION_LAYER_ID, { label: "contribution_layer", constraints: { hidden: true, alwaysTop: false } });
+			else
+				removeLayer(CONTRIBUTION_LAYER_ID);
 		};
 
-		const onClickSetLocationButton = () => {
-			addLayer(CONTRIBUTION_LAYER_ID, { label: "contribution_layer", constraints: { hidden: true, alwaysTop: false } });
 
-			const state = getStore().getState();
-			setLocation(state.position.center);
-		};
+		const onClickFinish = () => {
+			alert(JSON.stringify(model));
+		}
 
 		const getCoordinatesString = () => {
 			return model.position ? model.position[0] + " " + model.position[1] : '';
@@ -103,7 +99,7 @@ export class EAContribute extends MvuElement {
                 	</div>
 					<div class="tool-container__style_desc" title="${translate('ea_contribute_desc')}">
 						<label for="description">${translate('ea_contribute_desc')}</label>	
-						<textarea id="description" name="${translate('ea_contribute_desc')}" .value=${description} @input=${onChangeDescription}></textarea>
+						<textarea id="description" name="${translate('ea_contribute_desc')}" .value=${model.description} @input=${onChangeDescription}></textarea>
 					</div>	
 					<div class="tool-container__style_desc" title="${translate('ea_contribute_coordinates_text')}">
 						<label for="coordinates">${translate('ea_contribute_coordinates_text')}</label>	
@@ -111,12 +107,12 @@ export class EAContribute extends MvuElement {
 					</div>
 					<ba-button id="tag" 
 						class="tool-container__button" 
-						.label=${translate('ea_contribute_button_tag')}
+						.label=${translate(model.tagging ? 'ea_contribute_button_tag_cancel' : 'ea_contribute_button_tag')}
 						@click=${onClickTagButton}></ba-button>
 					<ba-button id="select" 
 						class="tool-container__button" 
-						.label=${translate('ea_contribute_button_select')}
-						@click=${onClickSetLocationButton}></ba-button>
+						.label=${translate('ea_contribute_button_finish')}
+						@click=${onClickFinish}></ba-button>
 				</div>
 			</div>		
 			</div>		

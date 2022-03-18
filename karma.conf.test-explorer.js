@@ -12,6 +12,8 @@ module.exports = function (config) {
 		frameworks: ['jasmine', 'webpack', 'iframes'],
 		// list of files / patterns to load in the browser
 		files: [
+			// { pattern: 'test/**/ea/**/*.test.js', watched: false },
+			{ pattern: 'test/**/contribution/**/*.test.js', watched: false },
 			{ pattern: 'test/**/ea/**/*.test.js', watched: false }
 		],
 		// preprocess matching files before serving them to the browser

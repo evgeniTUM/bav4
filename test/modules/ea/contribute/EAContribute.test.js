@@ -4,6 +4,7 @@ import { EAContribute } from '../../../../src/modules/ea/components/contribute/E
 import { contributeReducer, initialState } from '../../../../src/store/ea/contribute/contribute.reducer';
 import { modalReducer } from '../../../../src/store/modal/modal.reducer';
 import { MvuElement } from '../../../../src/modules/MvuElement';
+import { setTaggingMode } from '../../../../src/store/ea/contribute/contribute.action';
 
 window.customElements.define(EAContribute.tag, EAContribute);
 
@@ -97,16 +98,32 @@ describe('EAContribute', () => {
 			expect(store.getState().contribute.description).toBe(newText);
 		});
 
-
-
-		it('activates tagging mode when tag button is clicked', async () => {
+		it('toggles tagging mode when tag button is clicked', async () => {
 			const element = await setup();
+			const tagButton = element.shadowRoot.querySelector('#tag');
 
 			expect(store.getState().contribute.tagging).toBe(false);
-			element.shadowRoot.querySelector('#tag').click();
+
+			tagButton.click();
 
 			expect(store.getState().contribute.tagging).toBe(true);
+
+			tagButton.click();
+
+			expect(store.getState().contribute.tagging).toBe(false);
 		});
+
+		it('changes button tittle when tagging mode is active', async () => {
+			const element = await setup();
+			const tagButton = element.shadowRoot.querySelector('#tag');
+			
+			setTaggingMode(false);
+			expect(tagButton.label).toBe('ea_contribute_button_tag');
+
+			setTaggingMode(true);
+			expect(tagButton.label).toBe('ea_contribute_button_tag_cancel');
+		});
+
 	});
 
 
