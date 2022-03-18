@@ -1,10 +1,10 @@
-import { TestUtils } from '../../../test-utils';
 import { $injector } from '../../../../src/injection';
 import { EAContribute } from '../../../../src/modules/ea/components/contribute/EAContribute';
-import { contributeReducer, initialState } from '../../../../src/store/ea/contribute/contribute.reducer';
-import { modalReducer } from '../../../../src/store/modal/modal.reducer';
 import { MvuElement } from '../../../../src/modules/MvuElement';
 import { setTaggingMode } from '../../../../src/store/ea/contribute/contribute.action';
+import { contributeReducer, initialState } from '../../../../src/store/ea/contribute/contribute.reducer';
+import { modalReducer } from '../../../../src/store/modal/modal.reducer';
+import { TestUtils } from '../../../test-utils';
 
 window.customElements.define(EAContribute.tag, EAContribute);
 
@@ -14,7 +14,10 @@ describe('EAContribute', () => {
 
 	const testState = { ...initialState, ...{ active: true } };
 
-	const coordinateServiceMock = { stringify: (coords) => coords  };
+	const coordinateServiceMock = {
+		toLonLat() { },
+		stringify() { }
+	};
 
 	const setup = async (customProperties, config = {}) => {
 		const state = {
@@ -79,9 +82,15 @@ describe('EAContribute', () => {
 		});
 
 		it('shows tag location when present', async () => {
-			const element = await setup({ position: [42.0, 24.0]});
+			const expectedCoordinates = [42.0, 24.0];
+			const expectedCoordString = "expected";
+			const toLonLatSpy = spyOn(coordinateServiceMock, 'toLonLat').and.returnValue({});
+			spyOn(coordinateServiceMock, 'stringify').and.returnValue(expectedCoordString);
 
-			expect(element.shadowRoot.querySelector('#coordinates').textContent).toEqual('42 24');
+			const element = await setup({ position: expectedCoordinates });
+			
+			expect(toLonLatSpy).toHaveBeenCalledWith(expectedCoordinates);
+			expect(element.shadowRoot.querySelector('#coordinates').textContent).toEqual(expectedCoordString);
 		});
 
 		it('sets the description, after changes in textarea', async () => {
@@ -116,7 +125,7 @@ describe('EAContribute', () => {
 		it('changes button tittle when tagging mode is active', async () => {
 			const element = await setup();
 			const tagButton = element.shadowRoot.querySelector('#tag');
-			
+
 			setTaggingMode(false);
 			expect(tagButton.label).toBe('ea_contribute_button_tag');
 

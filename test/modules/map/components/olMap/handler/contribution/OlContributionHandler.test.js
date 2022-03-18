@@ -123,7 +123,6 @@ describe('OlContribution', () => {
 					return area + ' m²';
 				}
 			})
-			.register('OverlayService', OverlayService)
 			.register('StyleService', MockClass);
 		return store;
 	};
@@ -135,11 +134,6 @@ describe('OlContribution', () => {
 		draw.dispatchEvent(drawEvent);
 	};
 
-	const simulateKeyEvent = (keyCode) => {
-		const keyEvent = new KeyboardEvent('keyup', { keyCode: keyCode, which: keyCode });
-
-		document.dispatchEvent(keyEvent);
-	};
 
 	it('has two methods', () => {
 		setup();

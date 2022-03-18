@@ -6,7 +6,7 @@ import { CONTRIBUTION_LAYER_ID } from '../../../map/components/olMap/handler/con
 import { MvuElement } from '../../../MvuElement';
 import closeIcon from './assets/x-square.svg';
 import css from './eaContribute.css';
-
+import proj4 from 'proj4';
 
 const Update = 'update';
 
@@ -84,7 +84,7 @@ export class EAContribute extends MvuElement {
 		}
 
 		const getCoordinatesString = () => {
-			return model.position ? model.position[0] + " " + model.position[1] : '';
+			return model.position ? this._coordinateService.stringify(this._coordinateService.toLonLat(model.position), 4326, { digits: 5}) : '';
 		};
 
 		if (!model.active)
