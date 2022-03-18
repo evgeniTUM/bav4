@@ -2,14 +2,15 @@ import Feature from 'ol/Feature';
 import { Point } from 'ol/geom';
 import { Vector as VectorLayer } from 'ol/layer';
 import MapBrowserEventType from 'ol/MapBrowserEventType';
+import { unByKey } from 'ol/Observable';
 import { Vector as VectorSource } from 'ol/source';
-import { translate } from 'ol/transform';
 import { $injector } from '../../../../../../injection';
-import { setLocation, setTaggingMode } from '../../../../../../store/ea/contribute/contribute.action';
+import { setLocation } from '../../../../../../store/ea/contribute/contribute.action';
 import { observe } from '../../../../../../utils/storeUtils';
 import { HelpTooltip } from '../../HelpTooltip';
+import { markerStyleFunction } from '../../olStyleUtils';
+import { highlightCoordinateFeatureStyleFunction } from '../highlight/styleUtils';
 import { OlLayerHandler } from '../OlLayerHandler';
-import { geolocationStyleFunction, taggingStyleFunction } from './styleUtils';
 
 
 
@@ -62,6 +63,7 @@ export class OlContributionHandler extends OlLayerHandler {
 		this._map = null;
 		this._helpTooltip.deactivate();
 		this._unregister();
+		unByKey(this._listeners);
 	}
 
 	_register(store) {
@@ -71,7 +73,7 @@ export class OlContributionHandler extends OlLayerHandler {
 			if (!position)
 				return;
 			setLocation(position);
-			this._positionFeature.setStyle(geolocationStyleFunction);
+			this._positionFeature.setStyle(highlightCoordinateFeatureStyleFunction);
 			this._positionFeature.setGeometry(new Point(position));
 			this._map.renderSync();
 		};
@@ -82,12 +84,18 @@ export class OlContributionHandler extends OlLayerHandler {
 			const position = event.coordinate;
 			if (!position)
 				return;
-			this._taggingFeature.setStyle(taggingStyleFunction);
+			// this._taggingFeature.setStyle(taggingStyleFunction);
+			this._taggingFeature.setStyle(markerStyleFunction);
 			this._taggingFeature.setGeometry(new Point(position));
 		};
 
 		this._listeners.push(this._map.on(MapBrowserEventType.CLICK, onClick));
 		this._listeners.push(this._map.on(MapBrowserEventType.POINTERMOVE, onMove));
-		return observe(store, state => state.pointer.click, onClick);
+
+		const onActiveStateChange = (state) => {
+			if(state === false)
+				this._unregister(store);
+		};
+		return observe(store, state => state.contribute.active, onActiveStateChange);
 	}
 }
