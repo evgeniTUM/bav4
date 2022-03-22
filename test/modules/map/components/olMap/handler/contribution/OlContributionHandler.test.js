@@ -1,141 +1,26 @@
-import { View } from 'ol';
-import { DrawEvent } from 'ol/interaction/Draw';
+import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { fromLonLat } from 'ol/proj';
 import { OSM, TileDebug } from 'ol/source';
-import { Style } from 'ol/style';
 import { $injector } from '../../../../../../../src/injection';
 import { CONTRIBUTION_LAYER_ID, OlContributionHandler } from '../../../../../../../src/modules/map/components/olMap/handler/contribution/OlContributionHandler';
-import { IconResult } from '../../../../../../../src/services/IconService';
-import { drawReducer, INITIAL_STYLE } from '../../../../../../../src/store/draw/draw.reducer';
-import { layersReducer } from '../../../../../../../src/store/layers/layers.reducer';
-import { measurementReducer } from '../../../../../../../src/store/measurement/measurement.reducer';
-import { notificationReducer } from '../../../../../../../src/store/notifications/notifications.reducer';
-import { sharedReducer } from '../../../../../../../src/store/shared/shared.reducer';
-import { toolsReducer } from '../../../../../../../src/store/tools/tools.reducer';
+import { contributeReducer, initialState } from '../../../../../../../src/store/ea/contribute/contribute.reducer';
 import { TestUtils } from '../../../../../../test-utils.js';
 
 
 
 
 describe('OlContribution', () => {
-	class MockClass {
-		constructor() {
-			this.get = 'I\'m a StyleService.';
-		}
-
-		addStyle() { }
-
-		updateStyle() { }
-
-		removeStyle() { }
-
-		getStyleFunction() {
-			const styleFunction = () => {
-				const styles = [
-					new Style()
-				];
-
-				return styles;
-			};
-
-			return styleFunction;
-		}
-
-	}
-
-
-	const geoResourceServiceMock = {
-		addOrReplace() { },
-		// eslint-disable-next-line no-unused-vars
-		byId() {
-			return null;
-		}
-	};
-
-	const interactionStorageServiceMock = {
-		async store() { },
-		isValid() {
-			return false;
-		},
-		isStorageId() {
-			return false;
-		},
-		setStorageId() { },
-		getStorageId() {
-			return null;
-		}
-	};
-
-	const fileStorageServiceMock = {
-		async save() {
-			return { fileId: 'saveFooBarBazId' };
-		},
-		isFileId(id) {
-			return id.startsWith('f_');
-		},
-		isAdminId(id) {
-			return id.startsWith('a_');
-		}
-
-	};
 
 	const translationServiceMock = { translate: (key) => key };
-	const environmentServiceMock = { isTouch: () => false, isStandalone: () => false };
-	const initialState = {
-		active: false,
-		mode: null,
-		type: null,
-		style: INITIAL_STYLE,
-		reset: null,
-		description: null,
-		fileSaveResult: { adminId: 'init', fileId: 'init' }
-	};
-
-	const setup = (state = initialState) => {
-		const drawState = {
-			draw: state,
-			layers: {
-				active: [],
-				background: 'null'
-			},
-			shared: {
-				termsOfUseAcknowledged: false,
-				fileSaveResult: null
-			},
-			notifications: {
-				notification: null
-			}
-		};
-		const store = TestUtils.setupStoreAndDi(drawState, { draw: drawReducer, measurement: measurementReducer, layers: layersReducer, shared: sharedReducer, notifications: notificationReducer, tools: toolsReducer });
+	const defaultState = {
+		contribute: initialState
+	}
+	const setup = (state = defaultState) => {
+		const store = TestUtils.setupStoreAndDi(state, { contribute: contributeReducer });
 		$injector.registerSingleton('TranslationService', translationServiceMock)
-			.registerSingleton('MapService', { getSrid: () => 3857, getDefaultGeodeticSrid: () => 25832 })
-			.registerSingleton('EnvironmentService', environmentServiceMock)
-			.registerSingleton('GeoResourceService', geoResourceServiceMock)
-			.registerSingleton('InteractionStorageService', interactionStorageServiceMock)
-			.registerSingleton('FileStorageService', fileStorageServiceMock)
-			.registerSingleton('IconService', { getDefault: () => new IconResult('foo', 'bar') })
-			.registerSingleton('UnitsService', {
-				// eslint-disable-next-line no-unused-vars
-				formatDistance: (distance, decimals) => {
-					return distance + ' m';
-				},
-				// eslint-disable-next-line no-unused-vars
-				formatArea: (area, decimals) => {
-					return area + ' m²';
-				}
-			})
-			.register('StyleService', MockClass);
 		return store;
 	};
-
-	const simulateDrawEvent = (type, draw, feature) => {
-		const eventType = type;
-		const drawEvent = new DrawEvent(eventType, feature);
-
-		draw.dispatchEvent(drawEvent);
-	};
-
 
 	it('has two methods', () => {
 		setup();
@@ -149,14 +34,8 @@ describe('OlContribution', () => {
 	describe('when activated over olMap', () => {
 		const initialCenter = fromLonLat([11.57245, 48.14021]);
 
-		const getTarget = () => {
-			const target = document.createElement('div');
-			target.style.height = '100px';
-			target.style.width = '100px';
-			return target;
-		};
-
 		const setupMap = () => {
+			const container = document.createElement('div');
 			return new Map({
 				layers: [
 					new TileLayer({
@@ -165,19 +44,19 @@ describe('OlContribution', () => {
 					new TileLayer({
 						source: new TileDebug()
 					})],
-				target: getTarget(),
+				target: container,
 				view: new View({
 					center: initialCenter,
 					zoom: 1
 				})
 			});
-
 		};
 
 		it('creates a layer to draw', () => {
-			setup();
-			const classUnderTest = new OlContributionHandler();
 			const map = setupMap();
+			setup();
+
+			const classUnderTest = new OlContributionHandler();
 			const layer = classUnderTest.activate(map);
 
 			expect(layer).toBeTruthy();
