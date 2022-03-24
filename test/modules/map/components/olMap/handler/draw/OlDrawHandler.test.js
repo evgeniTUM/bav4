@@ -226,7 +226,7 @@ describe('OlDrawHandler', () => {
 			const classUnderTest = new OlDrawHandler();
 			classUnderTest.activate(map);
 
-			expect(classUnderTest._vectorLayer.label).toBe('map_olMap_handler_measure_layer_label');
+			expect(classUnderTest._vectorLayer.label).toBe('map_olMap_handler_draw_layer_label');
 		});
 
 		describe('when not TermsOfUseAcknowledged', () => {
@@ -846,6 +846,32 @@ describe('OlDrawHandler', () => {
 			});
 		});
 
+
+		it('adds style on old features', (done) => {
+			setup();
+			const classUnderTest = new OlDrawHandler();
+			const lastData = '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/kml/2.2 https://developers.google.com/kml/schema/kml22gx.xsd"><Placemark id="measurement_1620710146878"><Style><LineStyle><color>ff0000ff</color><width>3</width></LineStyle><PolyStyle><color>660000ff</color></PolyStyle></Style><ExtendedData><Data name="area"/><Data name="measurement"/><Data name="partitions"/></ExtendedData><Polygon><outerBoundaryIs><LinearRing><coordinates>10.66758401,50.09310529 11.77182103,50.08964948 10.57062661,49.66616988 10.66758401,50.09310529</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark></kml>';
+			const map = setupMap();
+			const vectorGeoResource = new VectorGeoResource('a_lastId', 'foo', VectorSourceType.KML).setSource(lastData, 4326);
+
+			spyOn(map, 'getLayers').and.returnValue({ getArray: () => [{ get: () => 'a_lastId' }] });
+			spyOn(interactionStorageServiceMock, 'isStorageId').and.callFake(() => true);
+			spyOn(classUnderTest._overlayService, 'add').and.callFake(() => { });
+			spyOn(geoResourceServiceMock, 'byId').and.returnValue(vectorGeoResource);
+			const addStyleSpy = spyOn(classUnderTest._styleService, 'addStyle');
+			let oldFeature;
+
+			classUnderTest.activate(map);
+			spyOn(classUnderTest._vectorLayer.getSource(), 'addFeature').and.callFake((f) => {
+				oldFeature = f;
+			});
+
+			setTimeout(() => {
+				expect(addStyleSpy).toHaveBeenCalledWith(oldFeature, map, classUnderTest._vectorLayer);
+				done();
+			});
+		});
+
 		it('updates style of old features onChange', (done) => {
 			setup();
 			const classUnderTest = new OlDrawHandler();
@@ -1047,7 +1073,7 @@ describe('OlDrawHandler', () => {
 				expect(addOrReplaceSpy).toHaveBeenCalledTimes(1);
 				expect(addOrReplaceSpy).toHaveBeenCalledWith(jasmine.objectContaining({
 					id: 'f_ooBarId',
-					label: 'map_olMap_handler_measure_layer_label'
+					label: 'map_olMap_handler_draw_layer_label'
 				}));
 				done();
 			});
@@ -1373,17 +1399,17 @@ describe('OlDrawHandler', () => {
 
 			classUnderTest.activate(map);
 			setType('line');
-			const measureStateSpy = spyOn(classUnderTest._helpTooltip, 'notify');
+			const drawStateSpy = spyOn(classUnderTest._helpTooltip, 'notify');
 
 			simulateMapBrowserEvent(map, MapBrowserEventType.POINTERMOVE, 10, 0);
-			expect(measureStateSpy).toHaveBeenCalledWith({ type: InteractionStateType.ACTIVE, snap: null, coordinate: [10, 0], pointCount: 0, dragging: jasmine.any(Boolean) });
+			expect(drawStateSpy).toHaveBeenCalledWith({ type: InteractionStateType.ACTIVE, snap: null, coordinate: [10, 0], pointCount: 0, dragging: jasmine.any(Boolean) });
 
 			simulateDrawEvent('drawstart', classUnderTest._draw, feature);
 			snappedGeometry.setCoordinates([[0, 0], [500, 0], [550, 550], [0, 500], [0, 0]]);
 			feature.getGeometry().dispatchEvent('change');
 
 			simulateMapBrowserEvent(map, MapBrowserEventType.POINTERMOVE, 0, 0);
-			expect(measureStateSpy).toHaveBeenCalledWith({ type: InteractionStateType.DRAW, snap: InteractionSnapType.FIRSTPOINT, coordinate: [0, 0], pointCount: 5, dragging: jasmine.any(Boolean) });
+			expect(drawStateSpy).toHaveBeenCalledWith({ type: InteractionStateType.DRAW, snap: InteractionSnapType.FIRSTPOINT, coordinate: [0, 0], pointCount: 5, dragging: jasmine.any(Boolean) });
 		});
 
 		it('change drawState, when sketch is snapping to last point', () => {
@@ -1395,16 +1421,16 @@ describe('OlDrawHandler', () => {
 
 			classUnderTest.activate(map);
 			setType('line');
-			const measureStateSpy = spyOn(classUnderTest._helpTooltip, 'notify');
+			const drawStateSpy = spyOn(classUnderTest._helpTooltip, 'notify');
 
 			simulateMapBrowserEvent(map, MapBrowserEventType.POINTERMOVE, 10, 0);
-			expect(measureStateSpy).toHaveBeenCalledWith({ type: InteractionStateType.ACTIVE, snap: null, coordinate: [10, 0], pointCount: 0, dragging: jasmine.any(Boolean) });
+			expect(drawStateSpy).toHaveBeenCalledWith({ type: InteractionStateType.ACTIVE, snap: null, coordinate: [10, 0], pointCount: 0, dragging: jasmine.any(Boolean) });
 
 			simulateDrawEvent('drawstart', classUnderTest._draw, feature);
 			snappedGeometry.setCoordinates([[0, 0], [500, 0], [550, 550], [0, 500], [0, 500], [0, 500]]);
 			feature.getGeometry().dispatchEvent('change');
 			simulateMapBrowserEvent(map, MapBrowserEventType.POINTERMOVE, 0, 500);
-			expect(measureStateSpy).toHaveBeenCalledWith({ type: InteractionStateType.DRAW, snap: InteractionSnapType.LASTPOINT, coordinate: [0, 500], pointCount: 6, dragging: jasmine.any(Boolean) });
+			expect(drawStateSpy).toHaveBeenCalledWith({ type: InteractionStateType.DRAW, snap: InteractionSnapType.LASTPOINT, coordinate: [0, 500], pointCount: 6, dragging: jasmine.any(Boolean) });
 		});
 
 
@@ -1704,6 +1730,38 @@ describe('OlDrawHandler', () => {
 			expect(store.getState().tools.current).toBe(ToolId.MEASURING);
 		});
 
+		it('does NOT switch to measure-tool, if clickposition is in anyinteract to selected unknown feature (not measure or draw)', () => {
+			const store = setup();
+
+			const geometry = new Point([550, 550]);
+			const feature = new Feature({ geometry: geometry });
+			feature.setId('some_1');
+			feature.setStyle(style);
+			const map = setupMap();
+
+			const classUnderTest = new OlDrawHandler();
+			classUnderTest.activate(map);
+			classUnderTest._vectorLayer.getSource().addFeature(feature);
+
+			expect(classUnderTest._select).toBeDefined();
+
+			setType('marker');
+
+			// force deselect
+			classUnderTest._select.getFeatures().clear();
+			expect(classUnderTest._select.getFeatures().getLength()).toBe(0);
+
+			map.forEachFeatureAtPixel = jasmine.createSpy().and.callFake((pixel, callback) => {
+				callback(feature, classUnderTest._vectorLayer);
+			});
+
+			// re-select
+			classUnderTest._drawState.type = InteractionStateType.SELECT;
+			simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, 550, 550);
+
+			expect(store.getState().tools.current).not.toBe(ToolId.MEASURING);
+		});
+
 		it('select only ONE feature (no multiselect; preselected feature is deselected)', () => {
 			const feature1 = new Feature({ geometry: new Point([0, 0]) });
 			const feature2 = new Feature({ geometry: new Point([50, 50]) });
@@ -1743,6 +1801,34 @@ describe('OlDrawHandler', () => {
 			classUnderTest._drawState.type = InteractionStateType.SELECT;
 			simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, 50, 50);
 			expect(classUnderTest._select.getFeatures().getLength()).toBe(1);
+		});
+
+		it('updates the drawState, while pointerclick drawing', () => {
+			setup();
+			const feature = new Feature({ geometry: new Polygon([[[0, 0], [1, 0], [1, 1], [0, 1], [0, 1]]]) });
+			const map = setupMap();
+			const classUnderTest = new OlDrawHandler();
+			const layer = classUnderTest.activate(map);
+			layer.getSource().addFeature(feature);
+
+			const updateDrawStateSpy = spyOn(classUnderTest, '_updateDrawState');
+
+			// initial Phase: the drawing will be activated after this click-event
+			classUnderTest._sketchHandler.activate(feature);
+			classUnderTest._drawState.type = InteractionStateType.ACTIVE;
+
+			simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, 0.5, 0.5);
+
+			expect(updateDrawStateSpy).toHaveBeenCalled();
+			updateDrawStateSpy.calls.reset();
+
+			// Phase 2: the drawing will be end after this click-event
+			classUnderTest._sketchHandler.deactivate();
+			classUnderTest._drawState.type = InteractionStateType.DRAW;
+
+			simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, 0.5, 0.5);
+
+			expect(updateDrawStateSpy).toHaveBeenCalled();
 		});
 	});
 

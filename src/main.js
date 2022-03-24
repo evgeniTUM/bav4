@@ -5,9 +5,8 @@ const style = document.createElement('style');
 style.innerHTML = globalCss;
 document.head.appendChild(style);
 
-//Import Energieatlas Plugins für Erweiterung
-import * as eaConfig from './ea/injection/eaConfig';
-window.enableTestIds = new URLSearchParams(window.location.search).get(QueryParameters.T_ENABLE_TEST_IDS) === 'true';
+window.ba_enableTestIds = new URLSearchParams(window.location.search).get(QueryParameters.T_ENABLE_TEST_IDS) === 'true';
+
 // eslint-disable-next-line no-unused-vars
 import * as config from './injection/config';
 
@@ -31,7 +30,7 @@ import './modules/examples';
 import './modules/featureInfo';
 import './modules/iconSelect';
 import './modules/geoResourceInfo';
-import './modules/survey';
+import './modules/help';
 import './modules/dndImport';
 import { QueryParameters } from './services/domain/queryParameters';
 //Import der Erweiterung für Energieatlas

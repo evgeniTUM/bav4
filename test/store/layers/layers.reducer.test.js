@@ -18,12 +18,26 @@ describe('defaultLayerProperties', () => {
 
 describe('createDefaultLayer', () => {
 
-	it('returns a layer object with default properties and values', () => {
+	it('returns a layer object with default properties and values for a given id', () => {
 
 		const layer = createDefaultLayer('foo');
 
 		expect(layer.id).toBe('foo');
 		expect(layer.geoResourceId).toBe('foo');
+		expect(layer.visible).toBeTrue();
+		expect(layer.label).toBe('');
+		expect(layer.opacity).toBe(1);
+		expect(layer.zIndex).toBe(-1);
+		expect(layer.constraints.alwaysTop).toBeFalse();
+		expect(layer.constraints.hidden).toBeFalse();
+	});
+
+	it('returns a layer object with default properties and values for giveb id and geoResourceId', () => {
+
+		const layer = createDefaultLayer('foo', 'bar');
+
+		expect(layer.id).toBe('foo');
+		expect(layer.geoResourceId).toBe('bar');
 		expect(layer.visible).toBeTrue();
 		expect(layer.label).toBe('');
 		expect(layer.opacity).toBe(1);
@@ -193,9 +207,9 @@ describe('layersReducer', () => {
 		const layer1 = { label: 'label1' };
 		const layer2 = { label: 'label2', zIndex: 1, constraints: { alwaysTop: true } };
 
+		addLayer('id2', layer2);
 		addLayer('id0', layer0);
 		addLayer('id1', layer1);
-		addLayer('id2', layer2);
 
 		expect(store.getState().layers.active.length).toBe(3);
 		expect(store.getState().layers.active[0].id).toBe('id0');
