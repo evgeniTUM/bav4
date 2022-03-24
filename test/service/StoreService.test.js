@@ -46,6 +46,10 @@ describe('StoreService', () => {
 		const mediaPluginMock = {
 			register() { }
 		};
+		const fnModulePluginMock = {
+			register() {}			
+		};
+
 		const windowMock = {
 			history: {
 				replaceState() { }
@@ -74,6 +78,7 @@ describe('StoreService', () => {
 				.registerSingleton('ImportPlugin', importPluginMock)
 				.registerSingleton('EnvironmentService', { getWindow: () => windowMock })
 				.registerSingleton('ConfigService', configService)
+				.registerSingleton('FnModulePlugin', fnModulePluginMock)
 
 				.ready();
 		};
@@ -86,7 +91,7 @@ describe('StoreService', () => {
 			expect(store).toBeDefined();
 
 			const reducerKeys = Object.keys(store.getState());
-			expect(reducerKeys.length).toBe(21);
+			expect(reducerKeys.length).toBe(22);
 			expect(reducerKeys.includes('map')).toBeTrue();
 			expect(reducerKeys.includes('pointer')).toBeTrue();
 			expect(reducerKeys.includes('position')).toBeTrue();
@@ -108,6 +113,7 @@ describe('StoreService', () => {
 			expect(reducerKeys.includes('featureInfo')).toBeTrue();
 			expect(reducerKeys.includes('media')).toBeTrue();
 			expect(reducerKeys.includes('import')).toBeTrue();
+			expect(reducerKeys.includes('fnModuleComm')).toBeTrue();
 		});
 
 		it('registers all plugins', (done) => {
