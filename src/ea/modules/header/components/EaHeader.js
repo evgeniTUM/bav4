@@ -58,8 +58,9 @@ export class EaHeader extends Header {
 					<div id='headerMobile' class='${viewAttrProvider.getOverlayClass()} header__text-mobile'>	
 					</div>
 				</a>
-				<div class='header__emblem'>
-				</div>
+		                 <a  title=${translate('header_emblem_action_title')} class="header_action_link" target="_blank" href="https://www.bayern.de/">
+				<button class='header__emblem'></button>
+				</a>
 				<div  class="header ${viewAttrProvider.getOverlayClass()}">  
 					<button class="close-menu" title=${translate('header_close_button_title')}  @click="${toggle}"">
 						<i class="resize-icon "></i>
