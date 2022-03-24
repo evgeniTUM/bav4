@@ -72,9 +72,11 @@ $injector
 	.registerSingleton('MainMenuPlugin', new MainMenuPlugin())
 	.registerSingleton('ImportPlugin', new ImportPlugin())
 	.registerModule(mapModule)
-	.registerModule(topicsModule)
-	.ready();
+	.registerModule(topicsModule);
+	$injector.ready();
 
+	//Import Energieatlas Plugins für Erweiterung muss nach der registrierung der services erfolgen
+	import * as eaConfig from '../ea/injection/eaConfig';
 
 
 export const init = true;
