@@ -101,7 +101,7 @@ export class OlMeasurementHandler extends OlLayerHandler {
 				source: source,
 				style: this._styleService.getStyleFunction(StyleTypes.MEASURE)
 			});
-			layer.label = translate('map_olMap_handler_measure_layer_label');
+			layer.label = translate('map_olMap_handler_draw_layer_label');
 			return layer;
 		};
 
@@ -128,7 +128,7 @@ export class OlMeasurementHandler extends OlLayerHandler {
 						f.set('srid', this._mapService.getSrid(), true);
 						layer.getSource().addFeature(f);
 						this._styleService.removeStyle(f, olMap);
-						this._styleService.addStyle(f, olMap);
+						this._styleService.addStyle(f, olMap, layer);
 						f.on('change', onFeatureChange);
 					});
 					removeLayer(oldLayer.get('id'));
@@ -169,6 +169,10 @@ export class OlMeasurementHandler extends OlLayerHandler {
 			const dragging = event.dragging;
 			const pixel = event.pixel;
 
+			if (this._sketchHandler.isActive || this._measureState.type === InteractionStateType.DRAW) {
+				this._updateMeasureState(coordinate, pixel, dragging);
+				return;
+			}
 			const addToSelection = (features) => {
 				if ([InteractionStateType.MODIFY, InteractionStateType.SELECT].includes(this._measureState.type)) {
 					const ids = features.map(f => f.getId());
@@ -420,7 +424,7 @@ export class OlMeasurementHandler extends OlLayerHandler {
 
 		draw.on('drawend', event => {
 			finishDistanceOverlay(event);
-			this._styleService.addStyle(event.feature, this._map);
+			this._styleService.addStyle(event.feature, this._map, this._vectorLayer);
 			this._activateModify(event.feature);
 		}
 		);
@@ -625,7 +629,7 @@ export class OlMeasurementHandler extends OlLayerHandler {
 	 */
 	async _convertToPermanentLayer() {
 		const translate = (key) => this._translationService.translate(key);
-		const label = translate('map_olMap_handler_measure_layer_label');
+		const label = translate('map_olMap_handler_draw_layer_label');
 
 		const isEmpty = this._vectorLayer.getSource().getFeatures().length === 0;
 		if (isEmpty) {

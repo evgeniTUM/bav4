@@ -31,7 +31,7 @@ import './modules/examples';
 import './modules/featureInfo';
 import './modules/iconSelect';
 import './modules/geoResourceInfo';
-import './modules/survey';
+import './modules/help';
 import './modules/dndImport';
 import { QueryParameters } from './services/domain/queryParameters';
 //Import der Erweiterung für Energieatlas
