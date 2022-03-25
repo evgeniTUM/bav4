@@ -75,10 +75,10 @@ export class Header extends MvuElement {
 	isRenderingSkipped() {
 		return this._environmentService.isEmbedded();
 	}
-
-	createView(model) {
-
-		const { isOpen, tabIndex, isFetching, layers, isPortrait, hasMinWidth, hasSearchTerm } = model;
+        
+        //TODO FittingProvider einführen
+        getViewAttrProvider(model) {
+           	const { isOpen, tabIndex, isFetching, layers, isPortrait, hasMinWidth, hasSearchTerm } = model;
 
 		const showModalInfo = () => {
 			openModal('Showcase', html`<ba-showcase>`);
@@ -165,58 +165,80 @@ export class Header extends MvuElement {
 			input.dispatchEvent(new Event('input'));
 		};
 
+                return { isOpen, tabIndex, isFetching, layers, isPortrait, hasMinWidth, hasSearchTerm,showModalInfo,
+		 getOrientationClass,
+		 getMinWidthClass,
+		 getOverlayClass,
+		 getAnimatedBorderClass,
+		 getActiveClass,
+		 getIsClearClass,
+		 layerCount,
+		 onInputFocus,
+		 onInput,
+		 onInputBlur,
+		 openTopicsTab,
+		 openMapLayerTab,
+		 openMiscTab,
+		 clearSearchInput
+                }
+    };
+    
+	createView(model) {
+            
+            let helper = this.getViewAttrProvider(model);
+            
 		const translate = (key) => this._translationService.translate(key);
 		return html`
 			<style>${css}</style>
-			<div class="preload ${getOrientationClass()} ${getMinWidthClass()}">
+			<div class="preload ${helper.getOrientationClass()} ${helper.getMinWidthClass()}">
 				<div class='header__logo'>				
 					<div class="action-button">
-						<div class="action-button__border animated-action-button__border ${getAnimatedBorderClass()}">
+						<div class="action-button__border animated-action-button__border ${helper.getAnimatedBorderClass()}">
 						</div>
 						<div class="action-button__icon">
 							<div class="ba">
 							</div>
 						</div>
 					</div>
-					<div id='header__text' class='${getOverlayClass()} header__text'>
+					<div id='header__text' class='${helper.getOverlayClass()} header__text'>
 					</div>
 					<div class='header__logo-badge'>										
 						${translate('header_logo_badge')}
 					</div>	
 				</div>		
-				<div id='headerMobile' class='${getOverlayClass()} header__text-mobile'>	
+				<div id='headerMobile' class='${helper.getOverlayClass()} header__text-mobile'>	
 				</div>
 				<div class='header__emblem'>
 				</div>
-				<div  class="header ${getOverlayClass()}">  
+				<div  class="header ${helper.getOverlayClass()}">  
 					<button class="close-menu" title=${translate('header_close_button_title')}  @click="${toggle}"">
 						<i class="resize-icon "></i>
 					</button> 
 					<div class="header__background">
 					</div>
 					<div class='header__search-container'>
-						<input id='input' @focus="${onInputFocus}" @blur="${onInputBlur}" @input="${onInput}" class='header__search' type="search" placeholder="" />          
-						<span class="header__search-clear ${getIsClearClass()}" @click="${clearSearchInput}">        							
+						<input id='input' @focus="${helper.onInputFocus}" @blur="${helper.onInputBlur}" @input="${helper.onInput}" class='header__search' type="search" placeholder="" />          
+						<span class="header__search-clear ${helper.getIsClearClass()}" @click="${helper.clearSearchInput}">        							
 						</span>       
-						<button @click="${showModalInfo}" class="header__modal-button" title="modal">
+						<button @click="${helper.showModalInfo}" class="header__modal-button" title="modal">
 						&nbsp;
 						</button>
 					</div>
 					<div  class="header__button-container">
-						<button id="topics_button" data-test-id class="${getActiveClass(TabId.TOPICS)}" title=${translate('header_tab_topics_title')} @click="${openTopicsTab}">
+						<button id="topics_button" data-test-id class="${helper.getActiveClass(TabId.TOPICS)}" title=${translate('header_tab_topics_title')} @click="${helper.openTopicsTab}">
 							<span>
 								${translate('header_tab_topics_button')}
 							</span>
 						</button>
-						<button id="maps_button" data-test-id class="${getActiveClass(TabId.MAPS)}" title=${translate('header_tab_maps_title')}  @click="${openMapLayerTab}">
+						<button id="maps_button" data-test-id class="${helper.getActiveClass(TabId.MAPS)}" title=${translate('header_tab_maps_title')}  @click="${helper.openMapLayerTab}">
 							<span>
 								${translate('header_tab_maps_button')}
 							</span>
 							 <div class="badges">
-							 	${layerCount}
+							 	${helper.layerCount}
 							</div>
 						</button>
-						<button id="misc_button" data-test-id class="${getActiveClass(TabId.MISC)}" title=${translate('header_tab_misc_title')}  @click="${openMiscTab}">
+						<button id="misc_button" data-test-id class="${helper.getActiveClass(TabId.MISC)}" title=${translate('header_tab_more_title')}  @click="${helper.openMiscTab}">
 							<span>
 								${translate('header_tab_misc_button')}
 							</span>

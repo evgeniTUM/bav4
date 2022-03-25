@@ -62,14 +62,8 @@ export class TopicsContentPanel extends AbstractContentPanel {
 		}
 	}
 
-	/**
-	 * @override
-	 */
-	createView(state) {
-
+        createViewHelper(state) {
 		const { currentTopicId, topicsReady, contentIndex } = state;
-
-		if (topicsReady) {
 
 			const topics = this._topicsService.all();
 
@@ -111,19 +105,29 @@ export class TopicsContentPanel extends AbstractContentPanel {
 				}
 				return nothing;
 			};
+        return { topics , getActiveClass, getTabIndex,getVisibilityClass, changeTopic,renderTopicStyle,renderTopicIcon }
+        }
+
+	/**
+	 * @override
+	 */
+	createView(state) {
+            const { currentTopicId, topicsReady, contentIndex } = state;
+		if (topicsReady) {
+                        let helper = this.createViewHelper(state);
 
 			return html`
         	<style>${css}</style>
-			<div class="topics-content-panel ${getVisibilityClass()}">
+			<div class="topics-content-panel ${helper.getVisibilityClass()}">
 				<div class="col">
-				${topics.map(topic => html`
+				${helper.topics.map(topic => html`
 					<style>
-					${renderTopicStyle(topic)}
+					${helper.renderTopicStyle(topic)}
 					</style>
-					<button id='button-${topic.id}' data-test-id tabindex='${getTabIndex()}' class="topic topic-${topic.id} ba-list-item  ${getActiveClass(topic.id)}" @click=${() => changeTopic(topic)}>
+					<button id='button-${topic.id}' data-test-id tabindex='${helper.getTabIndex()}' class="topic topic-${topic.id} ba-list-item  ${helper.getActiveClass(topic.id)}" @click=${() => helper.changeTopic(topic)}>
 						<span class="ba-list-item__pre">
 							<span class="ba-list-item__icon icon-${topic.id}">
-							${renderTopicIcon(topic)}
+							${helper.renderTopicIcon(topic)}
 							</span>											
 						</span>
 						</span>
@@ -138,7 +142,7 @@ export class TopicsContentPanel extends AbstractContentPanel {
 				`)}
 				</div>
 				<div class="col">
-					${topics.map(topic => html`
+					${helper.topics.map(topic => html`
 						<ba-catalog-content-panel .data=${topic.id}></ba-catalog-content-panel>
 					`)}
 				</div>

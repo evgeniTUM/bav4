@@ -1,8 +1,8 @@
 * {
-	/* brand */
-	--brand-hue: 198;
-	--brand-saturation: 92%;
-	--brand-lightness: 45%;
+  /* brand */
+  --brand-hue: 213;
+  --brand-saturation: 54%;
+  --brand-lightness: 37%;
   
 	/* light */
 	--brand-light: hsl(var(--brand-hue) var(--brand-saturation) var(--brand-lightness));

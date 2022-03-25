@@ -1,0 +1,13 @@
+:host .ba{
+  height: 5.4em;
+  width: 5.4em;
+  margin: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size:  5.4em  5.4em;
+  background-image:  url('assets/karte.svg');
+}
+
+:host .is-desktop .tool-bar {
+    position: absolute;
+}

@@ -55,7 +55,8 @@ export const TabId = Object.freeze({
 	MISC: 'misc',
 	ROUTING: 'routing',
 	SEARCH: 'search',
-	FEATUREINFO: 'featureinfo'
+	FEATUREINFO: 'featureinfo',
+	EXTENSION: 'extension'
 });
 
 /**

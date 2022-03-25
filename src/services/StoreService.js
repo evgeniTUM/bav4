@@ -23,6 +23,7 @@ import { featureInfoReducer } from '../store/featureInfo/featureInfo.reducer';
 import { importReducer } from '../store/import/import.reducer';
 import { contributeReducer } from '../store/ea/contribute/contribute.reducer'
 
+import { fnModuleCommReducer } from '../ea/store/fnModuleComm/fnModuleComm.reducer';
 
 
 /**
@@ -60,7 +61,8 @@ export class StoreService {
 			featureInfo: featureInfoReducer,
 			contribute: contributeReducer,
 			media: createMediaReducer(),
-			import: importReducer
+			import: importReducer,
+			fnModuleComm: fnModuleCommReducer
 		});
 
 		this._store = createStore(rootReducer);
@@ -81,7 +83,8 @@ export class StoreService {
 				MainMenuPlugin: mainMenuPlugin,
 				EnvironmentService: environmentService,
 				ImportPlugin: importPlugin,
-				ConfigService: configService
+				ConfigService: configService,
+				FnModulePlugin: fnModulePlugin
 			}
 				= $injector.inject(
 					'TopicsPlugin',
@@ -97,7 +100,8 @@ export class StoreService {
 					'MainMenuPlugin',
 					'EnvironmentService',
 					'ImportPlugin',
-					'ConfigService'
+					'ConfigService',
+					'FnModulePlugin'
 				);
 
 			setTimeout(async () => {
@@ -114,6 +118,7 @@ export class StoreService {
 				await featureInfoPlugin.register(this._store);
 				await mainMenuPlugin.register(this._store);
 				await importPlugin.register(this._store);
+				await fnModulePlugin.register(this._store);
 				//we remove all query params shown in the browsers address bar
 				if (configService.getValue('RUNTIME_MODE') !== 'development') {
 					environmentService.getWindow().history.replaceState(null, '', location.href.split('?')[0]);
