@@ -1,33 +1,37 @@
-import { observe } from '../utils/storeUtils';
-import { BaPlugin } from './BaPlugin';
-import { addLayer, removeLayer } from '../store/layers/layers.action';
-import { addHighlightFeatures, HighlightFeatureTypes, removeHighlightFeaturesById } from '../store/highlight/highlight.action';
-import { TabId } from '../store/mainMenu/mainMenu.action';
-import { createUniqueId } from '../utils/numberUtils';
+import { $injector } from '../../injection';
+import { observe } from '../../utils/storeUtils';
+import { BaPlugin } from './../../plugins/BaPlugin';
+import { addLayer, removeLayer } from '../../store/layers/layers.action';
+import { addGeoFeatures, GeoFeatureTypes, removeGeoFeaturesById } from '../store/geofeature/geofeature.action';
+import { TabId } from '../../store/mainMenu/mainMenu.action';
+import { createUniqueId } from '../../utils/numberUtils';
+import { VectorGeoResource, VectorSourceType } from '../../services/domain/geoResources';
+import { GeoResourceService } from '../../services/GeoResourceService';
 
 
 /**
- * Id of the layer used for highlight visualization.
+ * Id of the layer used for any geofeature visualization. Mainly used for independent GeoJson-VectorSources
  */
-export const HIGHLIGHT_LAYER_ID = 'highlight_layer';
+export const GEO_FEATURE_LAYER_ID = 'geofeature_layer';
 
 /**
- *ID for FeatureInfo related highlight features
+ *ID for verwaltungsebene related style features
  */
-export const FEATURE_INFO_HIGHLIGHT_FEATURE_ID = 'featureInfoHighlightFeatureId';
-/**
- *ID for SearchResult related highlight features
- */
-export const SEARCH_RESULT_HIGHLIGHT_FEATURE_ID = 'searchResultHighlightFeatureId';
-/**
- *ID for SearchResult related temporary highlight features
- */
-export const SEARCH_RESULT_TEMPORARY_HIGHLIGHT_FEATURE_ID = 'searchResultTemporaryHighlightFeatureId';
+export const VERWALTUNGS_EBENE_ID = 'verwaltungsEbeneId';
 /**
  * @class
- * @author taulinger
+ * @author kun
  */
-export class HighlightPlugin extends BaPlugin {
+export class GeoFeaturePlugin extends BaPlugin {
+
+	constructor() {
+		super();
+//		const { TranslationService: translationService } = $injector.inject('TranslationService');
+//		this._translationService = translationService;
+
+		const { GeoResourceService: geoResourceService} = $injector.inject( 'GeoResourceService');
+		this._geoResourceService = geoResourceService;
+	}
 
 	/**
 	 * @override
@@ -35,45 +39,48 @@ export class HighlightPlugin extends BaPlugin {
 	 */
 	async register(store) {
 
-		const highlightFeatureId = createUniqueId();
+		const geoFeatureId = createUniqueId();
 
 
-		const onChange = (active) => {
+		const onChange = (active, state) => {
 
 			if (active) {
-				addLayer(HIGHLIGHT_LAYER_ID, { constraints: { hidden: true, alwaysTop: true } });
-			}
-			else {
-				removeLayer(HIGHLIGHT_LAYER_ID);
+				console.log('check draggable for Features');
+				console.log(state);
+//				const getOrCreateVectorGeoResource = (id) => {
+//					const fromService = this._geoResourceService.byId(id);
+//					return fromService ? fromService : new VectorGeoResource(id, 'label feature', VectorSourceType.GEOJSON);
+//				};
+//				const vgr = getOrCreateVectorGeoResource(GEO_FEATURE_LAYER_ID);
+//				vgr.setSource({features: [], type: "FeatureCollection" }, 4326);
+
+				//register georesource
+//				this._geoResourceService.addOrReplace(vgr);
+				//add a layer that displays the georesource in the map
+				console.error('call addLayer for GeoFeatures');
+				addLayer(GEO_FEATURE_LAYER_ID, {constraints: {hidden: true, alwaysTop: true}});
+			} else {
+				console.error('remove Features in Layer ' + GEO_FEATURE_LAYER_ID);
+				removeLayer(GEO_FEATURE_LAYER_ID );
 			}
 		};
 
-		const onPointerClick = () => {
-			removeHighlightFeaturesById(FEATURE_INFO_HIGHLIGHT_FEATURE_ID);
+		const onFeatureShow = (features) => {
+			console.log('show Features or make it draggable');
+			console.log(features);
+			
+			//make dragable
 		};
 
 		const onTabChanged = (tab) => {
-			if (tab !== TabId.FEATUREINFO) {
-				removeHighlightFeaturesById(FEATURE_INFO_HIGHLIGHT_FEATURE_ID);
-			}
-			if (tab !== TabId.SEARCH) {
-				removeHighlightFeaturesById([SEARCH_RESULT_HIGHLIGHT_FEATURE_ID, SEARCH_RESULT_TEMPORARY_HIGHLIGHT_FEATURE_ID]);
+			if (tab !== TabId.EXTENSION) {
+				console.log('hide Features');
+				//removeHighlightFeaturesById(FEATURE_INFO_HIGHLIGHT_FEATURE_ID);
 			}
 		};
 
-		const onFeatureInfoQueryingChange = (querying, state) => {
-			if (querying) {
-				const coordinate = state.featureInfo.coordinate.payload;
-				addHighlightFeatures({ id: highlightFeatureId, data: { coordinate: coordinate }, type: HighlightFeatureTypes.ANIMATED });
-			}
-			else {
-				removeHighlightFeaturesById(highlightFeatureId);
-			}
-		};
-
-		observe(store, state => state.highlight.active, onChange);
-		observe(store, state => state.pointer.click, onPointerClick);
+		observe(store, state => state.geofeature.active, onChange);
+		observe(store, state => state.geofeature.features, onFeatureShow);
 		observe(store, store => store.mainMenu.tab, onTabChanged, false);
-		observe(store, state => state.featureInfo.querying, onFeatureInfoQueryingChange);
 	}
 }

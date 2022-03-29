@@ -22,6 +22,8 @@ import { createMainMenuReducer } from '../store/mainMenu/mainMenu.reducer';
 import { featureInfoReducer } from '../store/featureInfo/featureInfo.reducer';
 import { importReducer } from '../store/import/import.reducer';
 import { fnModuleCommReducer } from '../ea/store/fnModuleComm/fnModuleComm.reducer';
+import { geofeatureReducer } from '../ea/store/geofeature/geofeature.reducer';
+import { geopresentReducer } from '../ea/store/geopresent/geopresent.reducer';
 
 
 /**
@@ -59,11 +61,13 @@ export class StoreService {
 			featureInfo: featureInfoReducer,
 			media: createMediaReducer(),
 			import: importReducer,
+			geofeature: geofeatureReducer,
+			geopresent: geopresentReducer,
 			fnModuleComm: fnModuleCommReducer
 		});
 
-		this._store = createStore(rootReducer);
-//		this._store = createStore(rootReducer,  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+//		this._store = createStore(rootReducer);
+		this._store = createStore(rootReducer,  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 		$injector.onReady(async () => {
 
@@ -82,6 +86,8 @@ export class StoreService {
 				EnvironmentService: environmentService,
 				ImportPlugin: importPlugin,
 				ConfigService: configService,
+				GeoFeaturePlugin: geoFeaturePlugin,
+				GeoPresentPlugin: geoPresentPlugin,
 				FnModulePlugin: fnModulePlugin
 			}
 				= $injector.inject(
@@ -99,6 +105,8 @@ export class StoreService {
 					'EnvironmentService',
 					'ImportPlugin',
 					'ConfigService',
+					'GeoFeaturePlugin',
+					'GeoPresentPlugin',
 					'FnModulePlugin'
 				);
 
@@ -116,6 +124,8 @@ export class StoreService {
 				await featureInfoPlugin.register(this._store);
 				await mainMenuPlugin.register(this._store);
 				await importPlugin.register(this._store);
+				await geoFeaturePlugin.register(this._store);
+				await geoPresentPlugin.register(this._store);
 				await fnModulePlugin.register(this._store);
 				//we remove all query params shown in the browsers address bar
 				if (configService.getValue('RUNTIME_MODE') !== 'development') {

@@ -1,34 +1,35 @@
 /**
- * Action creators for highlighting a feature.
+ * Action creators for adding external feature vectors.
  * @module highlight/action
  */
-import { CLEAR_FEATURES, FEATURE_ADD, REMOVE_FEATURE_BY_ID } from './highlight.reducer';
-import { $injector } from '../../injection';
+import { EventLike } from '../../../utils/storeUtils';
+import { CLEAR_FEATURES, FEATURE_ADD, REMOVE_FEATURE_BY_ID, FEATURE_ADD_LAYER } from './geofeature.reducer';
+import { $injector } from '../../../injection';
 
 
 /**
  * Contains information for highlighting a position or an area in a map.
- * @typedef {Object} HighlightFeature
- * @property {HighlightFeatureTypes} type  The type of this feature.
+ * @typedef {Object} GeoFeature
+ * @property {GeoFeatureTypes} type  The type of this feature.
  * @property {HighlightCoordinate|HighlightGeometry} data The data which can be a coordinate or a geometry
  * @property {string} [id] Optional id. If not present, the reducer will create one.
  * @property {string} [label] Optional text
  */
 
 /**
- * Coordinate data for a {@link HighlightFeature}
+ * Coordinate data for a {@link GeoFeature}
  * @typedef {Object} HighlightCoordinate
  * @property {Coordinate} coordinate
  */
 
 /**
- * Geometry data for a {@link HighlightFeature}
+ * Geometry data for a {@link GeoFeature}
  * @typedef {Object} HighlightGeometry
  * @property {object|string} geometry Geometry (e.g. geoJson, WKT)
- * @property {HighlightFeatureGeometryTypes} geometryType the type of the geometry
+ * @property {GeoFeatureGeometryTypes} geometryType the type of the geometry
  */
 
-export const HighlightFeatureTypes = Object.freeze({
+export const GeoFeatureTypes = Object.freeze({
 	DEFAULT: 0,
 	TEMPORARY: 1,
 	ANIMATED: 2
@@ -38,11 +39,12 @@ export const HighlightFeatureTypes = Object.freeze({
  * Type of a {@link HighlightGeometry}
  * @enum
  */
-export const HighlightGeometryTypes = Object.freeze({
+export const GeoFeatureGeometryTypes = Object.freeze({
 	GEOJSON: 0,
 	WKT: 1
 });
 
+const defaultProperties = { features: null, active:false};
 
 
 const getStore = () => {
@@ -51,12 +53,25 @@ const getStore = () => {
 };
 
 /**
-* Adds (appends) a single or an array of {@link HighlightFeature}.
-* @param {Array.<HighlightFeature>|HighlightFeature} features
+* Adds (appends) a single or an array of {@link GeoFeature}.
+* @param {Array.<GeoFeature>|GeoFeature} features
 * @function
 */
-export const addHighlightFeatures = (feature) => {
+export const addGeoFeatureLayer = (id, feature) => {
 	const featureAsArray = Array.isArray(feature) ? [...feature] : [feature];
+	getStore().dispatch({
+		type: FEATURE_ADD_LAYER,
+		payload: { id: id, features: featureAsArray }
+	});
+};
+/**
+* Adds (appends) a single or an array of {@link GeoFeature}.
+* @param {Array.<GeoFeature>|GeoFeature} features
+* @function
+*/
+export const addGeoFeatures = (geojsonFeatures)=> {
+	const featureAsArray = Array.isArray(geojsonFeatures) ? [...geojsonFeatures] : [geojsonFeatures];
+		
 	getStore().dispatch({
 		type: FEATURE_ADD,
 		payload: featureAsArray
@@ -64,10 +79,10 @@ export const addHighlightFeatures = (feature) => {
 };
 
 /**
- * Removes all {@link HighlightFeature}s.
+ * Removes all {@link GeoFeature}s.
  * @function
  */
-export const clearHighlightFeatures = () => {
+export const clearGeoFeatures = () => {
 	getStore().dispatch({
 		type: CLEAR_FEATURES
 	});
@@ -76,10 +91,10 @@ export const clearHighlightFeatures = () => {
 /**
  * Removes a (permanent or temporary) feature by its id.
  * If two or more feature have the same id, all of them are removed.
- * @param {Array.<String>|String} id HighlightFeature id
+ * @param {Array.<String>|String} id GeoFeature id
  * @function
  */
-export const removeHighlightFeaturesById = (id) => {
+export const removeGeoFeaturesById = (id) => {
 	const idsAsArray = Array.isArray(id) ? [...id] : [id];
 	getStore().dispatch({
 		type: REMOVE_FEATURE_BY_ID,

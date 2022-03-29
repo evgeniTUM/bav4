@@ -1,63 +1,28 @@
-import { createUniqueId } from '../../utils/numberUtils';
+import { geofeatureReducer } from '../../../src/ea/store/geofeature/geofeature.reducer';
+import { addGeoFeatures }  from '../../../src/ea/store/geofeature/geofeature.action';
+import { TestUtils } from '../../test-utils.js';
 
-export const FEATURE_ADD = 'highlight/feature/add';
-export const CLEAR_FEATURES = 'highlight/clear';
-export const REMOVE_FEATURE_BY_ID = 'highlight/remove/id';
 
-export const initialState = {
+describe('geofeatureReducer', () => {
 
-	/**
-	 * @property {HighlightFeature|null}
-	 */
-	features: [],
-	/**
-	 * @property {boolean}
-	 */
-	active: false
-};
+	const setup = (state) => {
+		return TestUtils.setupStoreAndDi(state, {
+			geofeature: geofeatureReducer
+		});
+	};
 
-export const highlightReducer = (state = initialState, action) => {
-
-	const createIdIfMissing = features => features.map(f => {
-		if (!f.id) {
-			f.id = createUniqueId();
-		}
-		return f;
+	it('initiales the store with default values', () => {
+		const store = setup();
+		expect(store.getState().geofeature.features).toHaveSize(0);
 	});
 
-	const { type, payload } = action;
-	switch (type) {
-		case FEATURE_ADD: {
+	it('display \'geojson\' and \'active\' by adding geofeature', () => {
+		const store = setup();
 
-			const features = [...state.features, ...createIdIfMissing(payload)];
-			const active = !!features.length;
+		addGeoFeatures('mixer', window, window.location.origin );
+		expect(store.getState().geofeature.active).toBeTrue();
+		expect(store.getState().geofeature.features).toHaveSize(0);
+		
+	});
 
-			return {
-				...state,
-				features: features,
-				active: active
-			};
-		}
-		case CLEAR_FEATURES: {
-
-			return {
-				...state,
-				features: [],
-				active: false
-			};
-		}
-		case REMOVE_FEATURE_BY_ID: {
-
-			const features = state.features.filter(f => !payload.includes(f.id));
-			const active = !!features.length;
-
-			return {
-				...state,
-				features: features,
-				active: active
-			};
-		}
-	}
-
-	return state;
-};
+});

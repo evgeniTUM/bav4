@@ -1,11 +1,11 @@
-import { $injector } from '../injection';
-import { addLayer } from '../store/layers/layers.action';
-import { emitNotification, LevelTypes } from '../store/notifications/notifications.action';
-import { VectorSourceType } from '../services/domain/geoResources';
-import { observe } from '../utils/storeUtils';
-import { provide as provider } from './i18n/importPlugin.provider';
-import { BaPlugin } from './BaPlugin';
-import { SourceTypeName } from '../services/domain/sourceType';
+import { $injector } from '../../injection';
+import { addLayer } from '../../store/layers/layers.action';
+import { emitNotification, LevelTypes } from '../../store/notifications/notifications.action';
+import { VectorSourceType } from '../../services/domain/geoResources';
+import { observe } from '../../utils/storeUtils';
+//import { provide as provider } from './i18n/geopresent.provider';
+import { BaPlugin } from '../../plugins/BaPlugin';
+import { SourceTypeName } from '../../services/domain/sourceType';
 
 
 /**
@@ -13,13 +13,13 @@ import { SourceTypeName } from '../services/domain/sourceType';
  * @author thiloSchlemmer
  * @author taulinger
  */
-export class ImportPlugin extends BaPlugin {
+export class GeoPresentPlugin extends BaPlugin {
 	constructor() {
 		super();
 		const { ImportVectorDataService: importVectorDataService, TranslationService: translationService } = $injector.inject('ImportVectorDataService', 'TranslationService');
 		this._importVectorDataService = importVectorDataService;
 		this._translationService = translationService;
-		translationService.register('importPluginProvider', provider);
+//		translationService.register('importPluginProvider', provider);
 	}
 
 	/**
@@ -28,8 +28,10 @@ export class ImportPlugin extends BaPlugin {
 	 */
 	async register(store) {
 
-		const onChange = async (latestImport) => {
-			const { payload: { url, data, sourceType } } = latestImport;
+		const onChange = async (featurePresent) => {
+			const { payload: { url, data, sourceType } } = featurePresent;
+			console.log('featurePresent');
+			console.log(featurePresent);
 
 			const geoResource = url ? await this._importByUrl(url, sourceType) : this._importByData(data, sourceType);
 			if (geoResource) {
@@ -38,7 +40,7 @@ export class ImportPlugin extends BaPlugin {
 			}
 		};
 
-		observe(store, state => state.import.latest, onChange);
+//		observe(store, state => state.geopresent.features, onChange);
 	}
 
 	/**
@@ -79,6 +81,7 @@ export class ImportPlugin extends BaPlugin {
 	  * @returns {GeoResource|null} the imported GeoResource or null on failure
 	  */
 	_importByData(data, sourceType) {
+		console.log('sourceType ' + sourceType);
 		const vectorGeoResource = this._importVectorDataService.forData(data, { sourceType: this._mapSourceTypeToVectorSourceType(sourceType) });
 		if (vectorGeoResource) {
 			return vectorGeoResource;

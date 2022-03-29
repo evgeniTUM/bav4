@@ -34,6 +34,8 @@ import { GeoResourceInfoService } from '../modules/geoResourceInfo/services/GeoR
 import { ImportVectorDataService } from '../services/ImportVectorDataService';
 import { SourceTypeService } from '../services/SourceTypeService';
 import { ImportPlugin } from '../plugins/ImportPlugin';
+import { GeoPresentPlugin } from '../ea/plugins/GeoPresentPlugin';
+import { GeoFeaturePlugin } from '../ea/plugins/GeoFeaturePlugin';
 
 
 $injector
@@ -67,6 +69,8 @@ $injector
 	.registerSingleton('MediaPlugin', new MediaPlugin())
 	.registerSingleton('MeasurementPlugin', new MeasurementPlugin())
 	.registerSingleton('GeolocationPlugin', new GeolocationPlugin())
+	.registerSingleton('GeoFeaturePlugin', new GeoFeaturePlugin())
+	.registerSingleton('GeoPresentPlugin', new GeoPresentPlugin())
 	.registerSingleton('ContextClickPlugin', new ContextClickPlugin())
 	.registerSingleton('FeatureInfoPlugin', new FeatureInfoPlugin())
 	.registerSingleton('MainMenuPlugin', new MainMenuPlugin())

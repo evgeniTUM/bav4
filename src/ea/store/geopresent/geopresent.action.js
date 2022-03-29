@@ -1,6 +1,6 @@
-import { $injector } from '../../injection';
-import { EventLike } from '../../utils/storeUtils';
-import { IMPORT_ADDED } from './import.reducer';
+import { $injector } from '../../../injection';
+import { EventLike } from '../../../utils/storeUtils';
+import { IMPORT_ADDED } from './geopresent.reducer';
 
 
 /**
@@ -29,6 +29,6 @@ export const setUrl = (url, sourceType) => {
 export const setData = (data, sourceType) => {
 	getStore().dispatch({
 		type: IMPORT_ADDED,
-		payload: new EventLike({ ...defaultImportProperties, data: data, sourceType: sourceType })
+		payload: new EventLike({ ...defaultImportProperties, data: data, sourceType: sourceType})
 	});
 };
