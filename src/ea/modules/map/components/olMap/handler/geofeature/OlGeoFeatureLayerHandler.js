@@ -12,6 +12,7 @@ import { GeoFeatureTypes, GeoFeatureGeometryTypes } from '../../../../../../stor
 import WKT from 'ol/format/WKT';
 import GeoJSON from 'ol/format/GeoJSON';
 import { unByKey } from 'ol/Observable';
+import MapBrowserEventType from 'ol/MapBrowserEventType';
 
 
 /**
@@ -21,27 +22,34 @@ import { unByKey } from 'ol/Observable';
 export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 	constructor() {
-		super(GEO_FEATURE_LAYER_ID);
-		const { StoreService } = $injector.inject('StoreService');
+		super(GEO_FEATURE_LAYER_ID, {preventDefaultClickHandling: false, preventDefaultContextClickHandling: false});
+		const {StoreService, CoordinateService, MapService} = $injector.inject('StoreService', 'CoordinateService', 'MapService');
+
+
 		this._storeService = StoreService;
-		this._unregister = () => { };
-		this._olMap = null;
+		this.coordinateService = CoordinateService;
+		this.mapService = MapService;
+
+		this._positionFeature = new Feature();
+		this._unregister = () => {
+		};
 		this._vectorLayer = null;
 
 		this._animationListenerKeys = [];
+		this._listeners = [];
+
 		console.error('OlGeoFeatureLayerHandler was created');
 	}
 
-
 	/**
-		 * Activates the Handler.
-		 * @override
-		 */
+	 * Activates the Handler.
+	 * @override
+	 */
 	onActivate(olMap) {
-		
+
 		const createLayer = () => {
 
-			const source = new VectorSource({ wrapX: false });
+			const source = new VectorSource({wrapX: false, features: [this._positionFeature]});
 			const layer = new VectorLayer({
 				source: source
 			});
@@ -68,6 +76,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 		};
 
 		this._map = olMap;
+
 		if (!this._vectorLayer) {
 			this._vectorLayer = getOrCreateLayer();
 //			this._mapContainer = olMap.getTarget();
@@ -97,7 +106,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 //			this._listeners.push(olMap.on(MapBrowserEventType.DBLCLICK, () => false));
 //			this._listeners.push(document.addEventListener('keyup', (e) => this._removeLast(e)));
 		}
-		this._registeredObservers = this._register(this._storeService.getStore());
+		this._unregister = this._register(this._storeService.getStore());
 //		this._map.addInteraction(this._select);
 //		this._map.addInteraction(this._modify);
 //		this._map.addInteraction(this._snap);
@@ -113,50 +122,93 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 	}
 
 	/**
-		 *  @override
-		 *  @param {Map} olMap
-		 */
+	 *  @override
+	 *  @param {Map} olMap
+	 */
 	onDeactivate(/*eslint-disable no-unused-vars */olMap) {
+		this._map = null;
 		this._unregister();
-		this._olMap = null;
+		unByKey(this._listeners);
 		this._vectorLayer = null;
 	}
 
-
-
-	_appendStyle(feature, olFeature) {
-		const { data } = feature;
-		//we have a HighlightCoordinate
-		olFeature.setStyle(highlightCoordinateFeatureStyleFunction);
-		return olFeature;
+	_updateStyle(olFeature, olLayer, olMap) {
+		const {StyleService: styleService} = $injector.inject('StyleService');
+		styleService.updateStyle(olFeature, olMap, {
+			visible: olLayer.getVisible(),
+			top: olMap.getLayers().item(olMap.getLayers().getLength() - 1) === olLayer,
+			opacity: olLayer.getOpacity()
+		});
 	}
-
-
-	_toOlFeature(feature) {
-		const { data } = feature;
-		let geojson = data.features[0];
-		console.log(geojson);
-		
-		//we have a HighlightCoordinate
-		if (geojson.coordinate) {
-			return this._appendStyle(geojson, new Feature(new Point(geojson.coordinate)));
-		}
-
-		//we have a GeoFeatureGeometryTypes
-		return this._appendStyle(feature, new GeoJSON().readFeature(geojson));
-	}
-
-
+	
 	_register(store) {
+		
+		const getOldLayer = (map) => {
+			return map.getLayers().getArray().find(l => l.get('id') && (
+				l.get('id') === GEO_FEATURE_LAYER_ID));
+		};
+
+		const onClick = (event) => {
+			const position = event.coordinate;
+			if (!position)
+				return;
+//			setLocation(position);
+			this._positionFeature.setStyle(highlightCoordinateFeatureStyleFunction);
+			this._positionFeature.setGeometry(new Point(position));
+			this._map.renderSync();
+		};
+
+
+                this._listeners.push(this._map.on(MapBrowserEventType.CLICK, onClick));
 
 		const onChange = ({ features }) => {
 
-			this._vectorLayer.getSource().clear();
-console.log('OlGeoFeatureLayerHandler onChange --> features');
-			this._vectorLayer.getSource().addFeatures(
-				features
-					.map(this._toOlFeature, this) );
+		const { StyleService: styleService } = $injector.inject('StyleService');
+
+			console.log('OlGeoFeatureLayerHandler onChange --> features');
+//			this._vectorLayer.getSource().clear();
+//			this._vectorLayer.getSource().addFeatures(
+//				features
+//					.map(this._toOlFeature, this) );
 //					.filter(olFeature => !!olFeature));
+			
+			let georesources = features;
+
+
+			if (features.length > 0) {
+
+				let geojson = georesources[0].data.features[0];
+				console.log(geojson);
+
+				let _features = new GeoJSON().readFeature(geojson);
+				this._positionFeature.setStyle(highlightGeometryFeatureStyleFunction());
+
+				_features.getGeometry().transform('EPSG:' + 4326, 'EPSG:' + this.mapService.getSrid());
+				_features.set('srid', 4326, true);
+
+
+				let vl = getOldLayer(this._map); //this._vectorLayer
+
+//		_features.setStyle(highlightTemporaryGeometryFeatureStyleFunction);
+//				vl.getSource().addFeatures(_features);
+
+				this._positionFeature.setGeometry( _features.getGeometry());
+
+				vl.getSource().getFeatures().forEach(feature => {
+					if (styleService.isStyleRequired(feature)) {
+						styleService.addStyle(feature, this._map, this._vectorLayer);
+						this._updateStyle(feature, this._vectorLayer, this._map);
+					}
+				});
+				
+
+
+				this._map.renderSync();
+				console.log(getOldLayer(this._map));
+
+		}
+
+
 		};
 
 		return observe(store, state => state.geofeature, onChange, false);
