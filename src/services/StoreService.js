@@ -24,6 +24,8 @@ import { importReducer } from '../store/import/import.reducer';
 import { contributeReducer } from '../store/ea/contribute/contribute.reducer'
 
 import { fnModuleCommReducer } from '../ea/store/fnModuleComm/fnModuleComm.reducer';
+import { geofeatureReducer } from '../ea/store/geofeature/geofeature.reducer';
+//import { geopresentReducer } from '../ea/store/geopresent/geopresent.reducer';
 
 
 /**
@@ -62,10 +64,12 @@ export class StoreService {
 			contribute: contributeReducer,
 			media: createMediaReducer(),
 			import: importReducer,
+			geofeature: geofeatureReducer,
 			fnModuleComm: fnModuleCommReducer
 		});
 
-		this._store = createStore(rootReducer);
+//		this._store = createStore(rootReducer);
+		this._store = createStore(rootReducer,  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 		$injector.onReady(async () => {
 
@@ -84,6 +88,7 @@ export class StoreService {
 				EnvironmentService: environmentService,
 				ImportPlugin: importPlugin,
 				ConfigService: configService,
+				GeoFeaturePlugin: geoFeaturePlugin,
 				FnModulePlugin: fnModulePlugin
 			}
 				= $injector.inject(
@@ -101,6 +106,7 @@ export class StoreService {
 					'EnvironmentService',
 					'ImportPlugin',
 					'ConfigService',
+					'GeoFeaturePlugin',
 					'FnModulePlugin'
 				);
 
@@ -118,6 +124,7 @@ export class StoreService {
 				await featureInfoPlugin.register(this._store);
 				await mainMenuPlugin.register(this._store);
 				await importPlugin.register(this._store);
+				await geoFeaturePlugin.register(this._store);
 				await fnModulePlugin.register(this._store);
 				//we remove all query params shown in the browsers address bar
 				if (configService.getValue('RUNTIME_MODE') !== 'development') {

@@ -50,6 +50,9 @@ describe('StoreService', () => {
 			register() {}			
 		};
 
+		const geoFeaturePluginMock = {
+			register() {}			
+		};
 		const windowMock = {
 			history: {
 				replaceState() { }
@@ -79,6 +82,7 @@ describe('StoreService', () => {
 				.registerSingleton('EnvironmentService', { getWindow: () => windowMock })
 				.registerSingleton('ConfigService', configService)
 				.registerSingleton('FnModulePlugin', fnModulePluginMock)
+				.registerSingleton('GeoFeaturePlugin', geoFeaturePluginMock)
 
 				.ready();
 		};
@@ -115,6 +119,7 @@ describe('StoreService', () => {
 			expect(reducerKeys.includes('import')).toBeTrue();
 			expect(reducerKeys.includes('contribute')).toBeTrue();
 			expect(reducerKeys.includes('fnModuleComm')).toBeTrue();
+			expect(reducerKeys.includes('geofeature')).toBeTrue();
 		});
 
 		it('registers all plugins', (done) => {

@@ -67,14 +67,16 @@ $injector
 	.registerSingleton('MediaPlugin', new MediaPlugin())
 	.registerSingleton('MeasurementPlugin', new MeasurementPlugin())
 	.registerSingleton('GeolocationPlugin', new GeolocationPlugin())
+//	.registerSingleton('GeoFeaturePlugin', new GeoFeaturePlugin())
 	.registerSingleton('ContextClickPlugin', new ContextClickPlugin())
 	.registerSingleton('FeatureInfoPlugin', new FeatureInfoPlugin())
 	.registerSingleton('MainMenuPlugin', new MainMenuPlugin())
 	.registerSingleton('ImportPlugin', new ImportPlugin())
 	.registerModule(mapModule)
-	.registerModule(topicsModule)
-	.ready();
+	.registerModule(topicsModule);
+	//Import Energieatlas Plugins für Erweiterung muss nach der registrierung der services erfolgen
+	import * as eaConfig from '../ea/injection/eaConfig';
 
-
+$injector.ready();
 
 export const init = true;
