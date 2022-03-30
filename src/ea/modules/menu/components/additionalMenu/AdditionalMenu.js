@@ -1,10 +1,12 @@
 import { html } from 'lit-html';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import css from './additionalMenu.css';
+import { EAContribute } from '../../../../../modules/ea/components/contribute/EAContribute';
 import { MixerModuleContent } from '../../../toolbox/components/mixerModuleContent/MixerModuleContent';
 import { RedesignModuleContent } from '../../../toolbox/components/redesignModuleContent/RedesignModuleContent';
 import { setCurrentTool, ToolId } from '../../../../../store/tools/tools.action';
 import { $injector } from '../../../../../injection';
+import { setTaggingMode, toggleTaggingMode } from '../../../../../store/ea/contribute/contribute.action';
 
 
 const Update_IsOpen = 'update_isOpen';
@@ -54,9 +56,9 @@ export class AdditionalMenu extends MvuElement {
 		this.observe(state => state.tools.current, current => this._toolId = current);
 	}
 
-		/**
+	/**
 	 * @override
-	 */
+	*/
 	createView(model) {
 
 		const { isFetching, isPortrait, hasMinWidth, isOpen } = model;
@@ -81,10 +83,16 @@ export class AdditionalMenu extends MvuElement {
 				setCurrentTool(id);
 			}
 		};
-//
-//		const getAnimatedBorderClass = () => {
-//			return isFetching ? 'animated-action-button__border__running' : '';
-//		};
+		//
+		//		const getAnimatedBorderClass = () => {
+		//			return isFetching ? 'animated-action-button__border__running' : '';
+		//		};
+
+		const toggleContributionModule = () => {
+			const toolId = EAContribute.tag;
+			toggleTaggingMode();
+			toggleTool(toolId);
+		};
 
 		const toggleMixerModule = () => {
 			const toolId = MixerModuleContent.tag;
@@ -109,7 +117,7 @@ export class AdditionalMenu extends MvuElement {
 				</span>
 			</span>
 		</li>
-		<li class="ba-list-item">
+		<li class="ba-list-item" @click="${toggleContributionModule}">
 			<span class="ba-list-item__pre">
 				<span class="ba-list-item__icon icon-mitmachboerse">
 				</span>

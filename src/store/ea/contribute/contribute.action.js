@@ -24,6 +24,15 @@ export const setState = (enabled) => {
 	});
 };
 
+/**
+ * Toggle contribution dialog
+ * @function
+ */
+export const toggleTaggingMode = () => {
+	const state = getStore().getState().contribute.active;
+	setState(!state);
+}
+
 
 
 

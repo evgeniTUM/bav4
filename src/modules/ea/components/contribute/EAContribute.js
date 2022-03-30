@@ -86,7 +86,7 @@ export class EAContribute extends MvuElement {
 		}
 
 		const getCoordinatesString = () => {
-			return model.position ? this._coordinateService.stringify(this._coordinateService.toLonLat(model.position), 4326, { digits: 5}) : '';
+			return model.position ? this._coordinateService.stringify(this._coordinateService.toLonLat(model.position), 4326, { digits: 5 }) : '';
 		};
 
 		if (!model.active)
@@ -95,28 +95,22 @@ export class EAContribute extends MvuElement {
 		return html`
 			<style>${css}</style>		
 			<div class="tool-container"> 			
-				<div class="tool-container__content is-open" id='container'>    
-					<div class="tool-container__tools-nav">                         
-						<ba-icon class='tool-container__close-button' .icon='${closeIcon}' .size=${1.5} .color=${'var(--text2)'} .color_hover=${'var(--text2)'} @click=${close}>						
-                	</div>
-					<div class="tool-container__style_desc" title="${translate('ea_contribute_desc')}">
-						<label for="description">${translate('ea_contribute_desc')}</label>	
-						<textarea id="description" name="${translate('ea_contribute_desc')}" .value=${model.description} @input=${onChangeDescription}></textarea>
-					</div>	
-					<div class="tool-container__style_desc" title="${translate('ea_contribute_coordinates_text')}">
-						<label for="coordinates">${translate('ea_contribute_coordinates_text')}</label>	
-						<div id='coordinates'>${getCoordinatesString()}</div>
-					</div>
-					<ba-button id="tag" 
-						class="tool-container__button" 
-						.label=${translate(model.tagging ? 'ea_contribute_button_tag_cancel' : 'ea_contribute_button_tag')}
-						@click=${onClickTagButton}></ba-button>
-					<ba-button id="select" 
-						class="tool-container__button" 
-						.label=${translate('ea_contribute_button_finish')}
-						@click=${onClickFinish}></ba-button>
+				<div class="tool-container__style_desc" title="${translate('ea_contribute_desc')}">
+					<label for="description">${translate('ea_contribute_desc')}</label>	
+					<textarea id="description" name="${translate('ea_contribute_desc')}" .value=${model.description} @input=${onChangeDescription}></textarea>
+				</div>	
+				<div class="tool-container__style_desc" title="${translate('ea_contribute_coordinates_text')}">
+					<label for="coordinates">${translate('ea_contribute_coordinates_text')}</label>	
+					<div id='coordinates'>${getCoordinatesString()}</div>
 				</div>
-			</div>		
+				<ba-button id="tag" 
+					class="tool-container__button" 
+					.label=${translate(model.tagging ? 'ea_contribute_button_tag_cancel' : 'ea_contribute_button_tag')}
+					@click=${onClickTagButton}></ba-button>
+				<ba-button id="select" 
+					class="tool-container__button" 
+					.label=${translate('ea_contribute_button_finish')}
+					@click=${onClickFinish}></ba-button>
 			</div>		
 		`;
 

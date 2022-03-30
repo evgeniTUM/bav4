@@ -16,7 +16,7 @@ import { sharedReducer } from '../store/shared/shared.reducer';
 import { geolocationReducer } from '../store/geolocation/geolocation.reducer';
 import { mapReducer } from '../store/map/map.reducer';
 import { measurementReducer } from '../store/measurement/measurement.reducer';
-import { pointerReducer } from '../store/pointer/pointer.reducer';
+import { pointerReducer, POINTER_MOVE_CHANGED } from '../store/pointer/pointer.reducer';
 import { mapContextMenuReducer } from '../store/mapContextMenu/mapContextMenu.reducer';
 import { createMainMenuReducer } from '../store/mainMenu/mainMenu.reducer';
 import { featureInfoReducer } from '../store/featureInfo/featureInfo.reducer';
@@ -69,7 +69,15 @@ export class StoreService {
 		});
 
 //		this._store = createStore(rootReducer);
-		this._store = createStore(rootReducer,  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+		this._store = createStore(rootReducer,  
+			window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(
+				{
+				    // trace: true, // (action) => { return ‘trace as string’; }
+    				// traceLimit: 25,
+					actionsBlacklist: [POINTER_MOVE_CHANGED ],
+
+				}
+			));
 
 		$injector.onReady(async () => {
 
