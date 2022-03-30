@@ -47,18 +47,9 @@ export class GeoFeaturePlugin extends BaPlugin {
 			if (active) {
 				console.log('check draggable for Features');
 				console.log(state);
-//				const getOrCreateVectorGeoResource = (id) => {
-//					const fromService = this._geoResourceService.byId(id);
-//					return fromService ? fromService : new VectorGeoResource(id, 'label feature', VectorSourceType.GEOJSON);
-//				};
-//				const vgr = getOrCreateVectorGeoResource(GEO_FEATURE_LAYER_ID);
-//				vgr.setSource({features: [], type: "FeatureCollection" }, 4326);
-
-				//register georesource
-//				this._geoResourceService.addOrReplace(vgr);
-				//add a layer that displays the georesource in the map
 				console.error('call addLayer for GeoFeatures');
-				addLayer(GEO_FEATURE_LAYER_ID, {constraints: {hidden: true, alwaysTop: true}});
+				let label = 'Verwaltungseinheiten'
+				addLayer(GEO_FEATURE_LAYER_ID, {label: label , constraints: { alwaysTop: true}});
 			} else {
 				console.error('remove Features in Layer ' + GEO_FEATURE_LAYER_ID);
 				removeLayer(GEO_FEATURE_LAYER_ID );
@@ -81,6 +72,6 @@ export class GeoFeaturePlugin extends BaPlugin {
 
 		observe(store, state => state.geofeature.active, onChange);
 		observe(store, state => state.geofeature.features, onFeatureShow);
-		observe(store, store => store.mainMenu.tab, onTabChanged, false);
+//		observe(store, store => store.mainMenu.tab, onTabChanged, false);
 	}
 }

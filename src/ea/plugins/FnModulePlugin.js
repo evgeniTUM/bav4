@@ -1,7 +1,7 @@
 import { observe } from '../../utils/storeUtils';
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
-import { addGeoFeatureLayer, addGeoFeatures, GeoFeatureTypes, removeGeoFeaturesById, GeoFeatureGeometryTypes } from '../store/geofeature/geofeature.action';
+import { addGeoFeatureLayer, addGeoFeatures, clearGeoFeatures, GeoFeatureTypes, removeGeoFeaturesById, GeoFeatureGeometryTypes } from '../store/geofeature/geofeature.action';
 import { setData, setData as setImportData, setUrl as setImportUrl } from '../store/geopresent/geopresent.action';
 import { SourceType, SourceTypeName } from '../../services/domain/sourceType';
 import { VectorGeoResource, VectorSourceType } from '../../services/domain/geoResources';
@@ -146,6 +146,7 @@ export class FnModulePlugin extends BaPlugin {
 			case REMOVE_LAYER:
 				break;
 			case CLEAR_LAYER:
+				clearGeoFeatures();
 				break;
 			case ZOOM:
 				break;
@@ -222,6 +223,7 @@ export class FnModulePlugin extends BaPlugin {
 				this.implPostCodeMessageFnModule('open', scope.fnModuleSite, scope.fnModuleDomain, scope.fnModuleWindow);
 			} else {
 				//deaktiviere das Module
+				clearGeoFeatures();
 				this.implPostCodeMessageFnModule('close', scope.fnModuleSite, scope.fnModuleDomain, scope.fnModuleWindow);
 			}
 		};
