@@ -1,6 +1,6 @@
-import { geofeatureReducer } from '../../../src/ea/store/geofeature/geofeature.reducer';
-import { addGeoFeatures }  from '../../../src/ea/store/geofeature/geofeature.action';
-import { TestUtils } from '../../test-utils.js';
+import { geofeatureReducer } from '../../../../src/ea/store/geofeature/geofeature.reducer';
+import { addGeoFeatures }  from '../../../../src/ea/store/geofeature/geofeature.action';
+import { TestUtils } from '../../../test-utils.js';
 
 
 describe('geofeatureReducer', () => {

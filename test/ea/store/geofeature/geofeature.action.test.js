@@ -1,4 +1,4 @@
-import { HighlightGeometryTypes } from '../../../src/ea/store/fnModuleComm/fnModuleComm.action';
+import { HighlightGeometryTypes } from '../../../../src/ea/store/fnModuleComm/fnModuleComm.action';
 
 describe('fnModuleCommAction', () => {
 
