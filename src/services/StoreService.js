@@ -23,7 +23,7 @@ import { featureInfoReducer } from '../store/featureInfo/featureInfo.reducer';
 import { importReducer } from '../store/import/import.reducer';
 import { fnModuleCommReducer } from '../ea/store/fnModuleComm/fnModuleComm.reducer';
 import { geofeatureReducer } from '../ea/store/geofeature/geofeature.reducer';
-import { geopresentReducer } from '../ea/store/geopresent/geopresent.reducer';
+//import { geopresentReducer } from '../ea/store/geopresent/geopresent.reducer';
 
 
 /**
@@ -62,7 +62,6 @@ export class StoreService {
 			media: createMediaReducer(),
 			import: importReducer,
 			geofeature: geofeatureReducer,
-			geopresent: geopresentReducer,
 			fnModuleComm: fnModuleCommReducer
 		});
 
@@ -87,7 +86,6 @@ export class StoreService {
 				ImportPlugin: importPlugin,
 				ConfigService: configService,
 				GeoFeaturePlugin: geoFeaturePlugin,
-				GeoPresentPlugin: geoPresentPlugin,
 				FnModulePlugin: fnModulePlugin
 			}
 				= $injector.inject(
@@ -106,7 +104,6 @@ export class StoreService {
 					'ImportPlugin',
 					'ConfigService',
 					'GeoFeaturePlugin',
-					'GeoPresentPlugin',
 					'FnModulePlugin'
 				);
 
@@ -125,7 +122,6 @@ export class StoreService {
 				await mainMenuPlugin.register(this._store);
 				await importPlugin.register(this._store);
 				await geoFeaturePlugin.register(this._store);
-				await geoPresentPlugin.register(this._store);
 				await fnModulePlugin.register(this._store);
 				//we remove all query params shown in the browsers address bar
 				if (configService.getValue('RUNTIME_MODE') !== 'development') {

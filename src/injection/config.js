@@ -34,8 +34,6 @@ import { GeoResourceInfoService } from '../modules/geoResourceInfo/services/GeoR
 import { ImportVectorDataService } from '../services/ImportVectorDataService';
 import { SourceTypeService } from '../services/SourceTypeService';
 import { ImportPlugin } from '../plugins/ImportPlugin';
-import { GeoPresentPlugin } from '../ea/plugins/GeoPresentPlugin';
-import { GeoFeaturePlugin } from '../ea/plugins/GeoFeaturePlugin';
 
 
 $injector
@@ -69,18 +67,16 @@ $injector
 	.registerSingleton('MediaPlugin', new MediaPlugin())
 	.registerSingleton('MeasurementPlugin', new MeasurementPlugin())
 	.registerSingleton('GeolocationPlugin', new GeolocationPlugin())
-	.registerSingleton('GeoFeaturePlugin', new GeoFeaturePlugin())
-	.registerSingleton('GeoPresentPlugin', new GeoPresentPlugin())
+//	.registerSingleton('GeoFeaturePlugin', new GeoFeaturePlugin())
 	.registerSingleton('ContextClickPlugin', new ContextClickPlugin())
 	.registerSingleton('FeatureInfoPlugin', new FeatureInfoPlugin())
 	.registerSingleton('MainMenuPlugin', new MainMenuPlugin())
 	.registerSingleton('ImportPlugin', new ImportPlugin())
 	.registerModule(mapModule)
 	.registerModule(topicsModule);
-	$injector.ready();
-
 	//Import Energieatlas Plugins für Erweiterung muss nach der registrierung der services erfolgen
 	import * as eaConfig from '../ea/injection/eaConfig';
 
+$injector.ready();
 
 export const init = true;

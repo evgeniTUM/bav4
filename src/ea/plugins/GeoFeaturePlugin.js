@@ -26,11 +26,6 @@ export class GeoFeaturePlugin extends BaPlugin {
 
 	constructor() {
 		super();
-//		const { TranslationService: translationService } = $injector.inject('TranslationService');
-//		this._translationService = translationService;
-
-		const { GeoResourceService: geoResourceService} = $injector.inject( 'GeoResourceService');
-		this._geoResourceService = geoResourceService;
 	}
 
 	/**
@@ -40,7 +35,6 @@ export class GeoFeaturePlugin extends BaPlugin {
 	async register(store) {
 
 		const geoFeatureId = createUniqueId();
-
 
 		const onChange = (active, state) => {
 
