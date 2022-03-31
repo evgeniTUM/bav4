@@ -1,12 +1,8 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../injection';
-import { setDescription, setLocation, setTaggingMode } from '../../../../store/ea/contribute/contribute.action';
-import { addLayer, removeLayer } from '../../../../store/layers/layers.action';
-import { CONTRIBUTION_LAYER_ID } from '../../../map/components/olMap/handler/contribution/OlContributionHandler';
+import { setDescription, setTaggingMode } from '../../../../store/ea/contribute/contribute.action';
 import { MvuElement } from '../../../MvuElement';
-import closeIcon from './assets/x-square.svg';
 import css from './eaContribute.css';
-import proj4 from 'proj4';
 
 const Update = 'update';
 
@@ -59,9 +55,6 @@ export class EAContribute extends MvuElement {
 	createView(model) {
 		const translate = (key) => this._translationService.translate(key);
 
-		const close = () => {
-		};
-
 		const onChangeDescription = (e) => {
 			setDescription(e.target.value);
 		};
@@ -71,26 +64,17 @@ export class EAContribute extends MvuElement {
 
 			const taggingActive = !model.tagging;
 			setTaggingMode(taggingActive);
-
-			if (taggingActive)
-				addLayer(CONTRIBUTION_LAYER_ID, { label: "contribution_layer", constraints: { hidden: true, alwaysTop: false } });
-			else
-				removeLayer(CONTRIBUTION_LAYER_ID);
 		};
 
 
 		const onClickFinish = () => {
 			alert(JSON.stringify(model));
 			setTaggingMode(false);
-			removeLayer(CONTRIBUTION_LAYER_ID);
 		}
 
 		const getCoordinatesString = () => {
 			return model.position ? this._coordinateService.stringify(this._coordinateService.toLonLat(model.position), 4326, { digits: 5 }) : '';
 		};
-
-		if (!model.active)
-			return null;
 
 		return html`
 			<style>${css}</style>		

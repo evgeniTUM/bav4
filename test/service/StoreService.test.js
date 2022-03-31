@@ -53,6 +53,9 @@ describe('StoreService', () => {
 		const geoFeaturePluginMock = {
 			register() {}			
 		};
+		const manageModuleLayersPluginMock= {
+			register() {}			
+		};
 		const windowMock = {
 			history: {
 				replaceState() { }
@@ -83,6 +86,7 @@ describe('StoreService', () => {
 				.registerSingleton('ConfigService', configService)
 				.registerSingleton('FnModulePlugin', fnModulePluginMock)
 				.registerSingleton('GeoFeaturePlugin', geoFeaturePluginMock)
+				.registerSingleton('ManageModuleLayersPlugin', manageModuleLayersPluginMock)
 
 				.ready();
 		};

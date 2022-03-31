@@ -88,6 +88,7 @@ export class StoreService {
 				ImportPlugin: importPlugin,
 				ConfigService: configService,
 				GeoFeaturePlugin: geoFeaturePlugin,
+				ManageModuleLayersPlugin: manageModuleLayersPlugin,
 				FnModulePlugin: fnModulePlugin
 			}
 				= $injector.inject(
@@ -106,6 +107,7 @@ export class StoreService {
 					'ImportPlugin',
 					'ConfigService',
 					'GeoFeaturePlugin',
+					'ManageModuleLayersPlugin',
 					'FnModulePlugin'
 				);
 
@@ -124,6 +126,7 @@ export class StoreService {
 				await mainMenuPlugin.register(this._store);
 				await importPlugin.register(this._store);
 				await geoFeaturePlugin.register(this._store);
+				await manageModuleLayersPlugin.register(this._store);
 				await fnModulePlugin.register(this._store);
 				//we remove all query params shown in the browsers address bar
 				if (configService.getValue('RUNTIME_MODE') !== 'development') {

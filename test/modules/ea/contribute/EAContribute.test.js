@@ -4,6 +4,7 @@ import { MvuElement } from '../../../../src/modules/MvuElement';
 import { setTaggingMode } from '../../../../src/store/ea/contribute/contribute.action';
 import { contributeReducer, initialState } from '../../../../src/store/ea/contribute/contribute.reducer';
 import { modalReducer } from '../../../../src/store/modal/modal.reducer';
+import { toolsReducer } from '../../../../src/store/tools/tools.reducer';
 import { TestUtils } from '../../../test-utils';
 
 window.customElements.define(EAContribute.tag, EAContribute);
@@ -12,21 +13,25 @@ window.customElements.define(EAContribute.tag, EAContribute);
 describe('EAContribute', () => {
 	let store;
 
-	const testState = { ...initialState, ...{ active: true } };
+	const testState = {
+		contribute: initialState,
+		tools: { current: EAContribute.tag }
+	};
 
 	const coordinateServiceMock = {
 		toLonLat() { },
 		stringify() { }
 	};
 
-	const setup = async (customProperties, config = {}) => {
+	const setup = async (customState, config = {}) => {
 		const state = {
-			contribute: { ...testState, ...customProperties }
+			...testState,
+			...customState
 		};
 
 		const { embed = false, isTouch = false } = config;
 
-		store = TestUtils.setupStoreAndDi(state, { contribute: contributeReducer, modal: modalReducer });
+		store = TestUtils.setupStoreAndDi(state, { contribute: contributeReducer, modal: modalReducer, tools: toolsReducer});
 		$injector
 			.registerSingleton('EnvironmentService', {
 				isEmbedded: () => embed,
@@ -47,20 +52,6 @@ describe('EAContribute', () => {
 			expect(element instanceof MvuElement).toBeTrue();
 		});
 
-	});
-
-	describe('when initialized', () => {
-		it('is shown when enabled', async () => {
-			const element = await setup({ active: true });
-
-			expect(element.shadowRoot.children.length).toBeGreaterThan(0);
-		});
-
-		it('is not shown when disabled', async () => {
-			const element = await setup({ active: false });
-
-			expect(element.shadowRoot.children.length).toBe(0);
-		});
 	});
 
 	describe('when initialized and shown', () => {
@@ -87,15 +78,15 @@ describe('EAContribute', () => {
 			const toLonLatSpy = spyOn(coordinateServiceMock, 'toLonLat').and.returnValue({});
 			spyOn(coordinateServiceMock, 'stringify').and.returnValue(expectedCoordString);
 
-			const element = await setup({ position: expectedCoordinates });
-			
+			const element = await setup({ contribute: { position: expectedCoordinates } });
+
 			expect(toLonLatSpy).toHaveBeenCalledWith(expectedCoordinates);
 			expect(element.shadowRoot.querySelector('#coordinates').textContent).toEqual(expectedCoordString);
 		});
 
 		it('sets the description, after changes in textarea', async () => {
 			const newText = 'bar';
-			const element = await setup({ description: 'Foo' });
+			const element = await setup({ contribute: { description: 'Foo' } });
 
 			const descriptionTextArea = element.shadowRoot.querySelector('textarea');
 			expect(descriptionTextArea).toBeTruthy();
