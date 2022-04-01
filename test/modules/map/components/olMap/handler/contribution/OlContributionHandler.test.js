@@ -4,13 +4,14 @@ import { fromLonLat } from 'ol/proj';
 import { OSM, TileDebug } from 'ol/source';
 import { $injector } from '../../../../../../../src/injection';
 import { CONTRIBUTION_LAYER_ID, OlContributionHandler } from '../../../../../../../src/modules/map/components/olMap/handler/contribution/OlContributionHandler';
+import { setTaggingMode } from '../../../../../../../src/store/ea/contribute/contribute.action';
 import { contributeReducer, initialState } from '../../../../../../../src/store/ea/contribute/contribute.reducer';
 import { TestUtils } from '../../../../../../test-utils.js';
 
 
 
 
-describe('OlContribution', () => {
+describe('OlContributionHandler', () => {
 
 	const translationServiceMock = { translate: (key) => key };
 	const defaultState = {
@@ -58,6 +59,19 @@ describe('OlContribution', () => {
 
 			const classUnderTest = new OlContributionHandler();
 			const layer = classUnderTest.activate(map);
+
+			expect(layer).toBeTruthy();
+		});
+
+		it('adds a tagging feature when tagging mode is active', async () => {
+			const map = setupMap();
+			setup();
+
+			const classUnderTest = new OlContributionHandler();
+			const layer = classUnderTest.activate(map);
+			
+			setTaggingMode(true);
+			const features = await layer.getFeatures();
 
 			expect(layer).toBeTruthy();
 		});
