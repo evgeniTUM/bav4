@@ -53,6 +53,9 @@ describe('StoreService', () => {
 		const geoFeaturePluginMock = {
 			register() {}			
 		};
+		const manageModuleLayersPluginMock= {
+			register() {}			
+		};
 		const windowMock = {
 			history: {
 				replaceState() { }
@@ -83,6 +86,7 @@ describe('StoreService', () => {
 				.registerSingleton('ConfigService', configService)
 				.registerSingleton('FnModulePlugin', fnModulePluginMock)
 				.registerSingleton('GeoFeaturePlugin', geoFeaturePluginMock)
+				.registerSingleton('ManageModuleLayersPlugin', manageModuleLayersPluginMock)
 
 				.ready();
 		};
@@ -95,7 +99,7 @@ describe('StoreService', () => {
 			expect(store).toBeDefined();
 
 			const reducerKeys = Object.keys(store.getState());
-			expect(reducerKeys.length).toBe(23);
+			expect(reducerKeys.length).toBe(24);
 			expect(reducerKeys.includes('map')).toBeTrue();
 			expect(reducerKeys.includes('pointer')).toBeTrue();
 			expect(reducerKeys.includes('position')).toBeTrue();
@@ -117,6 +121,7 @@ describe('StoreService', () => {
 			expect(reducerKeys.includes('featureInfo')).toBeTrue();
 			expect(reducerKeys.includes('media')).toBeTrue();
 			expect(reducerKeys.includes('import')).toBeTrue();
+			expect(reducerKeys.includes('contribute')).toBeTrue();
 			expect(reducerKeys.includes('fnModuleComm')).toBeTrue();
 			expect(reducerKeys.includes('geofeature')).toBeTrue();
 		});

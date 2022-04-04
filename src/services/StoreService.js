@@ -16,11 +16,13 @@ import { sharedReducer } from '../store/shared/shared.reducer';
 import { geolocationReducer } from '../store/geolocation/geolocation.reducer';
 import { mapReducer } from '../store/map/map.reducer';
 import { measurementReducer } from '../store/measurement/measurement.reducer';
-import { pointerReducer } from '../store/pointer/pointer.reducer';
+import { pointerReducer, POINTER_MOVE_CHANGED } from '../store/pointer/pointer.reducer';
 import { mapContextMenuReducer } from '../store/mapContextMenu/mapContextMenu.reducer';
 import { createMainMenuReducer } from '../store/mainMenu/mainMenu.reducer';
 import { featureInfoReducer } from '../store/featureInfo/featureInfo.reducer';
 import { importReducer } from '../store/import/import.reducer';
+import { contributeReducer } from '../store/ea/contribute/contribute.reducer'
+
 import { fnModuleCommReducer } from '../ea/store/fnModuleComm/fnModuleComm.reducer';
 import { geofeatureReducer } from '../ea/store/geofeature/geofeature.reducer';
 //import { geopresentReducer } from '../ea/store/geopresent/geopresent.reducer';
@@ -59,14 +61,14 @@ export class StoreService {
 			highlight: highlightReducer,
 			notifications: notificationReducer,
 			featureInfo: featureInfoReducer,
+			contribute: contributeReducer,
 			media: createMediaReducer(),
 			import: importReducer,
 			geofeature: geofeatureReducer,
 			fnModuleComm: fnModuleCommReducer
 		});
 
-//		this._store = createStore(rootReducer);
-		this._store = createStore(rootReducer,  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+		this._store = createStore(rootReducer);
 
 		$injector.onReady(async () => {
 
@@ -86,6 +88,7 @@ export class StoreService {
 				ImportPlugin: importPlugin,
 				ConfigService: configService,
 				GeoFeaturePlugin: geoFeaturePlugin,
+				ManageModuleLayersPlugin: manageModuleLayersPlugin,
 				FnModulePlugin: fnModulePlugin
 			}
 				= $injector.inject(
@@ -104,6 +107,7 @@ export class StoreService {
 					'ImportPlugin',
 					'ConfigService',
 					'GeoFeaturePlugin',
+					'ManageModuleLayersPlugin',
 					'FnModulePlugin'
 				);
 
@@ -122,6 +126,7 @@ export class StoreService {
 				await mainMenuPlugin.register(this._store);
 				await importPlugin.register(this._store);
 				await geoFeaturePlugin.register(this._store);
+				await manageModuleLayersPlugin.register(this._store);
 				await fnModulePlugin.register(this._store);
 				//we remove all query params shown in the browsers address bar
 				if (configService.getValue('RUNTIME_MODE') !== 'development') {
