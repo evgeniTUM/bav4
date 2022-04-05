@@ -62,15 +62,15 @@ test.describe('page', () => {
 		});
 
 		test('should not contain a <ba-ol-map> component', async ({ page }) => {
-			expect(await page.$$('ba-ol-map')).toBeNull();
+			expect(await page.$$('ba-ol-map')).toBeUndefined();
 		});
 
 		test('should not contain a <ba-map-button-container> component', async ({ page }) => {
-			expect(await page.$$('ba-map-button-container')).toBeNull();
+			expect(await page.$$('ba-map-button-container')).toBeUndefined();
 		});
 
 		test('should not contain a <ba-tool-bar> component', async ({ page }) => {
-			expect(await page.$$('ba-tool-bar')).toBeNull();
+			expect(await page.$$('ba-tool-bar')).toBeUndefined();
 		});
 
 		test('should contain a <ba-footer> component', async ({ page }) => {
