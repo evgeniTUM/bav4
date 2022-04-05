@@ -36,6 +36,7 @@
     color: rgb(0,141,201);
     font-family: Arial, sans-serif; 
     font-size: 18px;
+    pointer-events: none;
 
 }
 :host .header__background {
