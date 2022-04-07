@@ -121,7 +121,7 @@ describe('StoreService', () => {
 			expect(reducerKeys.includes('featureInfo')).toBeTrue();
 			expect(reducerKeys.includes('media')).toBeTrue();
 			expect(reducerKeys.includes('import')).toBeTrue();
-			expect(reducerKeys.includes('contribute')).toBeTrue();
+			expect(reducerKeys.includes('contribution')).toBeTrue();
 			expect(reducerKeys.includes('fnModuleComm')).toBeTrue();
 			expect(reducerKeys.includes('geofeature')).toBeTrue();
 		});

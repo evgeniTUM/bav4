@@ -1,7 +1,7 @@
 import { html, nothing } from 'lit-html';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import { $injector } from '../../../../../injection';
-import { EAContribute } from '../../../../../modules/ea/components/contribute/EAContribute';
+import { EAContribution } from '../contribution/EAContribution';
 import { MixerModuleContent } from '../mixerModuleContent/MixerModuleContent';
 import { RedesignModuleContent } from '../redesignModuleContent/RedesignModuleContent';
 import { setCurrentTool, ToolId } from '../../../../../store/tools/tools.action';
@@ -102,8 +102,8 @@ export class ModuleContainer extends MvuElement {
 					return html`${unsafeHTML(`<${MixerModuleContent.tag}/>`)}`;
 				case RedesignModuleContent.tag:
 					return html`${unsafeHTML(`<${RedesignModuleContent.tag}/>`)}`;
-				case EAContribute.tag:
-					return html`${unsafeHTML(`<${EAContribute.tag}/>`)}`;
+				case EAContribution.tag:
+					return html`${unsafeHTML(`<${EAContribution.tag}/>`)}`;
 				default:
 					return nothing;
 			}

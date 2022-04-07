@@ -1,7 +1,7 @@
-export const DESCRIPTION_CHANGED = 'ea/contribute/description';
-export const SET_LOCATION = 'ea/contribute/set_location';
-export const SET_STATE = 'ea/contribute/set_state';
-export const TAGGING_MODE_CHANGED = 'ea/contribute/tagging_mode';
+export const DESCRIPTION_CHANGED = 'ea/contribution/description';
+export const SET_LOCATION = 'ea/contribution/set_location';
+export const SET_STATE = 'ea/contribution/set_state';
+export const TAGGING_MODE_CHANGED = 'ea/contribution/tagging_mode';
 
 
 export const initialState = {
@@ -26,7 +26,7 @@ export const initialState = {
 	position: null
 };
 
-export const contributeReducer = (state = initialState, action) => {
+export const contributionReducer = (state = initialState, action) => {
 
 	const { type, payload } = action;
 	switch (type) {

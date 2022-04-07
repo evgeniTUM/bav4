@@ -1,21 +1,21 @@
-import { $injector } from '../../../../src/injection';
-import { EAContribute } from '../../../../src/modules/ea/components/contribute/EAContribute';
-import { MvuElement } from '../../../../src/modules/MvuElement';
-import { setTaggingMode } from '../../../../src/store/ea/contribute/contribute.action';
-import { contributeReducer, initialState } from '../../../../src/store/ea/contribute/contribute.reducer';
-import { modalReducer } from '../../../../src/store/modal/modal.reducer';
-import { toolsReducer } from '../../../../src/store/tools/tools.reducer';
-import { TestUtils } from '../../../test-utils';
+import { $injector } from '../../../../../../src/injection';
+import { EAContribution } from '../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
+import { MvuElement } from '../../../../../../src/modules/MvuElement';
+import { setTaggingMode } from '../../../../../../src/ea/store/contribution/contribution.action';
+import { contributionReducer, initialState } from '../../../../../../src/ea/store/contribution/contribution.reducer';
+import { modalReducer } from '../../../../../../src/store/modal/modal.reducer';
+import { toolsReducer } from '../../../../../../src/store/tools/tools.reducer';
+import { TestUtils } from '../../../../../test-utils';
 
-window.customElements.define(EAContribute.tag, EAContribute);
+window.customElements.define(EAContribution.tag, EAContribution);
 
 
-describe('EAContribute', () => {
+describe('EAContributon', () => {
 	let store;
 
 	const testState = {
-		contribute: initialState,
-		tools: { current: EAContribute.tag }
+		contribution: initialState,
+		tools: { current: EAContribution.tag }
 	};
 
 	const coordinateServiceMock = {
@@ -31,7 +31,7 @@ describe('EAContribute', () => {
 
 		const { embed = false, isTouch = false } = config;
 
-		store = TestUtils.setupStoreAndDi(state, { contribute: contributeReducer, modal: modalReducer, tools: toolsReducer});
+		store = TestUtils.setupStoreAndDi(state, { contribution: contributionReducer, modal: modalReducer, tools: toolsReducer});
 		$injector
 			.registerSingleton('EnvironmentService', {
 				isEmbedded: () => embed,
@@ -40,7 +40,7 @@ describe('EAContribute', () => {
 			})
 			.registerSingleton('TranslationService', { translate: (key) => key })
 			.registerSingleton('CoordinateService', coordinateServiceMock)
-		return TestUtils.render(EAContribute.tag);
+		return TestUtils.render(EAContribution.tag);
 	};
 
 	describe('class', () => {
@@ -78,7 +78,7 @@ describe('EAContribute', () => {
 			const toLonLatSpy = spyOn(coordinateServiceMock, 'toLonLat').and.returnValue({});
 			spyOn(coordinateServiceMock, 'stringify').and.returnValue(expectedCoordString);
 
-			const element = await setup({ contribute: { position: expectedCoordinates } });
+			const element = await setup({ contribution: { position: expectedCoordinates } });
 
 			expect(toLonLatSpy).toHaveBeenCalledWith(expectedCoordinates);
 			expect(element.shadowRoot.querySelector('#coordinates').textContent).toEqual(expectedCoordString);
@@ -86,7 +86,7 @@ describe('EAContribute', () => {
 
 		it('sets the description, after changes in textarea', async () => {
 			const newText = 'bar';
-			const element = await setup({ contribute: { description: 'Foo' } });
+			const element = await setup({ contribution: { description: 'Foo' } });
 
 			const descriptionTextArea = element.shadowRoot.querySelector('textarea');
 			expect(descriptionTextArea).toBeTruthy();
@@ -95,22 +95,22 @@ describe('EAContribute', () => {
 			descriptionTextArea.value = newText;
 			descriptionTextArea.dispatchEvent(new Event('input'));
 
-			expect(store.getState().contribute.description).toBe(newText);
+			expect(store.getState().contribution.description).toBe(newText);
 		});
 
 		it('toggles tagging mode when tag button is clicked', async () => {
 			const element = await setup();
 			const tagButton = element.shadowRoot.querySelector('#tag');
 
-			expect(store.getState().contribute.tagging).toBe(false);
+			expect(store.getState().contribution.tagging).toBe(false);
 
 			tagButton.click();
 
-			expect(store.getState().contribute.tagging).toBe(true);
+			expect(store.getState().contribution.tagging).toBe(true);
 
 			tagButton.click();
 
-			expect(store.getState().contribute.tagging).toBe(false);
+			expect(store.getState().contribution.tagging).toBe(false);
 		});
 
 		it('changes button tittle when tagging mode is active', async () => {
@@ -118,10 +118,10 @@ describe('EAContribute', () => {
 			const tagButton = element.shadowRoot.querySelector('#tag');
 
 			setTaggingMode(false);
-			expect(tagButton.label).toBe('ea_contribute_button_tag');
+			expect(tagButton.label).toBe('ea_contribution_button_tag');
 
 			setTaggingMode(true);
-			expect(tagButton.label).toBe('ea_contribute_button_tag_cancel');
+			expect(tagButton.label).toBe('ea_contribution_button_tag_cancel');
 		});
 
 	});

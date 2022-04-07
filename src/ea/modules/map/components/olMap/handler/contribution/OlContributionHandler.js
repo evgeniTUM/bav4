@@ -4,13 +4,13 @@ import { Vector as VectorLayer } from 'ol/layer';
 import MapBrowserEventType from 'ol/MapBrowserEventType';
 import { unByKey } from 'ol/Observable';
 import { Vector as VectorSource } from 'ol/source';
-import { $injector } from '../../../../../../injection';
-import { setLocation } from '../../../../../../store/ea/contribute/contribute.action';
-import { observe } from '../../../../../../utils/storeUtils';
-import { HelpTooltip } from '../../HelpTooltip';
-import { markerStyleFunction } from '../../olStyleUtils';
-import { highlightCoordinateFeatureStyleFunction } from '../highlight/styleUtils';
-import { OlLayerHandler } from '../OlLayerHandler';
+import { $injector } from '../../../../../../../injection';
+import { setLocation } from '../../../../../../store/contribution/contribution.action';
+import { observe } from '../../../../../../../utils/storeUtils';
+import { HelpTooltip } from '../../../../../../../modules/map/components/olMap/HelpTooltip';
+import { markerStyleFunction } from '../../../../../../../modules/map/components/olMap/olStyleUtils';
+import { highlightCoordinateFeatureStyleFunction } from '../../../../../../../modules/map/components/olMap/handler/highlight/styleUtils';
+import { OlLayerHandler } from '../../../../../../../modules/map/components/olMap/handler/OlLayerHandler';
 
 
 
@@ -104,8 +104,8 @@ export class OlContributionHandler extends OlLayerHandler {
 			}
 		};
 
-		onTaggingChanged(store.getState().contribute.tagging);
+		onTaggingChanged(store.getState().contribution.tagging);
 
-		return observe(store, state => state.contribute.tagging, onTaggingChanged);
+		return observe(store, state => state.contribution.tagging, onTaggingChanged);
 	}
 }
