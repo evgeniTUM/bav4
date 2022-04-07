@@ -7,6 +7,7 @@ import { RedesignModuleContent } from '../../../toolbox/components/redesignModul
 import { setCurrentTool, ToolId } from '../../../../../store/tools/tools.action';
 import { $injector } from '../../../../../injection';
 import { toggleTaggingMode } from '../../../../store/contribution/contribution.action';
+import { ResearchMOduleContent } from '../../../toolbox/components/researchModuleContent/ReserachModuleContent';
 
 
 const Update_IsOpen = 'update_isOpen';
@@ -104,6 +105,11 @@ export class AdditionalMenu extends MvuElement {
 			toggleTool(toolId);
 		};
 
+		const toggleResearchModule = () => {
+			const toolId = ResearchMOduleContent.tag;
+			toggleTool(toolId);
+		};
+
 		const translate = (key) => this._translationService.translate(key);
 
 		return html`
@@ -131,7 +137,7 @@ export class AdditionalMenu extends MvuElement {
 				</span>
 			</span>
 		</li>
-		<li class="ba-list-item">
+		<li class="ba-list-item" @click="${toggleResearchModule}">
 			<span class="ba-list-item__pre">
 				<span class="ba-list-item__icon icon-recherche">
 				</span>

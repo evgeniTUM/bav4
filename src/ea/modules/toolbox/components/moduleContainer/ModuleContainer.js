@@ -14,6 +14,7 @@ import {getCenter} from 'ol/extent';
 import { closeFnModules  } from '../../../../store/fnModuleComm/fnModuleComm.action';
 
 import css from './moduleContainer.css';
+import { ResearchMOduleContent as ResearchModuleContent } from '../researchModuleContent/ReserachModuleContent';
 
 const Update_IsPortrait_HasMinWidth = 'update_isPortrait_hasMinWidth';
 const Update_ToolId = 'update_tooId';
@@ -104,6 +105,8 @@ export class ModuleContainer extends MvuElement {
 					return html`${unsafeHTML(`<${RedesignModuleContent.tag}/>`)}`;
 				case EAContribution.tag:
 					return html`${unsafeHTML(`<${EAContribution.tag}/>`)}`;
+				case ResearchModuleContent.tag:
+					return html`${unsafeHTML(`<${ResearchModuleContent.tag}/>`)}`;
 				default:
 					return nothing;
 			}
