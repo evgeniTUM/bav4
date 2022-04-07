@@ -2,9 +2,6 @@ import { observe } from '../../utils/storeUtils';
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { addGeoFeatureLayer, addGeoFeatures, clearGeoFeatures, GeoFeatureTypes, removeGeoFeaturesById, GeoFeatureGeometryTypes } from '../store/geofeature/geofeature.action';
-import { setData, setData as setImportData, setUrl as setImportUrl } from '../store/geopresent/geopresent.action';
-import { SourceType, SourceTypeName } from '../../services/domain/sourceType';
-import { VectorGeoResource, VectorSourceType } from '../../services/domain/geoResources';
 
 
 const MODULE_HANDSHAKE = 'handshake';
