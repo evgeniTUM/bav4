@@ -2,7 +2,6 @@ import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { OlMap }  from '../../../../../modules/map/components/olMap/OlMap';
 import css from './olMap.css';
-import { OlGeoFeatureLayerHandler } from '../olMap/handler/geofeature/OlGeoFeatureLayerHandler';
 
 /**
  * Element which extendedrenders the ol map.
@@ -20,10 +19,12 @@ export class EaOlMap extends OlMap {
 			layers: []
 		});
 		const {
-			OlGeoFeatureLayerHandler: olGeoFeatureLayerHandler
-		} = $injector.inject('OlGeoFeatureLayerHandler');
+			OlGeoFeatureLayerHandler: olGeoFeatureLayerHandler,
+			OlContributionHandler: olContributionHandler
+		} = $injector.inject('OlGeoFeatureLayerHandler', 'OlContributionHandler');
 //
 		this._layerHandler.set(olGeoFeatureLayerHandler.id, olGeoFeatureLayerHandler);
+		this._layerHandler.set(olContributionHandler.id, olContributionHandler);
 
 	}
 

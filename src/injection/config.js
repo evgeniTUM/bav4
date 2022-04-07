@@ -67,7 +67,6 @@ $injector
 	.registerSingleton('MediaPlugin', new MediaPlugin())
 	.registerSingleton('MeasurementPlugin', new MeasurementPlugin())
 	.registerSingleton('GeolocationPlugin', new GeolocationPlugin())
-//	.registerSingleton('GeoFeaturePlugin', new GeoFeaturePlugin())
 	.registerSingleton('ContextClickPlugin', new ContextClickPlugin())
 	.registerSingleton('FeatureInfoPlugin', new FeatureInfoPlugin())
 	.registerSingleton('MainMenuPlugin', new MainMenuPlugin())
