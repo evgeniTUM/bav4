@@ -2,6 +2,9 @@ import { observe } from '../../utils/storeUtils';
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { addGeoFeatureLayer, addGeoFeatures, clearGeoFeatures, GeoFeatureTypes, removeGeoFeaturesById, GeoFeatureGeometryTypes } from '../store/geofeature/geofeature.action';
+import { activateMapClick, deactivateMapClick } from '../store/mapclick/mapclick.action';
+import { SourceType, SourceTypeName } from '../../services/domain/sourceType';
+import { VectorGeoResource, VectorSourceType } from '../../services/domain/geoResources';
 
 
 const MODULE_HANDSHAKE = 'handshake';
@@ -35,7 +38,7 @@ export class FnModulePlugin extends BaPlugin {
 //		this._fnModuleCommunicationService = fnModuleCommunicationService;
 //		this._mapService = mapService;
 	}
-
+	
 	fnModuleMessageListener = function(e) {
 		const _layers = {};
 
@@ -130,11 +133,8 @@ export class FnModulePlugin extends BaPlugin {
 				console.log('layerId ' + layerId + 'expandTo' + expandTo);
 				console.log(JSON.stringify(message.geojson));
 				console.log(JSON.stringify(message.style));
-//				setData( message.geojson, new SourceType(SourceTypeName.GEOJSON));
 				addGeoFeatures({ data: message.geojson	});
 				
-	//const vector0 = new VectorGeoResource('huetten', 'Hütten', VectorSourceType.GEOJSON).data('http://www.geodaten.bayern.de/ba-data/Themen/kml/huetten.kml');
-
 				break;
 			case REMOVE_FEATURE_BY_ID:
 				break;
@@ -156,8 +156,10 @@ export class FnModulePlugin extends BaPlugin {
 			case CLICK_IN_MAP_SIMULATION:
 				break;
 			case ACTIVATE_MAPCLICK:
+				activateMapClick();
 				break;
 			case CANCEL_MAPCLICK:
+				deactivateMapClick();
 				break;
 			default:
 				console.error('unbeḱannter Code ' + data.code);
@@ -225,7 +227,7 @@ export class FnModulePlugin extends BaPlugin {
 			}
 		};
 		observe(store, state => state.fnModuleComm.active, onChange);
-//		observe(store, state => state.layers, onLayerChange);
+		//observe mapclick to send 
 
 	}
 }

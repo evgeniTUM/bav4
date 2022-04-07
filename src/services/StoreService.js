@@ -25,6 +25,7 @@ import { contributionReducer } from '../ea/store/contribution/contribution.reduc
 
 import { fnModuleCommReducer } from '../ea/store/fnModuleComm/fnModuleComm.reducer';
 import { geofeatureReducer } from '../ea/store/geofeature/geofeature.reducer';
+import { mapclickReducer } from '../ea/store/mapclick/mapclick.reducer';
 
 
 /**
@@ -62,6 +63,7 @@ export class StoreService {
 			featureInfo: featureInfoReducer,
 			media: createMediaReducer(),
 			import: importReducer,
+			mapclick: mapclickReducer,
 			geofeature: geofeatureReducer,
 			contribution: contributionReducer,
 			fnModuleComm: fnModuleCommReducer,
