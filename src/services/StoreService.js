@@ -25,7 +25,6 @@ import { contributionReducer } from '../ea/store/contribution/contribution.reduc
 
 import { fnModuleCommReducer } from '../ea/store/fnModuleComm/fnModuleComm.reducer';
 import { geofeatureReducer } from '../ea/store/geofeature/geofeature.reducer';
-//import { geopresentReducer } from '../ea/store/geopresent/geopresent.reducer';
 
 
 /**
