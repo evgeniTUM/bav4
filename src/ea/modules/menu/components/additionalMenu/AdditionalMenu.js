@@ -1,12 +1,12 @@
 import { html } from 'lit-html';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import css from './additionalMenu.css';
-import { EAContribute } from '../../../../../modules/ea/components/contribute/EAContribute';
+import { EAContribution } from '../../../toolbox/components/contribution/EAContribution';
 import { MixerModuleContent } from '../../../toolbox/components/mixerModuleContent/MixerModuleContent';
 import { RedesignModuleContent } from '../../../toolbox/components/redesignModuleContent/RedesignModuleContent';
 import { setCurrentTool, ToolId } from '../../../../../store/tools/tools.action';
 import { $injector } from '../../../../../injection';
-import { setTaggingMode, toggleTaggingMode } from '../../../../../store/ea/contribute/contribute.action';
+import { toggleTaggingMode } from '../../../../store/contribution/contribution.action';
 
 
 const Update_IsOpen = 'update_isOpen';
@@ -89,7 +89,7 @@ export class AdditionalMenu extends MvuElement {
 		//		};
 
 		const toggleContributionModule = () => {
-			const toolId = EAContribute.tag;
+			const toolId = EAContribution.tag;
 			toggleTaggingMode();
 			toggleTool(toolId);
 		};

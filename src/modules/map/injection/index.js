@@ -1,6 +1,5 @@
 import { OlMeasurementHandler } from '../components/olMap/handler/measure/OlMeasurementHandler';
 import { OlGeolocationHandler } from '../components/olMap/handler/geolocation/OlGeolocationHandler';
-import { OlContributionHandler } from '../components/olMap/handler/contribution/OlContributionHandler';
 import { OlHighlightLayerHandler } from '../components/olMap/handler/highlight/OlHighlightLayerHandler';
 import { VectorLayerService } from '../components/olMap/services/VectorLayerService';
 import { LayerService } from '../components/olMap/services/LayerService';
@@ -16,7 +15,6 @@ export const mapModule = ($injector) => {
 		.register('OlMeasurementHandler', OlMeasurementHandler)
 		.register('OlDrawHandler', OlDrawHandler)
 		.register('OlGeolocationHandler', OlGeolocationHandler)
-		.register('OlContributionHandler', OlContributionHandler)
 		.register('OlHighlightLayerHandler', OlHighlightLayerHandler)
 		.register('VectorLayerService', VectorLayerService)
 		.register('LayerService', LayerService)

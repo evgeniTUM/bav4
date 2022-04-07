@@ -21,7 +21,7 @@ import { mapContextMenuReducer } from '../store/mapContextMenu/mapContextMenu.re
 import { createMainMenuReducer } from '../store/mainMenu/mainMenu.reducer';
 import { featureInfoReducer } from '../store/featureInfo/featureInfo.reducer';
 import { importReducer } from '../store/import/import.reducer';
-import { contributeReducer } from '../store/ea/contribute/contribute.reducer'
+import { contributionReducer } from '../ea/store/contribution/contribution.reducer'
 
 import { fnModuleCommReducer } from '../ea/store/fnModuleComm/fnModuleComm.reducer';
 import { geofeatureReducer } from '../ea/store/geofeature/geofeature.reducer';
@@ -61,11 +61,11 @@ export class StoreService {
 			highlight: highlightReducer,
 			notifications: notificationReducer,
 			featureInfo: featureInfoReducer,
-			contribute: contributeReducer,
 			media: createMediaReducer(),
 			import: importReducer,
 			geofeature: geofeatureReducer,
-			fnModuleComm: fnModuleCommReducer
+			contribution: contributionReducer,
+			fnModuleComm: fnModuleCommReducer,
 		});
 
 		this._store = createStore(rootReducer);

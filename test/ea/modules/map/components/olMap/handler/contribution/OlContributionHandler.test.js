@@ -2,11 +2,11 @@ import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { fromLonLat } from 'ol/proj';
 import { OSM, TileDebug } from 'ol/source';
-import { $injector } from '../../../../../../../src/injection';
-import { CONTRIBUTION_LAYER_ID, OlContributionHandler } from '../../../../../../../src/modules/map/components/olMap/handler/contribution/OlContributionHandler';
-import { setTaggingMode } from '../../../../../../../src/store/ea/contribute/contribute.action';
-import { contributeReducer, initialState } from '../../../../../../../src/store/ea/contribute/contribute.reducer';
-import { TestUtils } from '../../../../../../test-utils.js';
+import { $injector } from '../../../../../../../../src/injection';
+import { CONTRIBUTION_LAYER_ID, OlContributionHandler } from '../../../../../../../../src/ea/modules/map/components/olMap/handler/contribution/OlContributionHandler';
+import { setTaggingMode } from '../../../../../../../../src/ea/store/contribution/contribution.action';
+import { contributionReducer, initialState } from '../../../../../../../../src/ea/store/contribution/contribution.reducer';
+import { TestUtils } from '../../../../../../../test-utils.js';
 
 
 
@@ -15,10 +15,10 @@ describe('OlContributionHandler', () => {
 
 	const translationServiceMock = { translate: (key) => key };
 	const defaultState = {
-		contribute: initialState
+		contribution: initialState
 	}
 	const setup = (state = defaultState) => {
-		const store = TestUtils.setupStoreAndDi(state, { contribute: contributeReducer });
+		const store = TestUtils.setupStoreAndDi(state, { contribution: contributionReducer });
 		$injector.registerSingleton('TranslationService', translationServiceMock)
 		return store;
 	};

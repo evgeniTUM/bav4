@@ -1,8 +1,8 @@
 /**
  * Action creators to handle user contributions of new energy facilities
- * @module ea/contribute/action
+ * @module ea/contribution/action
  */
-import { SET_STATE, SET_LOCATION, DESCRIPTION_CHANGED, TAGGING_MODE_CHANGED } from './contribute.reducer';
+import { SET_STATE, SET_LOCATION, DESCRIPTION_CHANGED, TAGGING_MODE_CHANGED } from './contribution.reducer';
 import { $injector } from '../../../injection';
 
 
@@ -29,7 +29,7 @@ export const setState = (enabled) => {
  * @function
  */
 export const toggleTaggingMode = () => {
-	const state = getStore().getState().contribute.active;
+	const state = getStore().getState().contribution.active;
 	setState(!state);
 }
 

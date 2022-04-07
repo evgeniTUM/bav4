@@ -10,6 +10,12 @@ export const provide = (lang) => {
 				toolbox_geotherm : "Standortcheck Oberflächennahe Geothermie",
 				module_prevent_switching_tool: 'Please close the current tool first',
 				toolbox_redesign_header : "Mischpult \"Redesign\"",
+
+				ea_contribution_desc: "Description",
+				ea_contribution_button_tag: "Tag location",
+				ea_contribution_button_tag_cancel: "Cancel",
+				ea_contribution_button_finish: "Finish",
+				ea_contribution_coordinates_text: "Facility coordinates"
 			};
 
 		case 'de':
@@ -21,6 +27,12 @@ export const provide = (lang) => {
 				toolbox_geotherm : "Standortcheck Oberflächennahe Geothermie",
 				module_prevent_switching_tool: 'Module Bitte zuerst das aktuelle Werkzeug schließen/beenden',
 				toolbox_redesign_header : "Mischpult \"Redesign\"",
+
+				ea_contribution_desc: "Beschreibung",
+				ea_contribution_button_tag: "Standort markieren",
+				ea_contribution_button_tag_cancel: "Abbrechen",
+				ea_contribution_button_finish: "Beenden",
+				ea_contribution_coordinates_text: "Koordinaten der Anlage"
 		};
 
 		default:
