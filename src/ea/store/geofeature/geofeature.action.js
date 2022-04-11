@@ -47,11 +47,10 @@ const getStore = () => {
 * @param {Array.<GeoFeature>|GeoFeature} features
 * @function
 */
-export const addGeoFeatureLayer = (id, feature) => {
-	const featureAsArray = Array.isArray(feature) ? [...feature] : [feature];
+export const addGeoFeatureLayer = (id) => {
 	getStore().dispatch({
 		type: FEATURE_ADD_LAYER,
-		payload: { id: id, features: featureAsArray }
+		payload: id
 	});
 };
 /**
