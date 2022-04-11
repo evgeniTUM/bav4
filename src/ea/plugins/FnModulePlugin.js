@@ -120,7 +120,7 @@ export class FnModulePlugin extends BaPlugin {
 //					}
 				console.debug('Client : addlayer ' + message.layerId + ' group ' + message.group + ' options ' + message.draggable);
 //				implAddLayer(message.layerId, message.group, message.draggable);
-				addGeoFeatureLayer( { id: message.layerId, data : { features:[] } });
+				addGeoFeatureLayer(message.layerId);
 				break;
 			case MODULE_RESET:
 				break;

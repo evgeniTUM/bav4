@@ -6,6 +6,10 @@ export const CLEAR_FEATURES = 'geofeature/clear';
 export const REMOVE_FEATURE_BY_ID = 'geofeature/remove/id';
 
 export const initialState = {
+	/**
+	 * @property {integer|null}
+	 */
+	id: null,
 
 	/**
 	 * @property {GeoFeature|null}
@@ -30,9 +34,6 @@ export const geofeatureReducer = (state = initialState, action) => {
 	switch (type) {
 		case FEATURE_ADD_LAYER: {
 
-			const features = [...state.features];
-			const active = !!features.length;
-
 			return {
 				...state,
 				id: payload.id,
@@ -43,7 +44,6 @@ export const geofeatureReducer = (state = initialState, action) => {
 		case FEATURE_ADD: {
 
 			const features = [...state.features, ...createIdIfMissing(payload)];
-//			const active = !!features.length;
 
 			return {
 				...state,

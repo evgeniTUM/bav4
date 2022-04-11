@@ -2,7 +2,6 @@
  * Action creators for adding external feature vectors.
  * @module highlight/action
  */
-import { EventLike } from '../../../utils/storeUtils';
 import { CLEAR_FEATURES, FEATURE_ADD, REMOVE_FEATURE_BY_ID, FEATURE_ADD_LAYER } from './geofeature.reducer';
 import { $injector } from '../../../injection';
 
@@ -35,15 +34,6 @@ export const GeoFeatureTypes = Object.freeze({
 	ANIMATED: 2
 });
 
-/**
- * Type of a {@link HighlightGeometry}
- * @enum
- */
-export const GeoFeatureGeometryTypes = Object.freeze({
-	GEOJSON: 0,
-	WKT: 1
-});
-
 const defaultProperties = { features: null, active:false};
 
 
@@ -57,11 +47,10 @@ const getStore = () => {
 * @param {Array.<GeoFeature>|GeoFeature} features
 * @function
 */
-export const addGeoFeatureLayer = (id, feature) => {
-	const featureAsArray = Array.isArray(feature) ? [...feature] : [feature];
+export const addGeoFeatureLayer = (id) => {
 	getStore().dispatch({
 		type: FEATURE_ADD_LAYER,
-		payload: { id: id, features: featureAsArray }
+		payload: id
 	});
 };
 /**

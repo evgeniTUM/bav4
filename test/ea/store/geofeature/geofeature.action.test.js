@@ -1,10 +1,11 @@
-import { HighlightGeometryTypes } from '../../../../src/ea/store/fnModuleComm/fnModuleComm.action';
+import { GeoFeatureTypes } from "../../../../src/ea/store/geofeature/geofeature.action";
 
-describe('fnModuleCommAction', () => {
+describe('geofeature action', () => {
 
-	it('exports a enum for HighlightGeometryTypes', () => {
-//		expect(Object.keys(HighlightGeometryTypes).length).toBe(2);
-//		expect(HighlightGeometryTypes.GEOJSON).toBe(0);
-//		expect(HighlightGeometryTypes.WKT).toBe(1);
+	it('exports a GeoFeatureTypes enum', () => {
+		expect(Object.keys(GeoFeatureTypes).length).toBe(3);
+		expect(GeoFeatureTypes.DEFAULT).toBe(0);
+		expect(GeoFeatureTypes.TEMPORARY).toBe(1);
+		expect(GeoFeatureTypes.ANIMATED).toBe(2);
 	});
 });
