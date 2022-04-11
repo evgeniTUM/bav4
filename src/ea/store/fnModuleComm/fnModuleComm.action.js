@@ -25,16 +25,6 @@ import { $injector } from '../../../injection';
 
 
 /**
- * Type of a {@link HighlightGeometry}
- * @enum
- */
-export const HighlightGeometryTypes = Object.freeze({
-	GEOJSON: 0,
-	WKT: 1
-});
-
-
-/**
  * Contains information for active fnModuleComm.
  * @typedef {Object} FnModule
  * @property {FnModuleTypes} type  The type of this module.
