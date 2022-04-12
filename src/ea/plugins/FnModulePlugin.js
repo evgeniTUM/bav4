@@ -38,8 +38,29 @@ export class FnModulePlugin extends BaPlugin {
 //		this._fnModuleCommunicationService = fnModuleCommunicationService;
 //		this._mapService = mapService;
 	}
-	
+
 	fnModuleMessageListener = function(e) {
+		let event = (e.message !== undefined) ? e.message : e;
+		let data = event.data;
+		
+		const {
+			StoreService: storeService,
+		}
+			= $injector.inject('StoreService');
+
+		this._storeService = storeService;
+		
+		let state = this._storeService.getStore().getState();
+		
+		const {fnModuleComm: {fnModuleSite}} = state;
+		const {fnModuleComm: {fnModuleDomain}} = state;
+
+		if ( data.module == undefined || data.message == undefined || fnModuleSite == undefined || fnModuleDomain == undefined) {
+			return;
+		}
+		console.log('client : fnModuleMessageListener');
+		console.log(e);
+
 		const _layers = {};
 
 //		const implAddLayer = function(layerId, layergroup, draggable) {
@@ -87,20 +108,6 @@ export class FnModulePlugin extends BaPlugin {
 //				throw {'LayerId ': layerId, message: ' ist bereits in der HashMap eingetragen'};
 //			}
 //		};
-		const {
-			StoreService: storeService
-		} = $injector.inject('StoreService');
-
-		console.log('client : fnModuleMessageListener');
-		console.log(e);
-		let event = (e.message !== undefined) ? e.message : e;
-		let data = event.data;
-		let state = storeService.getStore().getState();
-
-		const {fnModuleComm: {fnModuleSite}} = state;
-		const {fnModuleComm: {fnModuleDomain}} = state;
-
-
 		console.log('Client MessageListner : ***** M e s s a g e ****  e m p f a n g e n ****** code:' + data.code +
 			' module ' + data.module +
 			' absender ' + event.origin +
@@ -133,8 +140,8 @@ export class FnModulePlugin extends BaPlugin {
 				console.log('layerId ' + layerId + 'expandTo' + expandTo);
 				console.log(JSON.stringify(message.geojson));
 				console.log(JSON.stringify(message.style));
-				addGeoFeatures({ data: message.geojson	});
-				
+				addGeoFeatures({data: message.geojson});
+
 				break;
 			case REMOVE_FEATURE_BY_ID:
 				break;
@@ -156,7 +163,7 @@ export class FnModulePlugin extends BaPlugin {
 			case CLICK_IN_MAP_SIMULATION:
 				break;
 			case ACTIVATE_MAPCLICK:
-				activateMapClick();
+				activateMapClick(message);
 				break;
 			case CANCEL_MAPCLICK:
 				deactivateMapClick();
@@ -200,14 +207,15 @@ export class FnModulePlugin extends BaPlugin {
 		console.log(' register FnModulePlugin onChange ');
 
 		const {EnvironmentService: environmentService} = $injector.inject('EnvironmentService');
+		const {CoordinateService: coordinateService} = $injector.inject('CoordinateService');
 
 		const _window = environmentService.getWindow();
 
 		_window.addEventListener('message', this.fnModuleMessageListener);
-		
+
 		const onLayerChange = ( layer, state ) => {
 			console.log(active + ' FnModulePlugin onLayerChange ');
-			
+
 		}
 
 		const onChange = (active, state) => {
@@ -226,8 +234,20 @@ export class FnModulePlugin extends BaPlugin {
 				this.implPostCodeMessageFnModule('close', scope.fnModuleSite, scope.fnModuleDomain, scope.fnModuleWindow);
 			}
 		};
+		
+		const sendCoordinate = (evt, state) => {
+			const { payload: { coordinate } } = evt;
+			let _coord = coordinateService.toLonLat(coordinate);
+			if (state.mapclick.active) {
+				let scope = state.fnModuleComm;
+				let param = '{  "code" : "mapclick", "module" : "' + scope.fnModuleSite + '","id" : "' + state.mapclick.listener_id + '", "coord"  : "' + _coord.toString() + '"}';
+				let jsonP = JSON.parse(param);
+				scope.fnModuleWindow.postMessage(jsonP, scope.fnModuleDomain);
+			}
+		}
+
 		observe(store, state => state.fnModuleComm.active, onChange);
-		//observe mapclick to send 
+		observe(store, state => state.pointer.click, sendCoordinate);
 
 	}
 }

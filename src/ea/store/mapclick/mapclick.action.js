@@ -3,29 +3,20 @@
  * @module highlight/action
  */
 import { EventLike } from '../../../utils/storeUtils';
-import { MAPCLICK_EVENT, MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE } from './mapclick.reducer';
+import { MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE } from './mapclick.reducer';
 import { $injector } from '../../../injection';
 
 
 /**
+ * Contains value for activation litening at map click
+ * @typedef {boolean} active
+ * @property {active} 
+ */
+
+/**
  * Contains coordinate for clickEvent within the map.
- * @typedef {Object} GeoFeature
- * @property {HighlightCoordinate|HighlightGeometry} data The data which can be a coordinate or a geometry
- * @property {string} [id] Optional id. If not present, the reducer will create one.
- * @property {string} [label] Optional text
- */
-
-/**
- * Coordinate data for a {@link GeoFeature}
- * @typedef {Object} HighlightCoordinate
- * @property {Coordinate} coordinate
- */
-
-/**
- * Geometry data for a {@link GeoFeature}
- * @typedef {Object} HighlightGeometry
- * @property {object|string} geometry Geometry (e.g. geoJson, WKT)
- * @property {GeoFeatureGeometryTypes} geometryType the type of the geometry
+ * @typedef {Object} Coordinate
+ * @property {Coordinate} 
  */
 
 
@@ -42,10 +33,10 @@ const getStore = () => {
 * @param {Array.<GeoFeature>|GeoFeature} features
 * @function
 */
-export const activateMapClick = () => {
+export const activateMapClick = (id) => {
 	getStore().dispatch({
 		type: MAPCLICK_ACTIVATE,
-		activate: true
+		payload: id
 	});
 };
 

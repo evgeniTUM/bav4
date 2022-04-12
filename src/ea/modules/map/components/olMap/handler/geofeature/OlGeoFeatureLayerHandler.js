@@ -170,30 +170,8 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 					l.get('id') === GEO_FEATURE_LAYER_ID));
 		};
 
-		const onClick = (event) => {
-			const position = event.coordinate;
-			if (!position)
-				return;
-			console.log('send position ');
-			console.log(position);
-		};
 
 
-		const registerMapClick = (active) => {
-			
-			if ( active ) {
-				if ( this._mapClickListener ) {
-					console.error('_mapClickListener already defined');
-					return;
-				}
-				console.log('OlGeoFeatureLayerHandler mapclick activ');
-				this._mapClickListener = this._map.on(MapBrowserEventType.CLICK, onClick);
-			}
-			else {
-				console.log('OlGeoFeatureLayerHandler mapclick deaktiviert');
-				unByKey(this._mapClickListener);
-			}
-		};
 
 //		this._listeners.push(this._map.on(MapBrowserEventType.CLICK, onClick));
 
@@ -213,7 +191,6 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 				this._map.renderSync();
 		}
 		};
-		this._unsubscribeMapClickObserver = observe(store, state => state.mapclick.active, (active) => registerMapClick(active));
 
 		return observe(store, state => state.geofeature, onChange, false);
 	}
