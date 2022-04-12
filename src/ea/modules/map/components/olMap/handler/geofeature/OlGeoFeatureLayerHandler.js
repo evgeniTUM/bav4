@@ -9,6 +9,7 @@ import { Vector as VectorSource } from 'ol/source';
 import { Vector as VectorLayer } from 'ol/layer';
 import { Point } from 'ol/geom';
 import { GeoFeatureTypes, GeoFeatureGeometryTypes } from '../../../../../../store/geofeature/geofeature.action';
+import { deactivateMapClick } from '../../../../../../store/mapclick/mapclick.action';
 import WKT from 'ol/format/WKT';
 import GeoJSON from 'ol/format/GeoJSON';
 import { unByKey } from 'ol/Observable';
@@ -35,8 +36,10 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 		};
 		this._vectorLayer = null;
 
-		this._animationListenerKeys = [];
+		this._unsubscribeMapClickObserver = () => {};
 		this._listeners = [];
+		this._mapClickListener;
+
 
 		console.error('OlGeoFeatureLayerHandler was created');
 	}
@@ -112,11 +115,6 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 //		this._map.addInteraction(this._snap);
 //		this._map.addInteraction(this._dragPan);
 //
-//
-//		const preselectDrawType = this._storeService.getStore().getState().draw.type;
-//		if (preselectDrawType) {
-//			this._init(preselectDrawType);
-//		}
 
 		return this._vectorLayer;
 	}
@@ -126,9 +124,18 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 	 *  @param {Map} olMap
 	 */
 	onDeactivate(/*eslint-disable no-unused-vars */olMap) {
+		deactivateMapClick();
 		this._map = null;
 		this._unregister();
 		unByKey(this._listeners);
+		
+		this._unsubscribeMapClickObserver();
+		this._unsubscribeMapClickObserver = () => {};
+		
+		if ( this._mapClickListener ) {
+			unByKey(this._mapClickListener);
+			this._mapClickListener = null;
+		}
 		this._vectorLayer = null;
 	}
 
@@ -157,22 +164,16 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 	}
 
 	_register(store) {
-
+		
 		const getOldLayer = (map) => {
 			return map.getLayers().getArray().find(l => l.get('id') && (
 					l.get('id') === GEO_FEATURE_LAYER_ID));
 		};
 
-		const onClick = (event) => {
-			const position = event.coordinate;
-			if (!position)
-				return;
-			console.log('send position ');
-			console.log(position);
-		};
 
 
-		this._listeners.push(this._map.on(MapBrowserEventType.CLICK, onClick));
+
+//		this._listeners.push(this._map.on(MapBrowserEventType.CLICK, onClick));
 
 		const onChange = ({ features }) => {
 

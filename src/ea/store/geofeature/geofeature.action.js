@@ -7,11 +7,9 @@ import { $injector } from '../../../injection';
 
 
 /**
- * Contains information for highlighting a position or an area in a map.
+ * Contains information for an GeoFeature for displaying in a map.
  * @typedef {Object} GeoFeature
- * @property {GeoFeatureTypes} type  The type of this feature.
- * @property {HighlightCoordinate|HighlightGeometry} data The data which can be a coordinate or a geometry
- * @property {string} [id] Optional id. If not present, the reducer will create one.
+ * @property {string} [id] Layer Id
  * @property {string} [label] Optional text
  */
 
@@ -19,6 +17,9 @@ import { $injector } from '../../../injection';
  * Coordinate data for a {@link GeoFeature}
  * @typedef {Object} HighlightCoordinate
  * @property {Coordinate} coordinate
+ * @typedef {GeoJson} features
+ * @property {Coordinate} coordinate
+ 
  */
 
 /**

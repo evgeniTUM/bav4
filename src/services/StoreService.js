@@ -25,6 +25,7 @@ import { contributionReducer } from '../ea/store/contribution/contribution.reduc
 
 import { fnModuleCommReducer } from '../ea/store/fnModuleComm/fnModuleComm.reducer';
 import { geofeatureReducer } from '../ea/store/geofeature/geofeature.reducer';
+import { mapclickReducer } from '../ea/store/mapclick/mapclick.reducer';
 
 
 /**
@@ -62,12 +63,22 @@ export class StoreService {
 			featureInfo: featureInfoReducer,
 			media: createMediaReducer(),
 			import: importReducer,
+			mapclick: mapclickReducer,
 			geofeature: geofeatureReducer,
 			contribution: contributionReducer,
 			fnModuleComm: fnModuleCommReducer,
 		});
 
-		this._store = createStore(rootReducer);
+//		this._store = createStore(rootReducer);
+				this._store = createStore(rootReducer,  
+			window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(
+				{
+				    // trace: true, // (action) => { return ‘trace as string’; }
+    				// traceLimit: 25,
+					actionsBlacklist: [POINTER_MOVE_CHANGED ],
+
+				}
+			));
 
 		$injector.onReady(async () => {
 
