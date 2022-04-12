@@ -15,20 +15,20 @@ describe('FnModulePlugin', () => {
 			this.messages.push({ msg, domain });
 		},
 
-		receiveMessage(data) {
-			this.listenerFunction(data)
-		},
-
 		addEventListener(name, listener) {
 			this.listenerFunction = listener;
 		}
 	};
 
+	const storeMockHelper = {
+		actions: [],
 
-	const storeActions = [];
-	const mockedGeofeatureReducer = (state = initialState, action) => {
-		storeActions.push(action);
-		return geofeatureReducer(state, action);
+		createGeofeatureReducer() {
+			return (state = initialState, action) => {
+				this.actions.push(action);
+				return geofeatureReducer(state, action);
+			}
+		}
 	}
 
 	const environmentServiceMock = {
@@ -42,7 +42,7 @@ describe('FnModulePlugin', () => {
 
 		const store = TestUtils.setupStoreAndDi(state, {
 			fnModuleComm: fnModuleCommReducer,
-			geofeature: mockedGeofeatureReducer
+			geofeature: storeMockHelper.createGeofeatureReducer()
 		});
 
 		$injector.registerSingleton(
@@ -93,7 +93,7 @@ describe('FnModulePlugin', () => {
 		it('clears geofeature layers on message \'clearLayer\'', async () => {
 			const store = await setupOpen();
 
-			windowMock.receiveMessage({
+			windowMock.listenerFunction({
 				data: {
 					code: 'clearLayer',
 					module: domain
@@ -102,14 +102,14 @@ describe('FnModulePlugin', () => {
 
 			});
 
-			expect(storeActions.pop()).toEqual({ type: CLEAR_FEATURES });
+			expect(storeMockHelper.actions.pop()).toEqual({ type: CLEAR_FEATURES });
 		});
 
 		it('adds geofeature on message \'addfeature\'', async () => {
 			const store = await setupOpen();
 			const geojson = { type: 'i identify as a geojson' };
 
-			windowMock.receiveMessage({
+			windowMock.listenerFunction({
 				data: {
 					code: 'addfeature',
 					module: domain,
@@ -121,7 +121,7 @@ describe('FnModulePlugin', () => {
 
 			});
 
-			const lastAction = storeActions.pop();
+			const lastAction = storeMockHelper.actions.pop();
 			expect(lastAction.type).toEqual(FEATURE_ADD);
 			expect(lastAction.payload[0].data).toEqual(geojson);
 		});
