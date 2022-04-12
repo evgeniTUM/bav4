@@ -123,7 +123,6 @@ describe('FnModulePlugin', () => {
 
 			const lastAction = storeActions.pop();
 			expect(lastAction.type).toEqual(FEATURE_ADD);
-			console.log(lastAction);
 			expect(lastAction.payload[0].data).toEqual(geojson);
 		});
 
