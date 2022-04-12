@@ -1,5 +1,5 @@
-import { ResearchMOduleContent} from './ReserachModuleContent';
+import { ResearchModuleContent} from './ReserachModuleContent';
 
-if (!window.customElements.get(ResearchMOduleContent.tag)) {
-	window.customElements.define(ResearchMOduleContent.tag, ResearchMOduleContent);
+if (!window.customElements.get(ResearchModuleContent.tag)) {
+	window.customElements.define(ResearchModuleContent.tag, ResearchModuleContent);
 }
