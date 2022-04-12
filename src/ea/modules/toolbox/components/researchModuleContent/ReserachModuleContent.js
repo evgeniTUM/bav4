@@ -13,7 +13,7 @@ const MODULE_SITE = 'recherche';
  * @class
  * @author kunze_ge
  */
-export class ResearchMOduleContent extends AbstractModuleContent {
+export class ResearchModuleContent extends AbstractModuleContent {
 
 	constructor() {
 		super();
