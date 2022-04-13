@@ -1,9 +1,11 @@
 import { FnModulePlugin } from '../../../src/ea/plugins/FnModulePlugin.js';
 import { closeFnModules, openFnModuleComm } from '../../../src/ea/store/fnModuleComm/fnModuleComm.action.js';
 import { fnModuleCommReducer } from '../../../src/ea/store/fnModuleComm/fnModuleComm.reducer.js';
-import { FEATURE_ADD, CLEAR_FEATURES, geofeatureReducer, initialState } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
+import { FEATURE_ADD, CLEAR_FEATURES, geofeatureReducer, initialState as initialGeoFeatureState } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
 import { TestUtils } from '../../test-utils.js';
+import { mapclickReducer, initialState as initialMapclickState } from '../../../src/ea/store/mapclick/mapclick.reducer';
+import { pointerReducer, initialState as initialPointerState } from '../../../src/store/pointer/pointer.reducer';
 
 
 describe('FnModulePlugin', () => {
@@ -24,11 +26,24 @@ describe('FnModulePlugin', () => {
 		actions: [],
 
 		createGeofeatureReducer() {
-			return (state = initialState, action) => {
+			return (state = initialGeoFeatureState, action) => {
 				this.actions.push(action);
 				return geofeatureReducer(state, action);
 			}
+		},
+		createMapClickReducer() {
+			return (state = initialMapclickState, action) => {
+				this.actions.push(action);
+				return mapclickReducer(state, action);
+			}
+		},
+		createPointerReducer() {
+			return (state = initialPointerState, action) => {
+				this.actions.push(action);
+				return pointerReducer(state, action);
+			}
 		}
+
 	}
 
 	const environmentServiceMock = {
@@ -36,18 +51,30 @@ describe('FnModulePlugin', () => {
 			return windowMock;
 		}
 	};
+	
+	const coordinateServiceMock = {
+		stringify() { },
+		toLonLat() { }
+	};
 
 	const setup = (state) => {
 		windowMock.messages = [];
 
 		const store = TestUtils.setupStoreAndDi(state, {
 			fnModuleComm: fnModuleCommReducer,
-			geofeature: storeMockHelper.createGeofeatureReducer()
+			geofeature: storeMockHelper.createGeofeatureReducer(),
+			mapclick: storeMockHelper.createMapClickReducer(),
+			pointer: storeMockHelper.createPointerReducer()
 		});
 
 		$injector.registerSingleton(
 			'EnvironmentService', environmentServiceMock
 		);
+	
+		$injector.registerSingleton(
+			'CoordinateService', coordinateServiceMock
+		);
+
 
 		return store;
 	};
@@ -86,6 +113,7 @@ describe('FnModulePlugin', () => {
 
 			openFnModuleComm(site, domain, windowMock);
 			windowMock.messages = [];
+			storeMockHelper.actions = [];
 
 			return store;
 		}
@@ -96,13 +124,15 @@ describe('FnModulePlugin', () => {
 			windowMock.listenerFunction({
 				data: {
 					code: 'clearLayer',
-					module: domain
+					module: domain,
+					message: 'test' 
 				},
 				event: { origin: site },
 
 			});
 
-			expect(storeMockHelper.actions.pop()).toEqual({ type: CLEAR_FEATURES });
+			const lastAction = storeMockHelper.actions.pop();
+			expect(lastAction.type).toEqual(CLEAR_FEATURES);
 		});
 
 		it('adds geofeature on message \'addfeature\'', async () => {
