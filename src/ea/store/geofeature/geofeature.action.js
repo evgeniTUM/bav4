@@ -74,7 +74,8 @@ export const addGeoFeatures = (geojsonFeatures)=> {
  */
 export const clearGeoFeatures = () => {
 	getStore().dispatch({
-		type: CLEAR_FEATURES
+		type: CLEAR_FEATURES,
+		payload: null
 	});
 };
 
