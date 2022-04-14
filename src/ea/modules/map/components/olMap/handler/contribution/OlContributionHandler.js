@@ -16,7 +16,7 @@ import { OlLayerHandler } from '../../../../../../../modules/map/components/olMa
 
 
 
-export const CONTRIBUTION_LAYER_ID = "contribution_layer_id";
+export const CONTRIBUTION_LAYER_ID = 'contribution_layer_id';
 
 export class OlContributionHandler extends OlLayerHandler {
 
@@ -48,7 +48,7 @@ export class OlContributionHandler extends OlLayerHandler {
 		this._map = olMap;
 
 		this._unregister = this._register(this._storeService.getStore());
-		this._helpTooltip.messageProvideFunction = () => "Standort markieren";
+		this._helpTooltip.messageProvideFunction = () => 'Standort markieren';
 
 		return this._layer;
 	}
@@ -71,8 +71,9 @@ export class OlContributionHandler extends OlLayerHandler {
 
 		const onClick = (event) => {
 			const position = event.coordinate;
-			if (!(tagging && position))
+			if (!(tagging && position)) {
 				return;
+			}
 			setLocation(position);
 			this._positionFeature.setStyle(highlightCoordinateFeatureStyleFunction);
 			this._positionFeature.setGeometry(new Point(position));
@@ -83,8 +84,9 @@ export class OlContributionHandler extends OlLayerHandler {
 			this._helpTooltip.notify(event);
 
 			const position = event.coordinate;
-			if (!(tagging && position))
+			if (!(tagging && position)) {
 				return;
+			}
 			this._taggingFeature.setGeometry(new Point(position));
 		};
 

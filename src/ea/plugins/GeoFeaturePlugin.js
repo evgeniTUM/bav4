@@ -42,18 +42,19 @@ export class GeoFeaturePlugin extends BaPlugin {
 				console.log('check draggable for Features');
 				console.log(state);
 				console.error('call addLayer for GeoFeatures');
-				let label = 'Verwaltungseinheiten'
-				addLayer(GEO_FEATURE_LAYER_ID, {label: label , constraints: { alwaysTop: true}});
-			} else {
+				const label = 'Verwaltungseinheiten';
+				addLayer(GEO_FEATURE_LAYER_ID, { label: label, constraints: { alwaysTop: true } });
+			}
+			else {
 				console.error('remove Features in Layer ' + GEO_FEATURE_LAYER_ID);
-				removeLayer(GEO_FEATURE_LAYER_ID );
+				removeLayer(GEO_FEATURE_LAYER_ID);
 			}
 		};
 
 		const onFeatureShow = (features) => {
 			console.log('show Features or make it draggable');
 			console.log(features);
-			
+
 			//make dragable
 		};
 
@@ -66,6 +67,6 @@ export class GeoFeaturePlugin extends BaPlugin {
 
 		observe(store, state => state.geofeature.active, onChange);
 		observe(store, state => state.geofeature.features, onFeatureShow);
-//		observe(store, store => store.mainMenu.tab, onTabChanged, false);
+		//		observe(store, store => store.mainMenu.tab, onTabChanged, false);
 	}
 }

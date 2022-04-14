@@ -62,59 +62,59 @@ export class TopicsContentPanel extends AbstractContentPanel {
 		}
 	}
 
-        createViewHelper(state) {
+	createViewHelper(state) {
 		const { currentTopicId, topicsReady, contentIndex } = state;
 
-			const topics = this._topicsService.all();
+		const topics = this._topicsService.all();
 
-			const getActiveClass = (id) => {
-				return (currentTopicId === id) ? 'active' : '';
-			};
+		const getActiveClass = (id) => {
+			return (currentTopicId === id) ? 'active' : '';
+		};
 
-			const getTabIndex = () => {
-				return (contentIndex === TopicsContentPanelIndex.TOPICS) ? 0 : -1;
-			};
+		const getTabIndex = () => {
+			return (contentIndex === TopicsContentPanelIndex.TOPICS) ? 0 : -1;
+		};
 
-			const getVisibilityClass = () => {
-				return (contentIndex === TopicsContentPanelIndex.TOPICS) ? '' : 'invisible';
-			};
+		const getVisibilityClass = () => {
+			return (contentIndex === TopicsContentPanelIndex.TOPICS) ? '' : 'invisible';
+		};
 
-			const changeTopic = (topic) => {
-				this.scrollIntoView();
-				setCurrent(topic.id);
-				setIndex(TopicsContentPanelIndex.CATALOG_0);
-			};
+		const changeTopic = (topic) => {
+			this.scrollIntoView();
+			setCurrent(topic.id);
+			setIndex(TopicsContentPanelIndex.CATALOG_0);
+		};
 
 
-			const renderTopicStyle = (topic) => {
-				const hue = topic.style.hue || 0;
-				return `
+		const renderTopicStyle = (topic) => {
+			const hue = topic.style.hue || 0;
+			return `
 				.topic-${topic.id}{		
 					--topic-theme: hsl(${hue} var(--topic-saturation) var(--topic-lightness));			
 				}	
 				`;
-			};
+		};
 
-			const renderTopicIcon = (topic) => {
-				if (topic.style.icon) {
-					return html`
+		const renderTopicIcon = (topic) => {
+			if (topic.style.icon) {
+				return html`
 					<svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
 					${unsafeSVG(topic.style.icon)}
 					</svg>
 					`;
-				}
-				return nothing;
-			};
-        return { topics , getActiveClass, getTabIndex,getVisibilityClass, changeTopic,renderTopicStyle,renderTopicIcon }
-        }
+			}
+			return nothing;
+		};
+		return { topics, getActiveClass, getTabIndex, getVisibilityClass, changeTopic, renderTopicStyle, renderTopicIcon };
+	}
 
 	/**
 	 * @override
 	 */
 	createView(state) {
-            const { currentTopicId, topicsReady, contentIndex } = state;
+		const { currentTopicId, topicsReady, contentIndex } = state;
 		if (topicsReady) {
-                        let helper = this.createViewHelper(state);
+			const helper = this.createViewHelper(state);
 
 			return html`
         	<style>${css}</style>

@@ -19,7 +19,7 @@ import { $injector } from '../../../injection';
  * @property {Coordinate} coordinate
  * @typedef {GeoJson} features
  * @property {Coordinate} coordinate
- 
+
  */
 
 /**
@@ -35,7 +35,7 @@ export const GeoFeatureTypes = Object.freeze({
 	ANIMATED: 2
 });
 
-const defaultProperties = { features: null, active:false};
+const defaultProperties = { features: null, active: false };
 
 
 const getStore = () => {
@@ -59,9 +59,9 @@ export const addGeoFeatureLayer = (id) => {
 * @param {Array.<GeoFeature>|GeoFeature} features
 * @function
 */
-export const addGeoFeatures = (geojsonFeatures)=> {
+export const addGeoFeatures = (geojsonFeatures) => {
 	const featureAsArray = Array.isArray(geojsonFeatures) ? [...geojsonFeatures] : [geojsonFeatures];
-		
+
 	getStore().dispatch({
 		type: FEATURE_ADD,
 		payload: featureAsArray

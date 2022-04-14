@@ -1,6 +1,6 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
-import { openFnModuleComm  } from '../../../../store/fnModuleComm/fnModuleComm.action';
+import { openFnModuleComm } from '../../../../store/fnModuleComm/fnModuleComm.action';
 
 import css from './researchModuleContent.css';
 import { AbstractModuleContent } from '../moduleContainer/AbstractModuleContent';
@@ -18,11 +18,11 @@ export class ResearchModuleContent extends AbstractModuleContent {
 	constructor() {
 		super();
 
-		const {TranslationService: translationService, EnvironmentService: environmentService, UnitsService: unitsService, UrlService: urlService} = $injector.inject('TranslationService', 'EnvironmentService', 'UnitsService', 'UrlService');
+		const { TranslationService: translationService, EnvironmentService: environmentService, UnitsService: unitsService, UrlService: urlService } = $injector.inject('TranslationService', 'EnvironmentService', 'UnitsService', 'UrlService');
 		this._translationService = translationService;
 		this._environmentService = environmentService;
 		this._unitsService = unitsService;
-//		this._shareService = shareService;
+		//		this._shareService = shareService;
 		this._moduleDomain = null;
 		this._urlService = urlService;
 		this._tool = {
@@ -36,9 +36,9 @@ export class ResearchModuleContent extends AbstractModuleContent {
 
 	createView(state) {
 		const translate = (key) => this._translationService.translate(key);
-		const {active, statistic} = state;
+		const { active, statistic } = state;
 		this._tool.active = active;
-		const {HttpService: httpService, ConfigService: configService} = $injector.inject('HttpService', 'ConfigService');
+		const { HttpService: httpService, ConfigService: configService } = $injector.inject('HttpService', 'ConfigService');
 
 		this._moduleDomain = `${configService.getValueAsPath('MODULE_BACKEND_URL')}`;
 		this._parameter = [];
@@ -65,44 +65,45 @@ export class ResearchModuleContent extends AbstractModuleContent {
 		popup.style.setProperty('height', '95%', '');
 		popup.style.setProperty('width', '100%', '');
 		popup.style.setProperty('max-height', '100%', '');
-//        popup.style.setProperty('max-width', '600px', '');
-//        popup.style.setProperty('resize', 'both', '');
+		//        popup.style.setProperty('max-width', '600px', '');
+		//        popup.style.setProperty('resize', 'both', '');
 		popup.setAttribute('align', 'right');
 	}
 
 	async asyncInitialization(site, domain, pWindow) {
 		try {
-			let myPromise = new Promise(function(resolve) {
-				setTimeout(function() {
-					openFnModuleComm(site, domain, pWindow)
+			const myPromise = new Promise(function (resolve) {
+				setTimeout(function () {
+					openFnModuleComm(site, domain, pWindow);
 				}, 1000);
 			});
 			return true;
-		} catch (ex) {
+		}
+		catch (ex) {
 			return ex;
 		}
 	}
-	
+
 	callModul(first) {
 
-		let iframeRoot = this.shadowRoot.getElementById(IFRAME);
+		const iframeRoot = this.shadowRoot.getElementById(IFRAME);
 
 		if (iframeRoot === null) {
 			console.log('iframe ' + IFRAME + ' not found');
-//                $scope.options.moduleReset();
+			//                $scope.options.moduleReset();
 			return;
 		}
 		if (iframeRoot && iframeRoot.firstElementChild) {
 			console.log(iframeRoot);
 			console.log('children iframe ' + IFRAME + ' already exists');
-//                $scope.options.moduleReset();
+			//                $scope.options.moduleReset();
 			return;
 		}
 
-		var parameter = [];
+		const parameter = [];
 
 		//  **********   Öffnen des externen Links in IFRAME  ***************
-		var ifrm = document.createElement('IFRAME');
+		const ifrm = document.createElement('IFRAME');
 
 		ifrm.setAttribute('src', this._moduleRequestUrl);
 		ifrm.style.width = 100 + '%';
@@ -113,24 +114,25 @@ export class ResearchModuleContent extends AbstractModuleContent {
 		iframeRoot.appendChild(ifrm);
 		iframeRoot.style.setProperty('height', '100%', '');
 		//              setPopupPosition();
-		let myWindow = ifrm.contentWindow;
-		let agent = this;
+		const myWindow = ifrm.contentWindow;
+		const agent = this;
 
-		ifrm.onload = function() {
+		ifrm.onload = function () {
 			try {
-				agent.asyncInitialization(MODULE_SITE, agent._moduleDomain, myWindow).then(function(data) {
+				agent.asyncInitialization(MODULE_SITE, agent._moduleDomain, myWindow).then(function (data) {
 					// success
 					agent.setPopupPosition(ifrm.parentElement);
 					return true;
-				}, function(errData) {
+				}, function (errData) {
 					// error
 					console.log('errData researchDirective' + errData);
 				});
-			} catch (ex) {
+			}
+			catch (ex) {
 				console.log('Exception beim laden des Iframes ' + agent._moduleDomain + MODULE_SITE);
 				console.log(ex);
 			}
-		}
+		};
 	}
 
 	onAfterRender(first) {

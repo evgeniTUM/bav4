@@ -29,7 +29,7 @@ describe('GeoFeaturePlugin', () => {
 		expect(store.getState().layers.active.length).toBe(1);
 		const layer = store.getState().layers.active[0];
 		expect(layer.id).toBe(GEO_FEATURE_LAYER_ID);
-		expect(layer.label).toBe("Verwaltungseinheiten");
+		expect(layer.label).toBe('Verwaltungseinheiten');
 		expect(layer.constraints.alwaysTop).toBeTrue();
 
 		clearGeoFeatures();

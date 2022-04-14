@@ -34,7 +34,7 @@ export const initialState = {
 	 * @property {FnModule|null}
 	 */
 	fnModuleSite: null,
-	
+
 	/**
 	 * @property {FnModuleWindow|null}
 	 */
@@ -49,32 +49,32 @@ export const initialState = {
 };
 
 const openModule = (state, payload) => {
-	const {fnModuleSite, fnModuleWindow, fnModuleDomain } = payload;
-	console.log( 'openModule --> reducer: ');  console.log( 'fnModuleSite ' + fnModuleSite);
-			return {
-			...state,
-			fnModuleSite,
-			fnModuleWindow,
-			fnModuleDomain,
-			active: true
-		};
+	const { fnModuleSite, fnModuleWindow, fnModuleDomain } = payload;
+	console.log('openModule --> reducer: '); console.log('fnModuleSite ' + fnModuleSite);
+	return {
+		...state,
+		fnModuleSite,
+		fnModuleWindow,
+		fnModuleDomain,
+		active: true
+	};
 
-}
+};
 const closeModule = (state, payload) => {
 //	const {fnModuleSite, fnModuleWindow, fnModuleDomain } = payload;
-	
-			return {
-			...state,
-//			fnModuleSite,
-//			fnModuleWindow,
-//			fnModuleDomain,
-			active: false
-		};
 
-}
+	return {
+		...state,
+		//			fnModuleSite,
+		//			fnModuleWindow,
+		//			fnModuleDomain,
+		active: false
+	};
+
+};
 
 export const fnModuleCommReducer = (state = initialState, action) => {
-	
+
 	const createIdIfMissing = features => features.map(f => {
 		if (!f.id) {
 			f.id = createUniqueId();
@@ -83,7 +83,7 @@ export const fnModuleCommReducer = (state = initialState, action) => {
 	});
 
 
-	const {type, payload} = action;
+	const { type, payload } = action;
 	switch (type) {
 
 		case OPEN_MODULE_REQUESTED:
@@ -97,7 +97,7 @@ export const fnModuleCommReducer = (state = initialState, action) => {
 		case CHANGE_MODULE_REQUESTED:
 		{
 			const active = !!payload;
-			return {state, fnModuleComm: payload, active: active};
+			return { state, fnModuleComm: payload, active: active };
 		}
 		case GEOMETRY_ADDED_REQUESTED:
 		{
@@ -123,67 +123,67 @@ export const fnModuleCommReducer = (state = initialState, action) => {
 		{
 			const features = [...state.features, ...createIdIfMissing(payload)];
 			const active = !!features.length;
-			return {state, fnModuleComm: payload, active: active};
+			return { state, fnModuleComm: payload, active: active };
 		}
 		case REMOVE_FEATURE_BY_ID_REQUESTED:
 		{
 			const active = !!payload;
-			return {state, fnModuleComm: payload, active: active};
+			return { state, fnModuleComm: payload, active: active };
 		}
 		case CLEAR_MAP_REQUESTED:
 		{
 			const active = !!payload;
-			return {state, fnModuleComm: payload, active: active};
+			return { state, fnModuleComm: payload, active: active };
 		}
 		case ADD_LAYER_REQUESTED:
 		{
 			const active = !!payload;
-			return {state, fnModuleComm: payload, active: active};
+			return { state, fnModuleComm: payload, active: active };
 		}
 		case REMOVE_LAYER_REQUESTED:
 		{
 			const active = !!payload;
-			return {state, fnModuleComm: payload, active: active};
+			return { state, fnModuleComm: payload, active: active };
 		}
 		case CLEAR_LAYER_REQUESTED:
 		{
 			const active = !!payload;
-			return {state, fnModuleComm: payload, active: active};
+			return { state, fnModuleComm: payload, active: active };
 		}
 		case ZOOM_EXPAND_REQUESTED:
 		{
 			const active = !!payload;
-			return {state, fnModuleComm: payload, active: active};
+			return { state, fnModuleComm: payload, active: active };
 		}
 		case ZOOM_REQUESTED:
 		{
 			const active = !!payload;
-			return {state, fnModuleComm: payload, active: active};
+			return { state, fnModuleComm: payload, active: active };
 		}
 		case ZOOM_2_EXTENT_REQUESTED:
 		{
 			const active = !!payload;
-			return {state, fnModuleComm: payload, active: active};
+			return { state, fnModuleComm: payload, active: active };
 		}
 		case ZOOM_N_CENTER_TO_FEATURE_REQUESTED:
 		{
 			const active = !!payload;
-			return {state, fnModuleComm: payload, active: active};
+			return { state, fnModuleComm: payload, active: active };
 		}
 		case CLICK_IN_MAP_SIMULATION_REQUESTED:
 		{
 			const active = !!payload;
-			return {state, fnModuleComm: payload, active: active};
+			return { state, fnModuleComm: payload, active: active };
 		}
 		case ACTIVATE_MAPCLICK_REQUESTED:
 		{
 			const active = !!payload;
-			return {state, fnModuleComm: payload, active: active};
+			return { state, fnModuleComm: payload, active: active };
 		}
 		case CANCEL_MAPCLICK_REQUESTED:
 		{
 			const active = !!payload;
-			return {state, fnModuleComm: payload, active: active};
+			return { state, fnModuleComm: payload, active: active };
 		}
 
 		case CHANGE_MODULE_REQUESTED:

@@ -10,17 +10,17 @@ import { $injector } from '../../../injection';
 /**
  * Contains value for activation litening at map click
  * @typedef {boolean} active
- * @property {active} 
+ * @property {active}
  */
 
 /**
  * Contains coordinate for clickEvent within the map.
  * @typedef {Object} Coordinate
- * @property {Coordinate} 
+ * @property {Coordinate}
  */
 
 
-const defaultProperties = { coordinate: null, active:false};
+const defaultProperties = { coordinate: null, active: false };
 
 
 const getStore = () => {

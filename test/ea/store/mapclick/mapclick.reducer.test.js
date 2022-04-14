@@ -1,5 +1,5 @@
 import { mapclickReducer } from '../../../../src/ea/store/mapclick/mapclick.reducer';
-import { activateMapClick, deactivateMapClick }  from '../../../../src/ea/store/mapclick/mapclick.action';
+import { activateMapClick, deactivateMapClick } from '../../../../src/ea/store/mapclick/mapclick.action';
 import { TestUtils } from '../../../test-utils';
 
 
@@ -13,16 +13,16 @@ describe('mapclickReducer', () => {
 
 	it('activate mapclick', () => {
 		const store = setup({
-			coordinate: null, 
+			coordinate: null,
 			active: false
 		});
 		activateMapClick();
 		expect(store.getState().mapclick.active).toBe(true);
 	});
-	
-		it('deactivate mapclick', () => {
+
+	it('deactivate mapclick', () => {
 		const store = setup({
-			coordinate: null, 
+			coordinate: null,
 			active: false
 		});
 		deactivateMapClick();

@@ -162,7 +162,7 @@ export const setFit = (extent, options = {}) => {
  * @function
  */
 export const updateSize = (sliderValue) => {
-    console.log('updateSize dispatch');
+	console.log('updateSize dispatch');
 	getStore().dispatch({
 		type: UPDATE_SIZE,
 		payload: sliderValue

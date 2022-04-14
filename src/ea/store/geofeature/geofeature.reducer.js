@@ -38,7 +38,7 @@ export const geofeatureReducer = (state = initialState, action) => {
 				...state,
 				id: payload.id,
 				features: [],
-				active:true
+				active: true
 			};
 		}
 		case FEATURE_ADD: {

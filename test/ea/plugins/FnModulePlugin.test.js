@@ -86,7 +86,7 @@ describe('FnModulePlugin', () => {
 		const instanceUnderTest = new FnModulePlugin();
 		await instanceUnderTest.register(store);
 
-		const expectedSite = "http://test-site";
+		const expectedSite = 'http://test-site';
 		const expectedDomain = 'dom1';
 
 		openFnModuleComm(expectedSite, expectedDomain, windowMock);
@@ -94,15 +94,15 @@ describe('FnModulePlugin', () => {
 
 		expect(windowMock.messages).toHaveSize(2);
 		expect(windowMock.messages[0]).toEqual(
-			{ msg: { "code": "open", "module": expectedSite }, domain: expectedDomain }
+			{ msg: { 'code': 'open', 'module': expectedSite }, domain: expectedDomain }
 		);
 		expect(windowMock.messages[1]).toEqual(
-			{ msg: { "code": "close", "module": expectedSite }, domain: expectedDomain }
+			{ msg: { 'code': 'close', 'module': expectedSite }, domain: expectedDomain }
 		);
 	});
 
 	describe('when communication is open', () => {
-		const site = "http://test-site";
+		const site = 'http://test-site';
 		const domain = 'dom1';
 
 		const setupOpen = async (state) => {
@@ -116,7 +116,7 @@ describe('FnModulePlugin', () => {
 			storeMockHelper.actions = [];
 
 			return store;
-		}
+		};
 
 		it('clears geofeature layers on message \'clearLayer\'', async () => {
 			const store = await setupOpen();
@@ -127,7 +127,7 @@ describe('FnModulePlugin', () => {
 					module: domain,
 					message: 'test' 
 				},
-				event: { origin: site },
+				event: { origin: site }
 
 			});
 
@@ -147,7 +147,7 @@ describe('FnModulePlugin', () => {
 						geojson: geojson
 					}
 				},
-				event: { origin: site },
+				event: { origin: site }
 
 			});
 

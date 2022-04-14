@@ -21,7 +21,7 @@ import { mapContextMenuReducer } from '../store/mapContextMenu/mapContextMenu.re
 import { createMainMenuReducer } from '../store/mainMenu/mainMenu.reducer';
 import { featureInfoReducer } from '../store/featureInfo/featureInfo.reducer';
 import { importReducer } from '../store/import/import.reducer';
-import { contributionReducer } from '../ea/store/contribution/contribution.reducer'
+import { contributionReducer } from '../ea/store/contribution/contribution.reducer';
 
 import { fnModuleCommReducer } from '../ea/store/fnModuleComm/fnModuleComm.reducer';
 import { geofeatureReducer } from '../ea/store/geofeature/geofeature.reducer';
@@ -66,16 +66,16 @@ export class StoreService {
 			mapclick: mapclickReducer,
 			geofeature: geofeatureReducer,
 			contribution: contributionReducer,
-			fnModuleComm: fnModuleCommReducer,
+			fnModuleComm: fnModuleCommReducer
 		});
 
-//		this._store = createStore(rootReducer);
-				this._store = createStore(rootReducer,  
+		//		this._store = createStore(rootReducer);
+		this._store = createStore(rootReducer,
 			window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(
 				{
 				    // trace: true, // (action) => { return ‘trace as string’; }
     				// traceLimit: 25,
-					actionsBlacklist: [POINTER_MOVE_CHANGED ],
+					actionsBlacklist: [POINTER_MOVE_CHANGED]
 
 				}
 			));

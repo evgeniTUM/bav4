@@ -23,8 +23,8 @@ import MapBrowserEventType from 'ol/MapBrowserEventType';
 export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 	constructor() {
-		super(GEO_FEATURE_LAYER_ID, {preventDefaultClickHandling: false, preventDefaultContextClickHandling: false});
-		const {StoreService, CoordinateService, MapService} = $injector.inject('StoreService', 'CoordinateService', 'MapService');
+		super(GEO_FEATURE_LAYER_ID, { preventDefaultClickHandling: false, preventDefaultContextClickHandling: false });
+		const { StoreService, CoordinateService, MapService } = $injector.inject('StoreService', 'CoordinateService', 'MapService');
 
 
 		this._storeService = StoreService;
@@ -52,7 +52,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 		const createLayer = () => {
 
-			const source = new VectorSource({wrapX: false, features: [this._positionFeature]});
+			const source = new VectorSource({ wrapX: false, features: [this._positionFeature] });
 			const layer = new VectorLayer({
 				source: source
 			});
@@ -62,19 +62,19 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 
 		const getOrCreateLayer = () => {
-//			const oldLayer = getOldLayer(this._map);
+			//			const oldLayer = getOldLayer(this._map);
 			const layer = createLayer();
-//			addOldFeatures(layer, oldLayer);
-//			const saveDebounced = debounced(Debounce_Delay, () => this._save());
-//			const setSelectedAndSave = (event) => {
-//				if (this._drawState.type === InteractionStateType.DRAW) {
-//					setSelection([event.feature.getId()]);
-//				}
-//				this._save();
-//			};
-//			this._listeners.push(layer.getSource().on('addfeature', setSelectedAndSave));
-//			this._listeners.push(layer.getSource().on('changefeature', () => saveDebounced()));
-//			this._listeners.push(layer.getSource().on('removefeature', () => saveDebounced()));
+			//			addOldFeatures(layer, oldLayer);
+			//			const saveDebounced = debounced(Debounce_Delay, () => this._save());
+			//			const setSelectedAndSave = (event) => {
+			//				if (this._drawState.type === InteractionStateType.DRAW) {
+			//					setSelection([event.feature.getId()]);
+			//				}
+			//				this._save();
+			//			};
+			//			this._listeners.push(layer.getSource().on('addfeature', setSelectedAndSave));
+			//			this._listeners.push(layer.getSource().on('changefeature', () => saveDebounced()));
+			//			this._listeners.push(layer.getSource().on('removefeature', () => saveDebounced()));
 			return layer;
 		};
 
@@ -82,39 +82,39 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 		if (!this._vectorLayer) {
 			this._vectorLayer = getOrCreateLayer();
-//			this._mapContainer = olMap.getTarget();
-//			const source = this._vectorLayer.getSource();
-//			this._select = this._createSelect();
-//			this._modify = this._createModify();
-//			this._select.setActive(false);
-//			this._modify.setActive(false);
-//			this._snap = new Snap({ source: source, pixelTolerance: getSnapTolerancePerDevice() });
-//			this._dragPan = new DragPan();
-//			this._dragPan.setActive(false);
-//			this._onDrawStateChanged((drawState) => this._updateDrawMode(drawState));
-//			if (!this._environmentService.isTouch()) {
-//				this._helpTooltip.activate(this._map);
-//				this._onDrawStateChanged((drawState) => {
-//					this._helpTooltip.notify(drawState);
-//					if (drawState.snap === InteractionSnapType.VERTEX) {
-//						this._mapContainer.classList.add('grab');
-//					}
-//					else {
-//						this._mapContainer.classList.remove('grab');
-//					}
-//				});
-//			}
-//			this._listeners.push(olMap.on(MapBrowserEventType.CLICK, clickHandler));
-//			this._listeners.push(olMap.on(MapBrowserEventType.POINTERMOVE, pointerMoveHandler));
-//			this._listeners.push(olMap.on(MapBrowserEventType.DBLCLICK, () => false));
-//			this._listeners.push(document.addEventListener('keyup', (e) => this._removeLast(e)));
+			//			this._mapContainer = olMap.getTarget();
+			//			const source = this._vectorLayer.getSource();
+			//			this._select = this._createSelect();
+			//			this._modify = this._createModify();
+			//			this._select.setActive(false);
+			//			this._modify.setActive(false);
+			//			this._snap = new Snap({ source: source, pixelTolerance: getSnapTolerancePerDevice() });
+			//			this._dragPan = new DragPan();
+			//			this._dragPan.setActive(false);
+			//			this._onDrawStateChanged((drawState) => this._updateDrawMode(drawState));
+			//			if (!this._environmentService.isTouch()) {
+			//				this._helpTooltip.activate(this._map);
+			//				this._onDrawStateChanged((drawState) => {
+			//					this._helpTooltip.notify(drawState);
+			//					if (drawState.snap === InteractionSnapType.VERTEX) {
+			//						this._mapContainer.classList.add('grab');
+			//					}
+			//					else {
+			//						this._mapContainer.classList.remove('grab');
+			//					}
+			//				});
+			//			}
+			//			this._listeners.push(olMap.on(MapBrowserEventType.CLICK, clickHandler));
+			//			this._listeners.push(olMap.on(MapBrowserEventType.POINTERMOVE, pointerMoveHandler));
+			//			this._listeners.push(olMap.on(MapBrowserEventType.DBLCLICK, () => false));
+			//			this._listeners.push(document.addEventListener('keyup', (e) => this._removeLast(e)));
 		}
 		this._unregister = this._register(this._storeService.getStore());
-//		this._map.addInteraction(this._select);
-//		this._map.addInteraction(this._modify);
-//		this._map.addInteraction(this._snap);
-//		this._map.addInteraction(this._dragPan);
-//
+		//		this._map.addInteraction(this._select);
+		//		this._map.addInteraction(this._modify);
+		//		this._map.addInteraction(this._snap);
+		//		this._map.addInteraction(this._dragPan);
+		//
 
 		return this._vectorLayer;
 	}
@@ -128,11 +128,11 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 		this._map = null;
 		this._unregister();
 		unByKey(this._listeners);
-		
+
 		this._unsubscribeMapClickObserver();
 		this._unsubscribeMapClickObserver = () => {};
-		
-		if ( this._mapClickListener ) {
+
+		if (this._mapClickListener) {
 			unByKey(this._mapClickListener);
 			this._mapClickListener = null;
 		}
@@ -140,7 +140,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 	}
 
 	_updateStyle(olFeature, olLayer, olMap) {
-		const {StyleService: styleService} = $injector.inject('StyleService');
+		const { StyleService: styleService } = $injector.inject('StyleService');
 		styleService.updateStyle(olFeature, olMap, {
 			visible: olLayer.getVisible(),
 			top: olMap.getLayers().item(olMap.getLayers().getLength() - 1) === olLayer,
@@ -150,46 +150,48 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 	_toOlFeature(feature) {
 		console.log('_toOlFeature');
-//		console.log(feature);
+		//		console.log(feature);
 
-		let geojson = feature.data.features[0];
+		const geojson = feature.data.features[0];
 		console.log(geojson);
-		let _features = new GeoJSON().readFeature(geojson);
+		const _features = new GeoJSON().readFeature(geojson);
 		_features.getGeometry().transform('EPSG:' + 4326, 'EPSG:' + this.mapService.getSrid());
 		_features.set('srid', 4326, true);
-		
-		let f = new Feature();
+
+		const f = new Feature();
 		f.setGeometry(_features.getGeometry());
 		return f;
 	}
 
 	_register(store) {
-		
+
 		const getOldLayer = (map) => {
 			return map.getLayers().getArray().find(l => l.get('id') && (
-					l.get('id') === GEO_FEATURE_LAYER_ID));
+				l.get('id') === GEO_FEATURE_LAYER_ID));
 		};
 
 
 
 
-//		this._listeners.push(this._map.on(MapBrowserEventType.CLICK, onClick));
+		//		this._listeners.push(this._map.on(MapBrowserEventType.CLICK, onClick));
 
 		const onChange = ({ features }) => {
 
-		console.log('OlGeoFeatureLayerHandler onChange --> features');
-		console.log(features);
+			console.log('OlGeoFeatureLayerHandler onChange --> features');
+			console.log(features);
 
-		if ( features == undefined || features.length == 0 ) return;
-		
-			const {StyleService: styleService} = $injector.inject('StyleService');
-			let georesources = features;
+			if (features == undefined || features.length == 0) {
+				return;
+			}
+
+			const { StyleService: styleService } = $injector.inject('StyleService');
+			const georesources = features;
 			this._vectorLayer.getSource().addFeatures(
-			features.map(this._toOlFeature, this).filter(olFeature => !!olFeature));
-		
+				features.map(this._toOlFeature, this).filter(olFeature => !!olFeature));
+
 			if (features.length > 0) {
 				this._map.renderSync();
-		}
+			}
 		};
 
 		return observe(store, state => state.geofeature, onChange, false);

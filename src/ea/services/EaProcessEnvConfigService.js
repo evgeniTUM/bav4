@@ -5,10 +5,10 @@ import { ProcessEnvConfigService } from '../../services/ProcessEnvConfigService'
  * @class
  * @author kunze_ge
  */
-export class EaProcessEnvConfigService extends ProcessEnvConfigService{
+export class EaProcessEnvConfigService extends ProcessEnvConfigService {
 
 	constructor() {
-            super();
+		super();
 		// eslint-disable-next-line no-undef
 		this._properties.set('MODULE_BACKEND_URL', window?.ba_externalConfigProperties?.MODULE_BACKEND_URL ?? process.env.MODULE_BACKEND_URL);
 	}

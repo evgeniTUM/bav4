@@ -1,6 +1,6 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
-import { OlMap }  from '../../../../../modules/map/components/olMap/OlMap';
+import { OlMap } from '../../../../../modules/map/components/olMap/OlMap';
 import css from './olMap.css';
 
 /**
@@ -11,7 +11,7 @@ import css from './olMap.css';
 export class EaOlMap extends OlMap {
 
 	constructor() {
-			super({
+		super({
 			zoom: null,
 			center: null,
 			rotation: null,
@@ -22,7 +22,7 @@ export class EaOlMap extends OlMap {
 			OlGeoFeatureLayerHandler: olGeoFeatureLayerHandler,
 			OlContributionHandler: olContributionHandler
 		} = $injector.inject('OlGeoFeatureLayerHandler', 'OlContributionHandler');
-//
+		//
 		this._layerHandler.set(olGeoFeatureLayerHandler.id, olGeoFeatureLayerHandler);
 		this._layerHandler.set(olContributionHandler.id, olContributionHandler);
 
@@ -30,7 +30,7 @@ export class EaOlMap extends OlMap {
 
 	/**
 	 * @override
-	 * observeModel('updateSize' .. ) is no longer needed if this behavior is implemented 
+	 * observeModel('updateSize' .. ) is no longer needed if this behavior is implemented
 	 *  in the parent class
 	 */
 	onInitialize() {

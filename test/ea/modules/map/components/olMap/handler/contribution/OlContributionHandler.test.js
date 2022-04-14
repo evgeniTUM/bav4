@@ -16,10 +16,10 @@ describe('OlContributionHandler', () => {
 	const translationServiceMock = { translate: (key) => key };
 	const defaultState = {
 		contribution: initialState
-	}
+	};
 	const setup = (state = defaultState) => {
 		const store = TestUtils.setupStoreAndDi(state, { contribution: contributionReducer });
-		$injector.registerSingleton('TranslationService', translationServiceMock)
+		$injector.registerSingleton('TranslationService', translationServiceMock);
 		return store;
 	};
 
@@ -69,7 +69,7 @@ describe('OlContributionHandler', () => {
 
 			const classUnderTest = new OlContributionHandler();
 			const layer = classUnderTest.activate(map);
-			
+
 			setTaggingMode(true);
 			const features = await layer.getFeatures();
 

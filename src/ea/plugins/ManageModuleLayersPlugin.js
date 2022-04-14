@@ -29,7 +29,7 @@ export class ManageModuleLayersPlugin extends BaPlugin {
 
 			switch (toolId) {
 				case EAContribution.tag:
-					addLayer(CONTRIBUTION_LAYER_ID, { label: "contribution_layer", constraints: { hidden: true, alwaysTop: false } });
+					addLayer(CONTRIBUTION_LAYER_ID, { label: 'contribution_layer', constraints: { hidden: true, alwaysTop: false } });
 					break;
 			}
 

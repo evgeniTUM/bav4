@@ -1,4 +1,4 @@
-import { GeoFeatureTypes } from "../../../../src/ea/store/geofeature/geofeature.action";
+import { GeoFeatureTypes } from '../../../../src/ea/store/geofeature/geofeature.action';
 
 describe('geofeature action', () => {
 

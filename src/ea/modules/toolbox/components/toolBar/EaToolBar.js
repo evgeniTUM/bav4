@@ -1,6 +1,6 @@
 import { html } from 'lit-html';
 import css from './eaToolBar.css';
-import { ToolBar } from '../../../../../modules/toolbox/components/toolBar/ToolBar'
+import { ToolBar } from '../../../../../modules/toolbox/components/toolBar/ToolBar';
 
 
 /**
@@ -13,9 +13,9 @@ export class EaToolBar extends ToolBar {
 
 	constructor() {
 		super();
-                }
-                
-        extendedCss() {
+	}
+
+	extendedCss() {
 		return html`
 		<style>
 		${css}
@@ -23,8 +23,8 @@ export class EaToolBar extends ToolBar {
 		`;
 	}
 
-        defaultCss() {
-            return html`${super.defaultCss()} ${this.extendedCss()}`;
+	defaultCss() {
+		return html`${super.defaultCss()} ${this.extendedCss()}`;
 	}
 
 	static get tag() {

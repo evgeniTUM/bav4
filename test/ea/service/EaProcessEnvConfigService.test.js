@@ -1,4 +1,4 @@
-import { EaProcessEnvConfigService } from '../../../src/ea/services/EaProcessEnvConfigService' 
+import { EaProcessEnvConfigService } from '../../../src/ea/services/EaProcessEnvConfigService';
 import { ProcessEnvConfigService } from '../../../src/services/ProcessEnvConfigService';
 
 describe('tests for EaProcessEnvConfigService', () => {

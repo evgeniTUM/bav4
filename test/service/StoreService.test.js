@@ -47,14 +47,14 @@ describe('StoreService', () => {
 			register() { }
 		};
 		const fnModulePluginMock = {
-			register() {}			
+			register() {}
 		};
 
 		const geoFeaturePluginMock = {
-			register() {}			
+			register() {}
 		};
-		const manageModuleLayersPluginMock= {
-			register() {}			
+		const manageModuleLayersPluginMock = {
+			register() {}
 		};
 		const windowMock = {
 			history: {

@@ -5,12 +5,12 @@ export const TAGGING_MODE_CHANGED = 'ea/contribution/tagging_mode';
 
 
 export const initialState = {
-	/** 
+	/**
 	 * @type {Boolean}
 	 */
 	active: false,
 
-	/** 
+	/**
 	 * @type {Boolean}
 	 */
 	tagging: false,
@@ -34,7 +34,7 @@ export const contributionReducer = (state = initialState, action) => {
 			return {
 				...state,
 				active: payload
-			}
+			};
 		}
 		case DESCRIPTION_CHANGED: {
 
@@ -47,7 +47,7 @@ export const contributionReducer = (state = initialState, action) => {
 
 			return {
 				...state,
-				position: payload,
+				position: payload
 			};
 		}
 		case TAGGING_MODE_CHANGED: {

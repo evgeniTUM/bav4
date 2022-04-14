@@ -31,7 +31,7 @@ describe('geofeatureReducer', () => {
 	it('adds a feature with given id', () => {
 		const store = setup();
 		addGeoFeatureLayer(42);
-		const feature = { id: 24, name: 'test-feature'};
+		const feature = { id: 24, name: 'test-feature' };
 
 		addGeoFeatures(feature);
 
@@ -39,11 +39,11 @@ describe('geofeatureReducer', () => {
 		expect(store.getState().geofeature.features[0]).toBe(feature);
 		expect(store.getState().geofeature.features[0].id).toBe(24);
 	});
-	
+
 	it('adds a feature without id', () => {
 		const store = setup();
 		addGeoFeatureLayer(42);
-		const feature = { name: 'test-feature'};
+		const feature = { name: 'test-feature' };
 
 		addGeoFeatures(feature);
 
@@ -55,7 +55,7 @@ describe('geofeatureReducer', () => {
 	it('removes a feature by id', () => {
 		const store = setup();
 		addGeoFeatureLayer(24);
-		const feature = { id: 42, name: 'test-feature'};
+		const feature = { id: 42, name: 'test-feature' };
 		addGeoFeatures(feature);
 
 		// try non existant id
@@ -70,8 +70,8 @@ describe('geofeatureReducer', () => {
 	it('clears all features', () => {
 		const store = setup();
 		addGeoFeatureLayer(42);
-		addGeoFeatures({ name: "feature1"});
-		addGeoFeatures({ name: "feature2"});
+		addGeoFeatures({ name: 'feature1' });
+		addGeoFeatures({ name: 'feature2' });
 
 		clearGeoFeatures();
 

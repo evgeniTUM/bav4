@@ -1,8 +1,8 @@
 import { html } from 'lit-html';
-import { MapButtonsContainer }  from '../../../../../modules/map/components/mapButtonsContainer/MapButtonsContainer'
+import { MapButtonsContainer } from '../../../../../modules/map/components/mapButtonsContainer/MapButtonsContainer';
 
 import css from './mapButtonsContainer.css';
-import bacss from  '../../../../../modules/map/components/mapButtonsContainer/mapButtonsContainer.css';
+import bacss from '../../../../../modules/map/components/mapButtonsContainer/mapButtonsContainer.css';
 
 const Update_IsOpen = 'update_isOpen';
 const Update_IsPortrait_HasMinWidth = 'update_isPortrait_hasMinWidth';
@@ -22,9 +22,9 @@ export class EaMapButtonsContainer extends MapButtonsContainer {
 			isPortrait: false,
 			hasMinWidth: false
 		});
-        }
-        
-        
+	}
+
+
 	update(type, data, model) {
 		switch (type) {
 			case Update_IsOpen:
@@ -48,10 +48,10 @@ export class EaMapButtonsContainer extends MapButtonsContainer {
 		</style>
 		`;
 	}
-        
+
 
 	createView(model) {
-            
+
 		const { isFetching, isPortrait, hasMinWidth, isOpen } = model;
 
 		const getOrientationClass = () => {
@@ -73,11 +73,11 @@ export class EaMapButtonsContainer extends MapButtonsContainer {
             </div>			            
         `;
 	}
-        
-//        //    Erweiterung des CSS Imports um EAB spezifische Style definitionen
-//        defaultCss() {
-//            return html`${this.extendedCss()} ${super.defaultCss()}`;
-//	}
+
+	//        //    Erweiterung des CSS Imports um EAB spezifische Style definitionen
+	//        defaultCss() {
+	//            return html`${this.extendedCss()} ${super.defaultCss()}`;
+	//	}
 
 	static get tag() {
 		return 'ea-map-button-container';

@@ -23,7 +23,8 @@ describe('fnModuleCommReducer', () => {
 		expect(actual.active).toBeFalse();
 	});
 
-	it('opens and closes the \'module\'', () => { const store = setup();
+	it('opens and closes the \'module\'', () => {
+		const store = setup();
 
 		openFnModuleComm('mixer', window.location.origin, window);
 		expect(store.getState().fnModuleComm.features).toHaveSize(0);

@@ -31,7 +31,7 @@ describe('EAContributon', () => {
 
 		const { embed = false, isTouch = false } = config;
 
-		store = TestUtils.setupStoreAndDi(state, { contribution: contributionReducer, modal: modalReducer, tools: toolsReducer});
+		store = TestUtils.setupStoreAndDi(state, { contribution: contributionReducer, modal: modalReducer, tools: toolsReducer });
 		$injector
 			.registerSingleton('EnvironmentService', {
 				isEmbedded: () => embed,
@@ -39,7 +39,7 @@ describe('EAContributon', () => {
 				isTouch: () => isTouch
 			})
 			.registerSingleton('TranslationService', { translate: (key) => key })
-			.registerSingleton('CoordinateService', coordinateServiceMock)
+			.registerSingleton('CoordinateService', coordinateServiceMock);
 		return TestUtils.render(EAContribution.tag);
 	};
 
@@ -74,7 +74,7 @@ describe('EAContributon', () => {
 
 		it('shows tag location when present', async () => {
 			const expectedCoordinates = [42.0, 24.0];
-			const expectedCoordString = "expected";
+			const expectedCoordString = 'expected';
 			const toLonLatSpy = spyOn(coordinateServiceMock, 'toLonLat').and.returnValue({});
 			spyOn(coordinateServiceMock, 'stringify').and.returnValue(expectedCoordString);
 

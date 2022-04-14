@@ -31,13 +31,13 @@ export const setState = (enabled) => {
 export const toggleTaggingMode = () => {
 	const state = getStore().getState().contribution.active;
 	setState(!state);
-}
+};
 
 
 
 
 /**
- * Set the description 
+ * Set the description
  * @function
  * @param {string} description the description of a drawing
  */
@@ -49,7 +49,7 @@ export const setDescription = (description) => {
 };
 
 /**
- * Set the location. 
+ * Set the location.
  * @function
  */
 export const setLocation = (position) => {
@@ -60,12 +60,12 @@ export const setLocation = (position) => {
 };
 
 /**
- * Set the location. 
+ * Set the location.
  * @function
  */
 export const setTaggingMode = (enabled) => {
 	getStore().dispatch({
 		type: TAGGING_MODE_CHANGED,
-		payload: enabled 
+		payload: enabled
 	});
 };

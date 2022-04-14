@@ -75,9 +75,9 @@ export class Header extends MvuElement {
 	isRenderingSkipped() {
 		return this._environmentService.isEmbedded();
 	}
-        
-        //TODO FittingProvider einführen
-        getViewAttrProvider(model) {
+
+	//TODO FittingProvider einführen
+	getViewAttrProvider(model) {
            	const { isOpen, tabIndex, isFetching, layers, isPortrait, hasMinWidth, hasSearchTerm } = model;
 
 		const showModalInfo = () => {
@@ -165,7 +165,7 @@ export class Header extends MvuElement {
 			input.dispatchEvent(new Event('input'));
 		};
 
-                return { isOpen, tabIndex, isFetching, layers, isPortrait, hasMinWidth, hasSearchTerm,showModalInfo,
+		return { isOpen, tabIndex, isFetching, layers, isPortrait, hasMinWidth, hasSearchTerm, showModalInfo,
 		 getOrientationClass,
 		 getMinWidthClass,
 		 getOverlayClass,
@@ -180,13 +180,13 @@ export class Header extends MvuElement {
 		 openMapLayerTab,
 		 openMiscTab,
 		 clearSearchInput
-                }
-    };
-    
+		};
+	}
+
 	createView(model) {
-            
-            let helper = this.getViewAttrProvider(model);
-            
+
+		const helper = this.getViewAttrProvider(model);
+
 		const translate = (key) => this._translationService.translate(key);
 		return html`
 			<style>${css}</style>

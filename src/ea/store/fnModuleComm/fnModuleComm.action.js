@@ -4,22 +4,22 @@
  */
 
 import { OPEN_MODULE_REQUESTED,
-CHANGE_MODULE_REQUESTED,
-MODULE_RESET_REQUESTED,
-GEOMETRY_ADDED_REQUESTED,
-GEOMETRY_RGEOMETRY_REMOVED,
-ZOOM_EXPAND_REQUESTED,
-ZOOM_REQUESTED,
-ADD_FEATURE_REQUESTED,
-REMOVE_FEATURE_BY_ID_REQUESTED,
-CLEAR_MAP_REQUESTED,
-ADD_LAYER_REQUESTED,
-REMOVE_LAYER_REQUESTED,
-ZOOM_2_EXTENT_REQUESTED,
-ZOOM_N_CENTER_TO_FEATURE_REQUESTED,
-CLICK_IN_MAP_SIMULATION_REQUESTED,
-ACTIVATE_MAPCLICK_REQUESTED,
-CANCEL_MAPCLICK_REQUESTED } from './fnModuleComm.reducer';
+	CHANGE_MODULE_REQUESTED,
+	MODULE_RESET_REQUESTED,
+	GEOMETRY_ADDED_REQUESTED,
+	GEOMETRY_RGEOMETRY_REMOVED,
+	ZOOM_EXPAND_REQUESTED,
+	ZOOM_REQUESTED,
+	ADD_FEATURE_REQUESTED,
+	REMOVE_FEATURE_BY_ID_REQUESTED,
+	CLEAR_MAP_REQUESTED,
+	ADD_LAYER_REQUESTED,
+	REMOVE_LAYER_REQUESTED,
+	ZOOM_2_EXTENT_REQUESTED,
+	ZOOM_N_CENTER_TO_FEATURE_REQUESTED,
+	CLICK_IN_MAP_SIMULATION_REQUESTED,
+	ACTIVATE_MAPCLICK_REQUESTED,
+	CANCEL_MAPCLICK_REQUESTED } from './fnModuleComm.reducer';
 import { EventLike } from '../../../utils/storeUtils';
 import { $injector } from '../../../injection';
 
@@ -42,20 +42,20 @@ const getStore = () => {
 /**
  * Sets the {@link FnModule}.
  * @param {FnModule} module
- * @export const 
+ * @export const
  */
-export const openFnModuleComm = (fnModuleSite, fnModuleDomain, fnModuleWindow,  ) => {
-	console.log( 'openFnModule --> fnModuleSite: ');  console.log( 'fnModuleSite ' + fnModuleSite);
-	console.log( 'fnModuleDomain ' + fnModuleDomain);
-//	console.log('fnModuleWindow' + fnModuleWindow +  'fnModuleDomain' + fnModuleDomain );
+export const openFnModuleComm = (fnModuleSite, fnModuleDomain, fnModuleWindow) => {
+	console.log('openFnModule --> fnModuleSite: '); console.log('fnModuleSite ' + fnModuleSite);
+	console.log('fnModuleDomain ' + fnModuleDomain);
+	//	console.log('fnModuleWindow' + fnModuleWindow +  'fnModuleDomain' + fnModuleDomain );
 	getStore().dispatch({
 		type: OPEN_MODULE_REQUESTED,
-		payload: { fnModuleSite: fnModuleSite, fnModuleWindow: fnModuleWindow, fnModuleDomain: fnModuleDomain}
+		payload: { fnModuleSite: fnModuleSite, fnModuleWindow: fnModuleWindow, fnModuleDomain: fnModuleDomain }
 	});
 };
 /**
  * Removes the {@link FnModule}
- * @export const 
+ * @export const
  */
 export const removeFnModule = () => {
 	getStore().dispatch({
@@ -66,7 +66,7 @@ export const removeFnModule = () => {
 
 /**
  * Removes active fnModuleComm  {@link FnModule}
- * @export const 
+ * @export const
  */
 export const closeFnModules = () => {
 	getStore().dispatch({
@@ -76,7 +76,7 @@ export const closeFnModules = () => {
 	});
 };
 
-export const  addGeometry= (geojson) => {
+export const addGeometry = (geojson) => {
 	getStore().dispatch({
 		type: GEOMETRY_ADDED_REQUESTED,
 		payload: geojson
@@ -84,7 +84,7 @@ export const  addGeometry= (geojson) => {
 }
 ;
 
-export const  removeGeometry= (geojson) => {
+export const removeGeometry = (geojson) => {
 	getStore().dispatch({
 		type: GEOMETRY_REMOVE_REQUESTED,
 		payload: geojson
@@ -92,14 +92,14 @@ export const  removeGeometry= (geojson) => {
 }
 ;
 
-export const  zoomExpandToVectorGroup = (group ) => {
+export const zoomExpandToVectorGroup = (group) => {
 	getStore().dispatch({
 		type: ZOOM_EXPAND_REQUESTED,
 		payload: group
 	});
 }
 ;
-export const  zoomToLevel= ( group ) => {
+export const zoomToLevel = (group) => {
 	getStore().dispatch({
 		type: ZOOM_REQUESTED,
 		payload: group
@@ -107,7 +107,7 @@ export const  zoomToLevel= ( group ) => {
 }
 ;
 
-export const  addFeature= (feature) => {
+export const addFeature = (feature) => {
 	getStore().dispatch({
 		type: ADD_FEATURE_REQUESTED,
 		payload: feature
@@ -115,7 +115,7 @@ export const  addFeature= (feature) => {
 }
 ;
 
-export const  removeFeature= (feature) => {
+export const removeFeature = (feature) => {
 	getStore().dispatch({
 		type: REMOVE_FEATURE_REQUESTED,
 		payload: feature
@@ -124,7 +124,7 @@ export const  removeFeature= (feature) => {
 }
 ;
 
-export const  clearMap= (layerId) => {
+export const clearMap = (layerId) => {
 	getStore().dispatch({
 		type: CLEAR_MAP_REQUESTED,
 		payload: layerId
@@ -132,7 +132,7 @@ export const  clearMap= (layerId) => {
 }
 ;
 
-export const  addLayer= (layerId) => {
+export const addLayer = (layerId) => {
 	getStore().dispatch({
 		type: ADD_LAYER_REQUESTED,
 		payload: layerId
@@ -140,7 +140,7 @@ export const  addLayer= (layerId) => {
 }
 ;
 
-export const  clearLayer= (layerId) => {
+export const clearLayer = (layerId) => {
 	getStore().dispatch({
 		type: REMOVE_LAYER_REQUESTED,
 		payload: layerId
@@ -148,7 +148,7 @@ export const  clearLayer= (layerId) => {
 }
 ;
 
-export const  zoom2Extent= (extent) => {
+export const zoom2Extent = (extent) => {
 	getStore().dispatch({
 		type: ZOOM_2_EXTENT_REQUESTED,
 		payload: extent
@@ -156,7 +156,7 @@ export const  zoom2Extent= (extent) => {
 }
 ;
 
-export const  zoomAndCenter= (feature) => {
+export const zoomAndCenter = (feature) => {
 	getStore().dispatch({
 		type: ZOOM_N_CENTER_TO_FEATURE_REQUESTED,
 		payload: feature
@@ -165,14 +165,14 @@ export const  zoomAndCenter= (feature) => {
 }
 ;
 
-export const clickInMap= (geometry) => {
+export const clickInMap = (geometry) => {
 	getStore().dispatch({
 		type: CLICK_IN_MAP_SIMULATION_REQUESTED,
 		payload: geometry
 	});
 }
 ;
-export const  activateObserverForMapClick= (id) => {
+export const activateObserverForMapClick = (id) => {
 	getStore().dispatch({
 		type: ACTIVATE_MAPCLICK_REQUESTED,
 		payload: id
@@ -180,10 +180,10 @@ export const  activateObserverForMapClick= (id) => {
 }
 ;
 //cancelation of waiting for mapclick
-export const  cancelMapClickObserver = () => {
+export const cancelMapClickObserver = () => {
 	getStore().dispatch({
 		type: CANCEL_MAPCLICK_REQUESTED,
 		payload: new EventLike()
 	});
-}
+};
 

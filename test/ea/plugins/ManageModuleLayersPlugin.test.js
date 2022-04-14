@@ -32,7 +32,7 @@ describe('GeolocationPlugin', () => {
 		expect(store.getState().layers.active.length).toBe(1);
 		expect(store.getState().layers.active[0].id).toBe(CONTRIBUTION_LAYER_ID);
 
-		setCurrentTool("something");
+		setCurrentTool('something');
 
 		expect(store.getState().layers.active.length).toBe(0);
 	});

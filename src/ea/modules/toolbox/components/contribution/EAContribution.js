@@ -10,7 +10,7 @@ export class EAContribution extends MvuElement {
 
 	constructor() {
 		super({
-			description: "",
+			description: '',
 			isPortrait: false,
 			hasMinWidth: false,
 			active: false
@@ -19,7 +19,7 @@ export class EAContribution extends MvuElement {
 		const {
 			EnvironmentService: environmentService,
 			TranslationService: translationService,
-			CoordinateService: coordinateService,
+			CoordinateService: coordinateService
 		}
 			= $injector.inject('EnvironmentService', 'TranslationService', 'CoordinateService');
 
@@ -70,7 +70,7 @@ export class EAContribution extends MvuElement {
 		const onClickFinish = () => {
 			alert(JSON.stringify(model));
 			setTaggingMode(false);
-		}
+		};
 
 		const getCoordinatesString = () => {
 			return model.position ? this._coordinateService.stringify(this._coordinateService.toLonLat(model.position), 4326, { digits: 5 }) : '';

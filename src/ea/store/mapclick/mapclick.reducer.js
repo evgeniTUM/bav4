@@ -20,12 +20,12 @@ export const initialState = {
 
 export const mapclickReducer = (state = initialState, action) => {
 
-//	const createIdIfMissing = features => features.map(f => {
-//		if (!f.id) {
-//			f.id = createUniqueId();
-//		}
-//		return f;
-//	});
+	//	const createIdIfMissing = features => features.map(f => {
+	//		if (!f.id) {
+	//			f.id = createUniqueId();
+	//		}
+	//		return f;
+	//	});
 
 	const { type, payload } = action;
 	switch (type) {
@@ -35,8 +35,8 @@ export const mapclickReducer = (state = initialState, action) => {
 
 			return {
 				...state,
-				listener_id: payload, 
-				active:true
+				listener_id: payload,
+				active: true
 			};
 		}
 		case MAPCLICK_DEACTIVATE: {
@@ -44,7 +44,7 @@ export const mapclickReducer = (state = initialState, action) => {
 			return {
 				...state,
 				coordinate: null,
-				active:false
+				active: false
 			};
 		}
 	}

@@ -19,20 +19,20 @@ export class EaHeader extends Header {
 		super();
 		const { EnvironmentService: environmentService, TranslationService: translationService } = $injector.inject('EnvironmentService', 'TranslationService');
 		this._translationService = translationService;
-        }
-        
-        extendedCss() {
+	}
+
+	extendedCss() {
 		return html`
 		<style>
 		${css}
 		</style>
 		`;
 	}
-        
+
 	createView(model) {
-            
-                const viewAttrProvider = super.getViewAttrProvider(model);
-                
+
+		const viewAttrProvider = super.getViewAttrProvider(model);
+
 		const openExtendedTab = () => {
 			setTab(TabId.EXTENSION);
 			openMainMenu();
@@ -106,12 +106,12 @@ export class EaHeader extends Header {
 		`;
 	}
 
-//    Erweiterung des CSS Imports um EAB spezifische Style definitionen
-        defaultCss() {
-            return html`${this.extendedCss()} ${super.defaultCss()}`;
+	//    Erweiterung des CSS Imports um EAB spezifische Style definitionen
+	defaultCss() {
+		return html`${this.extendedCss()} ${super.defaultCss()}`;
 	}
-        
-        static get tag() {
+
+	static get tag() {
 		return 'ea-header';
 	}
 }
