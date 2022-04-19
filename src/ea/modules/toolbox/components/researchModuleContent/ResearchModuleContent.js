@@ -1,9 +1,9 @@
 import { html } from 'lit-html';
 import { AbstractModuleContent } from '../moduleContainer/AbstractModuleContent';
-import css from './redesignModuleContent.css';
+import css from './researchModuleContent.css';
 
 
-export class RedesignModuleContent extends AbstractModuleContent {
+export class ResearchModuleContent extends AbstractModuleContent {
 
 	/**
 	* @override
@@ -12,17 +12,17 @@ export class RedesignModuleContent extends AbstractModuleContent {
 		const translate = (key) => this._translationService.translate(key);
 
 		return {
-			iframe: 'myRedesignIFrame',
-			site: 'redesign',
-			frame_id: 'redesign_iframe',
-			header_title: translate('toolbox_redesign_header')
+			iframe: 'myResearchIFrame',
+			site: 'recherche',
+			frame_id: 'research_iframe',
+			header_title: translate('toolbox_recherche_header')
 
 		};
 	}
 
 
 	static get tag() {
-		return 'ea-module-redesign-content';
+		return 'ea-module-research-content';
 	}
 
 	/**
