@@ -1,14 +1,9 @@
 import { html } from 'lit-html';
 import { AbstractModuleContent } from '../moduleContainer/AbstractModuleContent';
-import css from './mixerModuleContent.css';
+import css from './researchModuleContent.css';
 
 
-
-/**
- * @class
- * @author kunze_ge
- */
-export class MixerModuleContent extends AbstractModuleContent {
+export class ResearchModuleContent extends AbstractModuleContent {
 
 	/**
 	* @override
@@ -17,17 +12,17 @@ export class MixerModuleContent extends AbstractModuleContent {
 		const translate = (key) => this._translationService.translate(key);
 
 		return {
-			iframe: 'myMixerIFrame',
-			site: 'mixer',
-			frame_id: 'mixer_iframe',
-			header_title: translate('toolbox_mixer_header')
+			iframe: 'myResearchIFrame',
+			site: 'recherche',
+			frame_id: 'research_iframe',
+			header_title: translate('toolbox_recherche_header')
 
 		};
 	}
 
 
 	static get tag() {
-		return 'ea-module-mixer-content';
+		return 'ea-module-research-content';
 	}
 
 	/**

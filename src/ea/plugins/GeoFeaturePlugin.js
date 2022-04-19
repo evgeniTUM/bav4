@@ -41,12 +41,10 @@ export class GeoFeaturePlugin extends BaPlugin {
 			if (active) {
 				console.log('check draggable for Features');
 				console.log(state);
-				console.error('call addLayer for GeoFeatures');
 				const label = 'Verwaltungseinheiten';
 				addLayer(GEO_FEATURE_LAYER_ID, { label: label, constraints: { alwaysTop: true } });
 			}
 			else {
-				console.error('remove Features in Layer ' + GEO_FEATURE_LAYER_ID);
 				removeLayer(GEO_FEATURE_LAYER_ID);
 			}
 		};

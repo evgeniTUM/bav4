@@ -39,9 +39,6 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 		this._unsubscribeMapClickObserver = () => {};
 		this._listeners = [];
 		this._mapClickListener;
-
-
-		console.error('OlGeoFeatureLayerHandler was created');
 	}
 
 	/**
