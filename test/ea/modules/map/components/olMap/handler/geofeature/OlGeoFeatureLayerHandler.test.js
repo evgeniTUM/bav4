@@ -6,7 +6,9 @@ import { OlGeoFeatureLayerHandler } from '../../../../../../../../src/ea/modules
 import { GEO_FEATURE_LAYER_ID } from '../../../../../../../../src/ea/plugins/GeoFeaturePlugin';
 import { addGeoFeatures } from '../../../../../../../../src/ea/store/geofeature/geofeature.action';
 import { geofeatureReducer } from '../../../../../../../../src/ea/store/geofeature/geofeature.reducer';
+import { mapclickReducer } from '../../../../../../../../src/ea/store/mapclick/mapclick.reducer';
 import { $injector } from '../../../../../../../../src/injection';
+import { FIT_REQUESTED, positionReducer } from '../../../../../../../../src/store/position/position.reducer';
 import { TestUtils } from '../../../../../../../test-utils.js';
 
 
@@ -15,10 +17,19 @@ describe('OlGeoFeatureLayerHandler', () => {
 
 	const translationServiceMock = { translate: (key) => key };
 	const coordinateServiceMock = {};
-	const mapServiceMock = {};
+	const mapServiceMock = { getSrid: () => 4326 };
+
+	const storeActions = [];
 
 	const setup = (state) => {
-		const store = TestUtils.setupStoreAndDi(state, { geofeature: geofeatureReducer });
+		storeActions.length = 0;
+
+		const store = TestUtils.setupStoreAndDi(state, {
+			spyReducer: (state, action) => storeActions.push(action),
+			geofeature: geofeatureReducer,
+			mapclick: mapclickReducer,
+			position: positionReducer
+		});
 		$injector
 			.registerSingleton('TranslationService', translationServiceMock)
 			.registerSingleton('CoordinateService', coordinateServiceMock)
@@ -71,11 +82,30 @@ describe('OlGeoFeatureLayerHandler', () => {
 			setup();
 
 			const classUnderTest = new OlGeoFeatureLayerHandler();
-			const layer = classUnderTest.activate(map);
+			classUnderTest.activate(map);
 
-			addGeoFeatures({ name: 'i am a feauture' });
+			const geojson = {
+				data: {
+					features: [
+						{
+							type: 'Feature',
+							geometry: {
+								'type': 'Polygon',
+								'coordinates': [[
+									[1, 2],
+									[3, 4],
+									[5, 6],
+									[7, 8]
+								]]
+							}
+						}]
+				}
+			};
+			addGeoFeatures(geojson);
 
-
+			const setFitActions = storeActions.filter(a => a.type === FIT_REQUESTED);
+			expect(setFitActions).toHaveSize(1);
+			expect(setFitActions[0].payload._payload.extent).toEqual([1, 2, 7, 8]);
 		});
 
 	});
