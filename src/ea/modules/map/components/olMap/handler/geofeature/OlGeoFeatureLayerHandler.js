@@ -1,19 +1,14 @@
-import { OlLayerHandler } from '../../../../../../../modules/map/components/olMap/handler/OlLayerHandler';
+import Feature from 'ol/Feature';
+import GeoJSON from 'ol/format/GeoJSON';
+import { Vector as VectorLayer } from 'ol/layer';
+import { unByKey } from 'ol/Observable';
+import { Vector as VectorSource } from 'ol/source';
 import { $injector } from '../../../../../../../injection';
+import { OlLayerHandler } from '../../../../../../../modules/map/components/olMap/handler/OlLayerHandler';
+import { setFit } from '../../../../../../../store/position/position.action';
 import { observe } from '../../../../../../../utils/storeUtils';
 import { GEO_FEATURE_LAYER_ID } from '../../../../../../plugins/GeoFeaturePlugin';
-import Feature from 'ol/Feature';
-import { createAnimation, highlightAnimatedCoordinateFeatureStyleFunction, highlightCoordinateFeatureStyleFunction, highlightGeometryFeatureStyleFunction, highlightTemporaryCoordinateFeatureStyleFunction, highlightTemporaryGeometryFeatureStyleFunction } from './styleUtils';
-import { HighlightFeatureTypes, HighlightGeometryTypes } from '../../../../../../../store/highlight/highlight.action';
-import { Vector as VectorSource } from 'ol/source';
-import { Vector as VectorLayer } from 'ol/layer';
-import { Point } from 'ol/geom';
-import { GeoFeatureTypes, GeoFeatureGeometryTypes } from '../../../../../../store/geofeature/geofeature.action';
 import { deactivateMapClick } from '../../../../../../store/mapclick/mapclick.action';
-import WKT from 'ol/format/WKT';
-import GeoJSON from 'ol/format/GeoJSON';
-import { unByKey } from 'ol/Observable';
-import MapBrowserEventType from 'ol/MapBrowserEventType';
 
 
 /**
@@ -36,7 +31,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 		};
 		this._vectorLayer = null;
 
-		this._unsubscribeMapClickObserver = () => {};
+		this._unsubscribeMapClickObserver = () => { };
 		this._listeners = [];
 		this._mapClickListener;
 	}
@@ -127,7 +122,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 		unByKey(this._listeners);
 
 		this._unsubscribeMapClickObserver();
-		this._unsubscribeMapClickObserver = () => {};
+		this._unsubscribeMapClickObserver = () => { };
 
 		if (this._mapClickListener) {
 			unByKey(this._mapClickListener);
@@ -185,6 +180,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 			const georesources = features;
 			this._vectorLayer.getSource().addFeatures(
 				features.map(this._toOlFeature, this).filter(olFeature => !!olFeature));
+			setFit(this._vectorLayer.getSource().getExtent());
 
 			if (features.length > 0) {
 				this._map.renderSync();
