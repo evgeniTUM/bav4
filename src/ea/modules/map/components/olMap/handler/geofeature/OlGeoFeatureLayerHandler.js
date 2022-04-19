@@ -176,8 +176,6 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 				return;
 			}
 
-			const { StyleService: styleService } = $injector.inject('StyleService');
-			const georesources = features;
 			this._vectorLayer.getSource().addFeatures(
 				features.map(this._toOlFeature, this).filter(olFeature => !!olFeature));
 			setFit(this._vectorLayer.getSource().getExtent());
