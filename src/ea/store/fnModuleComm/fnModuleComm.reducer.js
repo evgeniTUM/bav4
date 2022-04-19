@@ -1,3 +1,5 @@
+import { createUniqueId } from '../../../utils/numberUtils';
+
 export const OPEN_MODULE_REQUESTED = 'fnModuleComm/open';
 export const CHANGE_MODULE_REQUESTED = 'fnModuleComm/change';
 export const MODULE_RESET_REQUESTED = 'fnModuleComm/reset';
@@ -50,7 +52,6 @@ export const initialState = {
 
 const openModule = (state, payload) => {
 	const { fnModuleSite, fnModuleWindow, fnModuleDomain } = payload;
-	console.log('openModule --> reducer: '); console.log('fnModuleSite ' + fnModuleSite);
 	return {
 		...state,
 		fnModuleSite,
@@ -60,7 +61,7 @@ const openModule = (state, payload) => {
 	};
 
 };
-const closeModule = (state, payload) => {
+const closeModule = (state) => {
 //	const {fnModuleSite, fnModuleWindow, fnModuleDomain } = payload;
 
 	return {
@@ -102,7 +103,7 @@ export const fnModuleCommReducer = (state = initialState, action) => {
 		case GEOMETRY_ADDED_REQUESTED:
 		{
 			const geometry = [...state.geometry, ...createIdIfMissing(payload)];
-			const active = !!features.length;
+			const active = !!geometry .length;
 			return {
 				...state,
 				geometry: geometry,
@@ -184,18 +185,6 @@ export const fnModuleCommReducer = (state = initialState, action) => {
 		{
 			const active = !!payload;
 			return { state, fnModuleComm: payload, active: active };
-		}
-
-		case CHANGE_MODULE_REQUESTED:
-		{
-
-			const active = !!payload;
-
-			return {
-				state,
-				fnModuleComm: payload,
-				active: active
-			};
 		}
 	}
 

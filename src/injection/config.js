@@ -74,7 +74,7 @@ $injector
 	.registerModule(mapModule)
 	.registerModule(topicsModule);
 //Import Energieatlas Plugins für Erweiterung muss nach der registrierung der services erfolgen
-import * as eaConfig from '../ea/injection/eaConfig';
+import '../ea/injection/eaConfig';
 
 $injector.ready();
 

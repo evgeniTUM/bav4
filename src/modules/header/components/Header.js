@@ -78,7 +78,7 @@ export class Header extends MvuElement {
 
 	//TODO FittingProvider einführen
 	getViewAttrProvider(model) {
-           	const { isOpen, tabIndex, isFetching, layers, isPortrait, hasMinWidth, hasSearchTerm } = model;
+		const { isOpen, tabIndex, isFetching, layers, isPortrait, hasMinWidth, hasSearchTerm } = model;
 
 		const showModalInfo = () => {
 			openModal('Showcase', html`<ba-showcase>`);
@@ -165,21 +165,22 @@ export class Header extends MvuElement {
 			input.dispatchEvent(new Event('input'));
 		};
 
-		return { isOpen, tabIndex, isFetching, layers, isPortrait, hasMinWidth, hasSearchTerm, showModalInfo,
-		 getOrientationClass,
-		 getMinWidthClass,
-		 getOverlayClass,
-		 getAnimatedBorderClass,
-		 getActiveClass,
-		 getIsClearClass,
-		 layerCount,
-		 onInputFocus,
-		 onInput,
-		 onInputBlur,
-		 openTopicsTab,
-		 openMapLayerTab,
-		 openMiscTab,
-		 clearSearchInput
+		return {
+			isOpen, tabIndex, isFetching, layers, isPortrait, hasMinWidth, hasSearchTerm, showModalInfo,
+			getOrientationClass,
+			getMinWidthClass,
+			getOverlayClass,
+			getAnimatedBorderClass,
+			getActiveClass,
+			getIsClearClass,
+			layerCount,
+			onInputFocus,
+			onInput,
+			onInputBlur,
+			openTopicsTab,
+			openMapLayerTab,
+			openMiscTab,
+			clearSearchInput
 		};
 	}
 

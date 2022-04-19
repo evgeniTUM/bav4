@@ -52,7 +52,7 @@ export class EaMapButtonsContainer extends MapButtonsContainer {
 
 	createView(model) {
 
-		const { isFetching, isPortrait, hasMinWidth, isOpen } = model;
+		const { isPortrait, hasMinWidth } = model;
 
 		const getOrientationClass = () => {
 			return isPortrait ? 'is-portrait' : 'is-landscape';

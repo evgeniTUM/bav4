@@ -2,9 +2,8 @@
  * Action creators for adding external feature vectors.
  * @module highlight/action
  */
-import { EventLike } from '../../../utils/storeUtils';
-import { MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE } from './mapclick.reducer';
 import { $injector } from '../../../injection';
+import { MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE } from './mapclick.reducer';
 
 
 /**
@@ -18,9 +17,6 @@ import { $injector } from '../../../injection';
  * @typedef {Object} Coordinate
  * @property {Coordinate}
  */
-
-
-const defaultProperties = { coordinate: null, active: false };
 
 
 const getStore = () => {

@@ -1,6 +1,4 @@
-import { html } from 'lit-html';
 import { AbstractModuleContent } from '../moduleContainer/AbstractModuleContent';
-import css from './redesignModuleContent.css';
 
 
 export class RedesignModuleContent extends AbstractModuleContent {
@@ -23,17 +21,5 @@ export class RedesignModuleContent extends AbstractModuleContent {
 
 	static get tag() {
 		return 'ea-module-redesign-content';
-	}
-
-	/**
-	* @override
-	*/
-	defaultCss() {
-		return html`
-		${super.defaultCss()}
-		<style>
-		    ${css}
-		</style>
-		`;
 	}
 }

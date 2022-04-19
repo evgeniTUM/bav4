@@ -1,6 +1,4 @@
-import { html } from 'lit-html';
 import { AbstractModuleContent } from '../moduleContainer/AbstractModuleContent';
-import css from './researchModuleContent.css';
 
 
 export class ResearchModuleContent extends AbstractModuleContent {
@@ -25,15 +23,4 @@ export class ResearchModuleContent extends AbstractModuleContent {
 		return 'ea-module-research-content';
 	}
 
-	/**
-	* @override
-	*/
-	defaultCss() {
-		return html`
-		${super.defaultCss()}
-		<style>
-		    ${css}
-		</style>
-		`;
-	}
 }

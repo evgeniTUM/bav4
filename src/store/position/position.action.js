@@ -2,9 +2,9 @@
  * Action creators to change/update the properties concerning the zoom level and center of a map.
  * @module position/action
  */
-import { ZOOM_CHANGED, CENTER_CHANGED, ZOOM_CENTER_CHANGED, FIT_REQUESTED, ROTATION_CHANGED, LIVE_ROTATION_CHANGED, ZOOM_CENTER_ROTATION_CHANGED, UPDATE_SIZE } from './position.reducer';
 import { $injector } from '../../injection';
 import { EventLike } from '../../utils/storeUtils';
+import { CENTER_CHANGED, FIT_REQUESTED, LIVE_ROTATION_CHANGED, ROTATION_CHANGED, UPDATE_SIZE, ZOOM_CENTER_CHANGED, ZOOM_CENTER_ROTATION_CHANGED, ZOOM_CHANGED } from './position.reducer';
 
 
 /**
@@ -162,7 +162,6 @@ export const setFit = (extent, options = {}) => {
  * @function
  */
 export const updateSize = (sliderValue) => {
-	console.log('updateSize dispatch');
 	getStore().dispatch({
 		type: UPDATE_SIZE,
 		payload: sliderValue

@@ -141,11 +141,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 	}
 
 	_toOlFeature(feature) {
-		console.log('_toOlFeature');
-		//		console.log(feature);
-
 		const geojson = feature.data.features[0];
-		console.log(geojson);
 		const _features = new GeoJSON().readFeature(geojson);
 		_features.getGeometry().transform('EPSG:' + 4326, 'EPSG:' + this.mapService.getSrid());
 		_features.set('srid', 4326, true);
@@ -169,10 +165,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 		const onChange = ({ features }) => {
 
-			console.log('OlGeoFeatureLayerHandler onChange --> features');
-			console.log(features);
-
-			if (features == undefined || features.length == 0) {
+			if (features === undefined || features.length === 0) {
 				return;
 			}
 

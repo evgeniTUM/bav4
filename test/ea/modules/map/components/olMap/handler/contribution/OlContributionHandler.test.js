@@ -2,10 +2,9 @@ import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { fromLonLat } from 'ol/proj';
 import { OSM, TileDebug } from 'ol/source';
-import { $injector } from '../../../../../../../../src/injection';
 import { CONTRIBUTION_LAYER_ID, OlContributionHandler } from '../../../../../../../../src/ea/modules/map/components/olMap/handler/contribution/OlContributionHandler';
-import { setTaggingMode } from '../../../../../../../../src/ea/store/contribution/contribution.action';
 import { contributionReducer, initialState } from '../../../../../../../../src/ea/store/contribution/contribution.reducer';
+import { $injector } from '../../../../../../../../src/injection';
 import { TestUtils } from '../../../../../../../test-utils.js';
 
 
@@ -59,19 +58,6 @@ describe('OlContributionHandler', () => {
 
 			const classUnderTest = new OlContributionHandler();
 			const layer = classUnderTest.activate(map);
-
-			expect(layer).toBeTruthy();
-		});
-
-		it('adds a tagging feature when tagging mode is active', async () => {
-			const map = setupMap();
-			setup();
-
-			const classUnderTest = new OlContributionHandler();
-			const layer = classUnderTest.activate(map);
-
-			setTaggingMode(true);
-			const features = await layer.getFeatures();
 
 			expect(layer).toBeTruthy();
 		});

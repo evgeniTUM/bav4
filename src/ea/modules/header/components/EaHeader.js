@@ -17,7 +17,7 @@ export class EaHeader extends Header {
 
 	constructor() {
 		super();
-		const { EnvironmentService: environmentService, TranslationService: translationService } = $injector.inject('EnvironmentService', 'TranslationService');
+		const { TranslationService: translationService } = $injector.inject('TranslationService');
 		this._translationService = translationService;
 	}
 

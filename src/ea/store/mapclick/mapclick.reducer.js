@@ -1,4 +1,3 @@
-import { createUniqueId } from '../../../utils/numberUtils';
 export const MAPCLICK_ACTIVATE = 'mapclick/activate';
 export const MAPCLICK_DEACTIVATE = 'mapclick/deactivate';
 
@@ -30,8 +29,6 @@ export const mapclickReducer = (state = initialState, action) => {
 	const { type, payload } = action;
 	switch (type) {
 		case MAPCLICK_ACTIVATE: {
-
-			const active = !!state.active;
 
 			return {
 				...state,

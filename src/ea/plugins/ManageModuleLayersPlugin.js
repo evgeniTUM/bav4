@@ -23,7 +23,6 @@ export class ManageModuleLayersPlugin extends BaPlugin {
 			switch (this._currentTool) {
 				case EAContribution.tag:
 					removeLayer(CONTRIBUTION_LAYER_ID);
-					console.log('removing');
 					break;
 			}
 
