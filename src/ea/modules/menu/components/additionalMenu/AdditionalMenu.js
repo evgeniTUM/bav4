@@ -1,13 +1,13 @@
 import { html } from 'lit-html';
+import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
-import css from './additionalMenu.css';
+import { setCurrentTool } from '../../../../../store/tools/tools.action';
+import { toggleTaggingMode } from '../../../../store/contribution/contribution.action';
 import { EAContribution } from '../../../toolbox/components/contribution/EAContribution';
 import { MixerModuleContent } from '../../../toolbox/components/mixerModuleContent/MixerModuleContent';
 import { RedesignModuleContent } from '../../../toolbox/components/redesignModuleContent/RedesignModuleContent';
-import { setCurrentTool, ToolId } from '../../../../../store/tools/tools.action';
-import { $injector } from '../../../../../injection';
-import { toggleTaggingMode } from '../../../../store/contribution/contribution.action';
 import { ResearchModuleContent } from '../../../toolbox/components/researchModuleContent/ResearchModuleContent';
+import css from './additionalMenu.css';
 
 
 const Update_IsOpen = 'update_isOpen';
@@ -62,18 +62,10 @@ export class AdditionalMenu extends MvuElement {
 	*/
 	createView(model) {
 
-		const { isFetching, isPortrait, hasMinWidth, isOpen } = model;
+		const { isPortrait } = model;
 
 		const getOrientationClass = () => {
 			return isPortrait ? 'is-portrait' : 'is-landscape';
-		};
-
-		const getMinWidthClass = () => {
-			return hasMinWidth ? 'is-desktop' : 'is-tablet';
-		};
-
-		const getOverlayClass = () => {
-			return isOpen ? 'is-open' : '';
 		};
 
 		const toggleTool = (id) => {

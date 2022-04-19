@@ -1,7 +1,5 @@
-import { html, nothing } from 'lit-html';
 import { $injector } from '../../../../../injection';
-import { TopicsContentPanel, TopicsContentPanelIndex } from '../../../../../modules/topics/components/menu/TopicsContentPanel';
-import css from '../../../../../modules/topics/components/menu/topicsContentPanel.css';
+import { TopicsContentPanel } from '../../../../../modules/topics/components/menu/TopicsContentPanel';
 
 
 /**
@@ -12,8 +10,8 @@ export class EaTopicsContentPanel extends TopicsContentPanel {
 
 	constructor() {
 		super();
-		const { TopicsService: topicsService, TranslationService: translationService }
-			= $injector.inject('TopicsService', 'TranslationService');
+		const { TopicsService: topicsService }
+			= $injector.inject('TopicsService');
 		this._topicsService = topicsService;
 		//		this._translationService = translationService;
 	}
@@ -45,8 +43,6 @@ export class EaTopicsContentPanel extends TopicsContentPanel {
 	 * @override
 	 */
 	createViewHelper(state) {
-		const { currentTopicId, topicsReady, contentIndex } = state;
-
 		const viewHelper = super.createViewHelper(state) ;
 
 		const renderTopicStyle = (topic) => {

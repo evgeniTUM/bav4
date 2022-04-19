@@ -35,7 +35,7 @@ export class AbstractModuleContent extends MvuElement {
 		throw new TypeError('Class has to override method \'getConfig\'');
 	}
 
-	createView(state) {
+	createView() {
 		this._moduleDomain = this._configService.getValueAsPath('MODULE_BACKEND_URL');
 		this._parameter = [];
 		this._moduleRequestUrl = this._moduleDomain + this.getConfig().site + '?' + this._parameter;
@@ -59,7 +59,7 @@ export class AbstractModuleContent extends MvuElement {
 
 	async asyncInitialization(site, domain, pWindow) {
 		try {
-			const myPromise = new Promise(function (resolve) {
+			new Promise(function () {
 				setTimeout(function () {
 					openFnModuleComm(site, domain, pWindow);
 				}, 1000);
@@ -71,22 +71,16 @@ export class AbstractModuleContent extends MvuElement {
 		}
 	}
 
-	callModul(first) {
+	callModul() {
 
 		const ifrm = this.shadowRoot.getElementById(this.getConfig().frame_id);
 		const myWindow = ifrm.contentWindow;
 		const agent = this;
 		const site = this.getConfig().site;
 
-		ifrm.onload = function () {
+		ifrm.onload = async function () {
 			try {
-				agent.asyncInitialization(site, agent._moduleDomain, myWindow).then(function (data) {
-					// success
-					return true;
-				}, function (errData) {
-					// error
-					console.error('errData mixerDirective' + errData);
-				});
+				await agent.asyncInitialization(site, agent._moduleDomain, myWindow);
 			}
 			catch (ex) {
 				// Modul bereits geöffnet

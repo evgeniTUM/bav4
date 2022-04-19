@@ -35,8 +35,6 @@ export const GeoFeatureTypes = Object.freeze({
 	ANIMATED: 2
 });
 
-const defaultProperties = { features: null, active: false };
-
 
 const getStore = () => {
 	const { StoreService: storeService } = $injector.inject('StoreService');

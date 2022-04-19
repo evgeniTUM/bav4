@@ -7,7 +7,7 @@ import { OPEN_MODULE_REQUESTED,
 	CHANGE_MODULE_REQUESTED,
 	MODULE_RESET_REQUESTED,
 	GEOMETRY_ADDED_REQUESTED,
-	GEOMETRY_RGEOMETRY_REMOVED,
+	GEOMETRY_REMOVE_REQUESTED,
 	ZOOM_EXPAND_REQUESTED,
 	ZOOM_REQUESTED,
 	ADD_FEATURE_REQUESTED,
@@ -45,8 +45,6 @@ const getStore = () => {
  * @export const
  */
 export const openFnModuleComm = (fnModuleSite, fnModuleDomain, fnModuleWindow) => {
-	console.log('openFnModule --> fnModuleSite: '); console.log('fnModuleSite ' + fnModuleSite);
-	console.log('fnModuleDomain ' + fnModuleDomain);
 	//	console.log('fnModuleWindow' + fnModuleWindow +  'fnModuleDomain' + fnModuleDomain );
 	getStore().dispatch({
 		type: OPEN_MODULE_REQUESTED,
@@ -86,7 +84,7 @@ export const addGeometry = (geojson) => {
 
 export const removeGeometry = (geojson) => {
 	getStore().dispatch({
-		type: GEOMETRY_REMOVE_REQUESTED,
+		type: REMOVE_FEATURE_BY_ID_REQUESTED,
 		payload: geojson
 	});
 }
@@ -117,7 +115,7 @@ export const addFeature = (feature) => {
 
 export const removeFeature = (feature) => {
 	getStore().dispatch({
-		type: REMOVE_FEATURE_REQUESTED,
+		type: GEOMETRY_REMOVE_REQUESTED,
 		payload: feature
 	});
 //    sendMessageIntern("removefeature", feature);

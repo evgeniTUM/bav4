@@ -35,7 +35,6 @@ describe('EAContributon', () => {
 		$injector
 			.registerSingleton('EnvironmentService', {
 				isEmbedded: () => embed,
-				getWindow: () => windowMock,
 				isTouch: () => isTouch
 			})
 			.registerSingleton('TranslationService', { translate: (key) => key })

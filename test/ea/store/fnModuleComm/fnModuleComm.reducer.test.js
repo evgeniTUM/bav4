@@ -1,4 +1,4 @@
-import { clearLayer, closeFnModules, openFnModuleComm } from '../../../../src/ea/store/fnModuleComm/fnModuleComm.action';
+import { closeFnModules, openFnModuleComm } from '../../../../src/ea/store/fnModuleComm/fnModuleComm.action';
 import { fnModuleCommReducer } from '../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
 import { TestUtils } from '../../../test-utils';
 

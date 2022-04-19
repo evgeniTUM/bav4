@@ -41,9 +41,9 @@ describe('FnModulePlugin', () => {
 		const store = TestUtils.setupStoreAndDi(state, {
 			spyReducer: (state, action) => storeActions.push(action),
 			fnModuleComm: fnModuleCommReducer,
-			geofeature: geofeatureReducer, storeActions,
-			mapclick: mapclickReducer, storeActions,
-			pointer: pointerReducer, storeActions
+			geofeature: geofeatureReducer,
+			mapclick: mapclickReducer,
+			pointer: pointerReducer
 		});
 
 		$injector.registerSingleton(
@@ -84,7 +84,7 @@ describe('FnModulePlugin', () => {
 		const site = 'http://test-site';
 		const domain = 'dom1';
 
-		const setupOpen = async (state) => {
+		const setupOpen = async () => {
 			const store = setup();
 
 			const instanceUnderTest = new FnModulePlugin();
@@ -98,7 +98,7 @@ describe('FnModulePlugin', () => {
 		};
 
 		it('clears geofeature layers on message \'clearLayer\'', async () => {
-			const store = await setupOpen();
+			await setupOpen();
 
 			windowMock.listenerFunction({
 				data: {
@@ -115,7 +115,7 @@ describe('FnModulePlugin', () => {
 		});
 
 		it('adds geofeature on message \'addfeature\'', async () => {
-			const store = await setupOpen();
+			await setupOpen();
 			const geojson = { type: 'i identify as a geojson' };
 
 			windowMock.listenerFunction({

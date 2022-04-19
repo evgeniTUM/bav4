@@ -1,6 +1,4 @@
-import { html } from 'lit-html';
 import { AbstractModuleContent } from '../moduleContainer/AbstractModuleContent';
-import css from './mixerModuleContent.css';
 
 
 
@@ -28,17 +26,5 @@ export class MixerModuleContent extends AbstractModuleContent {
 
 	static get tag() {
 		return 'ea-module-mixer-content';
-	}
-
-	/**
-	* @override
-	*/
-	defaultCss() {
-		return html`
-		${super.defaultCss()}
-		<style>
-		    ${css}
-		</style>
-		`;
 	}
 }

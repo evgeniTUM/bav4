@@ -1,6 +1,6 @@
 import { getUid } from 'ol';
 import { $injector } from '../../../../../injection';
-import { markerStyleFunction, highlightStyleFunction, highlightTemporaryStyleFunction, measureStyleFunction, nullStyleFunction, lineStyleFunction, polygonStyleFunction, textStyleFunction, rgbToHex, markerScaleToKeyword, getStyleArray, geojsonStyleFunction, defaultStyleFunction } from '../olStyleUtils';
+import { defaultStyleFunction, geojsonStyleFunction, getStyleArray, highlightStyleFunction, highlightTemporaryStyleFunction, lineStyleFunction, markerScaleToKeyword, markerStyleFunction, measureStyleFunction, nullStyleFunction, polygonStyleFunction, rgbToHex, textStyleFunction } from '../olStyleUtils';
 
 
 
@@ -272,8 +272,6 @@ export class StyleService {
 		};
 
 		const getStyleTypeFromId = (olFeature) => {
-			console.log('getStyleTypeFromId');
-			console.log(olFeature);
 			const id = olFeature.getId();
 			const drawingType = Object.keys(StyleTypes).find(key => isDrawingStyleType(StyleTypes[key], id));
 			if (drawingType) {

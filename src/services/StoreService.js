@@ -1,31 +1,31 @@
 import { combineReducers, createStore } from 'redux';
-import { positionReducer } from '../store/position/position.reducer';
-import { layersReducer } from '../store/layers/layers.reducer';
-import { $injector } from '../injection';
-import { topicsReducer } from '../store/topics/topics.reducer';
-import { networkReducer } from '../store/network/network.reducer';
-import { searchReducer } from '../store/search/search.reducer';
-import { highlightReducer } from '../store/highlight/highlight.reducer';
-import { notificationReducer } from '../store/notifications/notifications.reducer';
-import { createMediaReducer } from '../store/media/media.reducer';
-import { topicsContentPanelReducer } from '../store/topicsContentPanel/topicsContentPanel.reducer';
-import { modalReducer } from '../store/modal/modal.reducer';
-import { toolsReducer } from '../store/tools/tools.reducer';
-import { drawReducer } from '../store/draw/draw.reducer';
-import { sharedReducer } from '../store/shared/shared.reducer';
-import { geolocationReducer } from '../store/geolocation/geolocation.reducer';
-import { mapReducer } from '../store/map/map.reducer';
-import { measurementReducer } from '../store/measurement/measurement.reducer';
-import { pointerReducer, POINTER_MOVE_CHANGED } from '../store/pointer/pointer.reducer';
-import { mapContextMenuReducer } from '../store/mapContextMenu/mapContextMenu.reducer';
-import { createMainMenuReducer } from '../store/mainMenu/mainMenu.reducer';
-import { featureInfoReducer } from '../store/featureInfo/featureInfo.reducer';
-import { importReducer } from '../store/import/import.reducer';
 import { contributionReducer } from '../ea/store/contribution/contribution.reducer';
-
 import { fnModuleCommReducer } from '../ea/store/fnModuleComm/fnModuleComm.reducer';
 import { geofeatureReducer } from '../ea/store/geofeature/geofeature.reducer';
 import { mapclickReducer } from '../ea/store/mapclick/mapclick.reducer';
+import { $injector } from '../injection';
+import { drawReducer } from '../store/draw/draw.reducer';
+import { featureInfoReducer } from '../store/featureInfo/featureInfo.reducer';
+import { geolocationReducer } from '../store/geolocation/geolocation.reducer';
+import { highlightReducer } from '../store/highlight/highlight.reducer';
+import { importReducer } from '../store/import/import.reducer';
+import { layersReducer } from '../store/layers/layers.reducer';
+import { createMainMenuReducer } from '../store/mainMenu/mainMenu.reducer';
+import { mapReducer } from '../store/map/map.reducer';
+import { mapContextMenuReducer } from '../store/mapContextMenu/mapContextMenu.reducer';
+import { measurementReducer } from '../store/measurement/measurement.reducer';
+import { createMediaReducer } from '../store/media/media.reducer';
+import { modalReducer } from '../store/modal/modal.reducer';
+import { networkReducer } from '../store/network/network.reducer';
+import { notificationReducer } from '../store/notifications/notifications.reducer';
+import { pointerReducer } from '../store/pointer/pointer.reducer';
+import { positionReducer } from '../store/position/position.reducer';
+import { searchReducer } from '../store/search/search.reducer';
+import { sharedReducer } from '../store/shared/shared.reducer';
+import { toolsReducer } from '../store/tools/tools.reducer';
+import { topicsReducer } from '../store/topics/topics.reducer';
+import { topicsContentPanelReducer } from '../store/topicsContentPanel/topicsContentPanel.reducer';
+
 
 
 /**
@@ -69,16 +69,7 @@ export class StoreService {
 			fnModuleComm: fnModuleCommReducer
 		});
 
-		//		this._store = createStore(rootReducer);
-		this._store = createStore(rootReducer,
-			window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(
-				{
-				    // trace: true, // (action) => { return ‘trace as string’; }
-    				// traceLimit: 25,
-					actionsBlacklist: [POINTER_MOVE_CHANGED]
-
-				}
-			));
+		this._store = createStore(rootReducer);
 
 		$injector.onReady(async () => {
 

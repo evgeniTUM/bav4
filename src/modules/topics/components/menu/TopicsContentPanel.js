@@ -63,7 +63,7 @@ export class TopicsContentPanel extends AbstractContentPanel {
 	}
 
 	createViewHelper(state) {
-		const { currentTopicId, topicsReady, contentIndex } = state;
+		const { currentTopicId, contentIndex } = state;
 
 		const topics = this._topicsService.all();
 
@@ -112,7 +112,7 @@ export class TopicsContentPanel extends AbstractContentPanel {
 	 * @override
 	 */
 	createView(state) {
-		const { currentTopicId, topicsReady, contentIndex } = state;
+		const { topicsReady } = state;
 		if (topicsReady) {
 			const helper = this.createViewHelper(state);
 

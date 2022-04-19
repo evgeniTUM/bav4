@@ -56,14 +56,6 @@
 	pointer-events: none;
 }
 
-.slider-container {
-	position: fixed;
-	width: 100vw;
-	z-index: calc(var(--z-mainmenu) + 10);
-	padding: 0 0 0 1em;
-	height: 100%;
-	pointer-events: none;
-}
 .is-landscape .is-full-size .slider-container {
 	display: block;
 }

@@ -1,12 +1,6 @@
-import { $injector } from '../../injection';
+import { addLayer, removeLayer } from '../../store/layers/layers.action';
 import { observe } from '../../utils/storeUtils';
 import { BaPlugin } from './../../plugins/BaPlugin';
-import { addLayer, removeLayer } from '../../store/layers/layers.action';
-import { addGeoFeatures, GeoFeatureTypes, removeGeoFeaturesById } from '../store/geofeature/geofeature.action';
-import { TabId } from '../../store/mainMenu/mainMenu.action';
-import { createUniqueId } from '../../utils/numberUtils';
-import { VectorGeoResource, VectorSourceType } from '../../services/domain/geoResources';
-import { GeoResourceService } from '../../services/GeoResourceService';
 
 
 /**
@@ -34,13 +28,10 @@ export class GeoFeaturePlugin extends BaPlugin {
 	 */
 	async register(store) {
 
-		const geoFeatureId = createUniqueId();
 
-		const onChange = (active, state) => {
+		const onChange = (active) => {
 
 			if (active) {
-				console.log('check draggable for Features');
-				console.log(state);
 				const label = 'Verwaltungseinheiten';
 				addLayer(GEO_FEATURE_LAYER_ID, { label: label, constraints: { alwaysTop: true } });
 			}
@@ -49,22 +40,12 @@ export class GeoFeaturePlugin extends BaPlugin {
 			}
 		};
 
-		const onFeatureShow = (features) => {
-			console.log('show Features or make it draggable');
-			console.log(features);
+		const onFeatureShow = () => {
 
 			//make dragable
 		};
 
-		const onTabChanged = (tab) => {
-			if (tab !== TabId.EXTENSION) {
-				console.log('hide Features');
-				//removeHighlightFeaturesById(FEATURE_INFO_HIGHLIGHT_FEATURE_ID);
-			}
-		};
-
 		observe(store, state => state.geofeature.active, onChange);
 		observe(store, state => state.geofeature.features, onFeatureShow);
-		//		observe(store, store => store.mainMenu.tab, onTabChanged, false);
 	}
 }

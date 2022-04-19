@@ -1,11 +1,10 @@
-import { html, nothing } from 'lit-html';
-import { AdditionalMenu } from '../additionalMenu/AdditionalMenu';
-import { $injector } from '../../../../../injection';
-import css from '../../../../../modules/menu/components/mainMenu/mainMenu.css';
-import { MainMenu } from '../../../../../modules/menu/components/mainMenu/MainMenu';
-import { EaTopicsContentPanel } from '../../../../../ea/modules/topics/components/menu/EaTopicsContentPanel';
-import { TabId, toggle } from '../../../../../store/mainMenu/mainMenu.action';
+import { html } from 'lit-html';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
+import { EaTopicsContentPanel } from '../../../../../ea/modules/topics/components/menu/EaTopicsContentPanel';
+import { $injector } from '../../../../../injection';
+import { MainMenu } from '../../../../../modules/menu/components/mainMenu/MainMenu';
+import { TabId } from '../../../../../store/mainMenu/mainMenu.action';
+import { AdditionalMenu } from '../additionalMenu/AdditionalMenu';
 
 
 /**
@@ -18,10 +17,8 @@ export class EaMainMenu extends MainMenu {
 	constructor() {
 		super();
 		window.console.log('EaMainMenu.constructor');
-		const { EnvironmentService: environmentService, TranslationService: translationService } = $injector.inject('EnvironmentService', 'TranslationService');
+		const { TranslationService: translationService } = $injector.inject('TranslationService');
 		this._translationService = translationService;
-
-
 	}
 
 
