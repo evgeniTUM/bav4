@@ -13,70 +13,70 @@ import { TestUtils } from '../../../../../../../test-utils.js';
 
 describe('OlGeoFeatureLayerHandler', () => {
 
-    const translationServiceMock = { translate: (key) => key };
-    const coordinateServiceMock = {};
-    const mapServiceMock = {};
+	const translationServiceMock = { translate: (key) => key };
+	const coordinateServiceMock = {};
+	const mapServiceMock = {};
 
-    const setup = (state) => {
-        const store = TestUtils.setupStoreAndDi(state, { geofeature: geofeatureReducer });
-        $injector
-            .registerSingleton('TranslationService', translationServiceMock)
-            .registerSingleton('CoordinateService', coordinateServiceMock)
-            .registerSingleton('MapService', mapServiceMock);
-        return store;
-    };
+	const setup = (state) => {
+		const store = TestUtils.setupStoreAndDi(state, { geofeature: geofeatureReducer });
+		$injector
+			.registerSingleton('TranslationService', translationServiceMock)
+			.registerSingleton('CoordinateService', coordinateServiceMock)
+			.registerSingleton('MapService', mapServiceMock);
+		return store;
+	};
 
-    it('has two methods', () => {
-        setup();
-        const handler = new OlGeoFeatureLayerHandler();
-        expect(handler).toBeTruthy();
-        expect(handler.activate).toBeTruthy();
-        expect(handler.deactivate).toBeTruthy();
-        expect(handler.id).toBe(GEO_FEATURE_LAYER_ID);
-    });
+	it('has two methods', () => {
+		setup();
+		const handler = new OlGeoFeatureLayerHandler();
+		expect(handler).toBeTruthy();
+		expect(handler.activate).toBeTruthy();
+		expect(handler.deactivate).toBeTruthy();
+		expect(handler.id).toBe(GEO_FEATURE_LAYER_ID);
+	});
 
-    describe('when activated over olMap', () => {
-        const initialCenter = fromLonLat([11.57245, 48.14021]);
+	describe('when activated over olMap', () => {
+		const initialCenter = fromLonLat([11.57245, 48.14021]);
 
-        const setupMap = () => {
-            const container = document.createElement('div');
-            return new Map({
-                layers: [
-                    new TileLayer({
-                        source: new OSM()
-                    }),
-                    new TileLayer({
-                        source: new TileDebug()
-                    })],
-                target: container,
-                view: new View({
-                    center: initialCenter,
-                    zoom: 1
-                })
-            });
-        };
+		const setupMap = () => {
+			const container = document.createElement('div');
+			return new Map({
+				layers: [
+					new TileLayer({
+						source: new OSM()
+					}),
+					new TileLayer({
+						source: new TileDebug()
+					})],
+				target: container,
+				view: new View({
+					center: initialCenter,
+					zoom: 1
+				})
+			});
+		};
 
-        it('creates a layer to draw', () => {
-            const map = setupMap();
-            setup();
+		it('creates a layer to draw', () => {
+			const map = setupMap();
+			setup();
 
-            const classUnderTest = new OlGeoFeatureLayerHandler();
-            const layer = classUnderTest.activate(map);
+			const classUnderTest = new OlGeoFeatureLayerHandler();
+			const layer = classUnderTest.activate(map);
 
-            expect(layer).toBeTruthy();
-        });
+			expect(layer).toBeTruthy();
+		});
 
-        it('fits the map to the layer when a new feature is added', () => {
-            const map = setupMap();
-            setup();
+		it('fits the map to the layer when a new feature is added', () => {
+			const map = setupMap();
+			setup();
 
-            const classUnderTest = new OlGeoFeatureLayerHandler();
-            const layer = classUnderTest.activate(map);
+			const classUnderTest = new OlGeoFeatureLayerHandler();
+			const layer = classUnderTest.activate(map);
 
-            addGeoFeatures({ name: "i am a feauture" });
+			addGeoFeatures({ name: 'i am a feauture' });
 
 
-        });
+		});
 
-    });
+	});
 });

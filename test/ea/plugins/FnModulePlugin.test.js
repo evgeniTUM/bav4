@@ -22,7 +22,7 @@ describe('FnModulePlugin', () => {
 		}
 	};
 
-	let storeActions = [];
+	const storeActions = [];
 
 	const environmentServiceMock = {
 		getWindow() {

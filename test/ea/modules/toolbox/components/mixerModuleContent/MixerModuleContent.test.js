@@ -11,11 +11,11 @@ window.customElements.define(MixerModuleContent.tag, MixerModuleContent);
 describe('MixerModuleContent', () => {
 	let store;
 
-	let storeActions = [];
+	const storeActions = [];
 
 	const configServiceMock = {
 		getValueAsPath() { }
-	}
+	};
 
 	const setup = async (state) => {
 
@@ -24,11 +24,11 @@ describe('MixerModuleContent', () => {
 		store = TestUtils.setupStoreAndDi(state, {
 			spyReducer: (state, action) => storeActions.push(action),
 			geofeature: geofeatureReducer,
-			fnModuleComm: fnModuleCommReducer 
+			fnModuleComm: fnModuleCommReducer
 		});
 		$injector
 			.registerSingleton('TranslationService', { translate: (key) => key })
-			.registerSingleton('ConfigService', configServiceMock)
+			.registerSingleton('ConfigService', configServiceMock);
 		return TestUtils.render(MixerModuleContent.tag);
 	};
 
