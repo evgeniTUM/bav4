@@ -59,9 +59,9 @@ export class AbstractModuleContent extends MvuElement {
 
 	async asyncInitialization(site, domain, pWindow) {
 		try {
-			let myPromise = new Promise(function (resolve) {
+			const myPromise = new Promise(function (resolve) {
 				setTimeout(function () {
-					openFnModuleComm(site, domain, pWindow)
+					openFnModuleComm(site, domain, pWindow);
 				}, 1000);
 			});
 			return true;
@@ -73,10 +73,10 @@ export class AbstractModuleContent extends MvuElement {
 
 	callModul(first) {
 
-		let ifrm = this.shadowRoot.getElementById(this.getConfig().frame_id);
-		let myWindow = ifrm.contentWindow;
-		let agent = this;
-		let site = this.getConfig().site;
+		const ifrm = this.shadowRoot.getElementById(this.getConfig().frame_id);
+		const myWindow = ifrm.contentWindow;
+		const agent = this;
+		const site = this.getConfig().site;
 
 		ifrm.onload = function () {
 			try {
