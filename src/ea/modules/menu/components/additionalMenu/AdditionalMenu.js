@@ -7,7 +7,7 @@ import { RedesignModuleContent } from '../../../toolbox/components/redesignModul
 import { setCurrentTool, ToolId } from '../../../../../store/tools/tools.action';
 import { $injector } from '../../../../../injection';
 import { toggleTaggingMode } from '../../../../store/contribution/contribution.action';
-import { ResearchModuleContent } from '../../../toolbox/components/researchModuleContent/ReserachModuleContent';
+import { ResearchModuleContent } from '../../../toolbox/components/researchModuleContent/ResearchModuleContent';
 
 
 const Update_IsOpen = 'update_isOpen';
