@@ -1,12 +1,10 @@
-import { nothing } from 'lit-html';
-import { create } from 'ol/transform';
 import { EAContribution } from '../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
 import { MixerModuleContent } from '../../../../../../src/ea/modules/toolbox/components/mixerModuleContent/MixerModuleContent';
 import { ModuleContainer } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/ModuleContainer';
 import { RedesignModuleContent } from '../../../../../../src/ea/modules/toolbox/components/redesignModuleContent/RedesignModuleContent';
 import { ResearchModuleContent } from '../../../../../../src/ea/modules/toolbox/components/researchModuleContent/ResearchModuleContent';
 import { $injector } from '../../../../../../src/injection';
-import { OPEN_CLOSED_CHANGED } from '../../../../../../src/store/mainMenu/mainMenu.reducer';
+import { createMainMenuReducer, OPEN_CLOSED_CHANGED } from '../../../../../../src/store/mainMenu/mainMenu.reducer';
 import { createMediaReducer } from '../../../../../../src/store/media/media.reducer';
 import { setCurrentTool, ToolId } from '../../../../../../src/store/tools/tools.action';
 import { toolsReducer } from '../../../../../../src/store/tools/tools.reducer';
@@ -23,7 +21,7 @@ const modules = [
 ];
 
 
-describe('ModuleContent', () => {
+describe('ModuleContainer', () => {
 	const storeActions = [];
 
 	const setup = async (state) => {
@@ -33,7 +31,8 @@ describe('ModuleContent', () => {
 		TestUtils.setupStoreAndDi(state, {
 			spyReducer: (state, action) => storeActions.push(action),
 			tools: toolsReducer,
-			media: createMediaReducer()
+			media: createMediaReducer(),
+			mainMenu: createMainMenuReducer()
 		});
 		$injector
 			.registerSingleton('TranslationService', { translate: (key) => key })
@@ -77,6 +76,17 @@ describe('ModuleContent', () => {
 		});
 	});
 
+	it('toggles the main menu when opening/closing a module', async () => {
+		await setup();
 
+		setCurrentTool(MixerModuleContent.tag);
+		setCurrentTool('something');
+
+		const mainMenuActions = storeActions.filter(a => a.type === OPEN_CLOSED_CHANGED);
+		expect(mainMenuActions).toEqual([
+			{ type: OPEN_CLOSED_CHANGED, payload: false },
+			{ type: OPEN_CLOSED_CHANGED, payload: true }
+		]);
+	});
 
 });

@@ -3,6 +3,7 @@ import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { updateSize } from '../../../../../../src/store/position/position.action';
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
+import { close, open } from '../../../../../store/mainMenu/mainMenu.action';
 import { setCurrentTool } from '../../../../../store/tools/tools.action';
 import { closeFnModules } from '../../../../store/fnModuleComm/fnModuleComm.action';
 import { EAContribution } from '../contribution/EAContribution';
@@ -14,6 +15,14 @@ import css from './moduleContainer.css';
 
 const Update_IsPortrait_HasMinWidth = 'update_isPortrait_hasMinWidth';
 const Update_ToolId = 'update_tooId';
+
+const MODULE_TAGS = [
+	MixerModuleContent.tag,
+	ResearchModuleContent.tag,
+	RedesignModuleContent.tag,
+	EAContribution.tag
+];
+
 /**
  * @class
  * @author kunze_ge
@@ -50,10 +59,19 @@ export class ModuleContainer extends MvuElement {
 	 * @override
 	 */
 	update(type, data, model) {
+
+
 		switch (type) {
 			case Update_IsPortrait_HasMinWidth:
 				return { ...model, ...data };
 			case Update_ToolId:
+				if (MODULE_TAGS.includes(data)) {
+					close();
+				}
+				else if (MODULE_TAGS.includes(model.toolId)) {
+					open();
+				}
+
 				return { ...model, toolId: data };
 		}
 	}
