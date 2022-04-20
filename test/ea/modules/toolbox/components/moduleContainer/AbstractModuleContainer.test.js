@@ -49,17 +49,4 @@ describe('ModuleContent', () => {
 		return TestUtils.render(ConcreteModuleContent.tag);
 	};
 
-	it('dispatches an \'fnModuleComm/open\' action on load', async () => {
-		await setup();
-
-		function timeout(ms) {
-			return new Promise(resolve => setTimeout(resolve, ms));
-		}
-		await timeout(1500);
-
-		const lastAction = storeActions.pop();
-		expect(lastAction.type).toBe(OPEN_MODULE_REQUESTED);
-		expect(lastAction.payload.fnModuleSite).toEqual('site');
-	});
-
 });
