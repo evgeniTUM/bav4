@@ -137,6 +137,7 @@ export class FnModulePlugin extends BaPlugin {
 			case REMOVE_FEATURE_BY_ID:
 				break;
 			case CLEAR_MAP:
+				clearGeoFeatures();
 				break;
 			case REMOVE_LAYER:
 				break;

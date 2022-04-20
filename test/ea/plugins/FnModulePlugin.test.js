@@ -135,6 +135,24 @@ describe('FnModulePlugin', () => {
 			expect(lastAction.payload[0].data).toEqual(geojson);
 		});
 
+
+		it('clears geofeatures on message \'clearmap\'', async () => {
+			await setupOpen();
+
+			windowMock.listenerFunction({
+				data: {
+					code: 'clearmap',
+					module: domain,
+					message: null
+				},
+				event: { origin: site }
+
+			});
+
+			const lastAction = storeActions.pop();
+			expect(lastAction.type).toEqual(CLEAR_FEATURES);
+		});
+
 	});
 
 });
