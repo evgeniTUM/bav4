@@ -2,7 +2,7 @@ import { FnModulePlugin } from '../../../src/ea/plugins/FnModulePlugin.js';
 import { closeFnModules, openFnModuleComm } from '../../../src/ea/store/fnModuleComm/fnModuleComm.action.js';
 import { fnModuleCommReducer } from '../../../src/ea/store/fnModuleComm/fnModuleComm.reducer.js';
 import { CLEAR_FEATURES, FEATURE_ADD, geofeatureReducer } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
-import { mapclickReducer } from '../../../src/ea/store/mapclick/mapclick.reducer';
+import { mapclickReducer, MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE } from '../../../src/ea/store/mapclick/mapclick.reducer';
 import { $injector } from '../../../src/injection/index.js';
 import { pointerReducer } from '../../../src/store/pointer/pointer.reducer';
 import { TestUtils } from '../../test-utils.js';
@@ -133,6 +133,41 @@ describe('FnModulePlugin', () => {
 			const lastAction = storeActions.pop();
 			expect(lastAction.type).toEqual(FEATURE_ADD);
 			expect(lastAction.payload[0].data).toEqual(geojson);
+		});
+
+		it('adds mapclick on message \'activate_mapclick\'', async () => {
+			await setupOpen();
+
+			windowMock.listenerFunction({
+				data: {
+					code: 'activate_mapclick',
+					module: domain,
+					message: 42
+				},
+				event: { origin: site }
+
+			});
+
+			const lastAction = storeActions.pop();
+			expect(lastAction.type).toEqual(MAPCLICK_ACTIVATE);
+			expect(lastAction.payload).toEqual(42);
+		});
+
+		it('removes mapclick on message \'cancel_mapclick\'', async () => {
+			await setupOpen();
+
+			windowMock.listenerFunction({
+				data: {
+					code: 'cancel_mapclick',
+					module: domain,
+					message: null
+				},
+				event: { origin: site }
+
+			});
+
+			const lastAction = storeActions.pop();
+			expect(lastAction.type).toEqual(MAPCLICK_DEACTIVATE);
 		});
 
 	});

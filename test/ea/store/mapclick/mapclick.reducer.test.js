@@ -16,8 +16,9 @@ describe('mapclickReducer', () => {
 			coordinate: null,
 			active: false
 		});
-		activateMapClick();
+		activateMapClick(42);
 		expect(store.getState().mapclick.active).toBe(true);
+		expect(store.getState().mapclick.listener_id).toBe(42);
 	});
 
 	it('deactivate mapclick', () => {
