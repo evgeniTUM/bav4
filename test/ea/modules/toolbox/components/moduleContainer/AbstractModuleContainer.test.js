@@ -1,5 +1,5 @@
 import { AbstractModuleContent } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/AbstractModuleContent';
-import { fnModuleCommReducer, OPEN_MODULE_REQUESTED } from '../../../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
+import { fnModuleCommReducer } from '../../../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
 import { geofeatureReducer } from '../../../../../../src/ea/store/geofeature/geofeature.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { TestUtils } from '../../../../../test-utils';
@@ -34,7 +34,7 @@ describe('ModuleContent', () => {
 		getValueAsPath() { }
 	};
 
-	const setup = async (state) => {
+	async (state) => {
 
 		storeActions.length = 0;
 
