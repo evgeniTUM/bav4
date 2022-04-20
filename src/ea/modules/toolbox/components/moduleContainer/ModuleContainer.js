@@ -159,17 +159,17 @@ export class ModuleContainer extends MvuElement {
 			return nothing;
 		}
 
-		return toolId ? html`
+		return content !== nothing ? html`
 			<style>${css}</style>		
 			<div class=" ${getOrientationClass()}  ${getMinWidthClass()}">
                                         ${getSlider()} 
 			<div id ="module-container" class="module-container">
 				<div class="module-container__content ${getOverlayClass()}">    
-				<div class="module-container__tools-nav">                        
-                        <button @click=${close} class="module-container__close-button">
-                                            x
-                        </button>
-                </div>		
+					<div class="module-container__tools-nav">                        
+						<button @click=${close} class="module-container__close-button">
+							x
+						</button>
+					</div>		
 					${content}
 				</div>		
 			</div>		
@@ -233,8 +233,10 @@ export class ModuleContainer extends MvuElement {
 
 	_deactivateModule() {
 		const map = document.querySelector('ea-map-container');
-		const mapContainer = map.shadowRoot.querySelector('.map-container');
-		mapContainer.style.width = '100%';
-		updateSize(100);
+		if (map && map.shadowRoot) {
+			const mapContainer = map.shadowRoot.querySelector('.map-container');
+			mapContainer.style.width = '100%';
+			updateSize(100);
+		}
 	}
 }
