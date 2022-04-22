@@ -1,5 +1,6 @@
 import Feature from 'ol/Feature';
 import GeoJSON from 'ol/format/GeoJSON';
+import { fromExtent } from 'ol/geom/Polygon';
 import { Vector as VectorLayer } from 'ol/layer';
 import { unByKey } from 'ol/Observable';
 import { Vector as VectorSource } from 'ol/source';
@@ -171,7 +172,11 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 			this._vectorLayer.getSource().addFeatures(
 				features.map(this._toOlFeature, this).filter(olFeature => !!olFeature));
-			setFit(this._vectorLayer.getSource().getExtent());
+
+			const polygon = fromExtent(this._vectorLayer.getSource().getExtent());
+			polygon.scale(1.2);
+			setFit(polygon.getExtent());
+
 
 			this._map.renderSync();
 		};
