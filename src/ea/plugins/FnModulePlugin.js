@@ -132,7 +132,6 @@ export class FnModulePlugin extends BaPlugin {
 				break;
 			case ADD_FEATURE:
 				addGeoFeatures({ data: message.geojson });
-
 				break;
 			case REMOVE_FEATURE_BY_ID:
 				break;
@@ -185,8 +184,11 @@ export class FnModulePlugin extends BaPlugin {
 		//      console.debug('Client : implPostMessageFnModule -->  moduleSite ? ' + moduleSite + 'code ' + code);
 		//      Überlegung, ob post und handshake für alle Kommunikationen eingesetzt wird
 		if (moduleSite !== undefined) {
-			const param = '{ "code" : "' + code + '", "module" : "' + moduleSite + '"}';
-			targetWindow.postMessage(JSON.parse(param), myModuleDomain);
+			const json = {
+				code: code,
+				module: moduleSite
+			};
+			targetWindow.postMessage(json, myModuleDomain);
 		}
 	}
 
@@ -224,9 +226,13 @@ export class FnModulePlugin extends BaPlugin {
 			const _coord = coordinateService.toLonLat(coordinate);
 			if (state.mapclick.active) {
 				const scope = state.fnModuleComm;
-				const param = '{  "code" : "mapclick", "module" : "' + scope.fnModuleSite + '","id" : "' + state.mapclick.listener_id + '", "coord"  : "' + _coord.toString() + '"}';
-				const jsonP = JSON.parse(param);
-				scope.fnModuleWindow.postMessage(jsonP, scope.fnModuleDomain);
+				const json = {
+					code: 'mapclick',
+					module: scope.fnModuleSite,
+					id: state.mapclick.listener_id,
+					coord: _coord.toString()
+				};
+				scope.fnModuleWindow.postMessage(json, scope.fnModuleDomain);
 			}
 		};
 

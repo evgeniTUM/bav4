@@ -64,6 +64,7 @@ export class ModuleContainer extends MvuElement {
 		switch (type) {
 			case Update_IsPortrait_HasMinWidth:
 				return { ...model, ...data };
+
 			case Update_ToolId:
 				if (MODULE_TAGS.includes(data)) {
 					close();
