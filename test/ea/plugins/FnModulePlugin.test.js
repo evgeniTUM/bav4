@@ -2,8 +2,10 @@ import { FnModulePlugin } from '../../../src/ea/plugins/FnModulePlugin.js';
 import { closeFnModules, openFnModuleComm } from '../../../src/ea/store/fnModuleComm/fnModuleComm.action.js';
 import { fnModuleCommReducer } from '../../../src/ea/store/fnModuleComm/fnModuleComm.reducer.js';
 import { CLEAR_FEATURES, FEATURE_ADD, geofeatureReducer } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
+import { activateMapClick, deactivateMapClick } from '../../../src/ea/store/mapclick/mapclick.action.js';
 import { mapclickReducer, MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE } from '../../../src/ea/store/mapclick/mapclick.reducer';
 import { $injector } from '../../../src/injection/index.js';
+import { setClick } from '../../../src/store/pointer/pointer.action.js';
 import { pointerReducer } from '../../../src/store/pointer/pointer.reducer';
 import { TestUtils } from '../../test-utils.js';
 
@@ -31,8 +33,8 @@ describe('FnModulePlugin', () => {
 	};
 
 	const coordinateServiceMock = {
-		stringify() { },
-		toLonLat() { }
+		stringify: {},
+		toLonLat: (coords) => coords
 	};
 
 	const setup = (state) => {
@@ -73,11 +75,21 @@ describe('FnModulePlugin', () => {
 
 		expect(windowMock.messages).toHaveSize(2);
 		expect(windowMock.messages[0]).toEqual(
-			{ msg: { 'code': 'open', 'module': expectedSite }, domain: expectedDomain }
-		);
+			{
+				msg: {
+					code: 'open',
+					module: expectedSite
+				},
+				domain: expectedDomain
+			});
 		expect(windowMock.messages[1]).toEqual(
-			{ msg: { 'code': 'close', 'module': expectedSite }, domain: expectedDomain }
-		);
+			{
+				msg: {
+					code: 'close',
+					module: expectedSite
+				},
+				domain: expectedDomain
+			});
 	});
 
 	describe('when communication is open', () => {
@@ -184,6 +196,28 @@ describe('FnModulePlugin', () => {
 
 			const lastAction = storeActions.pop();
 			expect(lastAction.type).toEqual(CLEAR_FEATURES);
+		});
+
+		it('sends a \'cancel_mapclick\' message on \'pointer.click\' event when \'mapclick.active\' is true', async () => {
+			await setupOpen();
+
+			activateMapClick();
+			setClick({ coordinate: [42.0, 24.0], screenCoordinate: [1, 2] });
+
+			expect(windowMock.messages).toHaveSize(1);
+			expect(windowMock.messages[0].msg).toEqual(
+				{
+					code: 'mapclick',
+					module: site,
+					id: undefined,
+					coord: '42,24'
+				});
+
+			windowMock.messages = [];
+			deactivateMapClick();
+			setClick({ coordinate: [42.0, 24.0], screenCoordinate: [1, 2] });
+
+			expect(windowMock.messages).toHaveSize(0);
 		});
 
 	});
