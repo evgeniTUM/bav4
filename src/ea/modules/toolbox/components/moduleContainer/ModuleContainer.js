@@ -74,8 +74,8 @@ export class ModuleContainer extends MvuElement {
 		const container = this.shadowRoot.getElementById('module-container');
 		if (container) {
 			window.getComputedStyle(container);
-			container.style.width = rightPart;
-			container.style.left = leftPart;
+			// container.style.width = rightPart;
+			// container.style.left = leftPart;
 		}
 		else {
 			leftPart = '100%';
@@ -83,7 +83,7 @@ export class ModuleContainer extends MvuElement {
 		const map = document.querySelector('ea-map-container');
 		if (map !== null && map.shadowRoot !== null) {
 			const mapContainer = map.shadowRoot.querySelector('.map-container');
-			mapContainer.style.width = leftPart;
+			// mapContainer.style.width = leftPart;
 			updateSize(prozent);
 		}
 		else {
@@ -132,9 +132,12 @@ export class ModuleContainer extends MvuElement {
 
 
 		const changeWidth = (event) => {
-			const sliderValue = parseFloat(event.target.value);
-			const prozent = 100 - sliderValue;
-			this.tileMap(prozent);
+			const container = this.shadowRoot.getElementById('module-container');
+			container.style.width = parseInt(event.target.value) + 'em';
+
+			// const sliderValue = parseFloat(event.target.value);
+			// const prozent = 100 - sliderValue;
+			// this.tileMap(prozent);
 		};
 
 		const getSlider = () => {
@@ -207,7 +210,7 @@ export class ModuleContainer extends MvuElement {
 			//           console.log('factor'); console.log(factor);
 			//           das nachträgliche setzen der width des containers ist ein Hack, da der ermittelte Factor sich nicht auf den Rand des Containers platziert.
 			//           hier müssten mal Experten befragt werden
-			element.style.width = containerWidth + 'em';
+			// element.style.width = containerWidth + 'em';
 			const sliderInput = this.shadowRoot.querySelector('.slider-container input');
 			sliderInput.value = factor;
 			this.tileMap(ratio);
@@ -236,7 +239,7 @@ export class ModuleContainer extends MvuElement {
 		const map = document.querySelector('ea-map-container');
 		if (map && map.shadowRoot) {
 			const mapContainer = map.shadowRoot.querySelector('.map-container');
-			mapContainer.style.width = '100%';
+			// mapContainer.style.width = '100%';
 			updateSize(100);
 		}
 	}

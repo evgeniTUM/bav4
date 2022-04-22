@@ -1,8 +1,8 @@
 .module-container {
-	top: 0;
-	right: 0;           
-	position: fixed;    
-	z-index: calc(var(--z-toolbox) + 20);    
+	/* top: 0; */
+	/* right: 0;            */
+	/* position: fixed;     */
+	/* z-index: calc(var(--z-toolbox) + 20);     */
 	background-color: var(--primary-bg-color);
 	max-width: 125em;
 	height: 100%;
@@ -35,9 +35,7 @@
 	bottom: 0;
 	right: 0;           
 	left: 0;           
-	width: 100%;
 	top: unset;
-	position: fixed;    
 	background-color: var(--primary-bg-color);
 	max-width: unset;
 }
@@ -48,7 +46,6 @@
 
 .slider-container {
 	display: block;
-	position: fixed;
 	width: 100vw;
 	z-index: calc(var(--z-mainmenu) + 10);
 	padding: 0 0 0 0;
