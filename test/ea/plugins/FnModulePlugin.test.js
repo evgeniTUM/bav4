@@ -170,6 +170,22 @@ describe('FnModulePlugin', () => {
 			expect(lastAction.type).toEqual(MAPCLICK_DEACTIVATE);
 		});
 
+		it('clears geofeatures on message \'clearmap\'', async () => {
+			await setupOpen();
+
+			windowMock.listenerFunction({
+				data: {
+					code: 'clearmap',
+					module: domain,
+					message: null
+				},
+				event: { origin: site }
+			});
+
+			const lastAction = storeActions.pop();
+			expect(lastAction.type).toEqual(CLEAR_FEATURES);
+		});
+
 	});
 
 });
