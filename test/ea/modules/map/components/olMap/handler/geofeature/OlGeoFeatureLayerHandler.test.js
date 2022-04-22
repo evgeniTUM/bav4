@@ -16,10 +16,11 @@ const GEOJSON_SAMPLE_DATA = {
 	geometry: {
 		'type': 'Polygon',
 		'coordinates': [[
-			[1, 2],
-			[3, 4],
-			[5, 6],
-			[7, 8]
+			[0, 0],
+			[10, 10],
+
+			[3, 5],
+			[7, 6]
 		]]
 	}
 };
@@ -88,7 +89,7 @@ describe('OlGeoFeatureLayerHandler', () => {
 			expect(layer).toBeTruthy();
 		});
 
-		it('fits the map to the layer when a new feature is added', () => {
+		it('fits the map to the layer when a new feature is added (with zoom scale of 20%)', () => {
 			const map = setupMap();
 			setup();
 
@@ -99,7 +100,7 @@ describe('OlGeoFeatureLayerHandler', () => {
 
 			const setFitActions = storeActions.filter(a => a.type === FIT_REQUESTED);
 			expect(setFitActions).toHaveSize(1);
-			expect(setFitActions[0].payload._payload.extent).toEqual([1, 2, 7, 8]);
+			expect(setFitActions[0].payload._payload.extent).toEqual([-1, -1, 11, 11]);
 		});
 
 		it('shows features in store slice \'geofeature\'', async () => {
