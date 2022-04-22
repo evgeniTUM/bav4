@@ -164,6 +164,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 		//		this._listeners.push(this._map.on(MapBrowserEventType.CLICK, onClick));
 
 		const onChange = ({ features }) => {
+			this._vectorLayer.getSource().clear();
 
 			if (features === undefined || features.length === 0) {
 				return;
@@ -173,9 +174,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 				features.map(this._toOlFeature, this).filter(olFeature => !!olFeature));
 			setFit(this._vectorLayer.getSource().getExtent());
 
-			if (features.length > 0) {
-				this._map.renderSync();
-			}
+			this._map.renderSync();
 		};
 
 		return observe(store, state => state.geofeature, onChange, false);

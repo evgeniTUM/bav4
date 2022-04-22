@@ -4,14 +4,30 @@ import { fromLonLat } from 'ol/proj';
 import { OSM, TileDebug } from 'ol/source';
 import { OlGeoFeatureLayerHandler } from '../../../../../../../../src/ea/modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler';
 import { GEO_FEATURE_LAYER_ID } from '../../../../../../../../src/ea/plugins/GeoFeaturePlugin';
-import { addGeoFeatures } from '../../../../../../../../src/ea/store/geofeature/geofeature.action';
+import { addGeoFeatures, clearGeoFeatures } from '../../../../../../../../src/ea/store/geofeature/geofeature.action';
 import { geofeatureReducer } from '../../../../../../../../src/ea/store/geofeature/geofeature.reducer';
 import { mapclickReducer } from '../../../../../../../../src/ea/store/mapclick/mapclick.reducer';
 import { $injector } from '../../../../../../../../src/injection';
 import { FIT_REQUESTED, positionReducer } from '../../../../../../../../src/store/position/position.reducer';
 import { TestUtils } from '../../../../../../../test-utils.js';
 
-
+const GEOJSON_SAMPLE_DATA = {
+	data: {
+		features: [
+			{
+				type: 'Feature',
+				geometry: {
+					'type': 'Polygon',
+					'coordinates': [[
+						[1, 2],
+						[3, 4],
+						[5, 6],
+						[7, 8]
+					]]
+				}
+			}]
+	}
+};
 
 describe('OlGeoFeatureLayerHandler', () => {
 
@@ -84,28 +100,30 @@ describe('OlGeoFeatureLayerHandler', () => {
 			const classUnderTest = new OlGeoFeatureLayerHandler();
 			classUnderTest.activate(map);
 
-			const geojson = {
-				data: {
-					features: [
-						{
-							type: 'Feature',
-							geometry: {
-								'type': 'Polygon',
-								'coordinates': [[
-									[1, 2],
-									[3, 4],
-									[5, 6],
-									[7, 8]
-								]]
-							}
-						}]
-				}
-			};
-			addGeoFeatures(geojson);
+			addGeoFeatures(GEOJSON_SAMPLE_DATA);
 
 			const setFitActions = storeActions.filter(a => a.type === FIT_REQUESTED);
 			expect(setFitActions).toHaveSize(1);
 			expect(setFitActions[0].payload._payload.extent).toEqual([1, 2, 7, 8]);
+		});
+
+		it('shows features in store slice \'geofeature\'', async () => {
+			const map = setupMap();
+			setup();
+
+			const classUnderTest = new OlGeoFeatureLayerHandler();
+			const layer = classUnderTest.activate(map);
+
+			addGeoFeatures(GEOJSON_SAMPLE_DATA);
+
+			const actualFeatures = layer.getSource().getFeatures();
+			expect(actualFeatures.length).toEqual(1);
+			expect(actualFeatures[0].getGeometry().getCoordinates())
+				.toEqual(GEOJSON_SAMPLE_DATA.data.features[0].geometry.coordinates);
+
+			clearGeoFeatures();
+
+			expect(layer.getSource().getFeatures().length).toEqual(0);
 		});
 
 	});
