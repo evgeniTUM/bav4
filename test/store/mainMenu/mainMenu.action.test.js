@@ -13,5 +13,14 @@ describe('mainMenuAction', () => {
 		expect(TabId.SEARCH).toBe('search');
 		expect(TabId.FEATUREINFO).toBe('featureinfo');
 		expect(TabId.EXTENSION).toBe('extension');
+
+		expect(TabId.valueOf(0)).toEqual(TabId.TOPICS);
+		expect(TabId.valueOf(1)).toEqual(TabId.MAPS);
+		expect(TabId.valueOf(2)).toEqual(TabId.SEARCH);
+		expect(TabId.valueOf(3)).toEqual(TabId.ROUTING);
+		expect(TabId.valueOf(4)).toEqual(TabId.MISC);
+		expect(TabId.valueOf(5)).toEqual(TabId.FEATUREINFO);
+		expect(TabId.valueOf(6)).toEqual(TabId.EXTENSION);
+		expect(TabId.valueOf(7)).toBeNull();
 	});
 });

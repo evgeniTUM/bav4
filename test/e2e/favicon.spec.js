@@ -4,15 +4,37 @@ const BASE_URL = (process.env.URL || 'http://localhost:8080').replace(/\/$/, '')
 
 test.describe('favicons', () => {
 
-	test('should provide a favicon', async ({ request }) => {
+	test('should provide favicon related assets', async ({ request }) => {
 
-		/**
-		 * favicons-webpack-plugin generates in 'light' mode a favicon.svg only,
-		 * whereas in 'webapp' mode the favicon.svg is missing
-		 */
 		const responseIco = await request.get(`${BASE_URL}/assets/favicon.ico`);
-		const responseSvg = await request.get(`${BASE_URL}/assets/favicon.svg`);
+		const responseManifest = await request.get(`${BASE_URL}/assets/manifest.json`);
+		const responsePng192 = await request.get(`${BASE_URL}/assets/icon_192x192.png`);
+		const responsePng512 = await request.get(`${BASE_URL}/assets/icon_512x512.png`);
 
-		expect(responseIco.ok() || responseSvg.ok).toBeTruthy();
+		expect(responseIco.ok()).toBeTruthy();
+		expect(responseManifest.ok).toBeTruthy();
+		expect(responsePng192.ok).toBeTruthy();
+		expect(responsePng512.ok).toBeTruthy();
+		expect(await responseManifest.json()).toEqual({
+			'icons': [
+				{
+					'src': 'icon_512x512.png',
+					'sizes': '512x512',
+					'type': 'image/png'
+				},
+				{
+					'src': 'icon_192x192.png',
+					'sizes': '192x192',
+					'type': 'image/png'
+				}
+			],
+			'name': 'BayernAtlas',
+			'short_name': 'BayernAtlas',
+			'orientation': 'portrait',
+			'display': 'standalone',
+			'start_url': '/',
+			'background_color': '#2f6a94',
+			'theme_color': '#2f6a94'
+		});
 	});
 });

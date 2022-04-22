@@ -27,6 +27,7 @@ export const provide = (lang) => {
 				toolbox_drawTool_style_desc: 'Description',
 				toolbox_drawTool_style_symbol: 'Symbol',
 				toolbox_drawTool_style_symbol_select: 'select Symbol',
+				toolbox_drawTool_draw_init: 'Select a drawing type to start drawing',
 				toolbox_drawTool_draw_active: 'Tap on the map to start drawing',
 				toolbox_drawTool_draw_draw: 'Tap on the map to continue drawing the line (double-tap to finish)',
 				toolbox_drawTool_draw_modify: 'To add a point, tap on a drawing;</br> To move a point, press and drag it;</br> To delete a point, tap on it',
@@ -85,7 +86,7 @@ export const provide = (lang) => {
 				toolbox_clipboard_success: 'was copied to clipboard',
 				toolbox_copy_icon: 'Copy to clipboard',
 				toolbox_measureTool_share_link: 'Anyone, who has this link, can edit this drawing',
-				toolbox_toolbar_logo_badge: 'Beta'
+				toolbox_toolbar_logo_badge: '4.0'
 			};
 
 		case 'de':
@@ -114,6 +115,7 @@ export const provide = (lang) => {
 				toolbox_drawTool_style_desc: 'Beschreibung',
 				toolbox_drawTool_style_symbol: 'Symbol',
 				toolbox_drawTool_style_symbol_select: 'Symbol auswählen',
+				toolbox_drawTool_draw_init: 'Einen Zeichnungstyp auswählen, um die Zeichnung zu beginnen',
 				toolbox_drawTool_draw_active: 'In die Karte tippen, um die Zeichnung zu beginnen',
 				toolbox_drawTool_draw_draw: 'In die Karte tippen, um die Linie zu zeichnen (Doppelt tippen zum Beenden)',
 				toolbox_drawTool_draw_modify: 'Tippe auf die Zeichnung, um einen Punkt hinzuzufügen;</br> Punkt verschieben: tippen und ziehen;</br> Punkt löschen: auf Punkt tippen',
@@ -172,7 +174,7 @@ export const provide = (lang) => {
 				toolbox_clipboard_success: 'wurde in die Zwischenablage kopiert',
 				toolbox_copy_icon: 'In die Zwischenablage kopieren',
 				toolbox_measureTool_share_link: 'Jeder, der diesen Link hat, kann an dieser Zeichnung mitarbeiten',
-				toolbox_toolbar_logo_badge: 'Beta'
+				toolbox_toolbar_logo_badge: '4.0'
 			};
 
 		default:

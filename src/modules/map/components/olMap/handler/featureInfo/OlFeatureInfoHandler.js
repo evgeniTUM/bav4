@@ -4,8 +4,8 @@ import { observe } from '../../../../../../utils/storeUtils';
 import { getLayerById } from '../../olMapUtils';
 import { OlMapHandler } from '../OlMapHandler';
 import { getBvvFeatureInfo } from './featureInfoItem.provider';
-import { addHighlightFeatures, HighlightFeatureTypes, HighlightGeometryTypes, removeHighlightFeaturesById } from '../../../../../../store/highlight/highlight.action';
-import { FEATURE_INFO_HIGHLIGHT_FEATURE_ID } from '../../../../../../plugins/HighlightPlugin';
+import { addHighlightFeatures, HighlightFeatureType, HighlightGeometryType, removeHighlightFeaturesById } from '../../../../../../store/highlight/highlight.action';
+import { QUERY_RUNNING_HIGHLIGHT_FEATURE_ID } from '../../../../../../plugins/HighlightPlugin';
 import { createUniqueId } from '../../../../../../utils/numberUtils';
 
 /**
@@ -48,14 +48,14 @@ export class OlFeatureInfoHandler extends OlMapHandler {
 		observe(this._storeService.getStore(), state => state.featureInfo.coordinate, (coordinate, state) => {
 
 			//remove previous HighlightFeature items
-			removeHighlightFeaturesById(FEATURE_INFO_HIGHLIGHT_FEATURE_ID);
+			removeHighlightFeaturesById(QUERY_RUNNING_HIGHLIGHT_FEATURE_ID);
 			registerQuery(queryId);
 
 			const featureInfoItems = [...state.layers.active]
 				.filter(layerFilter)
 				//map layerProperties to olLayer (wrapper)
 				.map(layerProperties => {
-					return { olLayer: getLayerById(map, layerProperties.geoResourceId), layerProperties: layerProperties };
+					return { olLayer: getLayerById(map, layerProperties.id), layerProperties: layerProperties };
 				})
 				//map olLayer to olFeature (wrapper)
 				.map(olLayerContainer => {
@@ -76,9 +76,9 @@ export class OlFeatureInfoHandler extends OlMapHandler {
 			const highlightFeatures = featureInfoItems
 				.filter(featureInfo => featureInfo.geometry)
 				.map(featureInfo => ({
-					id: FEATURE_INFO_HIGHLIGHT_FEATURE_ID,
-					type: HighlightFeatureTypes.DEFAULT,
-					data: { geometry: featureInfo.geometry.data, geometryType: HighlightGeometryTypes.GEOJSON }
+					id: QUERY_RUNNING_HIGHLIGHT_FEATURE_ID,
+					type: HighlightFeatureType.DEFAULT,
+					data: { geometry: featureInfo.geometry.data, geometryType: HighlightGeometryType.GEOJSON }
 				}));
 
 			const unsubscribe = observe(this._storeService.getStore(), state => state.featureInfo.querying, querying => {

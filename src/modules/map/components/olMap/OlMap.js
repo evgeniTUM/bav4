@@ -14,6 +14,7 @@ import { setBeingMoved, setMoveEnd, setMoveStart } from '../../../../store/map/m
 import VectorSource from 'ol/source/Vector';
 import { Group as LayerGroup } from 'ol/layer';
 import { GeoResourceTypes } from '../../../../services/domain/geoResources';
+import { setFetching } from '../../../../store/network/network.action';
 
 const Update_Position = 'update_position';
 const Update_Layers = 'update_layers';
@@ -82,9 +83,10 @@ export class OlMap extends MvuElement {
 	 * @override
 	 */
 	onInitialize() {
-		//observe global state (position, active layers)
+		//observe global state (position, active layers, orientation)
 		this.observe(state => state.position, data => this.signal(Update_Position, data));
 		this.observe(state => state.layers.active, data => this.signal(Update_Layers, data));
+		this.observe(state => state.media.portrait, () => this._map.updateSize(), false);
 
 		const { zoom, center, rotation } = this.getModel();
 
@@ -92,6 +94,7 @@ export class OlMap extends MvuElement {
 			center: center,
 			zoom: zoom,
 			rotation: rotation,
+			minZoom: this._mapService.getMinZoomLevel(),
 			maxZoom: this._mapService.getMaxZoomLevel()
 		});
 
@@ -173,6 +176,9 @@ export class OlMap extends MvuElement {
 			setBeingDragged(true);
 		});
 
+		this._map.on('loadstart', () => setFetching(true));
+		this._map.on('loadend', () => setFetching(false));
+
 		this._mapHandler.forEach(handler => {
 			handler.register(this._map);
 		});
@@ -226,7 +232,7 @@ export class OlMap extends MvuElement {
 				zoom: zoom,
 				center: center,
 				rotation: rotation,
-				duration: 500
+				duration: 200
 			});
 		}
 	}
@@ -234,7 +240,7 @@ export class OlMap extends MvuElement {
 	_syncLayers() {
 		const { layers } = this.getModel();
 
-		const updatedIds = layers.map(layer => layer.geoResourceId);
+		const updatedIds = layers.map(layer => layer.id);
 		const currentIds = this._map.getLayers()
 			.getArray()
 			.map(olLayer => olLayer.get('id'));
@@ -271,11 +277,10 @@ export class OlMap extends MvuElement {
 
 		toBeAdded.forEach(id => {
 
-			const toOlLayer = (geoResource, id) => {
-				const olLayer = geoResource ? this._layerService.toOlLayer(geoResource, this._map) : (this._layerHandler.has(id) ? toOlLayerFromHandler(id, this._layerHandler.get(id), this._map) : null);
-
+			const toOlLayer = (id, geoResource) => {
+				const olLayer = geoResource ? this._layerService.toOlLayer(id, geoResource, this._map) : (this._layerHandler.has(id) ? toOlLayerFromHandler(id, this._layerHandler.get(id), this._map) : null);
 				if (olLayer) {
-					const layer = layers.find(layer => layer.geoResourceId === id);
+					const layer = layers.find(layer => layer.id === id);
 					updateOlLayer(olLayer, layer);
 					this._map.getLayers().insertAt(layer.zIndex, olLayer);
 				}
@@ -286,7 +291,8 @@ export class OlMap extends MvuElement {
 				}
 			};
 
-			const geoResource = this._geoResourceService.byId(id);
+			const geoResourceId = layers.find(l => l.id === id)?.geoResourceId;
+			const geoResource = this._geoResourceService.byId(geoResourceId);
 			//if geoResource is a future, we insert a placeholder olLayer replacing it after the geoResource was resolved
 			if (geoResource?.getType() === GeoResourceTypes.FUTURE) {
 				// eslint-disable-next-line promise/prefer-await-to-then
@@ -294,8 +300,8 @@ export class OlMap extends MvuElement {
 					// replace the future GeoResource by the real GeoResource in the chache
 					this._geoResourceService.addOrReplace(lazyLoadedGeoResource);
 					// replace the placeholder olLayer by the real the olLayer
-					const layer = layers.find(layer => layer.geoResourceId === id);
-					const realOlLayer = this._layerService.toOlLayer(lazyLoadedGeoResource, this._map);
+					const layer = layers.find(layer => layer.id === id);
+					const realOlLayer = this._layerService.toOlLayer(id, lazyLoadedGeoResource, this._map);
 					updateOlLayer(realOlLayer, layer);
 					this._map.getLayers().remove(getLayerById(this._map, id));
 					this._map.getLayers().insertAt(layer.zIndex, realOlLayer);
@@ -307,11 +313,11 @@ export class OlMap extends MvuElement {
 						removeLayer(id);
 					});
 			}
-			toOlLayer(geoResource, id);
+			toOlLayer(id, geoResource);
 		});
 
 		toBeUpdated.forEach(id => {
-			const layer = layers.find(layer => layer.geoResourceId === id);
+			const layer = layers.find(layer => layer.id === id);
 			const olLayer = getLayerById(this._map, id);
 			updateOlLayer(olLayer, layer);
 			this._map.getLayers().remove(olLayer);

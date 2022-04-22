@@ -69,7 +69,7 @@ describe('MeasureToolContent', () => {
 			}
 
 			formatArea(area, decimals) {
-				return new Intl.NumberFormat('de-DE', { maximumSignificantDigits: decimals }).format(area) + ' m²';
+				return new Intl.NumberFormat('de-DE', { maximumSignificantDigits: decimals }).format(area) + ' m&sup2;';
 			}
 		}
 
@@ -218,7 +218,7 @@ describe('MeasureToolContent', () => {
 			};
 			const element = await setup(state);
 
-			expect(element.shadowRoot.querySelectorAll(`[${TEST_ID_ATTRIBUTE_NAME}]`)).toHaveSize(5);
+			expect(element.shadowRoot.querySelectorAll(`[${TEST_ID_ATTRIBUTE_NAME}]`)).toHaveSize(6);
 			expect(element.shadowRoot.querySelector('#span-distance-value').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 			expect(element.shadowRoot.querySelector('#span-distance-unit').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 			expect(element.shadowRoot.querySelector('#span-area-value').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();

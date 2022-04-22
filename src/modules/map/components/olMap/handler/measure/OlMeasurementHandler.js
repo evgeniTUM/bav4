@@ -58,7 +58,8 @@ export class OlMeasurementHandler extends OlLayerHandler {
 		this._storedContent = null;
 
 		this._sketchHandler = new OlSketchHandler();
-		this._listeners = [];
+		this._mapListeners = [];
+		this._keyUpListener = (e) => this._removeLast(e) ;
 
 		this._projectionHints = { fromProjection: 'EPSG:' + this._mapService.getSrid(), toProjection: 'EPSG:' + this._mapService.getDefaultGeodeticSrid() };
 		this._lastPointerMoveEvent = null;
@@ -90,9 +91,11 @@ export class OlMeasurementHandler extends OlLayerHandler {
 			acknowledgeTermsOfUse();
 		}
 		const getOldLayer = (map) => {
-			return map.getLayers().getArray().find(l => l.get('id') && (
-				this._storageHandler.isStorageId(l.get('id')) ||
-				l.get('id') === Temp_Session_Id));
+			const isOldLayer = (layer) => {
+				const id = layer.get('geoResourceId');
+				return id && (this._storageHandler.isStorageId(id) || id === Temp_Session_Id);
+			};
+			return map.getLayers().getArray().find(isOldLayer);
 		};
 
 		const createLayer = () => {
@@ -108,10 +111,10 @@ export class OlMeasurementHandler extends OlLayerHandler {
 		const addOldFeatures = async (layer, oldLayer) => {
 			if (oldLayer) {
 
-				const vgr = this._geoResourceService.byId(oldLayer.get('id'));
+				const vgr = this._geoResourceService.byId(oldLayer.get('geoResourceId'));
 				if (vgr) {
 
-					this._storageHandler.setStorageId(oldLayer.get('id'));
+					this._storageHandler.setStorageId(oldLayer.get('geoResourceId'));
 					/**
 					 * Note: vgr.data does not return a Promise anymore.
 					 * To preserve the internal logic of this handler, we create a Promise by using 'await' anyway
@@ -157,10 +160,10 @@ export class OlMeasurementHandler extends OlLayerHandler {
 				}
 				this._save();
 			};
-			this._listeners.push(layer.getSource().on('addfeature', setSelectedAndSave));
-			this._listeners.push(layer.getSource().on('changefeature', () => saveDebounced()));
-			this._listeners.push(layer.getSource().on('removefeature', () => saveDebounced()));
-			this._listeners.push(this._map.getView().on('change:resolution', () => onResolutionChange(layer)));
+			this._mapListeners.push(layer.getSource().on('addfeature', setSelectedAndSave));
+			this._mapListeners.push(layer.getSource().on('changefeature', () => saveDebounced()));
+			this._mapListeners.push(layer.getSource().on('removefeature', () => saveDebounced()));
+			this._mapListeners.push(this._map.getView().on('change:resolution', () => onResolutionChange(layer)));
 			return layer;
 		};
 
@@ -244,11 +247,11 @@ export class OlMeasurementHandler extends OlLayerHandler {
 				});
 			}
 
-			this._listeners.push(olMap.on(MapBrowserEventType.CLICK, clickHandler));
-			this._listeners.push(olMap.on(MapBrowserEventType.POINTERMOVE, pointerMoveHandler));
-			this._listeners.push(olMap.on(MapBrowserEventType.POINTERUP, pointerUpHandler));
-			this._listeners.push(olMap.on(MapBrowserEventType.DBLCLICK, () => false));
-			this._listeners.push(document.addEventListener('keyup', (e) => this._removeLast(e)));
+			this._mapListeners.push(olMap.on(MapBrowserEventType.CLICK, clickHandler));
+			this._mapListeners.push(olMap.on(MapBrowserEventType.POINTERMOVE, pointerMoveHandler));
+			this._mapListeners.push(olMap.on(MapBrowserEventType.POINTERUP, pointerUpHandler));
+			this._mapListeners.push(olMap.on(MapBrowserEventType.DBLCLICK, () => false));
+			document.addEventListener('keyup', this._keyUpListener);
 			this._registeredObservers = this._register(this._storeService.getStore());
 
 			olMap.addInteraction(this._select);
@@ -279,9 +282,10 @@ export class OlMeasurementHandler extends OlLayerHandler {
 
 		this._helpTooltip.deactivate();
 
-		this._unreg(this._listeners);
+		this._unreg(this._mapListeners);
 		this._unreg(this._measureStateChangedListeners);
 		this._unsubscribe(this._registeredObservers);
+		document.removeEventListener('keyup', this._keyUpListener);
 
 		this._convertToPermanentLayer();
 		this._vectorLayer.getSource().getFeatures().forEach(f => this._overlayService.remove(f, this._map));
@@ -661,7 +665,7 @@ export class OlMeasurementHandler extends OlLayerHandler {
 		//register georesource
 		this._geoResourceService.addOrReplace(vgr);
 		//add a layer that displays the georesource in the map
-		addLayer(id, { label: label });
+		addLayer(id, { label: label, constraints: { cloneable: false } });
 	}
 
 	static get Debounce_Delay() {

@@ -6,6 +6,7 @@ import { setQuery } from '../../../store/search/search.action';
 import { disableResponsiveParameterObservation, enableResponsiveParameterObservation } from '../../../store/media/media.action';
 import { MvuElement } from '../../MvuElement';
 import { openModal } from '../../../store/modal/modal.action';
+import VanillaSwipe from 'vanilla-swipe';
 
 const Update_IsOpen_TabIndex = 'update_isOpen_tabIndex';
 const Update_Fetching = 'update_fetching';
@@ -64,6 +65,27 @@ export class Header extends MvuElement {
 		this.observe(state => state.network.fetching, fetching => this.signal(Update_Fetching, fetching));
 		this.observe(state => state.layers.active, active => this.signal(Update_Layers, active.filter(l => l.constraints.hidden === false)));
 		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
+	}
+
+	onAfterRender(firsttime) {
+		if (firsttime) {
+
+			const handler = (event, data) => {
+				if (['touchmove', 'mousemove'].includes(event.type) && data.directionX === 'LEFT' && data.absX > Header.SWIPE_DELTA_PX) {
+					toggle();
+				}
+			};
+			const swipeElement = this.shadowRoot.getElementById('header_toggle');
+
+			const swipe = new VanillaSwipe({
+				element: swipeElement,
+				onSwipeStart: handler,
+				delta: Header.SWIPE_DELTA_PX,
+				mouseTrackingEnabled: true
+			});
+
+			swipe.init();
+		}
 	}
 
 	onWindowLoad() {
@@ -191,63 +213,69 @@ export class Header extends MvuElement {
 		const translate = (key) => this._translationService.translate(key);
 		return html`
 			<style>${css}</style>
-			<div class="preload ${helper.getOrientationClass()} ${helper.getMinWidthClass()}">
-				<div class='header__logo'>				
-					<div class="action-button">
-						<div class="action-button__border animated-action-button__border ${helper.getAnimatedBorderClass()}">
-						</div>
-						<div class="action-button__icon">
-							<div class="ba">
+			<div class="preload">
+				<div class="${helper.getOrientationClass()} ${helper.getMinWidthClass()}">
+					<div class='header__logo'>				
+						<div class="action-button">
+							<div class="action-button__border animated-action-button__border ${helper.getAnimatedBorderClass()}">
+							</div>
+							<div class="action-button__icon">
+								<div class="ba">
+								</div>
 							</div>
 						</div>
+						<div id='header__text' class='${helper.getOverlayClass()} header__text'>
+						</div>
+						<div class='header__logo-badge'>										
+							${translate('header_logo_badge')}
+						</div>	
+					</div>		
+					<div id='headerMobile' class='${helper.getOverlayClass()} header__text-mobile'>	
 					</div>
-					<div id='header__text' class='${helper.getOverlayClass()} header__text'>
+					<div class='header__emblem'>
 					</div>
-					<div class='header__logo-badge'>										
-						${translate('header_logo_badge')}
-					</div>	
-				</div>		
-				<div id='headerMobile' class='${helper.getOverlayClass()} header__text-mobile'>	
+					<div  class="header ${helper.getOverlayClass()}">  
+						<button id='header_toggle' class="close-menu" title=${translate('header_close_button_title')}  @click="${toggle}"">
+							<i class="resize-icon "></i>
+						</button> 
+						<div class="header__background">
+						</div>
+						<div class='header__search-container'>
+							<input id='input' data-test-id placeholder='${translate('header_search_placeholder')}' @focus="${helper.onInputFocus}" @blur="${helper.onInputBlur}" @input="${helper.onInput}" class='header__search' type="search" placeholder="" />          
+							<span class="header__search-clear ${helper.getIsClearClass()}" @click="${helper.clearSearchInput}">        							
+							</span>       
+							<button @click="${helper.showModalInfo}" class="header__modal-button hide" title="modal">
+							&nbsp;
+							</button>
+						</div>
+						<div  class="header__button-container">
+							<button id="topics_button" data-test-id class="${helper.getActiveClass(TabId.TOPICS)}" title=${translate('header_tab_topics_title')} @click="${helper.openTopicsTab}">
+								<span>
+									${translate('header_tab_topics_button')}
+								</span>
+							</button>
+							<button id="maps_button" data-test-id class="${helper.getActiveClass(TabId.MAPS)}" title=${translate('header_tab_maps_title')}  @click="${helper.openMapLayerTab}">
+								<span>
+									${translate('header_tab_maps_button')}
+								</span>
+								<div class="badges">
+									${helper.layerCount}
+								</div>
+							</button>
+							<button id="misc_button" data-test-id class="${helper.getActiveClass(TabId.MISC)}" title=${translate('header_tab_misc_title')}  @click="${helper.openMiscTab}">
+								<span>
+									${translate('header_tab_misc_button')}
+								</span>
+							</button>
+						</div>
+					</div>				
 				</div>
-				<div class='header__emblem'>
-				</div>
-				<div  class="header ${helper.getOverlayClass()}">  
-					<button class="close-menu" title=${translate('header_close_button_title')}  @click="${toggle}"">
-						<i class="resize-icon "></i>
-					</button> 
-					<div class="header__background">
-					</div>
-					<div class='header__search-container'>
-						<input id='input' @focus="${helper.onInputFocus}" @blur="${helper.onInputBlur}" @input="${helper.onInput}" class='header__search' type="search" placeholder="" />          
-						<span class="header__search-clear ${helper.getIsClearClass()}" @click="${helper.clearSearchInput}">        							
-						</span>       
-						<button @click="${helper.showModalInfo}" class="header__modal-button" title="modal">
-						&nbsp;
-						</button>
-					</div>
-					<div  class="header__button-container">
-						<button id="topics_button" data-test-id class="${helper.getActiveClass(TabId.TOPICS)}" title=${translate('header_tab_topics_title')} @click="${helper.openTopicsTab}">
-							<span>
-								${translate('header_tab_topics_button')}
-							</span>
-						</button>
-						<button id="maps_button" data-test-id class="${helper.getActiveClass(TabId.MAPS)}" title=${translate('header_tab_maps_title')}  @click="${helper.openMapLayerTab}">
-							<span>
-								${translate('header_tab_maps_button')}
-							</span>
-							 <div class="badges">
-							 	${helper.layerCount}
-							</div>
-						</button>
-						<button id="misc_button" data-test-id class="${helper.getActiveClass(TabId.MISC)}" title=${translate('header_tab_misc_title')}  @click="${helper.openMiscTab}">
-							<span>
-								${translate('header_tab_misc_button')}
-							</span>
-						</button>
-					</div>
-				</div>				
             </div>
 		`;
+	}
+
+	static get SWIPE_DELTA_PX() {
+		return 50;
 	}
 
 	static get tag() {

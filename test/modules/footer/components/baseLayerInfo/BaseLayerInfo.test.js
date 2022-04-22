@@ -28,8 +28,9 @@ describe('BaseLayerInfo', () => {
 	};
 
 	describe('when initialized', () => {
+
 		it('renders BaseLayerInfo component', async () => {
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', label: 'label0' };
+			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', label: 'label0' };
 			const state = {
 				layers: {
 					active: [layer]
@@ -40,18 +41,17 @@ describe('BaseLayerInfo', () => {
 			};
 
 			const wmts = new WMTSGeoResource('someId', 'LDBV42', 'https://some{1-2}/layer/{z}/{x}/{y}');
-			const geoServiceMock = spyOn(geoResourceServiceMock, 'byId').withArgs(layer.id).and.returnValue(wmts);
+			const geoServiceMock = spyOn(geoResourceServiceMock, 'byId').withArgs(layer.geoResourceId).and.returnValue(wmts);
 
 			const element = await setup(state);
 
-			expect(element.shadowRoot.querySelector('div')).toBeTruthy();
 			expect(element.shadowRoot.querySelector('div').innerHTML).toContain('map_baseLayerInfo_label');
 			expect(element.shadowRoot.querySelector('div').innerHTML).toContain('LDBV42');
-			expect(geoServiceMock).toHaveBeenCalledOnceWith(layer.id);
+			expect(geoServiceMock).toHaveBeenCalledOnceWith(layer.geoResourceId);
 		});
 
 		it('renders BaseLayerInfo component with georesource.getAttribution', async () => {
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', label: 'label0' };
+			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', label: 'label0' };
 			const state = {
 				layers: {
 					active: [layer]
@@ -62,19 +62,18 @@ describe('BaseLayerInfo', () => {
 			};
 
 			const wmts = new WMTSGeoResource('someId', 'LDBV42', 'https://some{1-2}/layer/{z}/{x}/{y}');
-			const geoServiceMock = spyOn(geoResourceServiceMock, 'byId').withArgs(layer.id).and.returnValue(wmts);
+			const geoServiceMock = spyOn(geoResourceServiceMock, 'byId').withArgs(layer.geoResourceId).and.returnValue(wmts);
 
-			const attribution = { description: 'Ref42' };
+			const attribution = [{ description: 'foo' }, { description: null }, { description: 'bar' }];
 			const getAttrMock = spyOn(wmts, 'getAttribution');
-			getAttrMock.withArgs(12).and.returnValue([attribution]);
+			getAttrMock.withArgs(12).and.returnValue(attribution);
 
 			const element = await setup(state);
 
-			expect(element.shadowRoot.querySelector('div')).toBeTruthy();
 			expect(element.shadowRoot.querySelector('div').innerHTML).toContain('map_baseLayerInfo_label');
-			expect(element.shadowRoot.querySelector('div').innerHTML).toContain(attribution.description);
+			expect(element.shadowRoot.querySelector('div').innerText).toContain('foo, bar');
 
-			expect(geoServiceMock).toHaveBeenCalledOnceWith(layer.id);
+			expect(geoServiceMock).toHaveBeenCalledOnceWith(layer.geoResourceId);
 			expect(getAttrMock).toHaveBeenCalledOnceWith(12);
 		});
 
@@ -93,8 +92,8 @@ describe('BaseLayerInfo', () => {
 			expect(element.shadowRoot.querySelector('div')).toBeFalsy();
 		});
 
-		it('renders nothing when geo resource could not be fetched', async () => {
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', label: 'label0' };
+		it('renders fallback content when GeoResource could not be fetched', async () => {
+			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', label: 'label0' };
 			const state = {
 				layers: {
 					active: [layer]
@@ -103,16 +102,16 @@ describe('BaseLayerInfo', () => {
 					zoom: 12
 				}
 			};
-			const geoServiceMock = spyOn(geoResourceServiceMock, 'byId').withArgs(layer.id).and.returnValue(null);
+			const geoServiceMock = spyOn(geoResourceServiceMock, 'byId').withArgs(layer.geoResourceId).and.returnValue(null);
 
 			const element = await setup(state);
 
-			expect(element.shadowRoot.querySelector('div')).toBeFalsy();
-			expect(geoServiceMock).toHaveBeenCalledOnceWith(layer.id);
+			expect(element.shadowRoot.querySelector('div').innerHTML).toContain('map_baseLayerInfo_fallback');
+			expect(geoServiceMock).toHaveBeenCalledOnceWith(layer.geoResourceId);
 		});
 
-		it('renders fallback content if label is undefined', async () => {
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', label: 'label0' };
+		it('renders fallback content when GeoResource.label is not available', async () => {
+			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', label: 'label0' };
 			const state = {
 				layers: {
 					active: [layer]
@@ -123,19 +122,17 @@ describe('BaseLayerInfo', () => {
 			};
 
 			const wmts = new WMTSGeoResource('someId', null, 'https://some{1-2}/layer/{z}/{x}/{y}');
-			const geoServiceMock = spyOn(geoResourceServiceMock, 'byId').withArgs(layer.id).and.returnValue(wmts);
+			const geoServiceMock = spyOn(geoResourceServiceMock, 'byId').withArgs(layer.geoResourceId).and.returnValue(wmts);
 
 			const element = await setup(state);
 
-			expect(element.shadowRoot.querySelector('div')).toBeTruthy();
 			expect(element.shadowRoot.querySelector('div').innerHTML).toContain('map_baseLayerInfo_fallback');
-			expect(geoServiceMock).toHaveBeenCalledOnceWith(layer.id);
-
+			expect(geoServiceMock).toHaveBeenCalledOnceWith(layer.geoResourceId);
 		});
 
 		it('updates BaseLayerInfo component', async () => {
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', label: 'label0', zIndex: 0 };
-			const layer2 = { ...createDefaultLayerProperties(), id: 'id1', label: 'label1', zIndex: 0 };
+			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', label: 'label0', zIndex: 0 };
+			const layer2 = { ...createDefaultLayerProperties(), id: 'id1', geoResourceId: 'geoResourceId1', label: 'label1', zIndex: 0 };
 			const state = {
 				layers: {
 					active: [layer]
@@ -146,8 +143,8 @@ describe('BaseLayerInfo', () => {
 			const wmts2 = new WMTSGeoResource('someId2', 'Ref42', 'https://some{1-2}/layer/{z}/{x}/{y}');
 
 			const geoServiceMock = spyOn(geoResourceServiceMock, 'byId');
-			geoServiceMock.withArgs(layer.id).and.returnValue(wmts);
-			geoServiceMock.withArgs(layer2.id).and.returnValue(wmts2);
+			geoServiceMock.withArgs(layer.geoResourceId).and.returnValue(wmts);
+			geoServiceMock.withArgs(layer2.geoResourceId).and.returnValue(wmts2);
 
 			const element = await setup(state);
 
@@ -173,8 +170,8 @@ describe('BaseLayerInfo', () => {
 			expect(element.shadowRoot.querySelector('div').innerHTML).toContain('Ref42');
 			expect(element.shadowRoot.querySelector('div').innerHTML).not.toContain('LDBV');
 
-			expect(geoServiceMock).toHaveBeenCalledWith(layer.id);
-			expect(geoServiceMock).toHaveBeenCalledWith(layer2.id);
+			expect(geoServiceMock).toHaveBeenCalledWith(layer.geoResourceId);
+			expect(geoServiceMock).toHaveBeenCalledWith(layer2.geoResourceId);
 		});
 	});
 });

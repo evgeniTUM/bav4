@@ -11,10 +11,10 @@ import { createDefaultLayer, layersReducer } from '../../../../../../../src/stor
 import { getBvvFeatureInfo } from '../../../../../../../src/modules/map/components/olMap/handler/featureInfo/featureInfoItem.provider';
 import { modifyLayer } from '../../../../../../../src/store/layers/layers.action';
 import { highlightReducer } from '../../../../../../../src/store/highlight/highlight.reducer';
-import { HighlightFeatureTypes, HighlightGeometryTypes } from '../../../../../../../src/store/highlight/highlight.action';
+import { HighlightFeatureType, HighlightGeometryType } from '../../../../../../../src/store/highlight/highlight.action';
 import GeoJSON from 'ol/format/GeoJSON';
 import { $injector } from '../../../../../../../src/injection';
-import { FEATURE_INFO_HIGHLIGHT_FEATURE_ID } from '../../../../../../../src/plugins/HighlightPlugin';
+import { QUERY_RUNNING_HIGHLIGHT_FEATURE_ID } from '../../../../../../../src/plugins/HighlightPlugin';
 
 describe('OlFeatureInfoHandler_Query_Resolution_Delay', () => {
 
@@ -87,6 +87,8 @@ describe('OlFeatureInfoHandler', () => {
 	describe('when featureInfo.coordinate property changes', () => {
 		const layerId0 = 'layerId0';
 		const layerId1 = 'layerId1';
+		const geoResourceId0 = 'geoResourceId0';
+		const geoResourceId1 = 'geoResourceId1';
 		let vectorLayer0;
 		let vectorLayer1;
 
@@ -114,7 +116,7 @@ describe('OlFeatureInfoHandler', () => {
 			const handler = setup({
 				layers: {
 					active: [
-						createDefaultLayer(layerId0)
+						createDefaultLayer(layerId0, geoResourceId0)
 					]
 				}
 			}, mockFeatureInfoProvider);
@@ -158,8 +160,8 @@ describe('OlFeatureInfoHandler', () => {
 			const handler = setup({
 				highlight: {
 					features: [
-						{ id: FEATURE_INFO_HIGHLIGHT_FEATURE_ID, type: HighlightFeatureTypes.DEFAULT, data: [21, 42] },
-						{ id: 'foo', type: HighlightFeatureTypes.DEFAULT, data: [5, 55] }
+						{ id: QUERY_RUNNING_HIGHLIGHT_FEATURE_ID, type: HighlightFeatureType.DEFAULT, data: [21, 42] },
+						{ id: 'foo', type: HighlightFeatureType.DEFAULT, data: [5, 55] }
 					]
 				}
 			}, mockFeatureInfoProvider);
@@ -184,15 +186,15 @@ describe('OlFeatureInfoHandler', () => {
 			const handler = setup({
 				layers: {
 					active: [
-						createDefaultLayer(layerId0),
-						createDefaultLayer(layerId1)
+						createDefaultLayer(layerId0, geoResourceId0),
+						createDefaultLayer(layerId1, geoResourceId1)
 					]
 				}
 			}, mockFeatureInfoProvider);
 			const map = setupMap();
 			const geometry = new Point(matchingCoordinate);
 			const expectedFeatureInfoGeometry = { data: new GeoJSON().writeGeometry(geometry), geometryType: FeatureInfoGeometryTypes.GEOJSON };
-			const expectedHighlightFeatureGeometry = { geometry: new GeoJSON().writeGeometry(geometry), geometryType: HighlightGeometryTypes.GEOJSON };
+			const expectedHighlightFeatureGeometry = { geometry: new GeoJSON().writeGeometry(geometry), geometryType: HighlightGeometryType.GEOJSON };
 			const olVectorSource0 = new VectorSource();
 			const feature0 = new Feature({ geometry: geometry });
 			feature0.set('name', 'name0');
@@ -231,13 +233,13 @@ describe('OlFeatureInfoHandler', () => {
 					});
 					expect(store.getState().highlight.features).toHaveSize(2);
 					expect(store.getState().highlight.features[0]).toEqual({
-						id: FEATURE_INFO_HIGHLIGHT_FEATURE_ID,
-						type: HighlightFeatureTypes.DEFAULT,
+						id: QUERY_RUNNING_HIGHLIGHT_FEATURE_ID,
+						type: HighlightFeatureType.DEFAULT,
 						data: expectedHighlightFeatureGeometry
 					});
 					expect(store.getState().highlight.features[1]).toEqual({
-						id: FEATURE_INFO_HIGHLIGHT_FEATURE_ID,
-						type: HighlightFeatureTypes.DEFAULT,
+						id: QUERY_RUNNING_HIGHLIGHT_FEATURE_ID,
+						type: HighlightFeatureType.DEFAULT,
 						data: expectedHighlightFeatureGeometry
 					});
 
@@ -284,8 +286,8 @@ describe('OlFeatureInfoHandler', () => {
 			const handler = setup({
 				layers: {
 					active: [
-						createDefaultLayer(layerId0),
-						createDefaultLayer(layerId1)
+						createDefaultLayer(layerId0, geoResourceId0),
+						createDefaultLayer(layerId1, geoResourceId1)
 					]
 				}
 			}, mockNullFeatureInfoProvider);

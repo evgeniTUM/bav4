@@ -20,6 +20,9 @@ import { Group as LayerGroup, Layer } from 'ol/layer';
 import { measurementReducer } from '../../../../../src/store/measurement/measurement.reducer';
 import { getDefaultLayerOptions } from '../../../../../src/modules/map/components/olMap/handler/OlLayerHandler';
 import { TEST_ID_ATTRIBUTE_NAME } from '../../../../../src/utils/markup';
+import { networkReducer } from '../../../../../src/store/network/network.reducer';
+import { createNoInitialStateMediaReducer } from '../../../../../src/store/media/media.reducer';
+import { setIsPortrait } from '../../../../../src/store/media/media.action';
 
 window.customElements.define(OlMap.tag, OlMap);
 
@@ -30,11 +33,19 @@ describe('OlMap', () => {
 	const initialZoomLevel = 10;
 	const initialRotationValue = .5;
 	const longPressDelay = 300;
+	const minZoomLevel = 5;
 	const maxZoomLevel = 21;
+	const id0 = 'id0';
+	const id1 = 'id1';
+	const geoResourceId0 = 'geoResourceId0';
+	const geoResourceId1 = 'geoResourceId1';
 
 	const mapServiceStub = {
 		getMinimalRotation() {
 			return .05;
+		},
+		getMinZoomLevel() {
+			return minZoomLevel;
 		},
 		getMaxZoomLevel() {
 			return maxZoomLevel;
@@ -45,9 +56,9 @@ describe('OlMap', () => {
 	const geoResourceServiceStub = {
 		byId(id) {
 			switch (id) {
-				case 'id0':
+				case 'geoResourceId0':
 					return new WmsGeoResource(id, 'Label0', 'https://something0.url', 'layer0', 'image/png');
-				case 'id1':
+				case 'geoResourceId1':
 					return new WmsGeoResource(id, 'Label1', 'https://something1.url', 'layer1', 'image/png');
 			}
 			return null;
@@ -127,6 +138,9 @@ describe('OlMap', () => {
 				center: initialCenter,
 				rotation: initialRotationValue,
 				fitRequest: null
+			}, media: {
+				portrait: false,
+				observeResponsiveParameter: true
 			}
 		};
 		const combinedState = {
@@ -139,7 +153,9 @@ describe('OlMap', () => {
 			pointer: pointerReducer,
 			position: positionReducer,
 			layers: layersReducer,
-			measurement: measurementReducer
+			measurement: measurementReducer,
+			network: networkReducer,
+			media: createNoInitialStateMediaReducer()
 		});
 
 
@@ -168,6 +184,7 @@ describe('OlMap', () => {
 			expect(element._view.getZoom()).toBe(initialZoomLevel);
 			expect(element._view.getCenter()).toEqual(initialCenter);
 			expect(element._view.getRotation()).toBe(initialRotationValue);
+			expect(element._view.getMinZoom()).toBe(minZoomLevel);
 			expect(element._view.getMaxZoom()).toBe(maxZoomLevel);
 			expect(element.shadowRoot.querySelector('#ol-map')).toBeTruthy();
 			//all default controls are removed, ScaleLine control added
@@ -196,6 +213,19 @@ describe('OlMap', () => {
 		});
 	});
 
+	describe('when orientation changes', () => {
+
+		it('updates the map size', async () => {
+			const element = await setup();
+			const map = element._map;
+			const spy = spyOn(map, 'updateSize');
+
+			setIsPortrait(true);
+
+			expect(spy).toHaveBeenCalled();
+		});
+	});
+
 	describe('view events', () => {
 
 		describe('rotation:change', () => {
@@ -214,6 +244,20 @@ describe('OlMap', () => {
 		});
 	});
 
+	describe('map load events', () => {
+
+		it('updates the \'fetching\' property in network store', async () => {
+			const element = await setup();
+
+			simulateMapEvent(element._map, MapEventType.LOADSTART);
+
+			expect(store.getState().network.fetching).toBeTrue();
+
+			simulateMapEvent(element._map, MapEventType.LOADEND);
+
+			expect(store.getState().network.fetching).toBeFalse();
+		});
+	});
 
 	describe('map move events', () => {
 		describe('movestart', () => {
@@ -225,6 +269,7 @@ describe('OlMap', () => {
 
 				expect(store.getState().map.moveStart.payload).toBe('movestart');
 			});
+
 			it('updates the \'beingMoved\' property in pointer store', async () => {
 				const element = await setup();
 
@@ -585,7 +630,7 @@ describe('OlMap', () => {
 				zoom: 5,
 				center: fromLonLat([11, 48]),
 				rotation: initialRotationValue,
-				duration: 500
+				duration: 200
 			});
 		});
 
@@ -600,7 +645,7 @@ describe('OlMap', () => {
 				zoom: initialZoomLevel,
 				center: initialCenter,
 				rotation: 1,
-				duration: 500
+				duration: 200
 			});
 		});
 
@@ -667,14 +712,16 @@ describe('OlMap', () => {
 		it('adds an olLayer with custom settings', async () => {
 			const element = await setup();
 			const map = element._map;
-			spyOn(layerServiceMock, 'toOlLayer').withArgs(jasmine.anything(), map).and.callFake(geoResource => new VectorLayer({ id: geoResource.id }));
+			const id = 'id0';
+			const geoResourceId0 = 'geoResourceId0';
+			spyOn(layerServiceMock, 'toOlLayer').withArgs(id, jasmine.anything(), map).and.callFake(id => new VectorLayer({ id: id }));
 
-			addLayer('id0', { visible: false, opacity: .5 });
+			addLayer(id0, { visible: false, opacity: .5, geoResourceId: geoResourceId0 });
 
 			expect(map.getLayers().getLength()).toBe(1);
 
 			const layer = map.getLayers().item(0);
-			expect(layer.get('id')).toBe('id0');
+			expect(layer.get('id')).toBe(id);
 			expect(layer.getOpacity()).toBe(.5);
 			expect(layer.getVisible()).toBeFalse();
 		});
@@ -682,41 +729,42 @@ describe('OlMap', () => {
 		it('adds an olLayer with custom index', async () => {
 			const element = await setup();
 			const map = element._map;
-			spyOn(layerServiceMock, 'toOlLayer').withArgs(jasmine.anything(), map).and.callFake(geoResource => new VectorLayer({ id: geoResource.id }));
+			spyOn(layerServiceMock, 'toOlLayer').withArgs(jasmine.anything(), jasmine.anything(), map).and.callFake(id => new VectorLayer({ id: id }));
 
-			addLayer('id0');
-			addLayer('id1', { zIndex: 0 });
+			addLayer(id0, { geoResourceId: geoResourceId0 });
+			addLayer(id1, { zIndex: 0, geoResourceId: geoResourceId1 });
 			expect(map.getLayers().getLength()).toBe(2);
 			const layer1 = map.getLayers().item(0);
-			expect(layer1.get('id')).toBe('id1');
+			expect(layer1.get('id')).toBe(id1);
 			const layer0 = map.getLayers().item(1);
-			expect(layer0.get('id')).toBe('id0');
+			expect(layer0.get('id')).toBe(id0);
 		});
 
 		it('adds an olLayer resolving a GeoResourceFuture', async (done) => {
 			const element = await setup();
 			const map = element._map;
-			const id = 'id';
-			const geoResource = new WmsGeoResource(id, 'Label2', 'https://something0.url', 'layer2', 'image/png');
-			const olPlaceHolderLayer = new Layer({ id: id, render: () => { } });
-			const olRealLayer = new VectorLayer({ id: id });
-			const future = new GeoResourceFuture(id, async () => geoResource);
-			spyOn(layerServiceMock, 'toOlLayer').withArgs(jasmine.anything(), map).and.callFake(geoResource => {
+			const geoResource = new WmsGeoResource(geoResourceId0, 'Label2', 'https://something0.url', 'layer2', 'image/png');
+			const olPlaceHolderLayer = new Layer({ id: id0, render: () => { } });
+			const olRealLayer = new VectorLayer({ id: id0 });
+			const future = new GeoResourceFuture(geoResourceId0, async () => geoResource);
+			spyOn(layerServiceMock, 'toOlLayer').withArgs(id0, jasmine.anything(), map).and.callFake((id, geoResource) => {
 				if (geoResource instanceof GeoResourceFuture) {
 					return olPlaceHolderLayer;
 				}
 				return olRealLayer;
 			});
-			spyOn(geoResourceServiceStub, 'byId').withArgs(id).and.returnValue(future);
+			spyOn(geoResourceServiceStub, 'byId').withArgs(geoResourceId0).and.returnValue(future);
 
-			addLayer(id);
+			addLayer(id0, { geoResourceId: geoResourceId0 });
 
 			expect(map.getLayers().getLength()).toBe(1);
 			const layer = map.getLayers().item(0);
+			expect(layer.get('id')).toBe(id0);
 			expect(layer).toEqual(olPlaceHolderLayer);
 
 			setTimeout(() => {
 				const layer = map.getLayers().item(0);
+				expect(layer.get('id')).toBe(id0);
 				expect(map.getLayers().getLength()).toBe(1);
 				expect(layer).toEqual(olRealLayer);
 				done();
@@ -726,25 +774,25 @@ describe('OlMap', () => {
 		it('adds an olLayer resolving a GeoResourceFuture with custom settings', async (done) => {
 			const element = await setup();
 			const map = element._map;
-			const id = 'id';
-			const geoResource = new VectorGeoResource(id, 'label', VectorSourceType.GEOJSON);
-			const olPlaceHolderLayer = new Layer({ id: id, render: () => { } });
-			const olRealLayer = new VectorLayer({ id: id });
-			const future = new GeoResourceFuture(id, async () => geoResource);
-			spyOn(layerServiceMock, 'toOlLayer').withArgs(jasmine.anything(), map).and.callFake(geoResource => {
+			const geoResource = new VectorGeoResource(geoResourceId0, 'label', VectorSourceType.GEOJSON);
+			const olPlaceHolderLayer = new Layer({ id: id0, render: () => { } });
+			const olRealLayer = new VectorLayer({ id: id0 });
+			const future = new GeoResourceFuture(geoResourceId0, async () => geoResource);
+			spyOn(layerServiceMock, 'toOlLayer').withArgs(id0, jasmine.anything(), map).and.callFake((id, geoResource) => {
 				if (geoResource instanceof GeoResourceFuture) {
 					return olPlaceHolderLayer;
 				}
 				return olRealLayer;
 			});
-			spyOn(geoResourceServiceStub, 'byId').withArgs(id).and.returnValue(future);
+			spyOn(geoResourceServiceStub, 'byId').withArgs(geoResourceId0).and.returnValue(future);
 
-			addLayer(id, { visible: false, opacity: .5 });
+			addLayer(id0, { visible: false, opacity: .5, geoResourceId: geoResourceId0 });
 
 			setTimeout(() => {
 				const layer = map.getLayers().item(0);
 				expect(map.getLayers().getLength()).toBe(1);
 				expect(layer).toEqual(olRealLayer);
+				expect(layer.get('id')).toBe(id0);
 				expect(layer.getOpacity()).toBe(.5);
 				expect(layer.getVisible()).toBeFalse();
 				done();
@@ -752,6 +800,7 @@ describe('OlMap', () => {
 		});
 
 		it('adds an olLayer resolving a GeoResourceFuture with custom index', async (done) => {
+			// for this test layer.id === geoResource.id
 			const element = await setup();
 			const map = element._map;
 			const underTestLayerId = 'id';
@@ -762,8 +811,8 @@ describe('OlMap', () => {
 			const future = new GeoResourceFuture(underTestLayerId, async () => geoResource);
 			const nonAsyncOlLayer = new VectorLayer({ id: nonAsyncLayerId });
 			const nonAsyncGeoResouce = new VectorGeoResource(nonAsyncLayerId, 'label', VectorSourceType.GEOJSON);
-			spyOn(layerServiceMock, 'toOlLayer').withArgs(jasmine.anything(), map).and.callFake(geoResource => {
-				if (geoResource.id === underTestLayerId) {
+			spyOn(layerServiceMock, 'toOlLayer').withArgs(jasmine.anything(), jasmine.anything(), map).and.callFake((id, geoResource) => {
+				if (id === underTestLayerId) {
 					if (geoResource instanceof GeoResourceFuture) {
 						return olPlaceHolderLayer;
 					}
@@ -792,18 +841,17 @@ describe('OlMap', () => {
 		it('adds NO layer for an unresolveable GeoResourceFuture', async (done) => {
 			const element = await setup();
 			const map = element._map;
-			const id = 'id';
 			const message = 'error';
-			const future = new GeoResourceFuture(id, async () => Promise.reject(message));
-			spyOn(layerServiceMock, 'toOlLayer').withArgs(jasmine.anything(), map).and.callFake(geoResource => new Layer({ id: geoResource.id, render: () => { }, properties: { placeholder: true } }));
+			const future = new GeoResourceFuture(geoResourceId0, async () => Promise.reject(message));
+			spyOn(layerServiceMock, 'toOlLayer').withArgs(id0, jasmine.anything(), map).and.callFake((id) => new Layer({ id: id, render: () => { }, properties: { placeholder: true } }));
 			const geoResourceServiceSpy = spyOn(geoResourceServiceStub, 'addOrReplace');
-			spyOn(geoResourceServiceStub, 'byId').withArgs(id).and.returnValue(future);
+			spyOn(geoResourceServiceStub, 'byId').withArgs(geoResourceId0).and.returnValue(future);
 			const warnSpy = spyOn(console, 'warn');
 
-			addLayer(id);
+			addLayer(id0, { geoResourceId: geoResourceId0 });
 			expect(map.getLayers().getLength()).toBe(1);
 			const layer = map.getLayers().item(0);
-			expect(layer.get('id')).toBe(id);
+			expect(layer.get('id')).toBe(id0);
 
 			setTimeout(() => {
 				expect(map.getLayers().getLength()).toBe(0);
@@ -817,11 +865,11 @@ describe('OlMap', () => {
 		it('removes layer from state store when olLayer not available', async () => {
 			const element = await setup();
 			const map = element._map;
-			spyOn(layerServiceMock, 'toOlLayer').withArgs(jasmine.anything(), map).and.callFake(geoResource => new VectorLayer({ id: geoResource.id }));
+			spyOn(layerServiceMock, 'toOlLayer').withArgs(id0, jasmine.anything(), map).and.callFake(id => new VectorLayer({ id: id }));
 			const warnSpy = spyOn(console, 'warn');
 			expect(store.getState().layers.active.length).toBe(0);
 
-			addLayer('id0');
+			addLayer(id0, { geoResourceId: geoResourceId0 });
 			expect(map.getLayers().getLength()).toBe(1);
 			expect(store.getState().layers.active.length).toBe(1);
 
@@ -834,12 +882,12 @@ describe('OlMap', () => {
 		it('removes an olLayer', async () => {
 			const element = await setup();
 			const map = element._map;
-			spyOn(layerServiceMock, 'toOlLayer').withArgs(jasmine.anything(), map).and.callFake(geoResource => new VectorLayer({ id: geoResource.id }));
+			spyOn(layerServiceMock, 'toOlLayer').withArgs(id0, jasmine.anything(), map).and.callFake(id => new VectorLayer({ id: id }));
 
-			addLayer('id0');
+			addLayer(id0, { geoResourceId: geoResourceId0 });
 			expect(map.getLayers().getLength()).toBe(1);
 
-			removeLayer('id0');
+			removeLayer(id0);
 
 			expect(map.getLayers().getLength()).toBe(0);
 		});
@@ -849,11 +897,11 @@ describe('OlMap', () => {
 			const map = element._map;
 			const olVectorSource = new VectorSource();
 			const vectorSourceSpy = spyOn(olVectorSource, 'clear');
-			spyOn(layerServiceMock, 'toOlLayer').withArgs(jasmine.anything(), map).and.callFake(geoResource => new VectorLayer({ id: geoResource.id, source: olVectorSource }));
+			spyOn(layerServiceMock, 'toOlLayer').withArgs(id0, jasmine.anything(), map).and.callFake(id => new VectorLayer({ id: id, source: olVectorSource }));
 
-			addLayer('id0');
+			addLayer(id0, { geoResourceId: geoResourceId0 });
 
-			removeLayer('id0');
+			removeLayer(id0);
 
 			expect(vectorSourceSpy).toHaveBeenCalled();
 		});
@@ -863,14 +911,14 @@ describe('OlMap', () => {
 			const map = element._map;
 			const olVectorSource = new VectorSource();
 			const vectorSourceSpy = spyOn(olVectorSource, 'clear');
-			spyOn(layerServiceMock, 'toOlLayer').withArgs(jasmine.anything(), map).and.callFake(geoResource => new LayerGroup({
-				id: geoResource.id,
-				layers: [new VectorLayer({ id: 'sub_' + geoResource.id, source: olVectorSource })]
+			spyOn(layerServiceMock, 'toOlLayer').withArgs(id0, jasmine.anything(), map).and.callFake(id => new LayerGroup({
+				id: id,
+				layers: [new VectorLayer({ id: 'sub_' + id, source: olVectorSource })]
 			}));
 
-			addLayer('id0');
+			addLayer(id0, { geoResourceId: geoResourceId0 });
 
-			removeLayer('id0');
+			removeLayer(id0);
 
 			expect(vectorSourceSpy).toHaveBeenCalled();
 		});
@@ -878,10 +926,10 @@ describe('OlMap', () => {
 		it('modifys the visibility of an olLayer', async () => {
 			const element = await setup();
 			const map = element._map;
-			spyOn(layerServiceMock, 'toOlLayer').withArgs(jasmine.anything(), map).and.callFake(geoResource => new VectorLayer({ id: geoResource.id }));
+			spyOn(layerServiceMock, 'toOlLayer').withArgs(jasmine.anything(), jasmine.anything(), map).and.callFake(id => new VectorLayer({ id: id }));
 
-			addLayer('id0');
-			addLayer('id1');
+			addLayer(id0, { geoResourceId: geoResourceId0 });
+			addLayer(id1, { geoResourceId: geoResourceId1 });
 			expect(map.getLayers().getLength()).toBe(2);
 
 			modifyLayer('id0', { visible: false, opacity: .5 });
@@ -900,10 +948,10 @@ describe('OlMap', () => {
 		it('modifys the z-index of an olLayer', async () => {
 			const element = await setup();
 			const map = element._map;
-			spyOn(layerServiceMock, 'toOlLayer').withArgs(jasmine.anything(), map).and.callFake(geoResource => new VectorLayer({ id: geoResource.id }));
+			spyOn(layerServiceMock, 'toOlLayer').withArgs(jasmine.anything(), jasmine.anything(), map).and.callFake(id => new VectorLayer({ id: id }));
 
-			addLayer('id0');
-			addLayer('id1');
+			addLayer(id0, { geoResourceId: geoResourceId0 });
+			addLayer(id1, { geoResourceId: geoResourceId1 });
 			expect(map.getLayers().getLength()).toBe(2);
 
 			modifyLayer('id0', { zIndex: 2 });

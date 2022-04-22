@@ -56,7 +56,27 @@ export const TabId = Object.freeze({
 	ROUTING: 'routing',
 	SEARCH: 'search',
 	FEATUREINFO: 'featureinfo',
-	EXTENSION: 'extension'
+	EXTENSION: 'extension',
+
+	valueOf: index => {
+		switch (index) {
+			case 0:
+				return TabId.TOPICS;
+			case 1:
+				return TabId.MAPS;
+			case 2:
+				return TabId.SEARCH;
+			case 3:
+				return TabId.ROUTING;
+			case 4:
+				return TabId.MISC;
+			case 5:
+				return TabId.FEATUREINFO;
+			case 6:
+				return TabId.EXTENSION;
+		}
+		return null;
+	}
 });
 
 /**

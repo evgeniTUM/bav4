@@ -60,6 +60,33 @@ describe('ImportToolContent', () => {
 		});
 	});
 
+	describe('checks touch layout', () => {
+
+		it('layouts for non-touch devices', async () => {
+			const element = await setup();
+
+			const splitText = element.shadowRoot.querySelector('.ba-tool-container__split-text');
+			expect(window.getComputedStyle(splitText).display).toBe('block');
+
+			const dragDropPreview = element.shadowRoot.querySelector('.drag-drop-preview');
+			expect(window.getComputedStyle(dragDropPreview).display).toBe('block');
+		});
+
+		it('layouts for touch devices', async () => {
+			const touchConfig = {
+				embed: false,
+				isTouch: true
+			};
+			const element = await setup(touchConfig);
+
+			const splitText = element.shadowRoot.querySelector('.ba-tool-container__split-text');
+			expect(window.getComputedStyle(splitText).display).toBe('none');
+
+			const dragDropPreview = element.shadowRoot.querySelector('.drag-drop-preview');
+			expect(window.getComputedStyle(dragDropPreview).display).toBe('none');
+		});
+	});
+
 	describe('when instantiated', () => {
 
 		it('has a model with default values', async () => {
@@ -193,6 +220,17 @@ describe('ImportToolContent', () => {
 				expect(store.getState().import.latest).toBeNull();
 				done();
 			});
+		});
+
+		it('clears the file-value on focus of label-element', async () => {
+			const element = await setup();
+			const fileUploadInput = element.shadowRoot.querySelector('#fileupload');
+			const inputLabel = fileUploadInput.closest('label');
+			const valueSpy = spyOnProperty(fileUploadInput, 'value', 'set').and.callThrough();
+
+			inputLabel.dispatchEvent(new Event('focus'));
+
+			expect(valueSpy).toHaveBeenCalledWith('');
 		});
 	});
 });

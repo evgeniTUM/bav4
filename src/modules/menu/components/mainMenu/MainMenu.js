@@ -1,5 +1,4 @@
 import { html, nothing } from 'lit-html';
-import { BaElement, renderTagOf } from '../../../BaElement';
 import css from './mainMenu.css';
 import { $injector } from '../../../../injection';
 import { DevInfo } from '../../../utils/components/devInfo/DevInfo';
@@ -10,22 +9,57 @@ import { FeatureInfoPanel } from '../../../featureInfo/components/FeatureInfoPan
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { MapsContentPanel } from './content/maps/MapsContentPanel';
 import { BvvMiscContentPanel } from './content/misc/BvvMiscContentPanel';
+import { MvuElement } from '../../../MvuElement';
+import VanillaSwipe from 'vanilla-swipe';
 
+
+const Update_Main_Menu = 'update_main_menu';
+const Update_Media = 'update_media';
 
 /**
  *
  * @class
  * @author alsturm
  * @author taulinger
+ * @author thiloSchlemmer
  */
-export class MainMenu extends BaElement {
+export class MainMenu extends MvuElement {
 
 	constructor() {
-		super();
+		super({
+			tab: null,
+			open: false,
+			portrait: false,
+			minWidth: false,
+			observeResponsiveParameter: false
+		});
 		const { EnvironmentService: environmentService, TranslationService: translationService } = $injector.inject('EnvironmentService', 'TranslationService');
 		this._environmentService = environmentService;
 		this._translationService = translationService;
-		this._activeTab = null;
+	}
+
+	onInitialize() {
+		this.observe(state => state.mainMenu, data => this.signal(Update_Main_Menu, data), true);
+		this.observe(state => state.media, data => this.signal(Update_Media, data), true);
+	}
+
+
+	update(type, data, model) {
+		switch (type) {
+			case Update_Main_Menu:
+				return {
+					...model,
+					open: data.open,
+					tab: data.tab
+				};
+			case Update_Media:
+				return {
+					...model,
+					portrait: data.portrait,
+					minWidth: data.minWidth,
+					observeResponsiveParameter: data.observeResponsiveParameter
+				};
+		}
 	}
 
 	_activateTab(key) {
@@ -36,18 +70,36 @@ export class MainMenu extends BaElement {
 	/**
 	* @override
 	*/
-	onAfterRender() {
-		this._activateTab(this._activeTab);
+	onAfterRender(firsttime) {
+		const { tab } = this.getModel();
+		this._activateTab(tab);
+		if (firsttime) {
+
+			const handler = (event, data) => {
+				if (['touchmove', 'mousemove'].includes(event.type) && data.directionY === 'TOP' && data.absY > MainMenu.SWIPE_DELTA_PX) {
+					toggle();
+				}
+			};
+			const swipeElement = this.shadowRoot.getElementById('toggle');
+
+			const swipe = new VanillaSwipe({
+				element: swipeElement,
+				onSwipeStart: handler,
+				delta: MainMenu.SWIPE_DELTA_PX,
+				mouseTrackingEnabled: true
+			});
+
+			swipe.init();
+		}
+
 	}
 
 	/**
 	 * @override
 	 */
-	createView(state) {
+	createView(model) {
 
-		const { open, tab, portrait, minWidth, observeResponsiveParameter } = state;
-
-		this._activeTab = tab;
+		const { open, tab, portrait, minWidth, observeResponsiveParameter } = model;
 
 		const getOrientationClass = () => portrait ? 'is-portrait' : 'is-landscape';
 
@@ -69,6 +121,11 @@ export class MainMenu extends BaElement {
 			container.style.width = parseInt(event.target.value) + 'em';
 		};
 
+		const getValue = () => {
+			const container = this.shadowRoot.getElementById('mainmenu');
+			return (container && container.style.width !== '') ? parseInt(container.style.width) : MainMenu.INITIAL_WIDTH_EM;
+		};
+
 		const getSlider = () => {
 
 			const onPreventDragging = (e) => {
@@ -78,10 +135,11 @@ export class MainMenu extends BaElement {
 
 			return html`<div class='slider-container'>
 				<input  
+					id='rangeslider'
 					type="range" 
-					min="28" 
-					max="100" 
-					value="28" 
+					min="${MainMenu.MIN_WIDTH_EM}" 
+					max="${MainMenu.MAX_WIDTH_EM}" 
+					value="${getValue()}"  
 					draggable='true' 
 					@input=${changeWidth} 
 					@dragstart=${onPreventDragging}
@@ -93,7 +151,7 @@ export class MainMenu extends BaElement {
 			<style>${css}</style>
 			<div class="${getOrientationClass()} ${getPreloadClass()}">
 				<div id='mainmenu' class="main-menu ${getOverlayClass()} ${getMinWidthClass()} ${getFullSizeClass()}">            
-					<button @click="${toggle}" title=${translate('menu_main_open_button')} class="main-menu__close-button">
+					<button id='toggle' @click="${toggle}" title=${translate('menu_main_open_button')} class="main-menu__close-button">
 						<span class='main-menu__close-button-text'>${translate('menu_main_open_button')}</span>	
 						<i class='resize-icon'></i>	
 					</button>	
@@ -108,7 +166,7 @@ export class MainMenu extends BaElement {
 						</div>
 					</div>		
 					<div>
-						${renderTagOf(DevInfo)}	
+						${this._getDevInfo()}	
 					</div>	
 				</div>			
 			</div>			
@@ -118,32 +176,48 @@ export class MainMenu extends BaElement {
 	_getContentPanel(index) {
 		switch (index) {
 			case TabId.MAPS:
-				return html`${unsafeHTML(`<${MapsContentPanel.tag}/>`)}`;
+				return html`${unsafeHTML(`<${MapsContentPanel.tag} data-test-id />`)}`;
 			case TabId.MISC:
-				return html`${unsafeHTML(`<${BvvMiscContentPanel.tag}/>`)}`;
+				return html`${unsafeHTML(`<${BvvMiscContentPanel.tag} data-test-id />`)}`;
 			case TabId.SEARCH:
-				return html`${unsafeHTML(`<${SearchResultsPanel.tag}/>`)}`;
+				return html`${unsafeHTML(`<${SearchResultsPanel.tag} data-test-id />`)}`;
 			case TabId.TOPICS:
-				return html`${unsafeHTML(`<${TopicsContentPanel.tag}/>`)}`;
+				return html`${unsafeHTML(`<${TopicsContentPanel.tag} data-test-id />`)}`;
 			case TabId.FEATUREINFO:
-				return html`${unsafeHTML(`<${FeatureInfoPanel.tag}/>`)}`;
+				return html`${unsafeHTML(`<${FeatureInfoPanel.tag} data-test-id />`)}`;
 			default:
 				return nothing;
 		}
+	}
+
+	_getDevInfo() {
+		return html`${unsafeHTML(`<${DevInfo.tag}/>`)}`;
 	}
 
 	isRenderingSkipped() {
 		return this._environmentService.isEmbedded();
 	}
 
+	static get SWIPE_DELTA_PX() {
+		return 50;
+	}
+
+	static get INITIAL_WIDTH_EM() {
+		return 28;
+	}
+
+	static get MIN_WIDTH_EM() {
+		return 28;
+	}
+
+	static get MAX_WIDTH_EM() {
+		return 100;
+	}
+
 	/**
 	 * @override
 	 * @param {Object} globalState
 	 */
-	extractState(globalState) {
-		const { mainMenu: { open, tab }, media: { portrait, minWidth, observeResponsiveParameter } } = globalState;
-		return { open, tab, portrait, minWidth, observeResponsiveParameter };
-	}
 
 	static get tag() {
 		return 'ba-main-menu';

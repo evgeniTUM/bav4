@@ -28,6 +28,7 @@ describe('i18n for menu module', () => {
 		expect(map.toolbox_drawTool_style_desc).toBe('Beschreibung');
 		expect(map.toolbox_drawTool_style_symbol).toBe('Symbol');
 		expect(map.toolbox_drawTool_style_symbol_select).toBe('Symbol auswählen');
+		expect(map.toolbox_drawTool_draw_init).toBe('Einen Zeichnungstyp auswählen, um die Zeichnung zu beginnen');
 		expect(map.toolbox_drawTool_draw_active).toBe('In die Karte tippen, um die Zeichnung zu beginnen');
 		expect(map.toolbox_drawTool_draw_draw).toBe('In die Karte tippen, um die Linie zu zeichnen (Doppelt tippen zum Beenden)');
 		expect(map.toolbox_drawTool_draw_modify).toBe('Tippe auf die Zeichnung, um einen Punkt hinzuzufügen;</br> Punkt verschieben: tippen und ziehen;</br> Punkt löschen: auf Punkt tippen');
@@ -62,7 +63,7 @@ describe('i18n for menu module', () => {
 		expect(map.toolbox_toolbar_draw_button).toBe('Zeichnen');
 		expect(map.toolbox_toolbar_share_button).toBe('Teilen');
 		expect(map.toolbox_toolbar_measure_button).toBe('Messen');
-		expect(map.toolbox_toolbar_logo_badge).toBe('Beta');
+		expect(map.toolbox_toolbar_logo_badge).toBe('4.0');
 		expect(map.toolbox_clipboard_link_notification_text).toBe('Der Link');
 		expect(map.toolbox_measureTool_clipboard_measure_area_notification_text).toBe('Die Fläche');
 		expect(map.toolbox_measureTool_clipboard_measure_distance_notification_text).toBe('Die Länge');
@@ -114,6 +115,7 @@ describe('i18n for menu module', () => {
 		expect(map.toolbox_drawTool_style_desc).toBe('Description');
 		expect(map.toolbox_drawTool_style_symbol).toBe('Symbol');
 		expect(map.toolbox_drawTool_style_symbol_select).toBe('select Symbol');
+		expect(map.toolbox_drawTool_draw_init).toBe('Select a drawing type to start drawing');
 		expect(map.toolbox_drawTool_draw_active).toBe('Tap on the map to start drawing');
 		expect(map.toolbox_drawTool_draw_draw).toBe('Tap on the map to continue drawing the line (double-tap to finish)');
 		expect(map.toolbox_drawTool_draw_modify).toBe('To add a point, tap on a drawing;</br> To move a point, press and drag it;</br> To delete a point, tap on it');
@@ -148,7 +150,7 @@ describe('i18n for menu module', () => {
 		expect(map.toolbox_toolbar_draw_button).toBe('Draw');
 		expect(map.toolbox_toolbar_share_button).toBe('Share');
 		expect(map.toolbox_toolbar_measure_button).toBe('Measure');
-		expect(map.toolbox_toolbar_logo_badge).toBe('Beta');
+		expect(map.toolbox_toolbar_logo_badge).toBe('4.0');
 		expect(map.toolbox_clipboard_link_notification_text).toBe('The link');
 		expect(map.toolbox_measureTool_clipboard_measure_area_notification_text).toBe('The area');
 		expect(map.toolbox_measureTool_clipboard_measure_distance_notification_text).toBe('The distance');
@@ -176,7 +178,7 @@ describe('i18n for menu module', () => {
 	});
 
 	it('have the expected amount of translations', () => {
-		const expectedSize = 82;
+		const expectedSize = 83;
 		const deMap = provide('de');
 		const enMap = provide('en');
 

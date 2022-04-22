@@ -8,6 +8,7 @@ import { finish, remove, reset } from '../../../../store/measurement/measurement
 import css from './measureToolContent.css';
 import { AbstractToolContent } from '../toolContainer/AbstractToolContent';
 import { emitNotification, LevelTypes } from '../../../../store/notifications/notifications.action';
+import { decodeHtmlEntities } from '../../../../utils/markup';
 
 const Update = 'update';
 const Update_FileSaveResult = 'update_fileSaveResult';
@@ -72,15 +73,18 @@ export class MeasureToolContent extends AbstractToolContent {
 		const formattedArea = this._unitsService.formatArea(statistic.area, 2);
 		const formattedDistancePackage = buildPackage(formattedDistance);
 		const formattedAreaPackage = buildPackage(formattedArea);
-		const onCopyDistanceToClipboard = async () => this._copyValueToClipboard(formattedDistance, 'distance');
-		const onCopyAreaToClipboard = async () => this._copyValueToClipboard(formattedArea, 'area');
+
+		// unit-strings could contain encoded special characters (i.e. [²]->[&sup2;]); to copy these
+		// characters to clipboard, we must use the decoded values
+		const onCopyDistanceToClipboard = async () => this._copyValueToClipboard(decodeHtmlEntities(formattedDistance), 'distance');
+		const onCopyAreaToClipboard = async () => this._copyValueToClipboard(decodeHtmlEntities(formattedArea), 'area');
 
 		return html`
         <style>${css}</style>
-            	<div class="ba-tool-container">
-                	<div class="ba-tool-container__title">  	    
-						${translate('toolbox_measureTool_header')}                   
-                	</div>  
+            <div class="ba-tool-container" >
+               	<div class="ba-tool-container__title">  	    
+					${translate('toolbox_measureTool_header')}                   
+               	</div>  
 				<div class="ba-tool-container__content">	
 					<div class='tool-container__text-item'>
 						<span>
@@ -108,19 +112,20 @@ export class MeasureToolContent extends AbstractToolContent {
 					<div class='sub-text'>${subText}</div>
 				</div>	
 				<div class="ba-tool-container__actions">                         						 
-					${buttons}
-					</div>                
+					${buttons}					
             	</div>	  
-            </div>	  
-     
+            </div>	       
         `;
 
 	}
 
 	_getButtons(model) {
-		const buttons = [];
 		const translate = (key) => this._translationService.translate(key);
 		const { statistic, mode } = model;
+
+		const startNewCompliantModes = ['draw', 'modify', 'select'];
+		const finishAllowed = (this._environmentService.isTouch() ? statistic.length > 0 : statistic.area > 0) && mode === 'draw';
+		const removeAllowed = mode === 'draw' ? (this._environmentService.isTouch() ? statistic.length > 0 : statistic.area > 0) : statistic.length > 0;
 
 		const getButton = (id, title, onClick) => {
 			return html`<ba-button id=${id} data-test-id
@@ -128,36 +133,37 @@ export class MeasureToolContent extends AbstractToolContent {
 								.label=${title}
 								@click=${onClick}></ba-button>`;
 		};
-		// Start-New-Button
-		const startNewCompliantModes = ['draw', 'modify', 'select'];
-		const finishAllowed = (this._environmentService.isTouch() ? statistic.length > 0 : statistic.area > 0) && mode === 'draw';
-		if (startNewCompliantModes.includes(mode)) {
-			let id = 'startnew';
-			let title = translate('toolbox_measureTool_start_new');
-			let onClick = () => reset();
-			// alternate Finish-Button
-			if (finishAllowed) {
-				id = 'finish';
-				title = translate('toolbox_drawTool_finish');
-				onClick = () => finish();
-			}
 
-			buttons.push(getButton(id, title, onClick));
-		}
+		const getStartNew = () => {
+			return startNewCompliantModes.includes(mode) && finishAllowed ?
+				nothing :
+				getButton('startnew', translate('toolbox_measureTool_start_new'), () => reset());
+		};
 
-		// Remove-Button
-		const removeAllowed = mode === 'draw' ? (this._environmentService.isTouch() ? statistic.length > 0 : statistic.area > 0) : statistic.length > 0;
-		if (removeAllowed) {
-			const id = 'remove';
-			const title = mode === 'draw' ? translate('toolbox_measureTool_delete_point') : translate('toolbox_measureTool_delete_measure');
-			const onClick = () => remove();
-			buttons.push(getButton(id, title, onClick));
-		}
+		const getFinish = () => {
+			return startNewCompliantModes.includes(mode) && finishAllowed ?
+				getButton('finish', translate('toolbox_drawTool_finish'), () => finish()) :
+				nothing;
+		};
 
-		const getShareButton = () => html`<ba-share-button .share=${model.fileSaveResult}></ba-share-button>`;
-		buttons.push(getShareButton(model));
+		const getRemovePoint = () => {
+			return mode === 'draw' && removeAllowed ?
+				getButton('remove', translate('toolbox_measureTool_delete_point'), () => remove()) :
+				nothing;
+		};
 
-		return buttons;
+		const getRemoveMeasure = () => {
+			return mode !== 'draw' && removeAllowed ?
+				getButton('remove', translate('toolbox_measureTool_delete_measure'), () => remove()) :
+				nothing;
+		};
+
+		const getShare = () => {
+			return html`<ba-share-button .share=${model.fileSaveResult}></ba-share-button>`;
+		};
+
+
+		return html`${getStartNew()}${getFinish()}${getRemovePoint()}${getRemoveMeasure()}${getShare()}`;
 	}
 
 	_getSubText(state) {

@@ -17,7 +17,8 @@ export class ImportToolContent extends AbstractToolContent {
 			mode: null
 		});
 
-		const { TranslationService, SourceTypeService } = $injector.inject('TranslationService', 'SourceTypeService');
+		const { EnvironmentService: environmentService, TranslationService, SourceTypeService } = $injector.inject('TranslationService', 'EnvironmentService', 'TranslationService', 'SourceTypeService');
+		this._environmentService = environmentService;
 		this._translationService = TranslationService;
 		this._sourceTypeService = SourceTypeService;
 	}
@@ -26,10 +27,13 @@ export class ImportToolContent extends AbstractToolContent {
 	createView() {
 		const translate = (key) => this._translationService.translate(key);
 
+		const clearInput = () => {
+			const inputElement = this._root.querySelector('input');
+			inputElement.value = '';
+		};
 		const onUpload = () => {
 			const inputElement = this._root.querySelector('input');
 			const files = inputElement?.files;
-
 			const importData = async (blob, sourceType) => {
 				const text = await blob.text();
 				setData(text, sourceType);
@@ -51,6 +55,11 @@ export class ImportToolContent extends AbstractToolContent {
 				handleFiles(files);
 			}
 		};
+
+		const getIsTouchHide = () => {
+			return this._environmentService.isTouch() ? 'hide' : '';
+		};
+
 		return html`
         <style>${css}</style>
             <div class="ba-tool-container">
@@ -60,12 +69,12 @@ export class ImportToolContent extends AbstractToolContent {
 						${translate('toolbox_import_data_subheader')}								
 					</span>
 				</div>
-				<div class='ba-tool-container__split-text'>
+				<div class='ba-tool-container__split-text ${getIsTouchHide()}'>
 					${translate('toolbox_import_data_seperator')}		
 				</div>
 				<div class="ba-tool-container__content divider" >                						     				
 					<div class="tool-container__buttons">      
-						<label for='fileupload' class="tool-container__button" role="button" tabindex="0" target="_blank" id="share-api" title="upload" > 	                              
+						<label for='fileupload' class="tool-container__button" role="button" tabindex="0" target="_blank" id="share-api" title="upload" @focus=${clearInput}> 	                              
 							<div class="tool-container__background"></div>
 							<div class="tool-container__icon data"></div>  
 							<div class="tool-container__button-text" >
@@ -74,7 +83,7 @@ export class ImportToolContent extends AbstractToolContent {
 							<input id='fileupload' type='file' @change=${onUpload}></input>
 						</label>
 					</div>
-					<div  class='drag-drop-preview'>
+					<div  class='drag-drop-preview ${getIsTouchHide()}'>
 						<div class='text-to-search'>
 							${translate('toolbox_import_data_draganddrop')}								
 						</div>

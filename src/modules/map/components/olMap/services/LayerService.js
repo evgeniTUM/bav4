@@ -4,30 +4,35 @@ import { Image as ImageLayer, Group as LayerGroup, Layer } from 'ol/layer';
 import ImageWMS from 'ol/source/ImageWMS';
 import TileLayer from 'ol/layer/Tile';
 import { XYZ as XYZSource } from 'ol/source';
-import { setFetching } from '../../../../../store/network/network.action';
 
 /**
- * Converts a geoResource to an ol layer.
- * Caching will be implemented in the future.
+ * Converts a GeoResource to a ol layer instance.
  * @class
  * @author taulinger
  */
 export class LayerService {
 
-	toOlLayer(geoResource, olMap) {
+	/**
+	 *
+	 * @param {string} id layerId
+	 * @param {GeoResourceTypes} geoResource
+	 * @param {Map} olMap
+	 * @returns ol layer
+	 */
+	toOlLayer(id, geoResource, olMap) {
 
 		const {
 			GeoResourceService: georesourceService,
 			VectorLayerService: vectorLayerService
 		} = $injector.inject('GeoResourceService', 'VectorLayerService');
 
-		const { id, minZoom, maxZoom, opacity } = geoResource;
+		const { minZoom, maxZoom, opacity } = geoResource;
 
 		switch (geoResource.getType()) {
 
 			case GeoResourceTypes.FUTURE: {
 				// in that case we return a placeholder layer
-				return new Layer({ id: geoResource.id, render: () => { }, properties: { placeholder: true } });
+				return new Layer({ id: id, render: () => { }, properties: { placeholder: true } });
 			}
 
 			case GeoResourceTypes.WMS: {
@@ -35,6 +40,7 @@ export class LayerService {
 				const imageWmsSource = new ImageWMS({
 					url: geoResource.url,
 					crossOrigin: 'anonymous',
+					ratio: 1,
 					params: {
 						'LAYERS': geoResource.layers,
 						'FORMAT': geoResource.format,
@@ -42,8 +48,6 @@ export class LayerService {
 						...geoResource.extraParams
 					}
 				});
-				imageWmsSource.on('imageloadstart', () => setFetching(true));
-				imageWmsSource.on(['imageloadend', 'imageloaderror'], () => setFetching(false));
 
 				return new ImageLayer({
 					id: id,
@@ -59,8 +63,6 @@ export class LayerService {
 				const xyZsource = new XYZSource({
 					url: geoResource.url
 				});
-				xyZsource.on('tileloadstart', () => setFetching(true));
-				xyZsource.on(['tileloadend', 'tileloaderror'], () => setFetching(false));
 
 				return new TileLayer({
 					id: id,
@@ -74,14 +76,14 @@ export class LayerService {
 
 			case GeoResourceTypes.VECTOR: {
 
-				return vectorLayerService.createVectorLayer(geoResource, olMap);
+				return vectorLayerService.createVectorLayer(id, geoResource, olMap);
 			}
 
 			case GeoResourceTypes.AGGREGATE: {
 				return new LayerGroup({
 					id: id,
 					opacity: opacity,
-					layers: geoResource.geoResourceIds.map(id => this.toOlLayer(georesourceService.byId(id))),
+					layers: geoResource.geoResourceIds.map(id => this.toOlLayer(id, georesourceService.byId(id))),
 					minZoom: minZoom ?? undefined,
 					maxZoom: maxZoom ?? undefined
 				});

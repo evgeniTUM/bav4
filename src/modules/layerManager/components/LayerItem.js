@@ -1,11 +1,11 @@
-import { html } from 'lit-html';
+import { html, nothing } from 'lit-html';
 import css from './layerItem.css';
 import { $injector } from '../../../injection';
 import { classMap } from 'lit-html/directives/class-map.js';
 import { addLayer, modifyLayer, removeLayer } from './../../../store/layers/layers.action';
 import arrowUpSvg from './assets/arrow-up-short.svg';
 import arrowDownSvg from './assets/arrow-down-short.svg';
-import duplicate from './assets/clone.svg';
+import clone from './assets/clone.svg';
 import removeSvg from './assets/trash.svg';
 import infoSvg from './assets/info.svg';
 import { AbstractMvuContentPanel } from '../../menu/components/mainMenu/content/AbstractMvuContentPanel';
@@ -35,7 +35,7 @@ export class LayerItem extends AbstractMvuContentPanel {
 
 	constructor() {
 		super({
-			layer: { id: '', label: '', visible: true, collapsed: true, opacity: 1 }
+			layer: null
 		});
 		const { TranslationService } = $injector.inject('TranslationService');
 		this._translationService = TranslationService;
@@ -48,8 +48,17 @@ export class LayerItem extends AbstractMvuContentPanel {
 	 */
 	update(type, data, model) {
 		switch (type) {
+
 			case Update_Layer:
-				return { ...model, layer: { ...data } };
+				return {
+					...model,
+					layer: {
+						...data,
+						visible: data && data.visible != null ? data.visible : true,
+						collapsed: data && data.collapsed != null ? data.collapsed : true,
+						opacity: data && data.opacity != null ? data.opacity : 1
+					}
+				};
 			case Update_Layer_Collapsed:
 				return { ...model, layer: { ...model.layer, collapsed: data } };
 		}
@@ -57,8 +66,8 @@ export class LayerItem extends AbstractMvuContentPanel {
 
 
 	/**
-	* @override
-	*/
+* @override
+*/
 	onAfterRender(firsttime) {
 		if (firsttime) {
 			/* grab sliders on page */
@@ -84,11 +93,15 @@ export class LayerItem extends AbstractMvuContentPanel {
 	}
 
 	/**
-	 * @override
-	 */
+ * @override
+ */
 	createView(model) {
 		const translate = (key) => this._translationService.translate(key);
 		const { layer } = model;
+
+		if (!layer) {
+			return nothing;
+		}
 		const currentLabel = layer.label === '' ? layer.id : layer.label;
 
 		const getCollapseTitle = () => {
@@ -124,9 +137,9 @@ export class LayerItem extends AbstractMvuContentPanel {
 			}
 		};
 
-		const duplicateLayer = () => {
+		const cloneLayer = () => {
 			//state store change -> implicit call of #render()
-			addLayer(`${layer.geoResourceId}_${createUniqueId()}`, { ...layer, label: `${layer.label} (${translate('layerManager_layer_copy')})`, zIndex: layer.zIndex + 1 });
+			addLayer(`${layer.geoResourceId}_${createUniqueId()}`, { ...layer, geoResourceId: layer.geoResourceId, label: `${layer.label} (${translate('layerManager_layer_copy')})`, zIndex: layer.zIndex + 1 });
 		};
 
 		const remove = () => {
@@ -169,10 +182,10 @@ export class LayerItem extends AbstractMvuContentPanel {
 		};
 
 		const openGeoResourceInfoPanel = async () => {
-			const content = html`<ba-georesourceinfo-panel .geoResourceId=${layer.id}></ba-georesourceinfo-panel>`;
-			openModal(layer.label, content);
+			openModal(layer.label, this._getInfoPanelFor(layer.geoResourceId));
 		};
 
+		const isCloneable = layer.constraints?.cloneable;
 		return html`
         <style>${css}</style>
         <div class='ba-section divider'>
@@ -193,7 +206,7 @@ export class LayerItem extends AbstractMvuContentPanel {
 						<ba-icon id='decrease' .icon='${arrowDownSvg}' .color=${'var(--primary-color)'} .color_hover=${'var(--text3)'} .size=${2.6} .title=${translate('layerManager_move_down')} @click=${decreaseIndex}></ba-icon>                                
 					</div>                                                                                              
 					<div>                                                                                              
-						<ba-icon id='copy' .icon='${duplicate}' .color=${'var(--primary-color)'} .color_hover=${'var(--text3)'} .size=${2.6} .title=${translate('layerManager_to_copy')} @click=${duplicateLayer}></ba-icon>                                
+						<ba-icon id='copy' .disabled=${!isCloneable} .icon='${clone}' .color=${'var(--primary-color)'} .color_hover=${'var(--text3)'} .size=${2.6} .title=${translate('layerManager_to_copy')} @click=${cloneLayer}></ba-icon>                                
 					</div>                                                                                              
 					<div>                                                                                              
 						<ba-icon id='info' data-test-id .icon='${infoSvg}' .color=${'var(--primary-color)'} .color_hover=${'var(--text3)'} .size=${2.6} @click=${openGeoResourceInfoPanel}></ba-icon>                 
@@ -205,9 +218,12 @@ export class LayerItem extends AbstractMvuContentPanel {
         </div>`;
 	}
 
+	_getInfoPanelFor(georesourceId) {
+		return html`<ba-georesourceinfo-panel .geoResourceId=${georesourceId}></ba-georesourceinfo-panel>`;
+	}
+
 	set layer(value) {
 		this.signal(Update_Layer, value);
-
 	}
 
 	/**

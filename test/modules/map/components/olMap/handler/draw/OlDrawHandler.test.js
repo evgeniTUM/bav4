@@ -229,6 +229,27 @@ describe('OlDrawHandler', () => {
 			expect(classUnderTest._vectorLayer.label).toBe('map_olMap_handler_draw_layer_label');
 		});
 
+		it('adds a keyup-EventListener to the document', () => {
+			setup();
+			const documentSpy = spyOn(document, 'addEventListener').and.callThrough();
+			const map = setupMap();
+			const classUnderTest = new OlDrawHandler();
+			classUnderTest.activate(map);
+
+			expect(documentSpy).toHaveBeenCalledWith('keyup', jasmine.any(Function));
+		});
+
+		it('removes a keyup-EventListener from the document', () => {
+			setup();
+			const documentSpy = spyOn(document, 'removeEventListener').and.callThrough();
+			const map = setupMap();
+			const classUnderTest = new OlDrawHandler();
+			classUnderTest.activate(map);
+			classUnderTest.deactivate(map);
+
+			expect(documentSpy).toHaveBeenCalledWith('keyup', jasmine.any(Function));
+		});
+
 		describe('when not TermsOfUseAcknowledged', () => {
 			it('emits a notification', (done) => {
 				const store = setup();
@@ -683,11 +704,92 @@ describe('OlDrawHandler', () => {
 				expect(classUnderTest._draw).toBeNull();
 			});
 
+			it('inits the drawing and sets the store with defaultText for line', () => {
+				const store = setup();
+				const classUnderTest = new OlDrawHandler();
+				const map = setupMap();
+				const drawStateFake = {
+					type: InteractionStateType.ACTIVE
+				};
+
+				classUnderTest.activate(map);
+				classUnderTest._drawState = drawStateFake;
+				setType('line');
+
+				expect(store.getState().draw.style.text).toBeNull();
+			});
+
+			it('inits the drawing and sets the store with defaultText for marker', () => {
+				const store = setup();
+				const classUnderTest = new OlDrawHandler();
+				const map = setupMap();
+				const drawStateFake = {
+					type: InteractionStateType.ACTIVE
+				};
+
+				classUnderTest.activate(map);
+				classUnderTest._drawState = drawStateFake;
+				setType('marker');
+
+				expect(store.getState().draw.style.text).toBe('');
+			});
+
+			it('inits the drawing and sets the store with defaultText for marker', () => {
+				const store = setup();
+				const classUnderTest = new OlDrawHandler();
+				const map = setupMap();
+				const drawStateFake = {
+					type: InteractionStateType.ACTIVE
+				};
+
+				classUnderTest.activate(map);
+				classUnderTest._drawState = drawStateFake;
+				setType('text');
+
+				expect(store.getState().draw.style.text).toBe('map_olMap_handler_draw_new_text');
+			});
+
+			it('re-inits the drawing and sets the store with defaultText for marker', () => {
+				const style = { symbolSrc: null, color: '#ff0000', scale: 0.5, text: null };
+				const state = { ...initialState, style: style };
+
+				const store = setup(state);
+				const classUnderTest = new OlDrawHandler();
+				const map = setupMap();
+				const drawStateFake = {
+					type: InteractionStateType.ACTIVE
+				};
+
+				classUnderTest.activate(map);
+				classUnderTest._drawState = drawStateFake;
+				setType('marker');
+
+				expect(store.getState().draw.style.text).toBe('');
+			});
+
+			it('re-inits the drawing and sets the store with defaultText for text', () => {
+				const style = { symbolSrc: null, color: '#ff0000', scale: 0.5, text: null };
+				const state = { ...initialState, style: style };
+
+				const store = setup(state);
+				const classUnderTest = new OlDrawHandler();
+				const map = setupMap();
+				const drawStateFake = {
+					type: InteractionStateType.ACTIVE
+				};
+
+				classUnderTest.activate(map);
+				classUnderTest._drawState = drawStateFake;
+				setType('text');
+
+				expect(store.getState().draw.style.text).toBe('map_olMap_handler_draw_new_text');
+			});
+
 			it('re-inits the drawing with new style, when store changes', () => {
 				setup();
 				const classUnderTest = new OlDrawHandler();
 				const map = setupMap();
-				const style = { symbolSrc: null, color: '#ff0000', scale: 0.5 };
+				const style = { symbolSrc: null, color: '#ff0000', scale: 0.5, text: '' };
 				const drawStateFake = {
 					type: InteractionStateType.ACTIVE
 				};
@@ -708,7 +810,7 @@ describe('OlDrawHandler', () => {
 				setup();
 				const classUnderTest = new OlDrawHandler();
 				const map = setupMap();
-				const style = { symbolSrc: null, color: '#ff0000', scale: 0.5 };
+				const style = { symbolSrc: null, color: '#ff0000', scale: 0.5, text: '' };
 				const feature = new Feature({ geometry: new LineString([[0, 0], [1, 1]]) });
 
 				feature.setStyle([new Style(), new Style()]);
@@ -754,10 +856,24 @@ describe('OlDrawHandler', () => {
 				setup();
 				const classUnderTest = new OlDrawHandler();
 				const map = setupMap();
-				const style = { symbolSrc: null, color: '#ff0000', scale: 0.5 };
+				const style = { symbolSrc: null, color: '#ff0000', scale: 0.5, text: '' };
 				const feature = new Feature({ geometry: new Point([0, 0]) });
+
+				const oldStyle1 = new Style(new Stroke({
+					color: [0, 0, 0, 1],
+					width: 3
+				}));
+				const oldStyle2 = new Style(new Stroke({
+					color: [42, 0, 0, 1],
+					width: 3
+				}));
+				const newStyle = new Style(new Stroke({
+					color: [255, 255, 255, 1],
+					width: 12
+				}));
+				spyOn(classUnderTest, '_getStyleFunctionFrom').withArgs(feature).and.callFake(() => () => [newStyle]);
 				feature.setId('draw_Symbol_1234');
-				feature.setStyle([new Style(), new Style()]);
+				feature.setStyle([oldStyle1, oldStyle2]);
 				const drawStateFake = {
 					type: InteractionStateType.MODIFY
 				};
@@ -770,6 +886,7 @@ describe('OlDrawHandler', () => {
 				setStyle(style);
 
 				expect(styleSpy).toHaveBeenCalledTimes(1);
+				expect(styleSpy).toHaveBeenCalledWith([newStyle, oldStyle2]);
 			});
 
 
@@ -832,7 +949,7 @@ describe('OlDrawHandler', () => {
 			const map = setupMap();
 			const vectorGeoResource = new VectorGeoResource('temp_measure_id', 'foo', VectorSourceType.KML).setSource(lastData, 4326);
 
-			spyOn(map, 'getLayers').and.returnValue({ getArray: () => [{ get: () => 'temp_measure_id' }] });
+			spyOn(map, 'getLayers').and.returnValue({ getArray: () => [{ getKeys: () => ['id'], get: () => 'temp_measure_id' }] });
 			spyOn(classUnderTest._overlayService, 'add').and.callFake(() => { });
 			const spy = spyOn(geoResourceServiceMock, 'byId').and.returnValue(vectorGeoResource);
 
@@ -1095,6 +1212,28 @@ describe('OlDrawHandler', () => {
 			setTimeout(() => {
 				expect(store.getState().layers.active.length).toBe(1);
 				expect(store.getState().layers.active[0].id).toBe('temp_measure_id');
+				expect(store.getState().layers.active[0].constraints.cloneable).toBeFalse();
+				done();
+			});
+		});
+
+		it('adds non-cloneable layer', (done) => {
+			const state = { ...initialState, fileSaveResult: { fileId: null, adminId: null } };
+			const store = setup(state);
+			const classUnderTest = new OlDrawHandler();
+			const map = setupMap();
+			const feature = createFeature();
+			spyOn(interactionStorageServiceMock, 'getStorageId').and.returnValue('f_ooBarId');
+
+			classUnderTest.activate(map);
+			expect(classUnderTest._vectorLayer).toBeTruthy();
+			classUnderTest._vectorLayer.getSource().addFeature(feature);
+			classUnderTest.deactivate(map);
+
+			setTimeout(() => {
+				expect(store.getState().layers.active.length).toBe(1);
+				expect(store.getState().layers.active[0].id).toBe('f_ooBarId');
+				expect(store.getState().layers.active[0].constraints.cloneable).toBeFalse();
 				done();
 			});
 
@@ -1849,6 +1988,3 @@ describe('OlDrawHandler', () => {
 	});
 
 });
-
-
-
