@@ -12,20 +12,15 @@ import { FIT_REQUESTED, positionReducer } from '../../../../../../../../src/stor
 import { TestUtils } from '../../../../../../../test-utils.js';
 
 const GEOJSON_SAMPLE_DATA = {
-	data: {
-		features: [
-			{
-				type: 'Feature',
-				geometry: {
-					'type': 'Polygon',
-					'coordinates': [[
-						[1, 2],
-						[3, 4],
-						[5, 6],
-						[7, 8]
-					]]
-				}
-			}]
+	type: 'Feature',
+	geometry: {
+		'type': 'Polygon',
+		'coordinates': [[
+			[1, 2],
+			[3, 4],
+			[5, 6],
+			[7, 8]
+		]]
 	}
 };
 
@@ -119,7 +114,7 @@ describe('OlGeoFeatureLayerHandler', () => {
 			const actualFeatures = layer.getSource().getFeatures();
 			expect(actualFeatures.length).toEqual(1);
 			expect(actualFeatures[0].getGeometry().getCoordinates())
-				.toEqual(GEOJSON_SAMPLE_DATA.data.features[0].geometry.coordinates);
+				.toEqual(GEOJSON_SAMPLE_DATA.geometry.coordinates);
 
 			clearGeoFeatures();
 

@@ -1,4 +1,3 @@
-import { createUniqueId } from '../../../utils/numberUtils';
 export const FEATURE_ADD_LAYER = 'geofeature/feature/addLayer';
 export const FEATURE_REMOVE_LAYER = 'geofeature/feature/removeLayer';
 export const FEATURE_ADD = 'geofeature/feature/add';
@@ -23,13 +22,6 @@ export const initialState = {
 
 export const geofeatureReducer = (state = initialState, action) => {
 
-	const createIdIfMissing = features => features.map(f => {
-		if (!f.id) {
-			f.id = createUniqueId();
-		}
-		return f;
-	});
-
 	const { type, payload } = action;
 	switch (type) {
 		case FEATURE_ADD_LAYER: {
@@ -42,8 +34,7 @@ export const geofeatureReducer = (state = initialState, action) => {
 			};
 		}
 		case FEATURE_ADD: {
-
-			const features = [...state.features, ...createIdIfMissing(payload)];
+			const features = [...state.features, ...payload];
 
 			return {
 				...state,
