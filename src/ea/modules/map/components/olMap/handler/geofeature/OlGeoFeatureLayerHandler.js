@@ -140,8 +140,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 		});
 	}
 
-	_toOlFeature(feature) {
-		const geojson = feature.data.features[0];
+	_toOlFeature(geojson) {
 		const _features = new GeoJSON().readFeature(geojson);
 		_features.getGeometry().transform('EPSG:' + 4326, 'EPSG:' + this.mapService.getSrid());
 		_features.set('srid', 4326, true);

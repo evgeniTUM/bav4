@@ -1,7 +1,7 @@
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { observe } from '../../utils/storeUtils';
-import { addGeoFeatureLayer, addGeoFeatures, clearGeoFeatures } from '../store/geofeature/geofeature.action';
+import { addGeoFeatureLayer, addGeoFeatures, clearGeoFeatures, removeGeoFeaturesById } from '../store/geofeature/geofeature.action';
 import { activateMapClick, deactivateMapClick } from '../store/mapclick/mapclick.action';
 
 
@@ -131,9 +131,10 @@ export class FnModulePlugin extends BaPlugin {
 			case MODULE_RESET:
 				break;
 			case ADD_FEATURE:
-				addGeoFeatures({ data: message.geojson });
+				addGeoFeatures(message.geojson.features[0]);
 				break;
 			case REMOVE_FEATURE_BY_ID:
+				removeGeoFeaturesById([message.id]);
 				break;
 			case CLEAR_MAP:
 				clearGeoFeatures();

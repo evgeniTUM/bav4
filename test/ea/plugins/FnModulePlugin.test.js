@@ -128,14 +128,16 @@ describe('FnModulePlugin', () => {
 
 		it('adds geofeature on message \'addfeature\'', async () => {
 			await setupOpen();
-			const geojson = { type: 'i identify as a geojson' };
+			const geojson = {
+				type: 'i identify as a geojson'
+			};
 
 			windowMock.listenerFunction({
 				data: {
 					code: 'addfeature',
 					module: domain,
 					message: {
-						geojson: geojson
+						geojson: { features: [geojson] }
 					}
 				},
 				event: { origin: site }
@@ -144,7 +146,7 @@ describe('FnModulePlugin', () => {
 
 			const lastAction = storeActions.pop();
 			expect(lastAction.type).toEqual(FEATURE_ADD);
-			expect(lastAction.payload[0].data).toEqual(geojson);
+			expect(lastAction.payload).toEqual([geojson]);
 		});
 
 		it('adds mapclick on message \'activate_mapclick\'', async () => {

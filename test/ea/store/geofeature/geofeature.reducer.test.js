@@ -28,7 +28,7 @@ describe('geofeatureReducer', () => {
 		expect(store.getState().geofeature.active).toBeTrue();
 	});
 
-	it('adds a feature with given id', () => {
+	it('adds a feature', () => {
 		const store = setup();
 		addGeoFeatureLayer(42);
 		const feature = { id: 24, name: 'test-feature' };
@@ -37,19 +37,6 @@ describe('geofeatureReducer', () => {
 
 		expect(store.getState().geofeature.features).toHaveSize(1);
 		expect(store.getState().geofeature.features[0]).toBe(feature);
-		expect(store.getState().geofeature.features[0].id).toBe(24);
-	});
-
-	it('adds a feature without id', () => {
-		const store = setup();
-		addGeoFeatureLayer(42);
-		const feature = { name: 'test-feature' };
-
-		addGeoFeatures(feature);
-
-		expect(store.getState().geofeature.features).toHaveSize(1);
-		expect(store.getState().geofeature.features[0]).toBe(feature);
-		expect(store.getState().geofeature.features[0].id).toBeGreaterThan(0);
 	});
 
 	it('removes a feature by id', () => {
