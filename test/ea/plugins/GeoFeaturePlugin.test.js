@@ -31,6 +31,7 @@ describe('GeoFeaturePlugin', () => {
 		expect(layer.id).toBe(GEO_FEATURE_LAYER_ID);
 		expect(layer.label).toBe('Verwaltungseinheiten');
 		expect(layer.constraints.alwaysTop).toBeTrue();
+		expect(layer.constraints.hidden).toBeTrue();
 
 		clearGeoFeatures();
 

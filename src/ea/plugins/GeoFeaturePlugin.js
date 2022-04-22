@@ -33,7 +33,7 @@ export class GeoFeaturePlugin extends BaPlugin {
 
 			if (active) {
 				const label = 'Verwaltungseinheiten';
-				addLayer(GEO_FEATURE_LAYER_ID, { label: label, constraints: { alwaysTop: true } });
+				addLayer(GEO_FEATURE_LAYER_ID, { label: label, constraints: { hidden: true, alwaysTop: true } });
 			}
 			else {
 				removeLayer(GEO_FEATURE_LAYER_ID);
