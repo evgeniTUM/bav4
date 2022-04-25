@@ -1,5 +1,5 @@
 import { FnModulePlugin } from '../../../src/ea/plugins/FnModulePlugin.js';
-import { closeFnModules, openFnModuleComm } from '../../../src/ea/store/fnModuleComm/fnModuleComm.action.js';
+import { closeFnModule, openFnModuleComm } from '../../../src/ea/store/fnModuleComm/fnModuleComm.action.js';
 import { fnModuleCommReducer } from '../../../src/ea/store/fnModuleComm/fnModuleComm.reducer.js';
 import { CLEAR_FEATURES, FEATURE_ADD, geofeatureReducer } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
 import { activateMapClick, deactivateMapClick } from '../../../src/ea/store/mapclick/mapclick.action.js';
@@ -57,43 +57,45 @@ describe('FnModulePlugin', () => {
 		);
 
 
+
 		return store;
 	};
 
 
 	it('send open/close messages on state change', async () => {
+		const module = 'dom1';
+		const domain = 'http://test-site';
+
 		const store = setup();
 
 		const instanceUnderTest = new FnModulePlugin();
 		await instanceUnderTest.register(store);
 
-		const expectedSite = 'http://test-site';
-		const expectedDomain = 'dom1';
-
-		openFnModuleComm(expectedSite, expectedDomain, windowMock);
-		closeFnModules();
+		window.ea_moduleWindow = { dom1: windowMock };
+		openFnModuleComm(module, domain);
+		closeFnModule();
 
 		expect(windowMock.messages).toHaveSize(2);
 		expect(windowMock.messages[0]).toEqual(
 			{
 				msg: {
 					code: 'open',
-					module: expectedSite
+					module: module
 				},
-				domain: expectedDomain
+				domain: domain
 			});
 		expect(windowMock.messages[1]).toEqual(
 			{
 				msg: {
 					code: 'close',
-					module: expectedSite
+					module: module
 				},
-				domain: expectedDomain
+				domain: domain
 			});
 	});
 
 	describe('when communication is open', () => {
-		const module = 'test-modul';
+		const module = 'test_modul';
 		const domain = 'http://domain.com/eab-module';
 
 		const setupOpen = async () => {
@@ -102,7 +104,8 @@ describe('FnModulePlugin', () => {
 			const instanceUnderTest = new FnModulePlugin();
 			await instanceUnderTest.register(store);
 
-			openFnModuleComm(module, domain, windowMock);
+			window.ea_moduleWindow = { test_modul: windowMock };
+			openFnModuleComm(module, domain);
 			windowMock.messages = [];
 			storeActions.length = 0;
 

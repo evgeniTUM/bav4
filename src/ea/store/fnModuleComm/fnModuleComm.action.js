@@ -20,10 +20,10 @@ const getStore = () => {
  * @param {FnModule} module
  * @export const
  */
-export const openFnModuleComm = (module, domain, window) => {
+export const openFnModuleComm = (module, domain) => {
 	getStore().dispatch({
 		type: OPEN_MODULE_REQUESTED,
-		payload: { module, window, domain }
+		payload: { module, domain }
 	});
 };
 /**
@@ -41,7 +41,7 @@ export const removeFnModule = () => {
  * Removes active fnModuleComm  {@link FnModule}
  * @export const
  */
-export const closeFnModules = () => {
+export const closeFnModule = () => {
 	getStore().dispatch({
 		type: MODULE_RESET_REQUESTED,
 		payload: new EventLike()

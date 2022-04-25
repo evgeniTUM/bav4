@@ -57,11 +57,11 @@ export class AbstractModuleContent extends MvuElement {
         `;
 	}
 
-	async asyncInitialization(module, domain, pWindow) {
+	async asyncInitialization(module, domain) {
 		try {
 			new Promise(function () {
 				setTimeout(function () {
-					openFnModuleComm(module, domain, pWindow);
+					openFnModuleComm(module, domain);
 				}, 1000);
 			});
 			return true;
@@ -78,15 +78,27 @@ export class AbstractModuleContent extends MvuElement {
 		const agent = this;
 		const module = this.getConfig().module;
 
+		if (window.ea_moduleWindow === undefined) {
+			window.ea_moduleWindow = {};
+		}
+		window.ea_moduleWindow[module] = myWindow;
+
 		ifrm.onload = async function () {
 			try {
-				await agent.asyncInitialization(module, agent._moduleDomain, myWindow);
+				await agent.asyncInitialization(module, agent._moduleDomain);
 			}
 			catch (ex) {
 				// Modul bereits geöffnet
 				console.error('Exception beim laden des Iframes ' + agent._moduleDomain + module);
 			}
 		};
+	}
+
+	/**
+	 * @override
+	 */
+	onDisconnect() {
+		delete window.ea_moduleWindow[this.getConfig().module];
 	}
 
 	onAfterRender(first) {

@@ -1,5 +1,5 @@
-import { closeFnModules, openFnModuleComm } from '../../../../src/ea/store/fnModuleComm/fnModuleComm.action';
-import { fnModuleCommReducer, initialState } from '../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
+import { closeFnModule, openFnModuleComm } from '../../../../src/ea/store/fnModuleComm/fnModuleComm.action';
+import { fnModuleCommReducer } from '../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
 import { TestUtils } from '../../../test-utils';
 
 
@@ -16,7 +16,6 @@ describe('fnModuleCommReducer', () => {
 		const actual = store.getState().fnModuleComm;
 
 		expect(actual.module).toBeNull();
-		expect(actual.window).toBeNull();
 		expect(actual.domain).toBeNull();
 		expect(actual.active).toBeFalse();
 	});
@@ -26,12 +25,13 @@ describe('fnModuleCommReducer', () => {
 
 		openFnModuleComm('mixer', window.location.origin, window);
 		expect(store.getState().fnModuleComm.module).toBe('mixer');
-		expect(store.getState().fnModuleComm.window).not.toBeNull();
 		expect(store.getState().fnModuleComm.domain).toBe(window.location.origin);
 		expect(store.getState().fnModuleComm.active).toBeTrue();
 
-		closeFnModules();
-		expect(store.getState().fnModuleComm).toEqual(initialState);
+		closeFnModule();
+		expect(store.getState().fnModuleComm.active).toBe(false);
+		expect(store.getState().fnModuleComm.module).toBe('mixer');
+		expect(store.getState().fnModuleComm.domain).toBe(window.location.origin);
 	});
 
 });

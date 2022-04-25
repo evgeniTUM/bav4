@@ -11,11 +11,6 @@ export const initialState = {
 	module: null,
 
 	/**
-	 * @property {window|null}
-	 */
-	window: null,
-
-	/**
 	 * @property {domain|null}
 	 */
 	domain: null,
@@ -35,7 +30,10 @@ export const fnModuleCommReducer = (state = initialState, action) => {
 				active: true
 			};
 		case MODULE_RESET_REQUESTED:
-			return initialState;
+			return {
+				...state,
+				active: false
+			};
 		case CHANGE_MODULE_REQUESTED:
 		{
 			const active = !!payload;
