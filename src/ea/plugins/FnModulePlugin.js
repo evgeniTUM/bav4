@@ -50,10 +50,10 @@ export class FnModulePlugin extends BaPlugin {
 
 		const state = this._storeService.getStore().getState();
 
-		const { fnModuleComm: { fnModuleSite } } = state;
-		const { fnModuleComm: { fnModuleDomain } } = state;
+		const { fnModuleComm: { module } } = state;
+		const { fnModuleComm: { domain } } = state;
 
-		if (data.module === undefined || data.message === undefined || fnModuleSite === undefined || fnModuleDomain === undefined) {
+		if (data.module === undefined || data.message === undefined || module === undefined || domain === undefined) {
 			return;
 		}
 
@@ -109,8 +109,8 @@ export class FnModulePlugin extends BaPlugin {
 		// 	' absender ' + event.origin +
 		// 	' message:' + data.message);
 		//wieder einkommentieren
-		//			if (event.origin !== fnModuleDomain || data.module === undefined) {
-		//				console.warn('Client MessageListner:  ModuleDomain ' + fnModuleDomain + ' passt nicht zu ' + event.origin);
+		//			if (event.origin !== domain|| data.module === undefined) {
+		//				console.warn('Client MessageListner:  ModuleDomain ' + domain + ' passt nicht zu ' + event.origin);
 		//				return;
 		//			}
 		const message = data.message;
@@ -181,15 +181,16 @@ export class FnModulePlugin extends BaPlugin {
 		//		}
 	}
 
-	implPostCodeMessageFnModule(code, moduleSite, myModuleDomain, targetWindow) {
+	implPostCodeMessageFnModule(code, module, domain, targetWindow) {
 		//      console.debug('Client : implPostMessageFnModule -->  moduleSite ? ' + moduleSite + 'code ' + code);
 		//      Überlegung, ob post und handshake für alle Kommunikationen eingesetzt wird
-		if (moduleSite !== undefined) {
+		if (module !== undefined) {
 			const json = {
 				code: code,
-				module: moduleSite
+				module: module
 			};
-			targetWindow.postMessage(json, myModuleDomain);
+
+			targetWindow.postMessage(json, domain);
 		}
 	}
 
@@ -209,16 +210,17 @@ export class FnModulePlugin extends BaPlugin {
 		const onChange = (active, state) => {
 
 			const scope = state.fnModuleComm;
+			const targetWindow = window.ea_moduleWindow[scope.module];
 
 			if (active) {
 				//aktiviere das Module
 				//sende per postMessage
-				this.implPostCodeMessageFnModule('open', scope.fnModuleSite, scope.fnModuleDomain, scope.fnModuleWindow);
+				this.implPostCodeMessageFnModule('open', scope.module, scope.domain, targetWindow);
 			}
 			else {
 				//deaktiviere das Module
 				clearGeoFeatures();
-				this.implPostCodeMessageFnModule('close', scope.fnModuleSite, scope.fnModuleDomain, scope.fnModuleWindow);
+				this.implPostCodeMessageFnModule('close', scope.module, scope.domain, targetWindow);
 			}
 		};
 
@@ -229,11 +231,12 @@ export class FnModulePlugin extends BaPlugin {
 				const scope = state.fnModuleComm;
 				const json = {
 					code: 'mapclick',
-					module: scope.fnModuleSite,
+					module: scope.module,
 					id: state.mapclick.listener_id,
 					coord: _coord.toString()
 				};
-				scope.fnModuleWindow.postMessage(json, scope.fnModuleDomain);
+				const iframeWindow = window.ea_moduleWindow[scope.module];
+				iframeWindow.postMessage(json, scope.domain);
 			}
 		};
 

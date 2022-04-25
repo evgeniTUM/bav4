@@ -38,7 +38,7 @@ export class AbstractModuleContent extends MvuElement {
 	createView() {
 		this._moduleDomain = this._configService.getValueAsPath('MODULE_BACKEND_URL');
 		this._parameter = [];
-		this._moduleRequestUrl = this._moduleDomain + this.getConfig().site + '?' + this._parameter;
+		this._moduleRequestUrl = this._moduleDomain + this.getConfig().module + '?' + this._parameter;
 
 		return html`
             	<div class="ba-tool-container">
@@ -57,11 +57,11 @@ export class AbstractModuleContent extends MvuElement {
         `;
 	}
 
-	async asyncInitialization(site, domain, pWindow) {
+	async asyncInitialization(module, domain) {
 		try {
 			new Promise(function () {
 				setTimeout(function () {
-					openFnModuleComm(site, domain, pWindow);
+					openFnModuleComm(module, domain);
 				}, 1000);
 			});
 			return true;
@@ -76,17 +76,29 @@ export class AbstractModuleContent extends MvuElement {
 		const ifrm = this.shadowRoot.getElementById(this.getConfig().frame_id);
 		const myWindow = ifrm.contentWindow;
 		const agent = this;
-		const site = this.getConfig().site;
+		const module = this.getConfig().module;
+
+		if (window.ea_moduleWindow === undefined) {
+			window.ea_moduleWindow = {};
+		}
+		window.ea_moduleWindow[module] = myWindow;
 
 		ifrm.onload = async function () {
 			try {
-				await agent.asyncInitialization(site, agent._moduleDomain, myWindow);
+				await agent.asyncInitialization(module, agent._moduleDomain);
 			}
 			catch (ex) {
 				// Modul bereits geöffnet
-				console.error('Exception beim laden des Iframes ' + agent._moduleDomain + site);
+				console.error('Exception beim laden des Iframes ' + agent._moduleDomain + module);
 			}
 		};
+	}
+
+	/**
+	 * @override
+	 */
+	onDisconnect() {
+		delete window.ea_moduleWindow[this.getConfig().module];
 	}
 
 	onAfterRender(first) {

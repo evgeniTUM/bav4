@@ -5,7 +5,7 @@ import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import { close, open } from '../../../../../store/mainMenu/mainMenu.action';
 import { setCurrentTool } from '../../../../../store/tools/tools.action';
-import { closeFnModules } from '../../../../store/fnModuleComm/fnModuleComm.action';
+import { closeFnModule } from '../../../../store/fnModuleComm/fnModuleComm.action';
 import { EAContribution } from '../contribution/EAContribution';
 import { MixerModuleContent } from '../mixerModuleContent/MixerModuleContent';
 import { RedesignModuleContent } from '../redesignModuleContent/RedesignModuleContent';
@@ -132,7 +132,7 @@ export class ModuleContainer extends MvuElement {
 
 
 		const close = () => {
-			closeFnModules();
+			closeFnModule();
 			setCurrentTool(null);
 		};
 

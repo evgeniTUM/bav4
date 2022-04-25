@@ -11,7 +11,7 @@ export class ResearchModuleContent extends AbstractModuleContent {
 
 		return {
 			iframe: 'myResearchIFrame',
-			site: 'recherche',
+			module: 'recherche',
 			frame_id: 'research_iframe',
 			header_title: translate('toolbox_recherche_header')
 

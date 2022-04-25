@@ -44,7 +44,7 @@ describe('MixerModuleContent', () => {
 			const element = await setup();
 			expect(element.getConfig()).toEqual({
 				iframe: 'myMixerIFrame',
-				site: 'mixer',
+				module: 'mixer',
 				frame_id: 'mixer_iframe',
 				header_title: 'toolbox_mixer_header'
 			});

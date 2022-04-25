@@ -34,7 +34,7 @@ describe('ModuleContent', () => {
 		getValueAsPath() { }
 	};
 
-	async (state) => {
+	const setup = async (state) => {
 
 		storeActions.length = 0;
 
@@ -48,5 +48,22 @@ describe('ModuleContent', () => {
 			.registerSingleton('ConfigService', configServiceMock);
 		return TestUtils.render(ConcreteModuleContent.tag);
 	};
+
+	it('stores the iframe-window in a global variable', async () => {
+		const element = await setup();
+		const frameId = element.getConfig().frame_id;
+		const iframeWindow = element.shadowRoot.getElementById(frameId).contentWindow;
+
+		expect(window.ea_moduleWindow).toHaveSize(1);
+		expect(window.ea_moduleWindow[element.getConfig().module]).toEqual(iframeWindow);
+	});
+
+	it('removes global variable when element disconnects from dom', async () => {
+		const element = await setup();
+
+		element.disconnectedCallback();
+
+		expect(window.ea_moduleWindow).toHaveSize(0);
+	});
 
 });
