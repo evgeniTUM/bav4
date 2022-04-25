@@ -11,7 +11,7 @@ export class RedesignModuleContent extends AbstractModuleContent {
 
 		return {
 			iframe: 'myRedesignIFrame',
-			site: 'redesign',
+			module: 'redesign',
 			frame_id: 'redesign_iframe',
 			header_title: translate('toolbox_redesign_header')
 

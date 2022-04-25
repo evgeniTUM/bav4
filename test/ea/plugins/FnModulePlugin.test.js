@@ -93,8 +93,8 @@ describe('FnModulePlugin', () => {
 	});
 
 	describe('when communication is open', () => {
-		const site = 'http://test-site';
-		const domain = 'dom1';
+		const module = 'test-modul';
+		const domain = 'http://domain.com/eab-module';
 
 		const setupOpen = async () => {
 			const store = setup();
@@ -102,7 +102,7 @@ describe('FnModulePlugin', () => {
 			const instanceUnderTest = new FnModulePlugin();
 			await instanceUnderTest.register(store);
 
-			openFnModuleComm(site, domain, windowMock);
+			openFnModuleComm(module, domain, windowMock);
 			windowMock.messages = [];
 			storeActions.length = 0;
 
@@ -118,7 +118,7 @@ describe('FnModulePlugin', () => {
 					module: domain,
 					message: 'test'
 				},
-				event: { origin: site }
+				event: { origin: module }
 
 			});
 
@@ -140,7 +140,7 @@ describe('FnModulePlugin', () => {
 						geojson: { features: [geojson] }
 					}
 				},
-				event: { origin: site }
+				event: { origin: module }
 
 			});
 
@@ -158,7 +158,7 @@ describe('FnModulePlugin', () => {
 					module: domain,
 					message: 42
 				},
-				event: { origin: site }
+				event: { origin: module }
 
 			});
 
@@ -176,7 +176,7 @@ describe('FnModulePlugin', () => {
 					module: domain,
 					message: null
 				},
-				event: { origin: site }
+				event: { origin: module }
 
 			});
 
@@ -193,7 +193,7 @@ describe('FnModulePlugin', () => {
 					module: domain,
 					message: null
 				},
-				event: { origin: site }
+				event: { origin: module }
 			});
 
 			const lastAction = storeActions.pop();
@@ -210,7 +210,7 @@ describe('FnModulePlugin', () => {
 			expect(windowMock.messages[0].msg).toEqual(
 				{
 					code: 'mapclick',
-					module: site,
+					module: module,
 					id: undefined,
 					coord: '42,24'
 				});

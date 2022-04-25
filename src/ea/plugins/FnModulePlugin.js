@@ -50,10 +50,10 @@ export class FnModulePlugin extends BaPlugin {
 
 		const state = this._storeService.getStore().getState();
 
-		const { fnModuleComm: { fnModuleSite } } = state;
-		const { fnModuleComm: { fnModuleDomain } } = state;
+		const { fnModuleComm: { module } } = state;
+		const { fnModuleComm: { domain } } = state;
 
-		if (data.module === undefined || data.message === undefined || fnModuleSite === undefined || fnModuleDomain === undefined) {
+		if (data.module === undefined || data.message === undefined || module === undefined || domain === undefined) {
 			return;
 		}
 
@@ -109,8 +109,8 @@ export class FnModulePlugin extends BaPlugin {
 		// 	' absender ' + event.origin +
 		// 	' message:' + data.message);
 		//wieder einkommentieren
-		//			if (event.origin !== fnModuleDomain || data.module === undefined) {
-		//				console.warn('Client MessageListner:  ModuleDomain ' + fnModuleDomain + ' passt nicht zu ' + event.origin);
+		//			if (event.origin !== domain|| data.module === undefined) {
+		//				console.warn('Client MessageListner:  ModuleDomain ' + domain + ' passt nicht zu ' + event.origin);
 		//				return;
 		//			}
 		const message = data.message;
@@ -213,12 +213,12 @@ export class FnModulePlugin extends BaPlugin {
 			if (active) {
 				//aktiviere das Module
 				//sende per postMessage
-				this.implPostCodeMessageFnModule('open', scope.fnModuleSite, scope.fnModuleDomain, scope.fnModuleWindow);
+				this.implPostCodeMessageFnModule('open', scope.module, scope.domain, scope.window);
 			}
 			else {
 				//deaktiviere das Module
 				clearGeoFeatures();
-				this.implPostCodeMessageFnModule('close', scope.fnModuleSite, scope.fnModuleDomain, scope.fnModuleWindow);
+				this.implPostCodeMessageFnModule('close', scope.site, scope.domain, scope.window);
 			}
 		};
 
@@ -229,11 +229,11 @@ export class FnModulePlugin extends BaPlugin {
 				const scope = state.fnModuleComm;
 				const json = {
 					code: 'mapclick',
-					module: scope.fnModuleSite,
+					module: scope.module,
 					id: state.mapclick.listener_id,
 					coord: _coord.toString()
 				};
-				scope.fnModuleWindow.postMessage(json, scope.fnModuleDomain);
+				scope.window.postMessage(json, scope.domain);
 			}
 		};
 

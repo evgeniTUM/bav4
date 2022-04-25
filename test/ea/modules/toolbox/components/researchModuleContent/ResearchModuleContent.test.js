@@ -44,7 +44,7 @@ describe('ResearchModuleContent', () => {
 			const element = await setup();
 			expect(element.getConfig()).toEqual({
 				iframe: 'myResearchIFrame',
-				site: 'recherche',
+				module: 'recherche',
 				frame_id: 'research_iframe',
 				header_title: 'toolbox_recherche_header'
 			});
