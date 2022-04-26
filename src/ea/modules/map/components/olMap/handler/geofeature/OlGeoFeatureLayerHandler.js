@@ -8,9 +8,9 @@ import { $injector } from '../../../../../../../injection';
 import { OlLayerHandler } from '../../../../../../../modules/map/components/olMap/handler/OlLayerHandler';
 import { setFit } from '../../../../../../../store/position/position.action';
 import { observe } from '../../../../../../../utils/storeUtils';
-import { GEO_FEATURE_LAYER_ID } from '../../../../../../plugins/GeoFeaturePlugin';
 import { deactivateMapClick } from '../../../../../../store/mapclick/mapclick.action';
 
+export const GEO_FEATURE_LAYER_ID = 'geofeature_layer';
 
 /**
  * Handler for displaying independent geojson features
