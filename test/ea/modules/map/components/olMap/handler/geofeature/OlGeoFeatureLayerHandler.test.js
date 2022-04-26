@@ -2,7 +2,7 @@ import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { fromLonLat } from 'ol/proj';
 import { OSM, TileDebug } from 'ol/source';
-import { OlGeoFeatureLayerHandler } from '../../../../../../../../src/ea/modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler';
+import { GEO_FEATURE_LAYER_ID, OlGeoFeatureLayerHandler } from '../../../../../../../../src/ea/modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler';
 import { addGeoFeatures, clearGeoFeatures } from '../../../../../../../../src/ea/store/geofeature/geofeature.action';
 import { geofeatureReducer } from '../../../../../../../../src/ea/store/geofeature/geofeature.reducer';
 import { mapclickReducer } from '../../../../../../../../src/ea/store/mapclick/mapclick.reducer';

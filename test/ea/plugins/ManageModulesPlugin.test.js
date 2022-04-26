@@ -1,15 +1,15 @@
-import { ManageModuleLayersPlugin } from '../../../src/ea/plugins/ManageModuleLayersPlugin.js';
-import { EAContribution } from '../../../src/ea/modules/toolbox/components/contribution/EAContribution.js';
-import { layersReducer } from '../../../src/store/layers/layers.reducer.js';
-import { setCurrentTool } from '../../../src/store/tools/tools.action.js';
-import { toolsReducer } from '../../../src/store/tools/tools.reducer.js';
-import { TestUtils } from '../../test-utils.js';
 import { CONTRIBUTION_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/contribution/OlContributionHandler.js';
+import { GEO_FEATURE_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler.js';
+import { EAContribution } from '../../../src/ea/modules/toolbox/components/contribution/EAContribution.js';
 import { MixerModuleContent } from '../../../src/ea/modules/toolbox/components/mixerModuleContent/MixerModuleContent.js';
 import { RedesignModuleContent } from '../../../src/ea/modules/toolbox/components/redesignModuleContent/RedesignModuleContent.js';
 import { ResearchModuleContent } from '../../../src/ea/modules/toolbox/components/researchModuleContent/ResearchModuleContent.js';
-import { GEO_FEATURE_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler.js';
+import { ManageModulesPlugin } from '../../../src/ea/plugins/ManageModulesPlugin.js';
+import { layersReducer } from '../../../src/store/layers/layers.reducer.js';
 import { createMainMenuReducer } from '../../../src/store/mainMenu/mainMenu.reducer.js';
+import { setCurrentTool } from '../../../src/store/tools/tools.action.js';
+import { toolsReducer } from '../../../src/store/tools/tools.reducer.js';
+import { TestUtils } from '../../test-utils.js';
 
 
 describe('GeolocationPlugin', () => {
@@ -28,7 +28,7 @@ describe('GeolocationPlugin', () => {
 	it('toggles contribution layer when tool ID equals tag of contribution component', async () => {
 		const store = setup();
 
-		const instanceUnderTest = new ManageModuleLayersPlugin();
+		const instanceUnderTest = new ManageModulesPlugin();
 		await instanceUnderTest.register(store);
 
 		expect(store.getState().layers.active.length).toBe(0);
@@ -46,7 +46,7 @@ describe('GeolocationPlugin', () => {
 	it('toggles geofeature layer when tool ID equals tag of mixer/research/redesign component', async () => {
 		const store = setup();
 
-		const instanceUnderTest = new ManageModuleLayersPlugin();
+		const instanceUnderTest = new ManageModulesPlugin();
 		await instanceUnderTest.register(store);
 
 		expect(store.getState().layers.active.length).toBe(0);
@@ -69,7 +69,7 @@ describe('GeolocationPlugin', () => {
 	it('toggles the main menu when opening/closing a module', async () => {
 		const store = setup();
 
-		const instanceUnderTest = new ManageModuleLayersPlugin();
+		const instanceUnderTest = new ManageModulesPlugin();
 		await instanceUnderTest.register(store);
 
 		expect(store.getState().mainMenu.open).toBeTrue();

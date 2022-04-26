@@ -3,7 +3,7 @@ import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { updateSize } from '../../../../../../src/store/position/position.action';
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
-import { close, open } from '../../../../../store/mainMenu/mainMenu.action';
+import { open } from '../../../../../store/mainMenu/mainMenu.action';
 import { setCurrentTool } from '../../../../../store/tools/tools.action';
 import { EAContribution } from '../contribution/EAContribution';
 import { MixerModuleContent } from '../mixerModuleContent/MixerModuleContent';
