@@ -2,7 +2,7 @@
  * Action creators for adding external feature vectors.
  * @module highlight/action
  */
-import { CLEAR_FEATURES, FEATURE_ADD, REMOVE_FEATURE_BY_ID, FEATURE_ADD_LAYER } from './geofeature.reducer';
+import { CLEAR_FEATURES, ADD_FEATURE, REMOVE_FEATURE_BY_ID, ADD_LAYER } from './geofeature.reducer';
 import { $injector } from '../../../injection';
 
 
@@ -48,7 +48,7 @@ const getStore = () => {
 */
 export const addGeoFeatureLayer = (id) => {
 	getStore().dispatch({
-		type: FEATURE_ADD_LAYER,
+		type: ADD_LAYER,
 		payload: id
 	});
 };
@@ -61,7 +61,7 @@ export const addGeoFeatures = (geojsonFeatures) => {
 	const featureAsArray = Array.isArray(geojsonFeatures) ? [...geojsonFeatures] : [geojsonFeatures];
 
 	getStore().dispatch({
-		type: FEATURE_ADD,
+		type: ADD_FEATURE,
 		payload: featureAsArray
 	});
 };

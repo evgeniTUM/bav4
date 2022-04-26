@@ -1,6 +1,6 @@
-export const FEATURE_ADD_LAYER = 'geofeature/feature/addLayer';
+export const ADD_LAYER = 'geofeature/feature/addLayer';
 export const FEATURE_REMOVE_LAYER = 'geofeature/feature/removeLayer';
-export const FEATURE_ADD = 'geofeature/feature/add';
+export const ADD_FEATURE = 'geofeature/feature/add';
 export const CLEAR_FEATURES = 'geofeature/clear';
 export const REMOVE_FEATURE_BY_ID = 'geofeature/remove/id';
 
@@ -24,7 +24,7 @@ export const geofeatureReducer = (state = initialState, action) => {
 
 	const { type, payload } = action;
 	switch (type) {
-		case FEATURE_ADD_LAYER: {
+		case ADD_LAYER: {
 
 			return {
 				...state,
@@ -33,7 +33,7 @@ export const geofeatureReducer = (state = initialState, action) => {
 				active: true
 			};
 		}
-		case FEATURE_ADD: {
+		case ADD_FEATURE: {
 			const features = [...state.features, ...payload];
 
 			return {

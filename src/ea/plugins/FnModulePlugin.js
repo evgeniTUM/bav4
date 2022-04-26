@@ -119,13 +119,6 @@ export class FnModulePlugin extends BaPlugin {
 			case MODULE_HANDSHAKE:
 				break;
 			case ADD_LAYER:
-				//				group: "mixer"
-				//				layerId: "1632734257"
-				//					if (angular.isDefined(addLayerFunction)) {
-				//						addLayerFunction();
-				//					}
-				// console.debug('Client : addlayer ' + message.layerId + ' group ' + message.group + ' options ' + message.draggable);
-				//				implAddLayer(message.layerId, message.group, message.draggable);
 				addGeoFeatureLayer(message.layerId);
 				break;
 			case MODULE_RESET:
