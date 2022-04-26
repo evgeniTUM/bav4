@@ -4,7 +4,6 @@ import { ModuleContainer } from '../../../../../../src/ea/modules/toolbox/compon
 import { RedesignModuleContent } from '../../../../../../src/ea/modules/toolbox/components/redesignModuleContent/RedesignModuleContent';
 import { ResearchModuleContent } from '../../../../../../src/ea/modules/toolbox/components/researchModuleContent/ResearchModuleContent';
 import { $injector } from '../../../../../../src/injection';
-import { createMainMenuReducer } from '../../../../../../src/store/mainMenu/mainMenu.reducer';
 import { createMediaReducer } from '../../../../../../src/store/media/media.reducer';
 import { setCurrentTool, ToolId } from '../../../../../../src/store/tools/tools.action';
 import { toolsReducer } from '../../../../../../src/store/tools/tools.reducer';
@@ -23,13 +22,11 @@ const modules = [
 
 
 describe('ModuleContainer', () => {
-	let store;
 
 	const setup = async (state) => {
-		store = TestUtils.setupStoreAndDi(state, {
+		TestUtils.setupStoreAndDi(state, {
 			tools: toolsReducer,
-			media: createMediaReducer(),
-			mainMenu: createMainMenuReducer()
+			media: createMediaReducer()
 		});
 		$injector
 			.registerSingleton('TranslationService', { translate: (key) => key })
@@ -71,20 +68,6 @@ describe('ModuleContainer', () => {
 				}
 			});
 		});
-	});
-
-	it('toggles the main menu when opening/closing a module', async () => {
-		await setup();
-		expect(store.getState().mainMenu.open).toBeTrue();
-
-		setCurrentTool(MixerModuleContent.tag);
-		expect(store.getState().mainMenu.open).toBeFalse();
-
-		setCurrentTool(ResearchModuleContent.tag);
-		expect(store.getState().mainMenu.open).toBeFalse();
-
-		setCurrentTool('something');
-		expect(store.getState().mainMenu.open).toBeTrue();
 	});
 
 });

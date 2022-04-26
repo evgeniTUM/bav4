@@ -1,7 +1,7 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
-import { openFnModuleComm } from '../../../../store/fnModuleComm/fnModuleComm.action';
+import { closeFnModule, openFnModuleComm } from '../../../../store/fnModuleComm/fnModuleComm.action';
 import toolContentCss from './abstractModuleContent.css';
 
 /**
@@ -99,6 +99,7 @@ export class AbstractModuleContent extends MvuElement {
 	 */
 	onDisconnect() {
 		delete window.ea_moduleWindow[this.getConfig().module];
+		closeFnModule();
 	}
 
 	onAfterRender(first) {

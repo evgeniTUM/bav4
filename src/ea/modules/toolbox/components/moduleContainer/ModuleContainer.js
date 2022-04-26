@@ -5,7 +5,6 @@ import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import { close, open } from '../../../../../store/mainMenu/mainMenu.action';
 import { setCurrentTool } from '../../../../../store/tools/tools.action';
-import { closeFnModule } from '../../../../store/fnModuleComm/fnModuleComm.action';
 import { EAContribution } from '../contribution/EAContribution';
 import { MixerModuleContent } from '../mixerModuleContent/MixerModuleContent';
 import { RedesignModuleContent } from '../redesignModuleContent/RedesignModuleContent';
@@ -15,13 +14,6 @@ import css from './moduleContainer.css';
 
 const Update_IsPortrait_HasMinWidth = 'update_isPortrait_hasMinWidth';
 const Update_ToolId = 'update_tooId';
-
-const MODULE_TAGS = [
-	MixerModuleContent.tag,
-	ResearchModuleContent.tag,
-	RedesignModuleContent.tag,
-	EAContribution.tag
-];
 
 /**
  * @class
@@ -59,20 +51,11 @@ export class ModuleContainer extends MvuElement {
 	 * @override
 	 */
 	update(type, data, model) {
-
-
 		switch (type) {
 			case Update_IsPortrait_HasMinWidth:
 				return { ...model, ...data };
 
 			case Update_ToolId:
-				if (MODULE_TAGS.includes(data)) {
-					close();
-				}
-				else if (MODULE_TAGS.includes(model.toolId)) {
-					open();
-				}
-
 				return { ...model, toolId: data };
 		}
 	}
@@ -132,7 +115,6 @@ export class ModuleContainer extends MvuElement {
 
 
 		const close = () => {
-			closeFnModule();
 			setCurrentTool(null);
 		};
 

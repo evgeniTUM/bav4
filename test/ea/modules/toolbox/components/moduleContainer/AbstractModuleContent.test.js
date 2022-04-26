@@ -1,5 +1,5 @@
 import { AbstractModuleContent } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/AbstractModuleContent';
-import { fnModuleCommReducer } from '../../../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
+import { fnModuleCommReducer, MODULE_RESET_REQUESTED } from '../../../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
 import { geofeatureReducer } from '../../../../../../src/ea/store/geofeature/geofeature.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { TestUtils } from '../../../../../test-utils';
@@ -67,6 +67,14 @@ describe('ModuleContent', () => {
 		element.disconnectedCallback();
 
 		expect(window.ea_moduleWindow).toHaveSize(0);
+	});
+
+	it('closes fnCommModule when element disconnects from dom', async () => {
+		const element = await setup();
+
+		element.disconnectedCallback();
+
+		expect(storeActions.pop().type).toEqual(MODULE_RESET_REQUESTED);
 	});
 
 });

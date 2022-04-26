@@ -2,11 +2,11 @@ import { $injector } from '../../injection/';
 
 import { eaMapModule } from '../modules/map/injection/';
 import { FnModulePlugin } from '../plugins/FnModulePlugin';
-import { ManageModuleLayersPlugin } from '../plugins/ManageModuleLayersPlugin';
+import { ManageModulesPlugin } from '../plugins/ManageModulesPlugin';
 
 
 $injector
 	.registerSingleton('FnModulePlugin', new FnModulePlugin())
-	.registerSingleton('ManageModuleLayersPlugin', new ManageModuleLayersPlugin())
+	.registerSingleton('ManageModulesPlugin', new ManageModulesPlugin())
 	.registerModule(eaMapModule) ;
 

@@ -9,6 +9,7 @@ import { MixerModuleContent } from '../../../src/ea/modules/toolbox/components/m
 import { RedesignModuleContent } from '../../../src/ea/modules/toolbox/components/redesignModuleContent/RedesignModuleContent.js';
 import { ResearchModuleContent } from '../../../src/ea/modules/toolbox/components/researchModuleContent/ResearchModuleContent.js';
 import { GEO_FEATURE_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler.js';
+import { createMainMenuReducer } from '../../../src/store/mainMenu/mainMenu.reducer.js';
 
 
 describe('GeolocationPlugin', () => {
@@ -17,7 +18,8 @@ describe('GeolocationPlugin', () => {
 
 		const store = TestUtils.setupStoreAndDi(state, {
 			layers: layersReducer,
-			tools: toolsReducer
+			tools: toolsReducer,
+			mainMenu: createMainMenuReducer()
 		});
 
 		return store;
@@ -61,6 +63,25 @@ describe('GeolocationPlugin', () => {
 			expect(store.getState().layers.active.length).toBe(0);
 
 		});
+	});
+
+
+	it('toggles the main menu when opening/closing a module', async () => {
+		const store = setup();
+
+		const instanceUnderTest = new ManageModuleLayersPlugin();
+		await instanceUnderTest.register(store);
+
+		expect(store.getState().mainMenu.open).toBeTrue();
+
+		setCurrentTool(MixerModuleContent.tag);
+		expect(store.getState().mainMenu.open).toBeFalse();
+
+		setCurrentTool(ResearchModuleContent.tag);
+		expect(store.getState().mainMenu.open).toBeFalse();
+
+		setCurrentTool('something');
+		expect(store.getState().mainMenu.open).toBeTrue();
 	});
 
 });

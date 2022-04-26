@@ -50,7 +50,7 @@ describe('StoreService', () => {
 			register() {}
 		};
 
-		const manageModuleLayersPluginMock = {
+		const manageModulesPluginMock = {
 			register() {}
 		};
 		const windowMock = {
@@ -82,7 +82,7 @@ describe('StoreService', () => {
 				.registerSingleton('EnvironmentService', { getWindow: () => windowMock })
 				.registerSingleton('ConfigService', configService)
 				.registerSingleton('FnModulePlugin', fnModulePluginMock)
-				.registerSingleton('ManageModuleLayersPlugin', manageModuleLayersPluginMock)
+				.registerSingleton('ManageModulesPlugin', manageModulesPluginMock)
 
 				.ready();
 		};
