@@ -54,8 +54,11 @@ describe('ModuleContent', () => {
 		const frameId = element.getConfig().frame_id;
 		const iframeWindow = element.shadowRoot.getElementById(frameId).contentWindow;
 
-		expect(window.ea_moduleWindow).toHaveSize(1);
-		expect(window.ea_moduleWindow[element.getConfig().module]).toEqual(iframeWindow);
+		setTimeout(function () {
+			expect(window.ea_moduleWindow).toHaveSize(1);
+			expect(window.ea_moduleWindow[element.getConfig().module]).toEqual(iframeWindow);
+
+		}, 100);
 	});
 
 	it('removes global variable when element disconnects from dom', async () => {
