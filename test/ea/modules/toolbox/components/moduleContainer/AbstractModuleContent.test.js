@@ -1,5 +1,5 @@
 import { AbstractModuleContent } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/AbstractModuleContent';
-import { fnModuleCommReducer } from '../../../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
+import { fnModuleCommReducer, MODULE_RESET_REQUESTED, OPEN_MODULE_REQUESTED } from '../../../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
 import { geofeatureReducer } from '../../../../../../src/ea/store/geofeature/geofeature.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { TestUtils } from '../../../../../test-utils';
@@ -12,7 +12,7 @@ class ConcreteModuleContent extends AbstractModuleContent {
 
 		return {
 			iframe: 'iframe',
-			site: 'site',
+			module: 'concrete_module',
 			frame_id: 'frame_id',
 			header_title: 'header_title'
 		};
@@ -31,11 +31,10 @@ describe('ModuleContent', () => {
 	const storeActions = [];
 
 	const configServiceMock = {
-		getValueAsPath() { }
+		getValueAsPath: (key) => key
 	};
 
 	const setup = async (state) => {
-
 		storeActions.length = 0;
 
 		TestUtils.setupStoreAndDi(state, {
@@ -49,13 +48,27 @@ describe('ModuleContent', () => {
 		return TestUtils.render(ConcreteModuleContent.tag);
 	};
 
+	beforeEach(async () => {
+		jasmine.clock().install();
+	});
+
+	afterEach(function () {
+		jasmine.clock().uninstall();
+	});
+
+
+
 	it('stores the iframe-window in a global variable', async () => {
 		const element = await setup();
-		const frameId = element.getConfig().frame_id;
-		const iframeWindow = element.shadowRoot.getElementById(frameId).contentWindow;
+		jasmine.clock().tick(10000);
 
-		expect(window.ea_moduleWindow).toHaveSize(1);
-		expect(window.ea_moduleWindow[element.getConfig().module]).toEqual(iframeWindow);
+		setTimeout(() => {
+			const frameId = element.getConfig().frame_id;
+			const iframeWindow = element.shadowRoot.getElementById(frameId).contentWindow;
+
+			expect(window.ea_moduleWindow).toHaveSize(1);
+			expect(window.ea_moduleWindow[element.getConfig().module]).toEqual(iframeWindow);
+		});
 	});
 
 	it('removes global variable when element disconnects from dom', async () => {
@@ -64,6 +77,28 @@ describe('ModuleContent', () => {
 		element.disconnectedCallback();
 
 		expect(window.ea_moduleWindow).toHaveSize(0);
+	});
+
+	it('opens fnCommModule when element renders', async () => {
+		const element = await setup();
+		jasmine.clock().tick(10000);
+
+		setTimeout(() => {
+			const lastAction = storeActions.pop();
+			expect(lastAction.type).toEqual(OPEN_MODULE_REQUESTED);
+			expect(lastAction.payload).toEqual({
+				module: element.getConfig().module,
+				domain: 'MODULE_BACKEND_URL'
+			});
+		});
+	});
+
+	it('closes fnCommModule when element disconnects from dom', async () => {
+		const element = await setup();
+
+		element.disconnectedCallback();
+
+		expect(storeActions.pop().type).toEqual(MODULE_RESET_REQUESTED);
 	});
 
 });

@@ -1,7 +1,7 @@
 import { FnModulePlugin } from '../../../src/ea/plugins/FnModulePlugin.js';
 import { closeFnModule, openFnModuleComm } from '../../../src/ea/store/fnModuleComm/fnModuleComm.action.js';
 import { fnModuleCommReducer } from '../../../src/ea/store/fnModuleComm/fnModuleComm.reducer.js';
-import { CLEAR_FEATURES, FEATURE_ADD, geofeatureReducer } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
+import { CLEAR_FEATURES, ADD_FEATURE, ADD_LAYER, geofeatureReducer } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
 import { activateMapClick, deactivateMapClick } from '../../../src/ea/store/mapclick/mapclick.action.js';
 import { mapclickReducer, MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE } from '../../../src/ea/store/mapclick/mapclick.reducer';
 import { $injector } from '../../../src/injection/index.js';
@@ -94,7 +94,7 @@ describe('FnModulePlugin', () => {
 			});
 	});
 
-	describe('when communication is open', () => {
+	describe('when communication is open,', () => {
 		const module = 'test_modul';
 		const domain = 'http://domain.com/eab-module';
 
@@ -112,6 +112,24 @@ describe('FnModulePlugin', () => {
 			return store;
 		};
 
+		it('adds a geofeature layer on message \'addlayer\'', async () => {
+			await setupOpen();
+
+			windowMock.listenerFunction({
+				data: {
+					code: 'addlayer',
+					module: domain,
+					message: { layerId: 42 }
+				},
+				event: { origin: module }
+			});
+
+			const lastAction = storeActions.pop();
+			expect(lastAction.type).toEqual(ADD_LAYER);
+			expect(lastAction.payload).toEqual(42);
+
+		});
+
 		it('clears geofeature layers on message \'clearLayer\'', async () => {
 			await setupOpen();
 
@@ -119,10 +137,9 @@ describe('FnModulePlugin', () => {
 				data: {
 					code: 'clearLayer',
 					module: domain,
-					message: 'test'
+					message: null
 				},
 				event: { origin: module }
-
 			});
 
 			const lastAction = storeActions.pop();
@@ -148,7 +165,7 @@ describe('FnModulePlugin', () => {
 			});
 
 			const lastAction = storeActions.pop();
-			expect(lastAction.type).toEqual(FEATURE_ADD);
+			expect(lastAction.type).toEqual(ADD_FEATURE);
 			expect(lastAction.payload).toEqual([geojson]);
 		});
 
