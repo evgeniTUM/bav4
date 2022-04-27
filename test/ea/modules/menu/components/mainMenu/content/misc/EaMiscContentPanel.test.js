@@ -106,5 +106,36 @@ describe('EaMiscContentPanel', () => {
 			expect(links[10].querySelector('.ba-list-item__secondary-text').innerText).toEqual('menu_misc_content_panel_gp_text');
 
 		});
+		it('collapses all sections init', async () => {
+			const element = await setup();
+
+			const sections = element.shadowRoot.querySelectorAll('.collapse-content');
+			sections.forEach((section) => {
+				expect(section.classList).toContain('iscollapse');
+			});
+		});
+
+		it('toggles sections on click', async () => {
+			const element = await setup();
+
+			const sections = [
+				'moreinfo',
+				'aboutus',
+				'legal',
+				'settings',
+				'links'
+			];
+			sections.forEach(section => {
+				const header = element.shadowRoot.getElementById(section + '-header');
+				const content = element.shadowRoot.getElementById(section + '-content');
+
+				const collapsedState = content.classList.contains('iscollapse');
+
+				header.click();
+
+				expect(content.classList.contains('iscollapsed')).toBe(!collapsedState);
+			});
+		});
 	});
+
 });
