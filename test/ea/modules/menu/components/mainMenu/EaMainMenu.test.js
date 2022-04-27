@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 
 import { AdditionalMenu } from '../../../../../../src/ea/modules/menu/components/additionalMenu/AdditionalMenu';
+import { EaMiscContentPanel } from '../../../../../../src/ea/modules/menu/components/mainMenu/content/misc/EaMiscContentPanel';
 import { EaMainMenu } from '../../../../../../src/ea/modules/menu/components/mainMenu/EaMainMenu';
 import { EaTopicsContentPanel } from '../../../../../../src/ea/modules/topics/components/menu/EaTopicsContentPanel';
 import { $injector } from '../../../../../../src/injection';
@@ -81,7 +82,7 @@ describe('EaMainMenu', () => {
 						expect(contentPanels[i].innerHTML.toString().includes(MapsContentPanel.tag)).toBeTrue();
 						break;
 					case TabId.MISC:
-						expect(contentPanels[i].innerHTML.toString().includes(BvvMiscContentPanel.tag)).toBeTrue();
+						expect(contentPanels[i].innerHTML.toString().includes(EaMiscContentPanel.tag)).toBeFalse();
 						break;
 					case TabId.EXTENSION:
 						expect(contentPanels[i].innerHTML.toString().includes(AdditionalMenu.tag)).toBeTrue();
@@ -96,7 +97,7 @@ describe('EaMainMenu', () => {
 			expect(element.shadowRoot.querySelector(SearchResultsPanel.tag).hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 			expect(element.shadowRoot.querySelector(FeatureInfoPanel.tag).hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 			expect(element.shadowRoot.querySelector(MapsContentPanel.tag).hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
-			expect(element.shadowRoot.querySelector(BvvMiscContentPanel.tag).hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
+			expect(element.shadowRoot.querySelector(EaMiscContentPanel.tag).hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 
 			expect(element.shadowRoot.querySelector(EaTopicsContentPanel.tag).hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 			expect(element.shadowRoot.querySelector(AdditionalMenu.tag).hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();

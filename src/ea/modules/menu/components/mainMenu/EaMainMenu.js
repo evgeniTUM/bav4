@@ -5,6 +5,7 @@ import { $injector } from '../../../../../injection';
 import { MainMenu } from '../../../../../modules/menu/components/mainMenu/MainMenu';
 import { TabId } from '../../../../../store/mainMenu/mainMenu.action';
 import { AdditionalMenu } from '../additionalMenu/AdditionalMenu';
+import { EaMiscContentPanel } from './content/misc/EaMiscContentPanel';
 
 
 /**
@@ -27,6 +28,8 @@ export class EaMainMenu extends MainMenu {
 				return html`${unsafeHTML(`<${AdditionalMenu.tag} data-test-id />`)}`;
 			case TabId.TOPICS:
 				return html`${unsafeHTML(`<${EaTopicsContentPanel.tag} data-test-id />`)}`;
+			case TabId.MISC:
+				return html`${unsafeHTML(`<${EaMiscContentPanel.tag} data-test-id />`)}`;
 			default:
 				return super._getContentPanel(definition);
 		}
