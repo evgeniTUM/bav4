@@ -16,7 +16,6 @@ export class EaMainMenu extends MainMenu {
 
 	constructor() {
 		super();
-		window.console.log('EaMainMenu.constructor');
 		const { TranslationService: translationService } = $injector.inject('TranslationService');
 		this._translationService = translationService;
 	}
@@ -25,10 +24,9 @@ export class EaMainMenu extends MainMenu {
 	_getContentPanel(definition) {
 		switch (definition) {
 			case TabId.EXTENSION:
-				return html`${unsafeHTML(`<${AdditionalMenu.tag}/>`)}`;
+				return html`${unsafeHTML(`<${AdditionalMenu.tag} data-test-id />`)}`;
 			case TabId.TOPICS:
-				window.console.log('Topics EaTopicsContentPanel ');
-				return html`${unsafeHTML(`<${EaTopicsContentPanel.tag}/>`)}`;
+				return html`${unsafeHTML(`<${EaTopicsContentPanel.tag} data-test-id />`)}`;
 			default:
 				return super._getContentPanel(definition);
 		}
