@@ -16,7 +16,11 @@ export const provide = (lang) => {
 				ea_menu_geotherm_short: 'EN -Standortcheck Oberfl. Geothermie',
 				ea_menu_geotherm_tooltip: 'EN -Hier die Standorteignung für oberflächennahe Geothermie prüfen',
 				ea_menu_redesign: 'Mischpult "Redesign"',
-				ea_menu_redesign_tooltip: 'Dieses Modul dient zur Entwicklung und Redesign der Zusatzmodule'
+				ea_menu_redesign_tooltip: 'Dieses Modul dient zur Entwicklung und Redesign der Zusatzmodule',
+
+				// misc menu
+				ea_menu_misc_content_panel_ea: 'Energie-Atlas-Thementeil ',
+				ea_menu_misc_content_panel_ea_tooltip: 'Wechsel zum Thementeil mit Infos zu Energiesparen, Energieeffizienz und erneuerbaren Energien'
 			};
 
 		case 'de':
@@ -34,7 +38,31 @@ export const provide = (lang) => {
 				ea_menu_geotherm_short: 'Standortcheck Oberfl. Geothermie',
 				ea_menu_geotherm_tooltip: ' Standorteignung für oberflächennahe Geothermie prüfen',
 				ea_menu_redesign: 'Mischpult "Redesign"',
-				ea_menu_redesign_tooltip: 'Modul für Redesign der Zusatzmodule'
+				ea_menu_redesign_tooltip: 'Modul für Redesign der Zusatzmodule',
+
+				//misc menu
+				ea_menu_misc_content_panel_moreinfo: 'Weitere Informationen',
+				ea_menu_misc_content_panel_aboutus: 'Über uns',
+				ea_menu_misc_content_panel_legal: 'Rechtliches',
+				ea_menu_misc_content_panel_links: 'Rechtliches',
+				ea_menu_misc_content_panel_ea: 'Energie-Atlas-Thementeil',
+				ea_menu_misc_content_panel_ea_tooltip: 'Wechsel zum Thementeil mit Infos zu Energiesparen, Energieeffizienz und erneuerbaren Energien',
+				ea_menu_misc_content_panel_help: 'Hilfe',
+				ea_menu_misc_content_panel_help_tooltip: 'zur Hilfe des Kartenteils',
+				ea_menu_misc_content_panel_newsletter: 'Newsletter',
+				ea_menu_misc_content_panel_newsletter_tooltip: 'zur Bestellung unseres Newsletters',
+				ea_menu_misc_content_panel_contact: 'Kontakt',
+				ea_menu_misc_content_panel_contact_tooltip: 'zum Energie-Atlas Bayern-Team Kontakt aufnehmen',
+				ea_menu_misc_content_panel_imprint: 'Impressum',
+				ea_menu_misc_content_panel_imprint_tooltip: 'zum Impressum',
+				ea_menu_misc_content_panel_privacy_policy: 'Datenschutz',
+				ea_menu_misc_content_panel_privacy_policy_tooltip: 'zur Seite Datenschutz',
+				ea_menu_misc_content_panel_terms_of_use: 'Nutzungsbedingungen',
+				ea_menu_misc_content_panel_terms_of_use_tooltip: 'zur Seite Nutzungsbedingungen',
+				ea_menu_misc_content_panel_change_font: 'Schriftgröße ändern',
+				ea_menu_misc_content_panel_change_font_tooltip: 'zur Seite Informationen zur Schriftgröße',
+				ea_menu_misc_content_panel_ba_header: 'BayernAtlas',
+				ea_menu_misc_content_panel_ba_text: 'Der BayernAtlas ist der Viewer für Geodaten der Bayerischen Vermessungsverwaltung.'
 			};
 
 		default:
