@@ -37,7 +37,7 @@ describe('EaMiscContentPanel', () => {
 
 		it('checks the list ', async () => {
 			const element = await setup();
-			expect(element.shadowRoot.querySelectorAll('.ba-list-item__header').length).toBe(5);
+			expect(element.shadowRoot.querySelectorAll('.ba-section').length).toBe(5);
 			expect(element.shadowRoot.querySelectorAll('a').length).toBe(11);
 			expect(element.shadowRoot.querySelectorAll('[href]').length).toBe(11);
 		});
