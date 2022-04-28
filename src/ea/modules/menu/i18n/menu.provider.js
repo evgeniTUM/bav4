@@ -44,7 +44,7 @@ export const provide = (lang) => {
 				ea_menu_misc_content_panel_moreinfo: 'Weitere Informationen',
 				ea_menu_misc_content_panel_aboutus: 'Über uns',
 				ea_menu_misc_content_panel_legal: 'Rechtliches',
-				ea_menu_misc_content_panel_links: 'Rechtliches',
+				ea_menu_misc_content_panel_links: 'Links',
 				ea_menu_misc_content_panel_ea: 'Energie-Atlas-Thementeil',
 				ea_menu_misc_content_panel_ea_tooltip: 'Wechsel zum Thementeil mit Infos zu Energiesparen, Energieeffizienz und erneuerbaren Energien',
 				ea_menu_misc_content_panel_help: 'Hilfe',
