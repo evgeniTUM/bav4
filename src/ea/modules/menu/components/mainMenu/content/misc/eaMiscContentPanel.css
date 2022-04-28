@@ -1,0 +1,98 @@
+.link-icon {
+	mask-size: cover;
+	-webkit-mask-size: cover;
+	background: var(--text1);
+	width: 2em;
+	height: 2em;
+	border-radius: 0;
+}
+.link-image {
+	min-width: 4em;
+	width: 4em;
+	min-height: 4em;
+	height: 4em;
+	border-radius: 0;
+}
+.help {
+	mask-image: url('assets/help.svg');
+	-webkit-mask-image: url('assets/help.svg');
+}
+.contact {
+	mask-image: url('assets/contact.svg');
+	-webkit-mask-image: url('assets/contact.svg');
+	transform: scale(.7);
+}
+.checklist {
+	mask-image: url('assets/checklist.svg');
+	-webkit-mask-image: url('assets/checklist.svg');
+	transform: scale(.7);
+}
+.lock {
+	mask-image: url('assets/lock.svg');
+	-webkit-mask-image: url('assets/lock.svg');
+	transform: scale(.7);
+}
+.imprint {
+	mask-image: url('assets/imprint.svg');
+	-webkit-mask-image: url('assets/imprint.svg');
+	transform: scale(.7);
+}
+.link {
+	mask-image: url('assets/link.svg');
+	-webkit-mask-image: url('assets/link.svg');
+	transform: scale(.7);
+}
+.geoportal {
+	background-color: transparent;
+	background-size: contain;
+	background-image: url('assets/geoportal.webp');
+}
+.ba {
+	background-color: transparent;
+	background-size: contain;
+	background-image: url('assets/ba.svg');
+}
+.gdo {
+	mask-size: cover;
+	-webkit-mask-size: cover;
+	mask-image: url('assets/gdo.svg');
+	-webkit-mask-image: url('assets/gdo.svg');
+	background: linear-gradient(90deg, rgba(8,131,181,1) 0%, rgba(43,91,148,1) 100%);
+}
+
+.slider-container {
+	width: 50%;
+	padding-top: 1em;
+}
+ba-icon {
+	border-radius: 2.5em;
+	width: 2.6em;
+	height: 2.6em;
+	display: block;
+	margin: 0 .3em;
+}
+ba-icon:hover {
+	background: var(--primary-color);
+
+}
+ba-icon:focus {
+	box-shadow: 0 0 0 .2em var(--primary-color-lighter);
+}
+.ba-list-item:hover {
+	background: transparent;
+}
+.iscollapse {
+	display: none;
+}
+
+.collapse-content > * {
+	border-right: 1px dotted var(--header-background-color);
+}
+.collapse-content > *:first-child {
+	border-right: 0;
+	margin-right: .5em;
+}
+.collapse-content > *:last-child {
+	padding-right: 1em;
+	border-right: 0;
+}
