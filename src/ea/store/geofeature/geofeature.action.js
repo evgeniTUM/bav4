@@ -2,7 +2,7 @@
  * Action creators for adding external feature vectors.
  * @module highlight/action
  */
-import { CLEAR_FEATURES, ADD_FEATURE, REMOVE_FEATURE_BY_ID, ADD_LAYER } from './geofeature.reducer';
+import { CLEAR_FEATURES, ADD_FEATURE, REMOVE_FEATURE_BY_ID, ADD_LAYER, REMOVE_LAYER } from './geofeature.reducer';
 import { $injector } from '../../../injection';
 
 
@@ -42,8 +42,8 @@ const getStore = () => {
 };
 
 /**
-* Adds (appends) a single or an array of {@link GeoFeature}.
-* @param {Array.<GeoFeature>|GeoFeature} features
+* Adds (appends) a single layer.
+* @param {integer} id the id of the layer
 * @function
 */
 export const addGeoFeatureLayer = (id) => {
@@ -52,6 +52,19 @@ export const addGeoFeatureLayer = (id) => {
 		payload: id
 	});
 };
+
+/**
+* Removes a single layer.
+* @param {integer} id the id of the layer
+* @function
+*/
+export const removeGeoFeatureLayer = (id) => {
+	getStore().dispatch({
+		type: REMOVE_LAYER,
+		payload: id
+	});
+};
+
 /**
 * Adds (appends) a single or an array of {@link GeoFeature}.
 * @param {Array.<GeoFeature>|GeoFeature} features

@@ -1,4 +1,4 @@
-import { addGeoFeatureLayer, addGeoFeatures, clearGeoFeatures, removeGeoFeaturesById } from '../../../../src/ea/store/geofeature/geofeature.action';
+import { addGeoFeatureLayer, addGeoFeatures, clearGeoFeatures, removeGeoFeatureLayer, removeGeoFeaturesById } from '../../../../src/ea/store/geofeature/geofeature.action';
 import { geofeatureReducer } from '../../../../src/ea/store/geofeature/geofeature.reducer';
 import { TestUtils } from '../../../test-utils';
 
@@ -14,7 +14,7 @@ describe('geofeatureReducer', () => {
 	it('initiales the store with default values', () => {
 		const store = setup();
 
-		expect(store.getState().geofeature.id).toBeNull();
+		expect(store.getState().geofeature.layers).toHaveSize(0);
 		expect(store.getState().geofeature.features).toHaveSize(0);
 		expect(store.getState().geofeature.active).toBeFalse(0);
 	});
@@ -24,8 +24,21 @@ describe('geofeatureReducer', () => {
 
 		addGeoFeatureLayer(42);
 
-		expect(store.getState().geofeature.features).toHaveSize(0);
-		expect(store.getState().geofeature.active).toBeTrue();
+		const geofeature = store.getState().geofeature;
+		expect(geofeature.layers).toHaveSize(1);
+		expect(geofeature.layers[0].id).toEqual(42);
+		expect(geofeature.active).toBeTrue();
+	});
+
+	it('removes a layer', () => {
+		const store = setup();
+		addGeoFeatureLayer(42);
+
+		removeGeoFeatureLayer(42);
+
+		const geofeature = store.getState().geofeature;
+		expect(geofeature.layers).toHaveSize(0);
+		expect(geofeature.active).toBeFalse();
 	});
 
 	it('adds a feature', () => {

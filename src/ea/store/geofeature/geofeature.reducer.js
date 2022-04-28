@@ -1,14 +1,14 @@
 export const ADD_LAYER = 'geofeature/feature/addLayer';
-export const FEATURE_REMOVE_LAYER = 'geofeature/feature/removeLayer';
+export const REMOVE_LAYER = 'geofeature/feature/removeLayer';
 export const ADD_FEATURE = 'geofeature/feature/add';
 export const CLEAR_FEATURES = 'geofeature/clear';
 export const REMOVE_FEATURE_BY_ID = 'geofeature/remove/id';
 
 export const initialState = {
 	/**
-	 * @property {integer|null}
+	 * @property {Layer|null}
 	 */
-	id: null,
+	layers: [],
 
 	/**
 	 * @property {GeoFeature|null}
@@ -25,25 +25,30 @@ export const geofeatureReducer = (state = initialState, action) => {
 	const { type, payload } = action;
 	switch (type) {
 		case ADD_LAYER: {
-
 			return {
 				...state,
-				id: payload.id,
-				features: [],
+				layers: [...state.layers, { id: payload }],
 				active: true
 			};
 		}
-		case ADD_FEATURE: {
-			const features = [...state.features, ...payload];
-
+		case REMOVE_LAYER: {
+			const layers = state.layers.filter(l => l.id !== payload);
+			console.log(layers);
+			const active = !!layers.length;
 			return {
 				...state,
-				features: features,
+				layers: layers,
+				active: active
+			};
+		}
+		case ADD_FEATURE: {
+			return {
+				...state,
+				features: [...state.features, ...payload],
 				active: true
 			};
 		}
 		case CLEAR_FEATURES: {
-
 			return {
 				...state,
 				features: [],
@@ -51,14 +56,11 @@ export const geofeatureReducer = (state = initialState, action) => {
 			};
 		}
 		case REMOVE_FEATURE_BY_ID: {
-
 			const features = state.features.filter(f => !payload.includes(f.id));
-			const active = !!features.length;
 
 			return {
 				...state,
-				features: features,
-				active: active
+				features: features
 			};
 		}
 	}
