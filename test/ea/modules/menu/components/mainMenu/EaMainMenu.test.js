@@ -7,7 +7,6 @@ import { EaTopicsContentPanel } from '../../../../../../src/ea/modules/topics/co
 import { $injector } from '../../../../../../src/injection';
 import { FeatureInfoPanel } from '../../../../../../src/modules/featureInfo/components/FeatureInfoPanel';
 import { MapsContentPanel } from '../../../../../../src/modules/menu/components/mainMenu/content/maps/MapsContentPanel';
-import { BvvMiscContentPanel } from '../../../../../../src/modules/menu/components/mainMenu/content/misc/BvvMiscContentPanel';
 import { MainMenu } from '../../../../../../src/modules/menu/components/mainMenu/MainMenu';
 import { SearchResultsPanel } from '../../../../../../src/modules/search/components/menu/SearchResultsPanel';
 import { setTab, TabId } from '../../../../../../src/store/mainMenu/mainMenu.action';
