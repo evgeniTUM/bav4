@@ -3,7 +3,7 @@ import TileLayer from 'ol/layer/Tile';
 import { fromLonLat } from 'ol/proj';
 import { OSM, TileDebug } from 'ol/source';
 import { GEO_FEATURE_LAYER_ID, OlGeoFeatureLayerHandler } from '../../../../../../../../src/ea/modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler';
-import { addGeoFeatures, clearGeoFeatures } from '../../../../../../../../src/ea/store/geofeature/geofeature.action';
+import { addGeoFeatureLayer, addGeoFeatures, clearLayers } from '../../../../../../../../src/ea/store/geofeature/geofeature.action';
 import { geofeatureReducer } from '../../../../../../../../src/ea/store/geofeature/geofeature.reducer';
 import { mapclickReducer } from '../../../../../../../../src/ea/store/mapclick/mapclick.reducer';
 import { $injector } from '../../../../../../../../src/injection';
@@ -88,38 +88,51 @@ describe('OlGeoFeatureLayerHandler', () => {
 			expect(layer).toBeTruthy();
 		});
 
-		it('fits the map to the layer when a new feature is added (with zoom scale of 20%)', () => {
-			const map = setupMap();
-			setup();
+		describe('when a layer exists', () => {
+			const layerId = 42;
+			let map;
 
-			const classUnderTest = new OlGeoFeatureLayerHandler();
-			classUnderTest.activate(map);
+			const setupWithLayer = () => {
+				map = setupMap();
+				setup();
 
-			addGeoFeatures([GEOJSON_SAMPLE_DATA]);
+				addGeoFeatureLayer(layerId);
+				return map;
+			};
 
-			const setFitActions = storeActions.filter(a => a.type === FIT_REQUESTED);
-			expect(setFitActions).toHaveSize(1);
-			expect(setFitActions[0].payload._payload.extent).toEqual([-1, -1, 11, 11]);
+			it('fits the map to the layer when a new feature is added (with zoom scale of 20%)', () => {
+				setupWithLayer();
+
+				const classUnderTest = new OlGeoFeatureLayerHandler();
+				classUnderTest.activate(map);
+
+				addGeoFeatures(layerId, [GEOJSON_SAMPLE_DATA]);
+
+				const setFitActions = storeActions.filter(a => a.type === FIT_REQUESTED);
+				expect(setFitActions).toHaveSize(1);
+				expect(setFitActions[0].payload._payload.extent).toEqual([-1, -1, 11, 11]);
+			});
+
+			it('shows features in store slice \'geofeatures\'', async () => {
+				setupWithLayer();
+
+				const classUnderTest = new OlGeoFeatureLayerHandler();
+				const layer = classUnderTest.activate(map);
+
+				addGeoFeatures(layerId, [GEOJSON_SAMPLE_DATA]);
+
+				const actualFeatures = layer.getSource().getFeatures();
+				expect(actualFeatures.length).toEqual(1);
+				expect(actualFeatures[0].getGeometry().getCoordinates())
+					.toEqual(GEOJSON_SAMPLE_DATA.geometry.coordinates);
+
+				clearLayers();
+
+				expect(layer.getSource().getFeatures().length).toEqual(0);
+			});
+
 		});
 
-		it('shows features in store slice \'geofeature\'', async () => {
-			const map = setupMap();
-			setup();
-
-			const classUnderTest = new OlGeoFeatureLayerHandler();
-			const layer = classUnderTest.activate(map);
-
-			addGeoFeatures([GEOJSON_SAMPLE_DATA]);
-
-			const actualFeatures = layer.getSource().getFeatures();
-			expect(actualFeatures.length).toEqual(1);
-			expect(actualFeatures[0].getGeometry().getCoordinates())
-				.toEqual(GEOJSON_SAMPLE_DATA.geometry.coordinates);
-
-			clearGeoFeatures();
-
-			expect(layer.getSource().getFeatures().length).toEqual(0);
-		});
 
 	});
 });

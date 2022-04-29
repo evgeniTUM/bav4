@@ -153,19 +153,10 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 	_register(store) {
 
-		const getOldLayer = (map) => {
-			return map.getLayers().getArray().find(l => l.get('id') && (
-				l.get('id') === GEO_FEATURE_LAYER_ID));
-		};
-
-
-
-
-		//		this._listeners.push(this._map.on(MapBrowserEventType.CLICK, onClick));
-
-		const onChange = ({ features }) => {
+		const onChange = ({ layers }) => {
 			this._vectorLayer.getSource().clear();
 
+			const features = layers.map(l => l.features).flat();
 			if (features === undefined || features.length === 0) {
 				return;
 			}

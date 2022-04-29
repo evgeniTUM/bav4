@@ -157,6 +157,7 @@ describe('FnModulePlugin', () => {
 					code: 'addfeature',
 					module: domain,
 					message: {
+						layerId: 42,
 						geojson: { features: [geojson] }
 					}
 				},
@@ -166,7 +167,7 @@ describe('FnModulePlugin', () => {
 
 			const lastAction = storeActions.pop();
 			expect(lastAction.type).toEqual(ADD_FEATURE);
-			expect(lastAction.payload).toEqual([geojson]);
+			expect(lastAction.payload).toEqual({ layerId: 42, features: [geojson] });
 		});
 
 		it('adds mapclick on message \'activate_mapclick\'', async () => {
