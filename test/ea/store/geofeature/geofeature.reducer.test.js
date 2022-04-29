@@ -1,4 +1,4 @@
-import { addGeoFeatureLayer, addGeoFeatures, clearGeoFeatures, removeGeoFeatureLayer, removeGeoFeaturesById } from '../../../../src/ea/store/geofeature/geofeature.action';
+import { addGeoFeatureLayer, addGeoFeatures, clearLayers, removeGeoFeatureLayer, removeGeoFeatures } from '../../../../src/ea/store/geofeature/geofeature.action';
 import { geofeatureReducer } from '../../../../src/ea/store/geofeature/geofeature.reducer';
 import { TestUtils } from '../../../test-utils';
 
@@ -15,7 +15,6 @@ describe('geofeatureReducer', () => {
 		const store = setup();
 
 		expect(store.getState().geofeature.layers).toHaveSize(0);
-		expect(store.getState().geofeature.features).toHaveSize(0);
 		expect(store.getState().geofeature.active).toBeFalse(0);
 	});
 
@@ -46,36 +45,35 @@ describe('geofeatureReducer', () => {
 		addGeoFeatureLayer(42);
 		const feature = { id: 24, name: 'test-feature' };
 
-		addGeoFeatures(feature);
+		addGeoFeatures(42, [feature]);
 
-		expect(store.getState().geofeature.features).toHaveSize(1);
-		expect(store.getState().geofeature.features[0]).toBe(feature);
+		expect(store.getState().geofeature.layers[0].features).toHaveSize(1);
+		expect(store.getState().geofeature.layers[0].features[0]).toBe(feature);
 	});
 
 	it('removes a feature by id', () => {
 		const store = setup();
-		addGeoFeatureLayer(24);
-		const feature = { id: 42, name: 'test-feature' };
-		addGeoFeatures(feature);
+		addGeoFeatureLayer(42);
+		const feature = { id: 24, name: 'test-feature' };
+		addGeoFeatures(42, [feature]);
 
 		// try non existant id
-		removeGeoFeaturesById(1234);
-		expect(store.getState().geofeature.features).toHaveSize(1);
+		removeGeoFeatures(42, [1234]);
+		expect(store.getState().geofeature.layers[0].features).toHaveSize(1);
 
 		// try actual id
-		removeGeoFeaturesById(42);
-		expect(store.getState().geofeature.features).toHaveSize(0);
+		removeGeoFeatures(42, [24]);
+		expect(store.getState().geofeature.layers[0].features).toHaveSize(0);
 	});
 
-	it('clears all features', () => {
+	it('clears all layers', () => {
 		const store = setup();
 		addGeoFeatureLayer(42);
-		addGeoFeatures({ name: 'feature1' });
-		addGeoFeatures({ name: 'feature2' });
+		addGeoFeatures([{ name: 'feature1' }, { name: 'feature2' }]);
 
-		clearGeoFeatures();
+		clearLayers();
 
-		expect(store.getState().geofeature.features).toHaveSize(0);
+		expect(store.getState().geofeature.layers).toHaveSize(0);
 	});
 
 });

@@ -2,8 +2,8 @@
  * Action creators for adding external feature vectors.
  * @module highlight/action
  */
-import { CLEAR_FEATURES, ADD_FEATURE, REMOVE_FEATURE_BY_ID, ADD_LAYER, REMOVE_LAYER } from './geofeature.reducer';
 import { $injector } from '../../../injection';
+import { ADD_FEATURE, ADD_LAYER, CLEAR_LAYERS, REMOVE_FEATURE, REMOVE_LAYER } from './geofeature.reducer';
 
 
 /**
@@ -70,12 +70,10 @@ export const removeGeoFeatureLayer = (id) => {
 * @param {Array.<GeoFeature>|GeoFeature} features
 * @function
 */
-export const addGeoFeatures = (geojsonFeatures) => {
-	const featureAsArray = Array.isArray(geojsonFeatures) ? [...geojsonFeatures] : [geojsonFeatures];
-
+export const addGeoFeatures = (layerId, features) => {
 	getStore().dispatch({
 		type: ADD_FEATURE,
-		payload: featureAsArray
+		payload: { layerId, features: features }
 	});
 };
 
@@ -83,9 +81,9 @@ export const addGeoFeatures = (geojsonFeatures) => {
  * Removes all {@link GeoFeature}s.
  * @function
  */
-export const clearGeoFeatures = () => {
+export const clearLayers = () => {
 	getStore().dispatch({
-		type: CLEAR_FEATURES,
+		type: CLEAR_LAYERS,
 		payload: null
 	});
 };
@@ -93,14 +91,13 @@ export const clearGeoFeatures = () => {
 /**
  * Removes a (permanent or temporary) feature by its id.
  * If two or more feature have the same id, all of them are removed.
- * @param {Array.<String>|String} id GeoFeature id
+ * @param {Array.<String>} ids GeoFeature ids
  * @function
  */
-export const removeGeoFeaturesById = (id) => {
-	const idsAsArray = Array.isArray(id) ? [...id] : [id];
+export const removeGeoFeatures = (layerId, ids) => {
 	getStore().dispatch({
-		type: REMOVE_FEATURE_BY_ID,
-		payload: idsAsArray
+		type: REMOVE_FEATURE,
+		payload: { layerId, ids }
 	});
 };
 

@@ -95,7 +95,7 @@ describe('OlGeoFeatureLayerHandler', () => {
 			const classUnderTest = new OlGeoFeatureLayerHandler();
 			classUnderTest.activate(map);
 
-			addGeoFeatures(GEOJSON_SAMPLE_DATA);
+			addGeoFeatures([GEOJSON_SAMPLE_DATA]);
 
 			const setFitActions = storeActions.filter(a => a.type === FIT_REQUESTED);
 			expect(setFitActions).toHaveSize(1);
@@ -109,7 +109,7 @@ describe('OlGeoFeatureLayerHandler', () => {
 			const classUnderTest = new OlGeoFeatureLayerHandler();
 			const layer = classUnderTest.activate(map);
 
-			addGeoFeatures(GEOJSON_SAMPLE_DATA);
+			addGeoFeatures([GEOJSON_SAMPLE_DATA]);
 
 			const actualFeatures = layer.getSource().getFeatures();
 			expect(actualFeatures.length).toEqual(1);
