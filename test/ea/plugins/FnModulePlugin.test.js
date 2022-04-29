@@ -1,7 +1,7 @@
 import { FnModulePlugin } from '../../../src/ea/plugins/FnModulePlugin.js';
 import { closeFnModule, openFnModuleComm } from '../../../src/ea/store/fnModuleComm/fnModuleComm.action.js';
 import { fnModuleCommReducer } from '../../../src/ea/store/fnModuleComm/fnModuleComm.reducer.js';
-import { ADD_FEATURE, ADD_LAYER, CLEAR_LAYERS, geofeatureReducer } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
+import { ADD_FEATURE, ADD_LAYER, CLEAR_LAYERS, geofeatureReducer, REMOVE_FEATURE } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
 import { activateMapClick, deactivateMapClick } from '../../../src/ea/store/mapclick/mapclick.action.js';
 import { mapclickReducer, MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE } from '../../../src/ea/store/mapclick/mapclick.reducer';
 import { $injector } from '../../../src/injection/index.js';
@@ -62,7 +62,7 @@ describe('FnModulePlugin', () => {
 	};
 
 
-	it('send open/close messages on state change', async () => {
+	it('sends open/close messages on state change', async () => {
 		const module = 'dom1';
 		const domain = 'http://test-site';
 
@@ -170,6 +170,26 @@ describe('FnModulePlugin', () => {
 			expect(lastAction.payload).toEqual({ layerId: 42, features: [geojson] });
 		});
 
+		it('removes geofeature on message \'removefeature\'', async () => {
+			await setupOpen();
+
+			windowMock.listenerFunction({
+				data: {
+					code: 'removefeature',
+					module: domain,
+					message: {
+						layerId: 42,
+						id: 24 }
+				},
+				event: { origin: module }
+
+			});
+
+			const lastAction = storeActions.pop();
+			expect(lastAction.type).toEqual(REMOVE_FEATURE);
+			expect(lastAction.payload).toEqual({ layerId: 42, ids: [24] });
+		});
+
 		it('adds mapclick on message \'activate_mapclick\'', async () => {
 			await setupOpen();
 
@@ -221,7 +241,7 @@ describe('FnModulePlugin', () => {
 			expect(lastAction.type).toEqual(CLEAR_LAYERS);
 		});
 
-		it('sends a \'cancel_mapclick\' message on \'pointer.click\' event when \'mapclick.active\' is true', async () => {
+		it('sends a \'mapclick\' message on \'pointer.click\' event when \'mapclick.active\' is true', async () => {
 			await setupOpen();
 
 			activateMapClick();

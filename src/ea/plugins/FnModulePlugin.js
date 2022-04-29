@@ -127,7 +127,7 @@ export class FnModulePlugin extends BaPlugin {
 				addGeoFeatures(message.layerId, message.geojson.features);
 				break;
 			case REMOVE_FEATURE_BY_ID:
-				removeGeoFeatures([message.id]);
+				removeGeoFeatures(message.layerId, [message.id]);
 				break;
 			case CLEAR_MAP:
 				clearLayers();

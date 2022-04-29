@@ -90,10 +90,9 @@ describe('OlGeoFeatureLayerHandler', () => {
 
 		describe('when a layer exists', () => {
 			const layerId = 42;
-			let map;
 
 			const setupWithLayer = () => {
-				map = setupMap();
+				const map = setupMap();
 				setup();
 
 				addGeoFeatureLayer(layerId);
@@ -101,7 +100,7 @@ describe('OlGeoFeatureLayerHandler', () => {
 			};
 
 			it('fits the map to the layer when a new feature is added (with zoom scale of 20%)', () => {
-				setupWithLayer();
+				const map = setupWithLayer();
 
 				const classUnderTest = new OlGeoFeatureLayerHandler();
 				classUnderTest.activate(map);
@@ -114,7 +113,7 @@ describe('OlGeoFeatureLayerHandler', () => {
 			});
 
 			it('shows features in store slice \'geofeatures\'', async () => {
-				setupWithLayer();
+				const map = setupWithLayer();
 
 				const classUnderTest = new OlGeoFeatureLayerHandler();
 				const layer = classUnderTest.activate(map);
