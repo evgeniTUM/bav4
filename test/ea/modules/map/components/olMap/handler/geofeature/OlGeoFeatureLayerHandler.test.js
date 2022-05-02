@@ -107,9 +107,9 @@ describe('OlGeoFeatureLayerHandler', () => {
 
 				addGeoFeatures(layerId, [GEOJSON_SAMPLE_DATA]);
 
-				const setFitActions = storeActions.filter(a => a.type === FIT_REQUESTED);
-				expect(setFitActions).toHaveSize(1);
-				expect(setFitActions[0].payload._payload.extent).toEqual([-1, -1, 11, 11]);
+				const fitActions = storeActions.filter(a => a.type === FIT_REQUESTED);
+				expect(fitActions).toHaveSize(1);
+				expect(fitActions[0].payload._payload.extent).toEqual([-1, -1, 11, 11]);
 			});
 
 			it('shows features in store slice \'geofeatures\'', async () => {

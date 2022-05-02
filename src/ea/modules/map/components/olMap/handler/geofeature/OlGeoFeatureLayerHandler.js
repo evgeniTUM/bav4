@@ -6,7 +6,7 @@ import { unByKey } from 'ol/Observable';
 import { Vector as VectorSource } from 'ol/source';
 import { $injector } from '../../../../../../../injection';
 import { OlLayerHandler } from '../../../../../../../modules/map/components/olMap/handler/OlLayerHandler';
-import { setFit } from '../../../../../../../store/position/position.action';
+import { fit } from '../../../../../../../store/position/position.action';
 import { observe } from '../../../../../../../utils/storeUtils';
 import { deactivateMapClick } from '../../../../../../store/mapclick/mapclick.action';
 
@@ -166,7 +166,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 			const polygon = fromExtent(this._vectorLayer.getSource().getExtent());
 			polygon.scale(1.2);
-			setFit(polygon.getExtent());
+			fit(polygon.getExtent());
 
 
 			this._map.renderSync();
