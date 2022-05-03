@@ -98,8 +98,8 @@ export class AbstractModuleContent extends MvuElement {
 	 * @override
 	 */
 	onDisconnect() {
-		delete window.ea_moduleWindow[this.getConfig().module];
 		closeFnModule();
+		delete window.ea_moduleWindow[this.getConfig().module];
 	}
 
 	onAfterRender(first) {
