@@ -3,7 +3,7 @@ import TileLayer from 'ol/layer/Tile';
 import { fromLonLat } from 'ol/proj';
 import { OSM, TileDebug } from 'ol/source';
 import { GEO_FEATURE_LAYER_ID, OlGeoFeatureLayerHandler } from '../../../../../../../../src/ea/modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler';
-import { addGeoFeatureLayer, addGeoFeatures, clearLayers } from '../../../../../../../../src/ea/store/geofeature/geofeature.action';
+import { addGeoFeatureLayer, addGeoFeatures, clearMap } from '../../../../../../../../src/ea/store/geofeature/geofeature.action';
 import { geofeatureReducer } from '../../../../../../../../src/ea/store/geofeature/geofeature.reducer';
 import { mapclickReducer } from '../../../../../../../../src/ea/store/mapclick/mapclick.reducer';
 import { $injector } from '../../../../../../../../src/injection';
@@ -125,7 +125,7 @@ describe('OlGeoFeatureLayerHandler', () => {
 				expect(actualFeatures[0].getGeometry().getCoordinates())
 					.toEqual(GEOJSON_SAMPLE_DATA.geometry.coordinates);
 
-				clearLayers();
+				clearMap();
 
 				expect(layer.getSource().getFeatures().length).toEqual(0);
 			});
