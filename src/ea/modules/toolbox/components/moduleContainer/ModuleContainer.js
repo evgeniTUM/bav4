@@ -98,32 +98,53 @@ export class ModuleContainer extends MvuElement {
 			return nothing;
 		}
 
+		const changeWidth = (event) => {
+			const container = this.shadowRoot.getElementById('module-container');
+			container.style.width = parseInt(event.target.value) + 'em';
+		};
+
+		const getValue = () => {
+			const container = this.shadowRoot.getElementById('module-container');
+			return (container && container.style.width !== '') ? parseInt(container.style.width) : ModuleContainer.INITIAL_WIDTH_EM;
+		};
+
+		const onPreventDragging = (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+		};
+
+
 		return content !== nothing ? html`
 			<style>${css}</style>		
-			<div class="column module-container ${getOrientationClass()}  ${getMinWidthClass()}">
-				<div class="module-container__content ${getOverlayClass()}">    
-					<div class="module-container__tools-nav">                        
+
+			<div class='slider-container'>
+				<input  
+					type="range" 
+					min="${ModuleContainer.MIN_WIDTH_EM}" 
+					max="${ModuleContainer.MAX_WIDTH_EM}" 
+					value="${getValue()}" 
+					draggable='true' 
+					@input=${changeWidth} 
+					@dragstart=${onPreventDragging}>
+				</input>
+			</div>
+
+			<div id="module-container" class="column module-container ${getOrientationClass()}  ${getMinWidthClass()}"
+				style="width: ${ModuleContainer.INITIAL_WIDTH_EM}em">
+				<div class="module-container__content ${getOverlayClass()}">
+					<div class="module-container__tools-nav">
 						<button @click=${close} class="module-container__close-button">
 							x
 						</button>
-					</div>		
+					</div>
 					${content}
-				</div>		
-			</div>		
+				</div>
+			</div>
 		` : nothing;
 	}
 
 	isRenderingSkipped() {
 		return this._environmentService.isEmbedded();
-	}
-
-	/**
-	 * @override
-	 * @param {Object} globalState
-	 */
-	extractState(globalState) {
-		const { toolContainer: { open, contentId }, media: { portrait, minWidth }, layers: { active: activeLayers } } = globalState;
-		return { open, contentId, portrait, minWidth, activeLayers };
 	}
 
 	_deactivateModule() {
@@ -134,4 +155,15 @@ export class ModuleContainer extends MvuElement {
 		return 'ea-module-container';
 	}
 
+	static get INITIAL_WIDTH_EM() {
+		return 30;
+	}
+
+	static get MIN_WIDTH_EM() {
+		return 20;
+	}
+
+	static get MAX_WIDTH_EM() {
+		return 80;
+	}
 }

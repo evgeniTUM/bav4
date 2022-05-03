@@ -1,18 +1,19 @@
 .module-container {
+	z-index: auto var(--z-module-container);
 	background-color: var(--primary-bg-color);
 	max-width: 125em;
 	height: 100%;
-	box-shadow: 0px 0px 4px rgba(0, 0, 0, 0);   
+	box-shadow: 0px 0px 4px rgba(0, 0, 0, 0);
 }
 .module-container__tools-nav {
 	position: absolute;
-	top: 0;   
+	top: 0;
 	right: 0;
 	padding: 0
 }
 .module-container__close-button {
 	margin: 0;
-	background-color: var(--secondary-bg-color);   
+	background-color: var(--secondary-bg-color);
 	padding: 0;
 	width: 2.5em;
 	height: 2.5em;
@@ -29,8 +30,8 @@
 }
 .is-portrait .module-container {
 	bottom: 0;
-	right: 0;           
-	left: 0;           
+	right: 0;
+	left: 0;
 	top: unset;
 	background-color: var(--primary-bg-color);
 	max-width: unset;
@@ -40,6 +41,85 @@
 	height: 100%;
 }
 
+.slider-container {
+	position: fixed ;
+	display: block;
+	right: calc(20em - (2.5em / 2));
+	width: calc(60em + 2.5em);
+	z-index: calc(var(--z-module-container) + 10);
+	padding: 0 0 0 0;
+	height: 100%;
+	pointer-events: none;
+}
+
 .is-landscape .is-full-size .slider-container {
 	display: block;
+}
+
+.slider-container input {
+	direction: rtl;
+	top: 50%;
+	position: relative;
+	pointer-events: all;
+}
+
+input[type="range"] {
+	--track-height: 0;
+	--track-fill: 0%;
+	--thumb-size: 2.5em;
+	--thumb-offset: 0;
+	--thumb-highlight-size: 0px;
+	appearance: none;
+	display: block;
+	background: transparent;
+	outline-offset: 5px;
+	pointer-events: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+	appearance: none;
+	cursor: ew-resize;
+	border: .2em solid var(--secondary-color);
+	block-size: var(--thumb-size);
+	inline-size: var(--thumb-size);
+	margin-top: var(--thumb-offset);
+	border-radius: 50%;
+	background: url('assets/expand.svg') var(--secondary-color);
+	width: 2.3em;
+	height: 2.3em;
+	background-size: 1.9em  1.9em;
+	background-repeat: no-repeat;
+	box-shadow: 0 0 0 var(--thumb-highlight-size) var(--primary-color-lighter);
+	transition: box-shadow .1s ease;
+	pointer-events: all;
+}
+
+input[type="range"]::-moz-range-thumb {
+	appearance: none;
+	cursor: ew-resize;
+	border: .2em solid var(--secondary-color);
+	block-size: 2em;
+	inline-size: 2em;
+	margin-top: 0;
+	border-radius: 50%;
+	background: url('assets/expand.svg') var(--secondary-color);
+	width: 2em;
+	height: 2em;
+	background-size: 1.9em  1.9em;
+	background-repeat: no-repeat;
+	box-shadow: 0 0 0 var(--thumb-highlight-size) var(--primary-color-lighter);
+	transition: box-shadow .1s ease;
+	pointer-events: all;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+	appearance: none;
+	block-size: 0;
+}
+
+input[type="range"]::-moz-range-track {
+	appearance: none;
+	block-size: 0;
+}
+input[type="range"]:focus {
+	--thumb-highlight-size: .3em;
 }
