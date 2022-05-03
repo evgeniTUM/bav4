@@ -32,19 +32,6 @@ export class ModuleContainer extends MvuElement {
 		this._environmentService = EnvironmentService;
 		this._translationService = TranslationService;
 		this._lastContentId = false;
-
-		this.getBodyStyle = () => {
-			const body = document.querySelector('body');
-			const bodyStyle = window.getComputedStyle(body);
-			return bodyStyle;
-		};
-
-		this.calcContainerWidth = (factor) => {
-			const bodyWidth = parseFloat(this.getBodyStyle().width);
-			const containerWidth = bodyWidth - (factor / 100 * bodyWidth);
-			return containerWidth;
-		};
-
 	}
 
 	/**
@@ -67,30 +54,6 @@ export class ModuleContainer extends MvuElement {
 		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
 		this.observe(state => state.tools.current, current => this.signal(Update_ToolId, current));
 	}
-
-	tileMap(prozent) {
-		let leftPart = (100.0 - prozent).toString() + '%';
-		const rightPart = prozent + '%';
-		const container = this.shadowRoot.getElementById('module-container');
-		if (container) {
-			window.getComputedStyle(container);
-			// container.style.width = rightPart;
-			// container.style.left = leftPart;
-		}
-		else {
-			leftPart = '100%';
-		}
-		const map = document.querySelector('ea-map-container');
-		if (map !== null && map.shadowRoot !== null) {
-			const mapContainer = map.shadowRoot.querySelector('.map-container');
-			// mapContainer.style.width = leftPart;
-			updateSize(prozent);
-		}
-		else {
-			console.error('tileMap nicht möglich');
-		}
-	}
-
 
 	/**
 	 * @override
@@ -130,34 +93,6 @@ export class ModuleContainer extends MvuElement {
 			return open ? 'is-open' : '';
 		};
 
-
-		const changeWidth = (event) => {
-			const container = this.shadowRoot.getElementById('module-container');
-			container.style.width = parseInt(event.target.value) + 'em';
-
-			// const sliderValue = parseFloat(event.target.value);
-			// const prozent = 100 - sliderValue;
-			// this.tileMap(prozent);
-		};
-
-		const getSlider = () => {
-			const onPreventDragging = (e) => {
-				e.preventDefault();
-				e.stopPropagation();
-			};
-
-			return html`<div class='slider-container'>
-				<input  
-					type="range" 
-					min="1" 
-					max="100" 
-					value="0" 
-					draggable='true' 
-					@input=${changeWidth} 
-					@dragstart=${onPreventDragging}
-					></div>`;
-		};
-
 		const content = getContentPanel(toolId);
 		if (content == null) {
 			return nothing;
@@ -165,9 +100,7 @@ export class ModuleContainer extends MvuElement {
 
 		return content !== nothing ? html`
 			<style>${css}</style>		
-			<div class=" ${getOrientationClass()}  ${getMinWidthClass()}">
-                                        ${getSlider()} 
-			<div id ="module-container" class="module-container">
+			<div class="column module-container ${getOrientationClass()}  ${getMinWidthClass()}">
 				<div class="module-container__content ${getOverlayClass()}">    
 					<div class="module-container__tools-nav">                        
 						<button @click=${close} class="module-container__close-button">
@@ -176,7 +109,6 @@ export class ModuleContainer extends MvuElement {
 					</div>		
 					${content}
 				</div>		
-			</div>		
 			</div>		
 		` : nothing;
 	}
@@ -194,53 +126,12 @@ export class ModuleContainer extends MvuElement {
 		return { open, contentId, portrait, minWidth, activeLayers };
 	}
 
-	onAfterRender(first) {
-		super.onAfterRender(first);
-		const element = this.shadowRoot.getElementById('module-container');
-		if (element !== null && this._rendered) {
-			const modulecontainerStyle = window.getComputedStyle(element);
-			const bodyStyle = window.getComputedStyle(document.querySelector('body'));
-			//Arbeiten mit em
-			const bodyWidth = parseFloat(window.innerWidth) / parseFloat(bodyStyle.fontSize);
-			let containerWidth = parseFloat(modulecontainerStyle.width) / parseFloat(modulecontainerStyle.fontSize);
-			containerWidth = containerWidth + 0.3;
-			//calcSliderValue
-			const ratio = 100.0 * containerWidth / bodyWidth;
-			const factor = 100 - ratio;
-			//           console.log('factor'); console.log(factor);
-			//           das nachträgliche setzen der width des containers ist ein Hack, da der ermittelte Factor sich nicht auf den Rand des Containers platziert.
-			//           hier müssten mal Experten befragt werden
-			// element.style.width = containerWidth + 'em';
-			const sliderInput = this.shadowRoot.querySelector('.slider-container input');
-			sliderInput.value = factor;
-			this.tileMap(ratio);
-		}
-		else {
-			this._deactivateModule();
-		}
+	_deactivateModule() {
+		updateSize(100);
 	}
 
 	static get tag() {
 		return 'ea-module-container';
 	}
 
-	_activateByContentId(contentId) {
-		switch (contentId) {
-			case MixerModuleContent.tag:
-				//				activateMeasurement();
-				break;
-			//			case DrawToolContent.tag:
-			//				activateDraw();
-			//				break;
-		}
-	}
-
-	_deactivateModule() {
-		const map = document.querySelector('ea-map-container');
-		if (map && map.shadowRoot) {
-			const mapContainer = map.shadowRoot.querySelector('.map-container');
-			// mapContainer.style.width = '100%';
-			updateSize(100);
-		}
-	}
 }

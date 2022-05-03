@@ -1,0 +1,93 @@
+.row {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.column {
+  height: 100%;
+}
+.module-container {
+	z-index: calc(var(--z-mainmenu)) var(--z-module-container);
+	background-color: var(--primary-bg-color);
+	max-width: 125em;
+	height: 100%;
+	box-shadow: 0px 0px 4px rgba(0, 0, 0, 0);   
+}
+.slider-container {
+	position: absolute;
+	display: block;
+	width: 100vw;
+	z-index: calc(var(--z-module-container) + 10);
+	z-index: 500000;
+	padding: 0 0 0 0;
+	height: 100%;
+	pointer-events: none;
+}
+
+.slider-container input {
+	width: 100vw;
+	left: 0;
+	top: 50%;
+	position: relative;
+	/*margin-top: 5em;*/
+	pointer-events: all;
+}
+
+input[type="range"] {
+	--track-height: 0;
+	--track-fill: 0%;
+	--thumb-size: 2.5em;
+	--thumb-offset: 0;
+	--thumb-highlight-size: 0px;
+	appearance: none;         
+	display: block;    
+	background: transparent;  
+	outline-offset: 5px;      
+}
+input[type="range"]::-webkit-slider-thumb {
+	appearance: none; 
+	cursor: ew-resize; 
+	border: .2em solid var(--secondary-color);
+	block-size: var(--thumb-size);
+	inline-size: var(--thumb-size);
+	margin-top: var(--thumb-offset);
+	border-radius: 50%;
+	background: url('assets/expand.svg') var(--secondary-color);
+	width: 2.3em;
+	height: 2.3em;
+	background-size: 1.9em  1.9em;
+	background-repeat: no-repeat;
+	box-shadow: 0 0 0 var(--thumb-highlight-size) var(--primary-color-lighter);
+	transition: box-shadow .1s ease;
+}
+
+input[type="range"]::-moz-range-thumb {
+	appearance: none; 
+	cursor: ew-resize; 
+	border: .2em solid var(--secondary-color);
+	block-size: 2em;
+	inline-size: 2em;
+	margin-top: 0;
+	border-radius: 50%;
+	background: url('assets/expand.svg') var(--secondary-color);
+	width: 2em;
+	height: 2em;
+	background-size: 1.9em  1.9em;
+	background-repeat: no-repeat;
+	box-shadow: 0 0 0 var(--thumb-highlight-size) var(--primary-color-lighter);
+	transition: box-shadow .1s ease;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+	appearance: none; 
+	block-size: 0;
+}
+
+input[type="range"]::-moz-range-track {
+	appearance: none; 
+	block-size: 0;
+}
+input[type="range"]:focus {
+	--thumb-highlight-size: .3em;
+}
