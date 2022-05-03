@@ -1,7 +1,7 @@
 import { FnModulePlugin } from '../../../src/ea/plugins/FnModulePlugin.js';
 import { closeFnModule, openFnModuleComm } from '../../../src/ea/store/fnModuleComm/fnModuleComm.action.js';
 import { fnModuleCommReducer } from '../../../src/ea/store/fnModuleComm/fnModuleComm.reducer.js';
-import { ADD_FEATURE, ADD_LAYER, CLEAR_LAYERS, geofeatureReducer, REMOVE_FEATURE } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
+import { ADD_FEATURE, ADD_LAYER, CLEAR_MAP, geofeatureReducer, REMOVE_FEATURE } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
 import { activateMapClick, deactivateMapClick } from '../../../src/ea/store/mapclick/mapclick.action.js';
 import { mapclickReducer, MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE } from '../../../src/ea/store/mapclick/mapclick.reducer';
 import { $injector } from '../../../src/injection/index.js';
@@ -143,7 +143,7 @@ describe('FnModulePlugin', () => {
 			});
 
 			const lastAction = storeActions.pop();
-			expect(lastAction.type).toEqual(CLEAR_LAYERS);
+			expect(lastAction.type).toEqual(CLEAR_MAP);
 		});
 
 		it('adds geofeature on message \'addfeature\'', async () => {
@@ -238,7 +238,7 @@ describe('FnModulePlugin', () => {
 			});
 
 			const lastAction = storeActions.pop();
-			expect(lastAction.type).toEqual(CLEAR_LAYERS);
+			expect(lastAction.type).toEqual(CLEAR_MAP);
 		});
 
 		it('sends a \'mapclick\' message on \'pointer.click\' event when \'mapclick.active\' is true', async () => {
