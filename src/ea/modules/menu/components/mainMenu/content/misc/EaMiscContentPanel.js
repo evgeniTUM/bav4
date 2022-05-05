@@ -108,8 +108,8 @@ export class EaMiscContentPanel extends AbstractMvuContentPanel {
 			<div class='ba-section divider'>
 				${header(SECTIONS.aboutus, 'ea_menu_misc_content_panel_aboutus')}
 				<div id="${SECTIONS.aboutus}-content" class="collapse-content ${collapseClassMap(SECTIONS.aboutus)}">
-					${link('https://www.energieatlas.bayern.de/service/kontakt.html', 'ea_menu_misc_content_panel_contact', 'ea_menu_misc_content_panel_contact_tooltip', 'contact')}
 					${link('https://www.energieatlas.bayern.de/service/impressum.html', 'ea_menu_misc_content_panel_imprint', 'ea_menu_misc_content_panel_imprint_tooltip', 'imprint')}
+					${link('https://www.energieatlas.bayern.de/service/kontakt.html', 'ea_menu_misc_content_panel_contact', 'ea_menu_misc_content_panel_contact_tooltip', 'contact')}
 				</div>
 			</div>
 
