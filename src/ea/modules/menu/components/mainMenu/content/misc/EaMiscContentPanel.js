@@ -63,7 +63,7 @@ export class EaMiscContentPanel extends AbstractMvuContentPanel {
 
 		const header = (section, text_id) =>
 			html`<div id="${section}-header" class="ba-list-item" @click="${createToggleFn(section)}">
-				   <span .title='visible-title'  class='ba-list-item__text' tabindex='0' .checked='true' >${translate(text_id)}</span>
+				   <span .title='visible-title'  class='ba-list-item__text ba-list-item__primary-text' tabindex='0' .checked='true' >${translate(text_id)}</span>
      	           <button id='button-detail' data-test-id class='ba-list-item__after' title="collapse-title" >
 	 			       <i class='icon chevron icon-rotate-90 ${iconexpandClassMap(section)}'></i>
     	           </button>   
