@@ -1,6 +1,5 @@
 import { html, nothing } from 'lit-html';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
-import { updateSize } from '../../../../../../src/store/position/position.action';
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import { open } from '../../../../../store/mainMenu/mainMenu.action';
@@ -101,8 +100,9 @@ export class ModuleContainer extends MvuElement {
 		const changeWidth = (event) => {
 			const container = this.shadowRoot.getElementById('module-container');
 			container.style.width = parseInt(event.target.value) + 'em';
-			updateSize(event.target.value);
+			window.dispatchEvent(new Event('resize'));
 		};
+
 
 		const getValue = () => {
 			const container = this.shadowRoot.getElementById('module-container');
@@ -153,9 +153,7 @@ export class ModuleContainer extends MvuElement {
 	 */
 	onAfterRender(first) {
 		super.onAfterRender(first);
-		const element = this.shadowRoot.getElementById('module-container');
-		const newSize = element !== null && this._rendered ? 100 : 0;
-		updateSize(newSize);
+		window.dispatchEvent(new Event('resize'));
 	}
 
 	static get tag() {
