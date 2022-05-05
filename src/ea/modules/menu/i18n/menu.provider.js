@@ -62,7 +62,7 @@ export const provide = (lang) => {
 				ea_menu_misc_content_panel_change_font: 'Schriftgröße ändern',
 				ea_menu_misc_content_panel_change_font_tooltip: 'zur Seite Informationen zur Schriftgröße',
 				ea_menu_misc_content_panel_ba_header: 'BayernAtlas',
-				ea_menu_misc_content_panel_ba_text: 'Der BayernAtlas ist der Viewer für Geodaten der Bayerischen Vermessungsverwaltung.'
+				ea_menu_misc_content_panel_ba_text: 'Der BayernAtlas ist der Kartenviewer des Freistaates Bayern.'
 			};
 
 		default:
