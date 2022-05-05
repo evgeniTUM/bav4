@@ -60,7 +60,6 @@ export class ModuleContainer extends MvuElement {
 	 */
 	createView(model) {
 		const { moduleId, isPortrait, hasMinWidth } = model;
-		console.log(moduleId);
 
 		const getContentPanel = (moduleId) => {
 			switch (moduleId) {
@@ -164,14 +163,14 @@ export class ModuleContainer extends MvuElement {
 	}
 
 	static get INITIAL_WIDTH_EM() {
-		return 30;
+		return 40;
 	}
 
 	static get MIN_WIDTH_EM() {
-		return 20;
+		return 34;
 	}
 
 	static get MAX_WIDTH_EM() {
-		return 80;
+		return 100;
 	}
 }

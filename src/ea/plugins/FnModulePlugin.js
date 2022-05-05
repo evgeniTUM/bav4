@@ -29,14 +29,6 @@ const CANCEL_MAPCLICK = 'cancel_mapclick';
  */
 export class FnModulePlugin extends BaPlugin {
 
-	constructor() {
-		super();
-		//		const { FnModuleCommunicationService: fnModuleCommunicationService, MapService: mapService }
-		//			= $injector.inject('FnModuleCommunicationService', 'MapService');
-		//		this._fnModuleCommunicationService = fnModuleCommunicationService;
-		//		this._mapService = mapService;
-	}
-
 	fnModuleMessageListener(e) {
 		const event = (e.message !== undefined) ? e.message : e;
 		const data = event.data;
@@ -57,62 +49,6 @@ export class FnModulePlugin extends BaPlugin {
 			return;
 		}
 
-		// const _layers = {};
-
-		//		const implAddLayer = function(layerId, layergroup, draggable) {
-		//			console.debug('Client : implAddLayer -----> ' + layerId + ' group ' + layergroup + ' draggable' + draggable);
-		//			//TODO wie bekomme ich die Layers aus der Map ?
-		//
-		////			const vector0 = new VectorGeoResource('huetten', 'Hütten', VectorSourceType.GEOJSON).data('http://www.geodaten.bayern.de/ba-data/Themen/kml/huetten.kml');
-		////			const vector1 = new VectorGeoResource('huetten', 'Hütten', VectorSourceType.GEOJSON).setUrl('http://www.geodaten.bayern.de/ba-data/Themen/kml/huetten.kml');
-		////			const aggregate0 = new AggregateGeoResource('aggregate0', 'Aggregate', ['vector0', 'vector1']);
-		//
-		//			let olLayers = state.layers;
-		//			let arrayLength = olLayers.length;
-		//			for (let i = 0; i < arrayLength; i++) {
-		//				if (olLayers[i].get('layerid') === layerId) {
-		//					layers[layerId] = olLayers[i];
-		//					/* eslint no-throw-literal: "off" */
-		//					throw {'LayerId ': layerId, message: ' ist bereits in der Map registriert'};
-		//					// return;
-		//				}
-		//			}
-		//			//TODO Layers wurde noch nicht in der Map gefunden
-		//			if (_layers[layerId] === undefined) {
-		//				try {
-		//
-		//					console.debug('Client : implAddLayer ----->  set  draggable' + draggable);
-		//					_layers[GEO_FEATURE_LAYER_ID] = addLayer(GEO_FEATURE_LAYER_ID, { constraints: {alwaysTop: true } });
-		////					_layers[layerId] = addLayer(layerId, {group: {layergroup, constraints: {alwaysTop: true}}});
-		//
-		////Mache Layer draggable
-		//
-		////				if (draggable === 'true') {
-		////					drag = new ol.interaction.Translate({this._layers: [layer]});
-		////					map.addInteraction(drag);
-		////				}
-		//
-		//					console.debug('Client : addLayer -----> ' + _layers[layerId]);
-		//					console.debug(_layers);
-		//				} catch (ex) {
-		//					console.error('Client : exception in implAddLayer');
-		//					console.error(ex);
-		//				}
-		//			} else {
-		//				/* eslint no-throw-literal: "off" */
-		//				//          console.debug('this._layers[layerId]' + this._layers[layerId]);
-		//				throw {'LayerId ': layerId, message: ' ist bereits in der HashMap eingetragen'};
-		//			}
-		//		};
-		// console.log('Client MessageListner : ***** M e s s a g e ****  e m p f a n g e n ****** code:' + data.code +
-		// 	' module ' + data.module +
-		// 	' absender ' + event.origin +
-		// 	' message:' + data.message);
-		//wieder einkommentieren
-		//			if (event.origin !== domain|| data.module === undefined) {
-		//				console.warn('Client MessageListner:  ModuleDomain ' + domain + ' passt nicht zu ' + event.origin);
-		//				return;
-		//			}
 		const message = data.message;
 
 		switch (data.code) {
@@ -157,21 +93,6 @@ export class FnModulePlugin extends BaPlugin {
 				console.error('unbeḱannter Code ' + data.code);
 		}
 
-		//todo todo todo send action event mit message
-		//
-		//                console.debug($(myMessageEventListener));
-
-		//                !!!! message eventlistner muss eindeutig sein
-		// data.code reicht nicht, deher muss module für die identifizierung eingesetzt werden
-		//		let eventListener = myMessageEventListener[data.module][data.code];
-		//		if (eventListener !== undefined && data.code === eventListener.myEventCode && eventListener.myCallBack !== undefined) {
-		//			//                  console.debug('Client MessageListner: valid eventListener found');
-		//			eventListener.myCallBack(data.message);
-		//			// set communication line free
-		//			//                  implSetModuleCommunicationFree(pScope, moduleSite);
-		//		} else {
-		//			console.error('Client MessageListener: event listener  for callback not found for module' + data.module + ' Code ' + data.code);
-		//		}
 	}
 
 	implPostCodeMessageFnModule(code, module, domain, targetWindow) {
