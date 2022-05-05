@@ -4,7 +4,7 @@ import { updateSize } from '../../../../../../src/store/position/position.action
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import { open } from '../../../../../store/mainMenu/mainMenu.action';
-import { setCurrentTool } from '../../../../../store/tools/tools.action';
+import { setCurrentModule } from '../../../../store/module/module.action';
 import { EAContribution } from '../contribution/EAContribution';
 import { MixerModuleContent } from '../mixerModuleContent/MixerModuleContent';
 import { RedesignModuleContent } from '../redesignModuleContent/RedesignModuleContent';
@@ -13,7 +13,7 @@ import css from './moduleContainer.css';
 
 
 const Update_IsPortrait_HasMinWidth = 'update_isPortrait_hasMinWidth';
-const Update_ToolId = 'update_tooId';
+const Update_ModuleId = 'update_moduleId';
 
 /**
  * @class
@@ -25,7 +25,7 @@ export class ModuleContainer extends MvuElement {
 		super({
 			isPortrait: false,
 			hasMinWidth: false,
-			toolId: null
+			moduleId: null
 		});
 
 		const { EnvironmentService, TranslationService } = $injector.inject('EnvironmentService', 'TranslationService');
@@ -42,8 +42,8 @@ export class ModuleContainer extends MvuElement {
 			case Update_IsPortrait_HasMinWidth:
 				return { ...model, ...data };
 
-			case Update_ToolId:
-				return { ...model, toolId: data };
+			case Update_ModuleId:
+				return { ...model, moduleId: data };
 		}
 	}
 
@@ -52,17 +52,18 @@ export class ModuleContainer extends MvuElement {
 	 */
 	onInitialize() {
 		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
-		this.observe(state => state.tools.current, current => this.signal(Update_ToolId, current));
+		this.observe(state => state.module.current, current => this.signal(Update_ModuleId, current));
 	}
 
 	/**
 	 * @override
 	 */
 	createView(model) {
-		const { toolId, isPortrait, hasMinWidth } = model;
+		const { moduleId, isPortrait, hasMinWidth } = model;
+		console.log(moduleId);
 
-		const getContentPanel = (toolId) => {
-			switch (toolId) {
+		const getContentPanel = (moduleId) => {
+			switch (moduleId) {
 				case MixerModuleContent.tag:
 					return html`${unsafeHTML(`<${MixerModuleContent.tag}/>`)}`;
 				case RedesignModuleContent.tag:
@@ -78,7 +79,7 @@ export class ModuleContainer extends MvuElement {
 
 
 		const close = () => {
-			setCurrentTool(null);
+			setCurrentModule(null);
 		};
 
 		const getOrientationClass = () => {
@@ -93,7 +94,7 @@ export class ModuleContainer extends MvuElement {
 			return open ? 'is-open' : '';
 		};
 
-		const content = getContentPanel(toolId);
+		const content = getContentPanel(moduleId);
 		if (content == null) {
 			return nothing;
 		}

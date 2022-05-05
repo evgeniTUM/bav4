@@ -1,9 +1,20 @@
-/**
- * Action creators for adding external feature vectors.
- * @module highlight/action
- */
 import { $injector } from '../../../injection';
+import { EAContribution } from '../../modules/toolbox/components/contribution/EAContribution';
+import { MixerModuleContent } from '../../modules/toolbox/components/mixerModuleContent/MixerModuleContent';
+import { RedesignModuleContent } from '../../modules/toolbox/components/redesignModuleContent/RedesignModuleContent';
+import { ResearchModuleContent } from '../../modules/toolbox/components/researchModuleContent/ResearchModuleContent';
 import { SET_CURRENT_MODULE } from './module.reducer';
+
+/**
+ * Available modules.
+ * @enum
+ */
+export const ModuleId = Object.freeze([
+	MixerModuleContent.tag,
+	ResearchModuleContent.tag,
+	RedesignModuleContent.tag,
+	EAContribution.tag
+]);
 
 
 const getStore = () => {
