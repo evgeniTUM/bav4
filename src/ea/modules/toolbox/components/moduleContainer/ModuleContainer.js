@@ -101,6 +101,7 @@ export class ModuleContainer extends MvuElement {
 		const changeWidth = (event) => {
 			const container = this.shadowRoot.getElementById('module-container');
 			container.style.width = parseInt(event.target.value) + 'em';
+			updateSize(event.target.value);
 		};
 
 		const getValue = () => {
@@ -147,8 +148,14 @@ export class ModuleContainer extends MvuElement {
 		return this._environmentService.isEmbedded();
 	}
 
-	_deactivateModule() {
-		updateSize(100);
+	/**
+	 * @override
+	 */
+	onAfterRender(first) {
+		super.onAfterRender(first);
+		const element = this.shadowRoot.getElementById('module-container');
+		const newSize = element !== null && this._rendered ? 100 : 0;
+		updateSize(newSize);
 	}
 
 	static get tag() {
