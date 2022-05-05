@@ -14,12 +14,12 @@ export class PageContainer extends MvuElement {
 		return html`
 		<style>${css}</style>
 
-  		<div style="position: fixed; width: 100%; height:100%">
+  		<div class="page" >
     		<div class="row">
-  	    		<div class="column" style="z-index: 1; flex-grow: 1; z-index: 1; transform: translate3d(0,0,0);">
+  	    		<div class="main column" >
 					${content}
 				</div>
-				<div id="module-container" class="column" style="z-index: 2;">
+				<div class="sidebar column">
 					<ea-module-container></ea-module-container>
 				</div>
 			</div>
