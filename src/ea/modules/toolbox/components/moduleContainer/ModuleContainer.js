@@ -1,10 +1,9 @@
 import { html, nothing } from 'lit-html';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
-import { updateSize } from '../../../../../../src/store/position/position.action';
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import { open } from '../../../../../store/mainMenu/mainMenu.action';
-import { setCurrentTool } from '../../../../../store/tools/tools.action';
+import { setCurrentModule } from '../../../../store/module/module.action';
 import { EAContribution } from '../contribution/EAContribution';
 import { MixerModuleContent } from '../mixerModuleContent/MixerModuleContent';
 import { RedesignModuleContent } from '../redesignModuleContent/RedesignModuleContent';
@@ -13,7 +12,7 @@ import css from './moduleContainer.css';
 
 
 const Update_IsPortrait_HasMinWidth = 'update_isPortrait_hasMinWidth';
-const Update_ToolId = 'update_tooId';
+const Update_ModuleId = 'update_moduleId';
 
 /**
  * @class
@@ -25,26 +24,13 @@ export class ModuleContainer extends MvuElement {
 		super({
 			isPortrait: false,
 			hasMinWidth: false,
-			toolId: null
+			moduleId: null
 		});
 
 		const { EnvironmentService, TranslationService } = $injector.inject('EnvironmentService', 'TranslationService');
 		this._environmentService = EnvironmentService;
 		this._translationService = TranslationService;
 		this._lastContentId = false;
-
-		this.getBodyStyle = () => {
-			const body = document.querySelector('body');
-			const bodyStyle = window.getComputedStyle(body);
-			return bodyStyle;
-		};
-
-		this.calcContainerWidth = (factor) => {
-			const bodyWidth = parseFloat(this.getBodyStyle().width);
-			const containerWidth = bodyWidth - (factor / 100 * bodyWidth);
-			return containerWidth;
-		};
-
 	}
 
 	/**
@@ -55,8 +41,8 @@ export class ModuleContainer extends MvuElement {
 			case Update_IsPortrait_HasMinWidth:
 				return { ...model, ...data };
 
-			case Update_ToolId:
-				return { ...model, toolId: data };
+			case Update_ModuleId:
+				return { ...model, moduleId: data };
 		}
 	}
 
@@ -65,41 +51,17 @@ export class ModuleContainer extends MvuElement {
 	 */
 	onInitialize() {
 		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
-		this.observe(state => state.tools.current, current => this.signal(Update_ToolId, current));
+		this.observe(state => state.module.current, current => this.signal(Update_ModuleId, current));
 	}
-
-	tileMap(prozent) {
-		let leftPart = (100.0 - prozent).toString() + '%';
-		const rightPart = prozent + '%';
-		const container = this.shadowRoot.getElementById('module-container');
-		if (container) {
-			window.getComputedStyle(container);
-			container.style.width = rightPart;
-			container.style.left = leftPart;
-		}
-		else {
-			leftPart = '100%';
-		}
-		const map = document.querySelector('ea-map-container');
-		if (map !== null && map.shadowRoot !== null) {
-			const mapContainer = map.shadowRoot.querySelector('.map-container');
-			mapContainer.style.width = leftPart;
-			updateSize(prozent);
-		}
-		else {
-			console.error('tileMap nicht möglich');
-		}
-	}
-
 
 	/**
 	 * @override
 	 */
 	createView(model) {
-		const { toolId, isPortrait, hasMinWidth } = model;
+		const { moduleId, isPortrait, hasMinWidth } = model;
 
-		const getContentPanel = (toolId) => {
-			switch (toolId) {
+		const getContentPanel = (moduleId) => {
+			switch (moduleId) {
 				case MixerModuleContent.tag:
 					return html`${unsafeHTML(`<${MixerModuleContent.tag}/>`)}`;
 				case RedesignModuleContent.tag:
@@ -115,7 +77,7 @@ export class ModuleContainer extends MvuElement {
 
 
 		const close = () => {
-			setCurrentTool(null);
+			setCurrentModule(null);
 		};
 
 		const getOrientationClass = () => {
@@ -130,51 +92,55 @@ export class ModuleContainer extends MvuElement {
 			return open ? 'is-open' : '';
 		};
 
-
-		const changeWidth = (event) => {
-			const sliderValue = parseFloat(event.target.value);
-			const prozent = 100 - sliderValue;
-			this.tileMap(prozent);
-		};
-
-		const getSlider = () => {
-			const onPreventDragging = (e) => {
-				e.preventDefault();
-				e.stopPropagation();
-			};
-
-			return html`<div class='slider-container'>
-				<input  
-					type="range" 
-					min="1" 
-					max="100" 
-					value="0" 
-					draggable='true' 
-					@input=${changeWidth} 
-					@dragstart=${onPreventDragging}
-					></div>`;
-		};
-
-		const content = getContentPanel(toolId);
+		const content = getContentPanel(moduleId);
 		if (content == null) {
 			return nothing;
 		}
 
+		const changeWidth = (event) => {
+			const container = this.shadowRoot.getElementById('module-container');
+			container.style.width = parseInt(event.target.value) + 'em';
+			window.dispatchEvent(new Event('resize'));
+		};
+
+
+		const getValue = () => {
+			const container = this.shadowRoot.getElementById('module-container');
+			return (container && container.style.width !== '') ? parseInt(container.style.width) : ModuleContainer.INITIAL_WIDTH_EM;
+		};
+
+		const onPreventDragging = (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+		};
+
+
 		return content !== nothing ? html`
 			<style>${css}</style>		
-			<div class=" ${getOrientationClass()}  ${getMinWidthClass()}">
-                                        ${getSlider()} 
-			<div id ="module-container" class="module-container">
-				<div class="module-container__content ${getOverlayClass()}">    
-					<div class="module-container__tools-nav">                        
+
+			<div class='slider-container'>
+				<input  
+					type="range" 
+					min="${ModuleContainer.MIN_WIDTH_EM}" 
+					max="${ModuleContainer.MAX_WIDTH_EM}" 
+					value="${getValue()}" 
+					draggable='true' 
+					@input=${changeWidth} 
+					@dragstart=${onPreventDragging}>
+				</input>
+			</div>
+
+			<div id="module-container" class="column module-container ${getOrientationClass()}  ${getMinWidthClass()}"
+				style="width: ${ModuleContainer.INITIAL_WIDTH_EM}em">
+				<div class="module-container__content ${getOverlayClass()}">
+					<div class="module-container__tools-nav">
 						<button @click=${close} class="module-container__close-button">
 							x
 						</button>
-					</div>		
+					</div>
 					${content}
-				</div>		
-			</div>		
-			</div>		
+				</div>
+			</div>
 		` : nothing;
 	}
 
@@ -184,60 +150,25 @@ export class ModuleContainer extends MvuElement {
 
 	/**
 	 * @override
-	 * @param {Object} globalState
 	 */
-	extractState(globalState) {
-		const { toolContainer: { open, contentId }, media: { portrait, minWidth }, layers: { active: activeLayers } } = globalState;
-		return { open, contentId, portrait, minWidth, activeLayers };
-	}
-
 	onAfterRender(first) {
 		super.onAfterRender(first);
-		const element = this.shadowRoot.getElementById('module-container');
-		if (element !== null && this._rendered) {
-			const modulecontainerStyle = window.getComputedStyle(element);
-			const bodyStyle = window.getComputedStyle(document.querySelector('body'));
-			//Arbeiten mit em
-			const bodyWidth = parseFloat(window.innerWidth) / parseFloat(bodyStyle.fontSize);
-			let containerWidth = parseFloat(modulecontainerStyle.width) / parseFloat(modulecontainerStyle.fontSize);
-			containerWidth = containerWidth + 0.3;
-			//calcSliderValue
-			const ratio = 100.0 * containerWidth / bodyWidth;
-			const factor = 100 - ratio;
-			//           console.log('factor'); console.log(factor);
-			//           das nachträgliche setzen der width des containers ist ein Hack, da der ermittelte Factor sich nicht auf den Rand des Containers platziert.
-			//           hier müssten mal Experten befragt werden
-			element.style.width = containerWidth + 'em';
-			const sliderInput = this.shadowRoot.querySelector('.slider-container input');
-			sliderInput.value = factor;
-			this.tileMap(ratio);
-		}
-		else {
-			this._deactivateModule();
-		}
+		window.dispatchEvent(new Event('resize'));
 	}
 
 	static get tag() {
 		return 'ea-module-container';
 	}
 
-	_activateByContentId(contentId) {
-		switch (contentId) {
-			case MixerModuleContent.tag:
-				//				activateMeasurement();
-				break;
-			//			case DrawToolContent.tag:
-			//				activateDraw();
-			//				break;
-		}
+	static get INITIAL_WIDTH_EM() {
+		return 40;
 	}
 
-	_deactivateModule() {
-		const map = document.querySelector('ea-map-container');
-		if (map && map.shadowRoot) {
-			const mapContainer = map.shadowRoot.querySelector('.map-container');
-			mapContainer.style.width = '100%';
-			updateSize(100);
-		}
+	static get MIN_WIDTH_EM() {
+		return 34;
+	}
+
+	static get MAX_WIDTH_EM() {
+		return 100;
 	}
 }

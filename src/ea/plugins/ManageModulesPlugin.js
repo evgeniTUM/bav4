@@ -8,22 +8,14 @@ import { EAContribution } from '../modules/toolbox/components/contribution/EACon
 import { MixerModuleContent } from '../modules/toolbox/components/mixerModuleContent/MixerModuleContent';
 import { RedesignModuleContent } from '../modules/toolbox/components/redesignModuleContent/RedesignModuleContent';
 import { ResearchModuleContent } from '../modules/toolbox/components/researchModuleContent/ResearchModuleContent';
-
-const MODULE_TAGS = [
-	MixerModuleContent.tag,
-	ResearchModuleContent.tag,
-	RedesignModuleContent.tag,
-	EAContribution.tag
-];
+import { ModuleId } from '../store/module/module.action';
 
 export class ManageModulesPlugin extends BaPlugin {
 	constructor() {
 		super();
 
-		this._lastTool = '';
+		this._lastModule = '';
 	}
-
-
 
 	/**
 	 * @override
@@ -31,18 +23,18 @@ export class ManageModulesPlugin extends BaPlugin {
 	 */
 	async register(store) {
 
-		const handleMainMenu = (currentTool, lastTool) => {
-			if (MODULE_TAGS.includes(currentTool)) {
+		const handleMainMenu = (currentModule, lastModule) => {
+			if (ModuleId.includes(currentModule)) {
 				close();
 			}
-			else if (MODULE_TAGS.includes(lastTool)) {
+			else if (ModuleId.includes(lastModule)) {
 				open();
 			}
 		};
 
-		const handleLayers = (currentTool, lastTool) => {
-		// remove layers for last tool
-			switch (lastTool) {
+		const handleLayers = (currentModule, lastModule) => {
+		// remove layers for last module
+			switch (lastModule) {
 				case EAContribution.tag:
 					removeLayer(CONTRIBUTION_LAYER_ID);
 					break;
@@ -53,8 +45,8 @@ export class ManageModulesPlugin extends BaPlugin {
 					break;
 			}
 
-			// enable layers for new tool
-			switch (currentTool) {
+			// enable layers for new module
+			switch (currentModule) {
 				case EAContribution.tag:
 					addLayer(CONTRIBUTION_LAYER_ID, { label: 'contribution_layer', constraints: { hidden: true, alwaysTop: false } });
 					break;
@@ -67,16 +59,16 @@ export class ManageModulesPlugin extends BaPlugin {
 			}
 		};
 
-		const onToolChange = (toolId) => {
+		const onModuleChange = (moduleId) => {
 
-			handleMainMenu(toolId, this._lastTool);
-			handleLayers(toolId, this._lastTool);
+			handleMainMenu(moduleId, this._lastModule);
+			handleLayers(moduleId, this._lastModule);
 
-			this._lastTool = toolId;
+			this._lastModule = moduleId;
 
 		};
 
-		observe(store, state => state.tools.current, onToolChange);
+		observe(store, state => state.module.current, onModuleChange);
 
 	}
 }

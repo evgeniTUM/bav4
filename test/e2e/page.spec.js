@@ -75,16 +75,16 @@ test.describe('page', () => {
 			expect(await page.$$('ea-main-menu')).toHaveLength(1);
 		});
 
-		test('should not contain a <ba-ol-map> component', async ({ page }) => {
-			expect(await page.$$('ba-ol-map')).toHaveLength(0);
+		test('should contain a <ea-ol-map> component', async ({ page }) => {
+			expect(await page.$$('ea-ol-map')).toHaveLength(1);
 		});
 
-		test('should not contain a <ba-map-button-container> component', async ({ page }) => {
-			expect(await page.$$('ba-map-button-container')).toHaveLength(0);
+		test('should contain a <ba-map-button-container> component', async ({ page }) => {
+			expect(await page.$$('ba-map-button-container')).toHaveLength(1);
 		});
 
-		test('should not contain a <ba-tool-bar> component', async ({ page }) => {
-			expect(await page.$$('ba-tool-bar')).toHaveLength(0);
+		test('should contain a <ba-tool-bar> component', async ({ page }) => {
+			expect(await page.$$('ba-tool-bar')).toHaveLength(1);
 		});
 
 		test('should contain a <ba-footer> component', async ({ page }) => {
@@ -123,12 +123,8 @@ test.describe('page', () => {
 			expect(await page.$$('ba-dnd-import-panel')).toHaveLength(1);
 		});
 
-		test('should contain a <ea-module-container> component', async ({ page }) => {
-			expect(await page.$$('ea-module-container')).toHaveLength(1);
-		});
-
-		test('should contain a <ea-map-container> component', async ({ page }) => {
-			expect(await page.$$('ea-map-container')).toHaveLength(1);
+		test('should contain a <ea-page-container> component', async ({ page }) => {
+			expect(await page.$$('ea-page-container')).toHaveLength(1);
 		});
 	});
 });

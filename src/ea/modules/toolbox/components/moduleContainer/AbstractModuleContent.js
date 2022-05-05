@@ -105,7 +105,7 @@ export class AbstractModuleContent extends MvuElement {
 	onAfterRender(first) {
 		super.onAfterRender(first);
 		this.callModul(first);
-		this.offsetParent.style.width = '40em';
+		// this.offsetParent.style.width = '40em';
 	}
 
 

@@ -19,13 +19,6 @@ export const initialState = {
 
 export const mapclickReducer = (state = initialState, action) => {
 
-	//	const createIdIfMissing = features => features.map(f => {
-	//		if (!f.id) {
-	//			f.id = createUniqueId();
-	//		}
-	//		return f;
-	//	});
-
 	const { type, payload } = action;
 	switch (type) {
 		case MAPCLICK_ACTIVATE: {

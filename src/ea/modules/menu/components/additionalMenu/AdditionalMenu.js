@@ -1,8 +1,8 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
-import { setCurrentTool } from '../../../../../store/tools/tools.action';
 import { toggleTaggingMode } from '../../../../store/contribution/contribution.action';
+import { setCurrentModule } from '../../../../store/module/module.action';
 import { EAContribution } from '../../../toolbox/components/contribution/EAContribution';
 import { MixerModuleContent } from '../../../toolbox/components/mixerModuleContent/MixerModuleContent';
 import { RedesignModuleContent } from '../../../toolbox/components/redesignModuleContent/RedesignModuleContent';
@@ -14,7 +14,7 @@ const Update_IsOpen = 'update_isOpen';
 const Update_Fetching = 'update_fetching';
 const Update_IsPortrait_HasMinWidth = 'update_isPortrait_hasMinWidth';
 /**
- * Container for Tools
+ * Container for Modules
  *
  * @class
  * @author alsturm
@@ -37,7 +37,7 @@ export class AdditionalMenu extends MvuElement {
 
 		this._environmentService = environmentService;
 		this._translationService = translationService;
-		this._toolId = null;
+		this._moduleId = null;
 	}
 
 	update(type, data, model) {
@@ -54,7 +54,7 @@ export class AdditionalMenu extends MvuElement {
 	onInitialize() {
 		this.observe(state => state.network.fetching, fetching => this.signal(Update_Fetching, fetching));
 		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
-		this.observe(state => state.tools.current, current => this._toolId = current);
+		this.observe(state => state.module.current, current => this._moduleId = current);
 	}
 
 	/**
@@ -68,12 +68,12 @@ export class AdditionalMenu extends MvuElement {
 			return isPortrait ? 'is-portrait' : 'is-landscape';
 		};
 
-		const toggleTool = (id) => {
-			if (this._toolId === id) {
-				setCurrentTool(null);
+		const toggleModule = (id) => {
+			if (this._moduleId === id) {
+				setCurrentModule(null);
 			}
 			else {
-				setCurrentTool(id);
+				setCurrentModule(id);
 			}
 		};
 		//
@@ -82,24 +82,24 @@ export class AdditionalMenu extends MvuElement {
 		//		};
 
 		const toggleContributionModule = () => {
-			const toolId = EAContribution.tag;
+			const moduleId = EAContribution.tag;
 			toggleTaggingMode();
-			toggleTool(toolId);
+			toggleModule(moduleId);
 		};
 
 		const toggleMixerModule = () => {
-			const toolId = MixerModuleContent.tag;
-			toggleTool(toolId);
+			const moduleId = MixerModuleContent.tag;
+			toggleModule(moduleId);
 		};
 
 		const toggleRedesignModule = () => {
-			const toolId = RedesignModuleContent.tag;
-			toggleTool(toolId);
+			const moduleId = RedesignModuleContent.tag;
+			toggleModule(moduleId);
 		};
 
 		const toggleResearchModule = () => {
-			const toolId = ResearchModuleContent.tag;
-			toggleTool(toolId);
+			const moduleId = ResearchModuleContent.tag;
+			toggleModule(moduleId);
 		};
 
 		const translate = (key) => this._translationService.translate(key);

@@ -28,20 +28,6 @@ export class EaOlMap extends OlMap {
 
 	}
 
-	/**
-	 * @override
-	 * observeModel('updateSize' .. ) is no longer needed if this behavior is implemented
-	 *  in the parent class
-	 */
-	onInitialize() {
-		super.onInitialize();
-		this.observeModel('updateSize', () => {
-			this._viewSyncBlocked = true;
-			this._map.updateSize();
-			this._viewSyncBlocked = false;
-		});
-	}
-
 	extendedCss() {
 		return html`
 		<style>
