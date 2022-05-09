@@ -1,7 +1,7 @@
 export const ADD_LAYER = 'geofeature/feature/addLayer';
 export const REMOVE_LAYER = 'geofeature/feature/removeLayer';
 export const ADD_FEATURE = 'geofeature/feature/add';
-export const CLEAR_MAP = 'geofeature/clear';
+export const CLEAR_LAYER = 'geofeature/clearLayer';
 export const REMOVE_FEATURE = 'geofeature/remove/id';
 
 export const initialState = {
@@ -62,8 +62,11 @@ export const geofeatureReducer = (state = initialState, action) => {
 				layers
 			};
 		}
-		case CLEAR_MAP: {
-			const layers = state.layers.map(l => ({ ...l, features: [] }));
+		case CLEAR_LAYER: {
+			const layers = state.layers.map(l => l.id === payload ?
+				{ ...l, features: [] } :
+				l);
+
 			return {
 				...state,
 				layers,
