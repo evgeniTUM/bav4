@@ -95,7 +95,7 @@ describe('OlGeoFeatureLayerHandler', () => {
 				const map = setupMap();
 				setup();
 
-				addGeoFeatureLayer(layerId);
+				addGeoFeatureLayer({ id: layerId });
 				return map;
 			};
 

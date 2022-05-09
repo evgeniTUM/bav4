@@ -24,7 +24,8 @@ export const geofeatureReducer = (state = initialState, action) => {
 			return {
 				...state,
 				layers: [...state.layers, {
-					id: payload,
+					draggable: false,
+					...payload,
 					features: [] }
 				],
 				active: true

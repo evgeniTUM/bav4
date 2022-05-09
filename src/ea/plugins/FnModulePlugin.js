@@ -55,7 +55,7 @@ export class FnModulePlugin extends BaPlugin {
 			case MODULE_HANDSHAKE:
 				break;
 			case ADD_LAYER:
-				addGeoFeatureLayer(message.layerId);
+				addGeoFeatureLayer({ id: message.layerId, draggable: message.draggable || false });
 				break;
 			case MODULE_RESET:
 				break;

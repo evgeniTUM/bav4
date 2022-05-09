@@ -112,7 +112,7 @@ describe('FnModulePlugin', () => {
 			return store;
 		};
 
-		it('adds a geofeature layer on message \'addlayer\'', async () => {
+		it('adds non-draggable layer on message \'addlayer\'', async () => {
 			await setupOpen();
 
 			windowMock.listenerFunction({
@@ -126,7 +126,25 @@ describe('FnModulePlugin', () => {
 
 			const lastAction = storeActions.pop();
 			expect(lastAction.type).toEqual(ADD_LAYER);
-			expect(lastAction.payload).toEqual(42);
+			expect(lastAction.payload).toEqual({ id: 42, draggable: false });
+
+		});
+
+		it('adds draggable layer on message \'addlayer\'', async () => {
+			await setupOpen();
+
+			windowMock.listenerFunction({
+				data: {
+					code: 'addlayer',
+					module: domain,
+					message: { layerId: 42, draggable: true }
+				},
+				event: { origin: module }
+			});
+
+			const lastAction = storeActions.pop();
+			expect(lastAction.type).toEqual(ADD_LAYER);
+			expect(lastAction.payload).toEqual({ id: 42, draggable: true });
 
 		});
 
