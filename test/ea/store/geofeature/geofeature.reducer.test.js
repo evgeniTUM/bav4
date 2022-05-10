@@ -1,4 +1,4 @@
-import { addGeoFeatureLayer, addGeoFeatures, clearMap, removeGeoFeatureLayer, removeGeoFeatures } from '../../../../src/ea/store/geofeature/geofeature.action';
+import { addGeoFeatureLayer, addGeoFeatures, clearLayer, removeGeoFeatureLayer, removeGeoFeatures } from '../../../../src/ea/store/geofeature/geofeature.action';
 import { geofeatureReducer } from '../../../../src/ea/store/geofeature/geofeature.reducer';
 import { TestUtils } from '../../../test-utils';
 
@@ -18,20 +18,34 @@ describe('geofeatureReducer', () => {
 		expect(store.getState().geofeature.active).toBeFalse(0);
 	});
 
-	it('adds a layer', () => {
+	it('adds a non-draggable layer', () => {
 		const store = setup();
 
-		addGeoFeatureLayer(42);
+		addGeoFeatureLayer({ id: 42 });
 
 		const geofeature = store.getState().geofeature;
 		expect(geofeature.layers).toHaveSize(1);
 		expect(geofeature.layers[0].id).toEqual(42);
+		expect(geofeature.layers[0].draggable).toBeFalse();
 		expect(geofeature.active).toBeTrue();
 	});
 
+	it('adds a draggable layer', () => {
+		const store = setup();
+
+		addGeoFeatureLayer({ id: 42, draggable: true });
+
+		const geofeature = store.getState().geofeature;
+		expect(geofeature.layers).toHaveSize(1);
+		expect(geofeature.layers[0].id).toEqual(42);
+		expect(geofeature.layers[0].draggable).toBeTrue();
+		expect(geofeature.active).toBeTrue();
+	});
+
+
 	it('removes a layer', () => {
 		const store = setup();
-		addGeoFeatureLayer(42);
+		addGeoFeatureLayer({ id: 42 });
 
 		removeGeoFeatureLayer(42);
 
@@ -42,7 +56,7 @@ describe('geofeatureReducer', () => {
 
 	it('adds a feature', () => {
 		const store = setup();
-		addGeoFeatureLayer(42);
+		addGeoFeatureLayer({ id: 42 });
 		const feature = { id: 24, name: 'test-feature' };
 
 		addGeoFeatures(42, [feature]);
@@ -53,7 +67,7 @@ describe('geofeatureReducer', () => {
 
 	it('removes a feature by id', () => {
 		const store = setup();
-		addGeoFeatureLayer(42);
+		addGeoFeatureLayer({ id: 42 });
 		const feature = { id: 24, name: 'test-feature' };
 		addGeoFeatures(42, [feature]);
 
@@ -66,14 +80,18 @@ describe('geofeatureReducer', () => {
 		expect(store.getState().geofeature.layers[0].features).toHaveSize(0);
 	});
 
-	it('clears all layers', () => {
+	it('clears specific layer', () => {
 		const store = setup();
-		addGeoFeatureLayer(42);
-		addGeoFeatures([{ name: 'feature1' }, { name: 'feature2' }]);
+		addGeoFeatureLayer({ id: 42 });
+		addGeoFeatures(42, [{ name: 'feature1' }, { name: 'feature2' }]);
+		addGeoFeatureLayer({ id: 43 });
+		addGeoFeatures(43, [{ name: 'feature3' }]);
 
-		clearMap();
+		clearLayer(42);
 
-		expect(store.getState().geofeature.layers[0].features).toHaveSize(0);
+		expect(store.getState().geofeature.layers).toHaveSize(2);
+		const layer42 = store.getState().geofeature.layers.filter(l => l.id === 42)[0];
+		expect(layer42.features).toHaveSize(0);
 	});
 
 });

@@ -1,7 +1,7 @@
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { observe } from '../../utils/storeUtils';
-import { addGeoFeatureLayer, addGeoFeatures, clearMap, removeGeoFeatures } from '../store/geofeature/geofeature.action';
+import { addGeoFeatureLayer, addGeoFeatures, clearLayer, removeGeoFeatures } from '../store/geofeature/geofeature.action';
 import { activateMapClick, deactivateMapClick } from '../store/mapclick/mapclick.action';
 
 
@@ -55,7 +55,7 @@ export class FnModulePlugin extends BaPlugin {
 			case MODULE_HANDSHAKE:
 				break;
 			case ADD_LAYER:
-				addGeoFeatureLayer(message.layerId);
+				addGeoFeatureLayer({ id: message.layerId, draggable: message.draggable || false });
 				break;
 			case MODULE_RESET:
 				break;
@@ -66,12 +66,12 @@ export class FnModulePlugin extends BaPlugin {
 				removeGeoFeatures(message.layerId, [message.id]);
 				break;
 			case CLEAR_MAP:
-				clearMap();
+				clearLayer(message.toString());
 				break;
 			case REMOVE_LAYER:
 				break;
 			case CLEAR_LAYER:
-				clearMap();
+				clearLayer(message);
 				break;
 			case ZOOM:
 				break;
@@ -133,7 +133,7 @@ export class FnModulePlugin extends BaPlugin {
 			}
 			else {
 				//deaktiviere das Module
-				clearMap();
+				clearLayer();
 				this.implPostCodeMessageFnModule('close', scope.module, scope.domain, targetWindow);
 			}
 		};
