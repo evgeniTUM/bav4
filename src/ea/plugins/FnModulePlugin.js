@@ -59,9 +59,14 @@ export class FnModulePlugin extends BaPlugin {
 				break;
 			case MODULE_RESET:
 				break;
-			case ADD_FEATURE:
-				addGeoFeatures(message.layerId, message.geojson.features);
+			case ADD_FEATURE: {
+				const features = message.geojson.features.map(f => ({
+					...f,
+					style: message.style
+				}));
+				addGeoFeatures(message.layerId, features);
 				break;
+			}
 			case REMOVE_FEATURE_BY_ID:
 				removeGeoFeatures(message.layerId, [message.id]);
 				break;

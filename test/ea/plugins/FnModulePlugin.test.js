@@ -177,7 +177,8 @@ describe('FnModulePlugin', () => {
 					module: domain,
 					message: {
 						layerId: 42,
-						geojson: { features: [geojson] }
+						geojson: { features: [geojson] },
+						style: { template: 'geolocation' }
 					}
 				},
 				event: { origin: module }
@@ -186,7 +187,10 @@ describe('FnModulePlugin', () => {
 
 			const lastAction = storeActions.pop();
 			expect(lastAction.type).toEqual(ADD_FEATURE);
-			expect(lastAction.payload).toEqual({ layerId: 42, features: [geojson] });
+			expect(lastAction.payload).toEqual({
+				layerId: 42,
+				features: [{ ...geojson, style: { template: 'geolocation' } }]
+			});
 		});
 
 		it('removes geofeature on message \'removefeature\'', async () => {

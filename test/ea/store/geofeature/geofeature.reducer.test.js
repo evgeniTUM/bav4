@@ -57,7 +57,7 @@ describe('geofeatureReducer', () => {
 	it('adds a feature', () => {
 		const store = setup();
 		addGeoFeatureLayer({ id: 42 });
-		const feature = { id: 24, name: 'test-feature' };
+		const feature = { id: 24, name: 'test-feature', some_property: 'test' };
 
 		addGeoFeatures(42, [feature]);
 
