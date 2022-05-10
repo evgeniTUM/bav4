@@ -9,6 +9,7 @@ import { OlLayerHandler } from '../../../../../../../modules/map/components/olMa
 import { fit } from '../../../../../../../store/position/position.action';
 import { observe } from '../../../../../../../utils/storeUtils';
 import { deactivateMapClick } from '../../../../../../store/mapclick/mapclick.action';
+import { createStyleFnFromJson } from './styleUtils';
 
 export const GEO_FEATURE_LAYER_ID = 'geofeature_layer';
 
@@ -141,13 +142,15 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 		});
 	}
 
-	_toOlFeature(geojson) {
-		const _features = new GeoJSON().readFeature(geojson);
+	_toOlFeature(data) {
+		const _features = new GeoJSON().readFeature(data);
 		_features.getGeometry().transform('EPSG:' + 4326, 'EPSG:' + this.mapService.getSrid());
 		_features.set('srid', 4326, true);
 
 		const f = new Feature();
 		f.setGeometry(_features.getGeometry());
+		f.setStyle(createStyleFnFromJson(data.style));
+
 		return f;
 	}
 
