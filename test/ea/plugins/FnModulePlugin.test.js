@@ -1,7 +1,7 @@
 import { FnModulePlugin } from '../../../src/ea/plugins/FnModulePlugin.js';
 import { closeFnModule, openFnModuleComm } from '../../../src/ea/store/fnModuleComm/fnModuleComm.action.js';
 import { fnModuleCommReducer } from '../../../src/ea/store/fnModuleComm/fnModuleComm.reducer.js';
-import { ADD_FEATURE, ADD_LAYER, CLEAR_LAYER, geofeatureReducer, REMOVE_FEATURE } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
+import { ADD_FEATURE, ADD_LAYER, CLEAR_LAYER, CLEAR_MAP, geofeatureReducer, REMOVE_FEATURE } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
 import { activateMapClick, deactivateMapClick, requestMapClick } from '../../../src/ea/store/mapclick/mapclick.action.js';
 import { mapclickReducer, MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE } from '../../../src/ea/store/mapclick/mapclick.reducer';
 import { $injector } from '../../../src/injection/index.js';
@@ -61,7 +61,31 @@ describe('FnModulePlugin', () => {
 	};
 
 
-	it('sends open/close messages on state change', async () => {
+	it('sends open messages when opening module', async () => {
+		const module = 'dom1';
+		const domain = 'http://test-site';
+
+		const store = setup();
+
+		const instanceUnderTest = new FnModulePlugin();
+		await instanceUnderTest.register(store);
+
+		window.ea_moduleWindow = { dom1: windowMock };
+
+		openFnModuleComm(module, domain);
+
+		const lastMessage = windowMock.messages.pop();
+		expect(lastMessage).toEqual(
+			{
+				msg: {
+					code: 'open',
+					module: module
+				},
+				domain: domain
+			});
+	});
+
+	it('sends close messages when closing module', async () => {
 		const module = 'dom1';
 		const domain = 'http://test-site';
 
@@ -72,18 +96,11 @@ describe('FnModulePlugin', () => {
 
 		window.ea_moduleWindow = { dom1: windowMock };
 		openFnModuleComm(module, domain);
+
 		closeFnModule();
 
-		expect(windowMock.messages).toHaveSize(2);
-		expect(windowMock.messages[0]).toEqual(
-			{
-				msg: {
-					code: 'open',
-					module: module
-				},
-				domain: domain
-			});
-		expect(windowMock.messages[1]).toEqual(
+		const lastMessage = windowMock.messages.pop();
+		expect(lastMessage).toEqual(
 			{
 				msg: {
 					code: 'close',
@@ -91,6 +108,25 @@ describe('FnModulePlugin', () => {
 				},
 				domain: domain
 			});
+	});
+
+
+	it('clears map when closing module', async () => {
+		const module = 'dom1';
+		const domain = 'http://test-site';
+
+		const store = setup();
+
+		const instanceUnderTest = new FnModulePlugin();
+		await instanceUnderTest.register(store);
+
+		window.ea_moduleWindow = { dom1: windowMock };
+		openFnModuleComm(module, domain);
+
+		closeFnModule();
+
+		const lastAction = storeActions.pop();
+		expect(lastAction.type).toEqual(CLEAR_MAP);
 	});
 
 	describe('when communication is open,', () => {

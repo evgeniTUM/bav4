@@ -3,6 +3,7 @@ export const REMOVE_LAYER = 'geofeature/feature/removeLayer';
 export const ADD_FEATURE = 'geofeature/feature/add';
 export const CLEAR_LAYER = 'geofeature/clearLayer';
 export const REMOVE_FEATURE = 'geofeature/remove/id';
+export const CLEAR_MAP = 'geofeature/clearMap';
 
 export const initialState = {
 	/**
@@ -73,6 +74,9 @@ export const geofeatureReducer = (state = initialState, action) => {
 				layers,
 				active: false
 			};
+		}
+		case CLEAR_MAP: {
+			return initialState;
 		}
 	}
 

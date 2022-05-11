@@ -3,7 +3,7 @@
  * @module highlight/action
  */
 import { $injector } from '../../../injection';
-import { ADD_FEATURE, ADD_LAYER, CLEAR_LAYER, REMOVE_FEATURE, REMOVE_LAYER } from './geofeature.reducer';
+import { ADD_FEATURE, ADD_LAYER, CLEAR_LAYER, CLEAR_MAP, REMOVE_FEATURE, REMOVE_LAYER } from './geofeature.reducer';
 
 
 /**
@@ -78,13 +78,24 @@ export const addGeoFeatures = (layerId, features) => {
 };
 
 /**
- * Removes all {@link GeoFeature}s.
+ * Removes all {@link GeoFeature}s on a layer.
  * @function
  */
 export const clearLayer = (layerId) => {
 	getStore().dispatch({
 		type: CLEAR_LAYER,
 		payload: layerId
+	});
+};
+
+/**
+ * Removes all Layers.
+ * @function
+ */
+export const clearMap = () => {
+	getStore().dispatch({
+		type: CLEAR_MAP,
+		payload: null
 	});
 };
 
