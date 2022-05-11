@@ -7,14 +7,11 @@ import { activateMapClick, deactivateMapClick } from '../store/mapclick/mapclick
 
 const MODULE_HANDSHAKE = 'handshake';
 const MODULE_RESET = 'reset';
-// const ADD_GEOMETRY = 'geoadd';
-// const REMOVE_GEOMETRY = 'georemove';
 const ADD_FEATURE = 'addfeature';
 const REMOVE_FEATURE_BY_ID = 'removefeature';
 const CLEAR_MAP = 'clearmap';
 const ADD_LAYER = 'addlayer';
 const REMOVE_LAYER = 'removelayer';
-const CLEAR_LAYER = 'clearLayer';
 const ZOOM = 'zoomToLevel';
 const ZOOM_2_EXTENT = 'zoom2Extent';
 const ZOOM_N_CENTER_TO_FEATURE = 'zoomAndCenter';
@@ -74,9 +71,6 @@ export class FnModulePlugin extends BaPlugin {
 				clearLayer(message.toString());
 				break;
 			case REMOVE_LAYER:
-				break;
-			case CLEAR_LAYER:
-				clearLayer(message);
 				break;
 			case ZOOM:
 				break;

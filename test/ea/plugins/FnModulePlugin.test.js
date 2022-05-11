@@ -147,23 +147,6 @@ describe('FnModulePlugin', () => {
 
 		});
 
-		it('clears geofeature layers on message \'clearLayer\'', async () => {
-			await setupOpen();
-
-			windowMock.listenerFunction({
-				data: {
-					code: 'clearLayer',
-					module: domain,
-					message: 42
-				},
-				event: { origin: module }
-			});
-
-			const lastAction = storeActions.pop();
-			expect(lastAction.type).toEqual(CLEAR_LAYER);
-			expect(lastAction.payload).toEqual(42);
-		});
-
 		it('adds geofeature on message \'addfeature\'', async () => {
 			await setupOpen();
 			const geojson = {
