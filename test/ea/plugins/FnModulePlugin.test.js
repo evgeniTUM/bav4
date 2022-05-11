@@ -2,10 +2,9 @@ import { FnModulePlugin } from '../../../src/ea/plugins/FnModulePlugin.js';
 import { closeFnModule, openFnModuleComm } from '../../../src/ea/store/fnModuleComm/fnModuleComm.action.js';
 import { fnModuleCommReducer } from '../../../src/ea/store/fnModuleComm/fnModuleComm.reducer.js';
 import { ADD_FEATURE, ADD_LAYER, CLEAR_LAYER, geofeatureReducer, REMOVE_FEATURE } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
-import { activateMapClick, deactivateMapClick } from '../../../src/ea/store/mapclick/mapclick.action.js';
+import { activateMapClick, deactivateMapClick, requestMapClick } from '../../../src/ea/store/mapclick/mapclick.action.js';
 import { mapclickReducer, MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE } from '../../../src/ea/store/mapclick/mapclick.reducer';
 import { $injector } from '../../../src/injection/index.js';
-import { setClick } from '../../../src/store/pointer/pointer.action.js';
 import { pointerReducer } from '../../../src/store/pointer/pointer.reducer';
 import { TestUtils } from '../../test-utils.js';
 
@@ -265,11 +264,11 @@ describe('FnModulePlugin', () => {
 			expect(lastAction.payload).toEqual('42');
 		});
 
-		it('sends a \'mapclick\' message on \'pointer.click\' event when \'mapclick.active\' is true', async () => {
+		it('sends a \'mapclick\' message on \'mapclick.coordinate\' event when state.mapclick.active is true', async () => {
 			await setupOpen();
 
 			activateMapClick();
-			setClick({ coordinate: [42.0, 24.0], screenCoordinate: [1, 2] });
+			requestMapClick([42.0, 24.0]);
 
 			expect(windowMock.messages).toHaveSize(1);
 			expect(windowMock.messages[0].msg).toEqual(
@@ -281,8 +280,9 @@ describe('FnModulePlugin', () => {
 				});
 
 			windowMock.messages = [];
+
 			deactivateMapClick();
-			setClick({ coordinate: [42.0, 24.0], screenCoordinate: [1, 2] });
+			requestMapClick([42.0, 24.0]);
 
 			expect(windowMock.messages).toHaveSize(0);
 		});

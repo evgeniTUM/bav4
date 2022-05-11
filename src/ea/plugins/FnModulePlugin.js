@@ -144,9 +144,8 @@ export class FnModulePlugin extends BaPlugin {
 		};
 
 		const sendCoordinate = (evt, state) => {
-			const { payload: { coordinate } } = evt;
-			const _coord = coordinateService.toLonLat(coordinate);
 			if (state.mapclick.active) {
+				const _coord = coordinateService.toLonLat(evt.payload);
 				const scope = state.fnModuleComm;
 				const json = {
 					code: 'mapclick',
@@ -160,7 +159,7 @@ export class FnModulePlugin extends BaPlugin {
 		};
 
 		observe(store, state => state.fnModuleComm.active, onChange);
-		observe(store, state => state.pointer.click, sendCoordinate);
+		observe(store, state => state.mapclick.coordinate, sendCoordinate);
 
 	}
 }

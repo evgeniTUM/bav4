@@ -1,5 +1,6 @@
 export const MAPCLICK_ACTIVATE = 'mapclick/activate';
 export const MAPCLICK_DEACTIVATE = 'mapclick/deactivate';
+export const MAPCLICK_REQUEST = 'mapclick/request';
 
 export const initialState = {
 
@@ -35,6 +36,12 @@ export const mapclickReducer = (state = initialState, action) => {
 				...state,
 				coordinate: null,
 				active: false
+			};
+		}
+		case MAPCLICK_REQUEST: {
+			return {
+				...state,
+				coordinate: payload
 			};
 		}
 	}

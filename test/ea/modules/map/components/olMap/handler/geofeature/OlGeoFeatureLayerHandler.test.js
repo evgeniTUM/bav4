@@ -1,4 +1,5 @@
 import { Map, View } from 'ol';
+import MapBrowserEventType from 'ol/MapBrowserEventType';
 import TileLayer from 'ol/layer/Tile';
 import { fromLonLat } from 'ol/proj';
 import { OSM, TileDebug } from 'ol/source';
@@ -6,10 +7,12 @@ import { GEO_FEATURE_LAYER_ID, OlGeoFeatureLayerHandler } from '../../../../../.
 import { styleTemplates } from '../../../../../../../../src/ea/modules/map/components/olMap/handler/geofeature/styleTemplates';
 import { addGeoFeatureLayer, addGeoFeatures, clearLayer } from '../../../../../../../../src/ea/store/geofeature/geofeature.action';
 import { geofeatureReducer } from '../../../../../../../../src/ea/store/geofeature/geofeature.reducer';
-import { mapclickReducer } from '../../../../../../../../src/ea/store/mapclick/mapclick.reducer';
+import { mapclickReducer, MAPCLICK_REQUEST } from '../../../../../../../../src/ea/store/mapclick/mapclick.reducer';
 import { $injector } from '../../../../../../../../src/injection';
 import { FIT_REQUESTED, positionReducer } from '../../../../../../../../src/store/position/position.reducer';
+import { simulateMapBrowserEvent } from '../../../../../../../modules/map/components/olMap/mapTestUtils';
 import { TestUtils } from '../../../../../../../test-utils.js';
+
 
 const GEOJSON_SAMPLE_DATA = {
 	type: 'Feature',
@@ -49,13 +52,14 @@ describe('OlGeoFeatureLayerHandler', () => {
 		return store;
 	};
 
-	it('has two methods', () => {
+	it('instantiates the handler', () => {
 		setup();
 		const handler = new OlGeoFeatureLayerHandler();
 		expect(handler).toBeTruthy();
 		expect(handler.activate).toBeTruthy();
 		expect(handler.deactivate).toBeTruthy();
 		expect(handler.id).toBe(GEO_FEATURE_LAYER_ID);
+		expect(handler.options).toEqual({ preventDefaultClickHandling: true, preventDefaultContextClickHandling: true });
 	});
 
 	describe('when activated over olMap,', () => {
@@ -146,6 +150,22 @@ describe('OlGeoFeatureLayerHandler', () => {
 				const actualFeatures = layer.getSource().getFeatures();
 				expect(actualFeatures.length).toEqual(1);
 				expect(actualFeatures[0].getStyle()()).toEqual(styleTemplates['geolocation']);
+			});
+
+
+			it('sends a \'mapclick/request\' event on pointer click', async () => {
+				const map = setupWithLayer();
+
+				const classUnderTest = new OlGeoFeatureLayerHandler();
+				classUnderTest.activate(map);
+
+				const coordinate = [38, 75];
+
+				simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, ...coordinate);
+
+				const mapclickRequestActions = storeActions.filter(a => a.type === MAPCLICK_REQUEST);
+				expect(mapclickRequestActions).toHaveSize(1);
+				expect(mapclickRequestActions[0].payload.payload).toEqual(coordinate);
 			});
 
 		});

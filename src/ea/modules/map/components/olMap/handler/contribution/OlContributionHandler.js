@@ -21,7 +21,7 @@ export const CONTRIBUTION_LAYER_ID = 'contribution_layer_id';
 export class OlContributionHandler extends OlLayerHandler {
 
 	constructor() {
-		super(CONTRIBUTION_LAYER_ID, { preventDefaultClickHandling: false, preventDefaultContextClickHandling: false });
+		super(CONTRIBUTION_LAYER_ID);
 		const { StoreService } = $injector.inject('StoreService');
 		this._helpTooltip = new HelpTooltip();
 		this._storeService = StoreService;

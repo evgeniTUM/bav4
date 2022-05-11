@@ -3,7 +3,8 @@
  * @module highlight/action
  */
 import { $injector } from '../../../injection';
-import { MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE } from './mapclick.reducer';
+import { EventLike } from '../../../utils/storeUtils';
+import { MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE, MAPCLICK_REQUEST } from './mapclick.reducer';
 
 
 /**
@@ -40,6 +41,13 @@ export const activateMapClick = (id) => {
 export const deactivateMapClick = () => {
 	getStore().dispatch({
 		type: MAPCLICK_DEACTIVATE,
-		activate: false
+		payload: null
+	});
+};
+
+export const requestMapClick = (coordinate) => {
+	getStore().dispatch({
+		type: MAPCLICK_REQUEST,
+		payload: new EventLike(coordinate)
 	});
 };

@@ -2,13 +2,14 @@ import Feature from 'ol/Feature';
 import GeoJSON from 'ol/format/GeoJSON';
 import { fromExtent } from 'ol/geom/Polygon';
 import { Vector as VectorLayer } from 'ol/layer';
+import MapBrowserEventType from 'ol/MapBrowserEventType';
 import { unByKey } from 'ol/Observable';
 import { Vector as VectorSource } from 'ol/source';
 import { $injector } from '../../../../../../../injection';
 import { OlLayerHandler } from '../../../../../../../modules/map/components/olMap/handler/OlLayerHandler';
 import { fit } from '../../../../../../../store/position/position.action';
 import { observe } from '../../../../../../../utils/storeUtils';
-import { deactivateMapClick } from '../../../../../../store/mapclick/mapclick.action';
+import { deactivateMapClick, requestMapClick } from '../../../../../../store/mapclick/mapclick.action';
 import { createStyleFnFromJson } from './styleUtils';
 
 export const GEO_FEATURE_LAYER_ID = 'geofeature_layer';
@@ -20,13 +21,13 @@ export const GEO_FEATURE_LAYER_ID = 'geofeature_layer';
 export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 	constructor() {
-		super(GEO_FEATURE_LAYER_ID, { preventDefaultClickHandling: false, preventDefaultContextClickHandling: false });
+		super(GEO_FEATURE_LAYER_ID);
 		const { StoreService, CoordinateService, MapService } = $injector.inject('StoreService', 'CoordinateService', 'MapService');
 
 
 		this._storeService = StoreService;
-		this.coordinateService = CoordinateService;
-		this.mapService = MapService;
+		this._coordinateService = CoordinateService;
+		this._mapService = MapService;
 
 		this._positionFeature = new Feature();
 		this._unregister = () => {
@@ -56,19 +57,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 
 		const getOrCreateLayer = () => {
-			//			const oldLayer = getOldLayer(this._map);
 			const layer = createLayer();
-			//			addOldFeatures(layer, oldLayer);
-			//			const saveDebounced = debounced(Debounce_Delay, () => this._save());
-			//			const setSelectedAndSave = (event) => {
-			//				if (this._drawState.type === InteractionStateType.DRAW) {
-			//					setSelection([event.feature.getId()]);
-			//				}
-			//				this._save();
-			//			};
-			//			this._listeners.push(layer.getSource().on('addfeature', setSelectedAndSave));
-			//			this._listeners.push(layer.getSource().on('changefeature', () => saveDebounced()));
-			//			this._listeners.push(layer.getSource().on('removefeature', () => saveDebounced()));
 			return layer;
 		};
 
@@ -76,39 +65,9 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 		if (!this._vectorLayer) {
 			this._vectorLayer = getOrCreateLayer();
-			//			this._mapContainer = olMap.getTarget();
-			//			const source = this._vectorLayer.getSource();
-			//			this._select = this._createSelect();
-			//			this._modify = this._createModify();
-			//			this._select.setActive(false);
-			//			this._modify.setActive(false);
-			//			this._snap = new Snap({ source: source, pixelTolerance: getSnapTolerancePerDevice() });
-			//			this._dragPan = new DragPan();
-			//			this._dragPan.setActive(false);
-			//			this._onDrawStateChanged((drawState) => this._updateDrawMode(drawState));
-			//			if (!this._environmentService.isTouch()) {
-			//				this._helpTooltip.activate(this._map);
-			//				this._onDrawStateChanged((drawState) => {
-			//					this._helpTooltip.notify(drawState);
-			//					if (drawState.snap === InteractionSnapType.VERTEX) {
-			//						this._mapContainer.classList.add('grab');
-			//					}
-			//					else {
-			//						this._mapContainer.classList.remove('grab');
-			//					}
-			//				});
-			//			}
-			//			this._listeners.push(olMap.on(MapBrowserEventType.CLICK, clickHandler));
-			//			this._listeners.push(olMap.on(MapBrowserEventType.POINTERMOVE, pointerMoveHandler));
-			//			this._listeners.push(olMap.on(MapBrowserEventType.DBLCLICK, () => false));
-			//			this._listeners.push(document.addEventListener('keyup', (e) => this._removeLast(e)));
 		}
+
 		this._unregister = this._register(this._storeService.getStore());
-		//		this._map.addInteraction(this._select);
-		//		this._map.addInteraction(this._modify);
-		//		this._map.addInteraction(this._snap);
-		//		this._map.addInteraction(this._dragPan);
-		//
 
 		return this._vectorLayer;
 	}
@@ -117,7 +76,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 	 *  @override
 	 *  @param {Map} olMap
 	 */
-	onDeactivate(/*eslint-disable no-unused-vars */olMap) {
+	onDeactivate() {
 		deactivateMapClick();
 		this._map = null;
 		this._unregister();
@@ -144,7 +103,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 	_toOlFeature(data) {
 		const _features = new GeoJSON().readFeature(data);
-		_features.getGeometry().transform('EPSG:' + 4326, 'EPSG:' + this.mapService.getSrid());
+		_features.getGeometry().transform('EPSG:' + 4326, 'EPSG:' + this._mapService.getSrid());
 		_features.set('srid', 4326, true);
 
 		const f = new Feature();
@@ -155,6 +114,8 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 	}
 
 	_register(store) {
+
+		this._listeners.push(this._map.on(MapBrowserEventType.CLICK, (ev) => requestMapClick(ev.coordinate)));
 
 		const onChange = ({ layers }) => {
 			this._vectorLayer.getSource().clear();

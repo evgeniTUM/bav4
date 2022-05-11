@@ -22,13 +22,14 @@ describe('OlContributionHandler', () => {
 		return store;
 	};
 
-	it('has two methods', () => {
+	it('instantiates handler', () => {
 		setup();
 		const handler = new OlContributionHandler();
 		expect(handler).toBeTruthy();
 		expect(handler.activate).toBeTruthy();
 		expect(handler.deactivate).toBeTruthy();
 		expect(handler.id).toBe(CONTRIBUTION_LAYER_ID);
+		expect(handler.options).toEqual({ preventDefaultClickHandling: true, preventDefaultContextClickHandling: true });
 	});
 
 	describe('when activated over olMap', () => {
