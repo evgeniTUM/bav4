@@ -7,6 +7,7 @@ import { unByKey } from 'ol/Observable';
 import { Vector as VectorSource } from 'ol/source';
 import { $injector } from '../../../../../../../injection';
 import { OlLayerHandler } from '../../../../../../../modules/map/components/olMap/handler/OlLayerHandler';
+import { HelpTooltip } from '../../../../../../../modules/map/components/olMap/HelpTooltip';
 import { fit } from '../../../../../../../store/position/position.action';
 import { observe } from '../../../../../../../utils/storeUtils';
 import { deactivateMapClick, requestMapClick } from '../../../../../../store/mapclick/mapclick.action';
@@ -22,17 +23,18 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 	constructor() {
 		super(GEO_FEATURE_LAYER_ID);
-		const { StoreService, CoordinateService, MapService } = $injector.inject('StoreService', 'CoordinateService', 'MapService');
+		const { StoreService, CoordinateService, MapService, TranslationService } = $injector
+			.inject('StoreService', 'CoordinateService', 'MapService', 'TranslationService');
 
-
+		this._translationService = TranslationService;
 		this._storeService = StoreService;
 		this._coordinateService = CoordinateService;
 		this._mapService = MapService;
-
+		this._helpTooltip = new HelpTooltip();
 		this._positionFeature = new Feature();
-		this._unregister = () => {
-		};
 		this._vectorLayer = null;
+
+		this._registeredObservers = [];
 
 		this._unsubscribeMapClickObserver = () => { };
 		this._listeners = [];
@@ -67,19 +69,19 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 			this._vectorLayer = getOrCreateLayer();
 		}
 
-		this._unregister = this._register(this._storeService.getStore());
+		this._setup(this._storeService.getStore());
 
 		return this._vectorLayer;
 	}
 
 	/**
 	 *  @override
-	 *  @param {Map} olMap
 	 */
 	onDeactivate() {
 		deactivateMapClick();
+		this._helpTooltip.deactivate();
 		this._map = null;
-		this._unregister();
+		this._registeredObservers.forEach(obs => obs.unsubscribe());
 		unByKey(this._listeners);
 
 		this._unsubscribeMapClickObserver();
@@ -90,15 +92,6 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 			this._mapClickListener = null;
 		}
 		this._vectorLayer = null;
-	}
-
-	_updateStyle(olFeature, olLayer, olMap) {
-		const { StyleService: styleService } = $injector.inject('StyleService');
-		styleService.updateStyle(olFeature, olMap, {
-			visible: olLayer.getVisible(),
-			top: olMap.getLayers().item(olMap.getLayers().getLength() - 1) === olLayer,
-			opacity: olLayer.getOpacity()
-		});
 	}
 
 	_toOlFeature(data) {
@@ -113,9 +106,19 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 		return f;
 	}
 
-	_register(store) {
+	_setup(store) {
 
-		this._listeners.push(this._map.on(MapBrowserEventType.CLICK, (ev) => requestMapClick(ev.coordinate)));
+		this._listeners.push(this._map.on(MapBrowserEventType.CLICK, (event) => requestMapClick(event.coordinate)));
+
+		const message = this._translationService.translate('ea_map_select_region');
+		this._helpTooltip.messageProvideFunction = () => message;
+		this._listeners.push(this._map.on(MapBrowserEventType.POINTERMOVE, (event) => this._helpTooltip.notify(event)));
+
+		const onMapclickActivate = (active) => {
+			active ?
+				this._helpTooltip.activate(this._map) :
+				this._helpTooltip.deactivate();
+		};
 
 		const onChange = ({ layers }) => {
 			this._vectorLayer.getSource().clear();
@@ -136,6 +139,9 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 			this._map.renderSync();
 		};
 
-		return observe(store, state => state.geofeature, onChange, false);
+		this._registeredObservers = [
+			observe(store, state => state.geofeature, onChange, false),
+			observe(store, state => state.mapclick.active, onMapclickActivate, false)
+		];
 	}
 }

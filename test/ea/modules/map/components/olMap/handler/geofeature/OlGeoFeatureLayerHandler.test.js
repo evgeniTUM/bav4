@@ -1,12 +1,13 @@
 import { Map, View } from 'ol';
-import MapBrowserEventType from 'ol/MapBrowserEventType';
 import TileLayer from 'ol/layer/Tile';
+import MapBrowserEventType from 'ol/MapBrowserEventType';
 import { fromLonLat } from 'ol/proj';
 import { OSM, TileDebug } from 'ol/source';
 import { GEO_FEATURE_LAYER_ID, OlGeoFeatureLayerHandler } from '../../../../../../../../src/ea/modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler';
 import { styleTemplates } from '../../../../../../../../src/ea/modules/map/components/olMap/handler/geofeature/styleTemplates';
 import { addGeoFeatureLayer, addGeoFeatures, clearLayer } from '../../../../../../../../src/ea/store/geofeature/geofeature.action';
 import { geofeatureReducer } from '../../../../../../../../src/ea/store/geofeature/geofeature.reducer';
+import { activateMapClick, deactivateMapClick } from '../../../../../../../../src/ea/store/mapclick/mapclick.action';
 import { mapclickReducer, MAPCLICK_REQUEST } from '../../../../../../../../src/ea/store/mapclick/mapclick.reducer';
 import { $injector } from '../../../../../../../../src/injection';
 import { FIT_REQUESTED, positionReducer } from '../../../../../../../../src/store/position/position.reducer';
@@ -167,6 +168,45 @@ describe('OlGeoFeatureLayerHandler', () => {
 				expect(mapclickRequestActions).toHaveSize(1);
 				expect(mapclickRequestActions[0].payload.payload).toEqual(coordinate);
 			});
+
+			it('help tooltip is not active on init', () => {
+				const map = setupWithLayer();
+
+				const classUnderTest = new OlGeoFeatureLayerHandler();
+
+				classUnderTest.activate(map);
+
+				expect(classUnderTest._helpTooltip.active).toBeFalse();
+			});
+
+			it('help tooltip is active when mapclick.active is true', () => {
+				const map = setupWithLayer();
+
+				const classUnderTest = new OlGeoFeatureLayerHandler();
+				classUnderTest.activate(map);
+
+				activateMapClick();
+				expect(classUnderTest._helpTooltip.active).toBeTrue();
+
+				deactivateMapClick();
+				expect(classUnderTest._helpTooltip.active).toBeFalse();
+			});
+
+			it('help tooltip shows message on mousemove', () => {
+				const map = setupWithLayer();
+
+				const classUnderTest = new OlGeoFeatureLayerHandler();
+				classUnderTest.activate(map);
+				activateMapClick();
+
+				expect(classUnderTest._helpTooltip._tooltipMessageProvideFunction()).toEqual('ea_map_select_region');
+
+				const notifySpy = spyOn(classUnderTest._helpTooltip, 'notify');
+				simulateMapBrowserEvent(map, MapBrowserEventType.POINTERMOVE, 10, 0);
+
+				expect(notifySpy).toHaveBeenCalledWith(jasmine.objectContaining({ coordinate: [10, 0] }));
+			});
+
 
 		});
 
