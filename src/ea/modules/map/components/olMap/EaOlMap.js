@@ -26,14 +26,34 @@ export class EaOlMap extends OlMap {
 		this._layerHandler.set(olGeoFeatureLayerHandler.id, olGeoFeatureLayerHandler);
 		this._layerHandler.set(olContributionHandler.id, olContributionHandler);
 
+		this._cursorStyle = 'auto';
 	}
+
+
+	onInitialize() {
+		super.onInitialize();
+		this.observe(state => state.mapclick.mapCursorStyle, (style) => {
+			this._cursorStyle = style;
+			this.render();
+		});
+	}
+
+
 
 	extendedCss() {
 		return html`
 		<style>
 		${css}
+
+		#ol-map {
+			cursor: ${this._cursorStyle}
+		}
 		</style>
 		`;
+	}
+
+	createView(model) {
+		return super.createView(model);
 	}
 
 	//    Erweiterung des CSS Imports um EAB spezifische Style definitionen

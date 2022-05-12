@@ -10,7 +10,7 @@ import { OlLayerHandler } from '../../../../../../../modules/map/components/olMa
 import { HelpTooltip } from '../../../../../../../modules/map/components/olMap/HelpTooltip';
 import { fit } from '../../../../../../../store/position/position.action';
 import { observe } from '../../../../../../../utils/storeUtils';
-import { deactivateMapClick, requestMapClick } from '../../../../../../store/mapclick/mapclick.action';
+import { deactivateMapClick, requestMapClick, setMapCursorStyle } from '../../../../../../store/mapclick/mapclick.action';
 import { createStyleFnFromJson } from './styleUtils';
 
 export const GEO_FEATURE_LAYER_ID = 'geofeature_layer';
@@ -115,9 +115,14 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 		this._listeners.push(this._map.on(MapBrowserEventType.POINTERMOVE, (event) => this._helpTooltip.notify(event)));
 
 		const onMapclickActivate = (active) => {
-			active ?
-				this._helpTooltip.activate(this._map) :
+			if (active) {
+				this._helpTooltip.activate(this._map);
+				setMapCursorStyle('crosshair');
+			}
+			else {
 				this._helpTooltip.deactivate();
+				setMapCursorStyle('auto');
+			}
 		};
 
 		const onChange = ({ layers }) => {

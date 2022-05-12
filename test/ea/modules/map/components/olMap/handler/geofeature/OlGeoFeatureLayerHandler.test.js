@@ -97,9 +97,11 @@ describe('OlGeoFeatureLayerHandler', () => {
 		describe('with existing layer,', () => {
 			const layerId = 42;
 
+			let store;
+
 			const setupWithLayer = () => {
 				const map = setupMap();
-				setup();
+				store = setup();
 
 				addGeoFeatureLayer({ id: layerId });
 				return map;
@@ -207,6 +209,18 @@ describe('OlGeoFeatureLayerHandler', () => {
 				expect(notifySpy).toHaveBeenCalledWith(jasmine.objectContaining({ coordinate: [10, 0] }));
 			});
 
+			it('sets map cursor style to crosshair when mapclick.active', () => {
+				const map = setupWithLayer();
+
+				const classUnderTest = new OlGeoFeatureLayerHandler();
+				classUnderTest.activate(map);
+
+				activateMapClick();
+				expect(store.getState().mapclick.mapCursorStyle).toEqual('crosshair');
+
+				deactivateMapClick();
+				expect(store.getState().mapclick.mapCursorStyle).toEqual('auto');
+			});
 
 		});
 
