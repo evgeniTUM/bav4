@@ -246,10 +246,13 @@ describe('OlMap', () => {
 			const element = await setup();
 
 			expect(element._cursorStyle).toEqual('auto');
+			const renderSpy = spyOn(element, 'render');
 
 			setMapCursorStyle('crosshair');
 
 			expect(element._cursorStyle).toEqual('crosshair');
+			expect(renderSpy).toHaveBeenCalled();
+
 		});
 	});
 });
