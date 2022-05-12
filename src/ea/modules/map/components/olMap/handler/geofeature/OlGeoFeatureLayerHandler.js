@@ -145,8 +145,8 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 		};
 
 		this._registeredObservers = [
-			observe(store, state => state.geofeature, onChange, false),
-			observe(store, state => state.mapclick.active, onMapclickActivate, false)
+			observe(store, state => state.geofeature, onChange),
+			observe(store, state => state.mapclick.active, onMapclickActivate)
 		];
 	}
 }
