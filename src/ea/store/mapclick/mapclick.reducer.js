@@ -1,6 +1,7 @@
 export const MAPCLICK_ACTIVATE = 'mapclick/activate';
 export const MAPCLICK_DEACTIVATE = 'mapclick/deactivate';
 export const MAPCLICK_REQUEST = 'mapclick/request';
+export const SET_CURSOR_STYLE = 'mapclick/setCursorStyle';
 
 export const initialState = {
 
@@ -15,7 +16,12 @@ export const initialState = {
 	/**
 	 * @property {boolean}
 	 */
-	active: false
+	active: false,
+	/**
+	 * The style of the cursor on the map.
+	 * @property {string}
+	 */
+	mapCursorStyle: 'auto'
 };
 
 export const mapclickReducer = (state = initialState, action) => {
@@ -42,6 +48,12 @@ export const mapclickReducer = (state = initialState, action) => {
 			return {
 				...state,
 				coordinate: payload
+			};
+		}
+		case SET_CURSOR_STYLE: {
+			return {
+				...state,
+				mapCursorStyle: payload
 			};
 		}
 	}

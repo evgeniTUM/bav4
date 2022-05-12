@@ -4,7 +4,7 @@
  */
 import { $injector } from '../../../injection';
 import { EventLike } from '../../../utils/storeUtils';
-import { MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE, MAPCLICK_REQUEST } from './mapclick.reducer';
+import { MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE, MAPCLICK_REQUEST, SET_CURSOR_STYLE } from './mapclick.reducer';
 
 
 /**
@@ -49,5 +49,12 @@ export const requestMapClick = (coordinate) => {
 	getStore().dispatch({
 		type: MAPCLICK_REQUEST,
 		payload: new EventLike(coordinate)
+	});
+};
+
+export const setMapCursorStyle = (style) => {
+	getStore().dispatch({
+		type: SET_CURSOR_STYLE,
+		payload: style
 	});
 };
