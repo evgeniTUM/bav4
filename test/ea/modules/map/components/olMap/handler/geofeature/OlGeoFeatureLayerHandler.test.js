@@ -1,4 +1,5 @@
 import { Map, View } from 'ol';
+import { Translate } from 'ol/interaction';
 import TileLayer from 'ol/layer/Tile';
 import MapBrowserEventType from 'ol/MapBrowserEventType';
 import { fromLonLat } from 'ol/proj';
@@ -92,6 +93,44 @@ describe('OlGeoFeatureLayerHandler', () => {
 			const layer = classUnderTest.activate(map);
 
 			expect(layer).toBeTruthy();
+		});
+
+
+		it('adds/removes a translate interaction for draggable objects', () => {
+			const map = setupMap();
+			setup();
+
+			const classUnderTest = new OlGeoFeatureLayerHandler();
+			classUnderTest.activate(map);
+
+			let translateInteractions = map.getInteractions().getArray().filter(i => i instanceof Translate);
+			expect(translateInteractions).toHaveSize(1);
+			const interaction = translateInteractions[0];
+			expect(interaction.filter_({ draggable: true })).toBeTrue();
+			expect(interaction.filter_({ draggable: false })).toBeFalse();
+
+			classUnderTest.deactivate(map);
+
+			translateInteractions = map.getInteractions().getArray().filter(i => i instanceof Translate);
+			expect(translateInteractions).toHaveSize(0);
+		});
+
+		it('sets draggable property on ol-feature from \'geofeatures\' layer property', async () => {
+			const map = setupMap();
+			setup();
+
+			const classUnderTest = new OlGeoFeatureLayerHandler();
+			const layer = classUnderTest.activate(map);
+
+			addGeoFeatureLayer({ id: 42 });
+			addGeoFeatures(42, [GEOJSON_SAMPLE_DATA]);
+			addGeoFeatureLayer({ id: 24, draggable: true });
+			addGeoFeatures(24, [GEOJSON_SAMPLE_DATA]);
+
+			const actualFeatures = layer.getSource().getFeatures();
+			expect(actualFeatures.length).toEqual(2);
+			expect(actualFeatures[0].draggable).toBeFalse();
+			expect(actualFeatures[1].draggable).toBeTrue();
 		});
 
 		describe('with existing layer,', () => {
@@ -221,9 +260,6 @@ describe('OlGeoFeatureLayerHandler', () => {
 				deactivateMapClick();
 				expect(store.getState().mapclick.mapCursorStyle).toEqual('auto');
 			});
-
 		});
-
-
 	});
 });
