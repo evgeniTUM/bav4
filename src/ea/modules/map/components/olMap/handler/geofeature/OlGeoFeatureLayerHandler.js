@@ -1,6 +1,7 @@
 import Feature from 'ol/Feature';
 import GeoJSON from 'ol/format/GeoJSON';
 import { fromExtent } from 'ol/geom/Polygon';
+import { Translate } from 'ol/interaction';
 import { Vector as VectorLayer } from 'ol/layer';
 import MapBrowserEventType from 'ol/MapBrowserEventType';
 import { unByKey } from 'ol/Observable';
@@ -36,9 +37,11 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 		this._registeredObservers = [];
 
-		this._unsubscribeMapClickObserver = () => { };
 		this._listeners = [];
-		this._mapClickListener;
+
+		this._translateInteraction = new Translate({
+			filter: (feature) => feature.draggable
+		});
 	}
 
 	/**
@@ -71,40 +74,28 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 		this._setup(this._storeService.getStore());
 
+		olMap.addInteraction(this._translateInteraction);
+
 		return this._vectorLayer;
 	}
 
 	/**
 	 *  @override
 	 */
-	onDeactivate() {
+	onDeactivate(olMap) {
+		olMap.removeInteraction(this._translateInteraction);
+
 		deactivateMapClick();
 		this._helpTooltip.deactivate();
-		this._map = null;
-		this._registeredObservers.forEach(obs => obs.unsubscribe());
+
+		this._registeredObservers.forEach(unsubscribe => unsubscribe());
+
 		unByKey(this._listeners);
 
-		this._unsubscribeMapClickObserver();
-		this._unsubscribeMapClickObserver = () => { };
-
-		if (this._mapClickListener) {
-			unByKey(this._mapClickListener);
-			this._mapClickListener = null;
-		}
+		this._map = null;
 		this._vectorLayer = null;
 	}
 
-	_toOlFeature(data) {
-		const _features = new GeoJSON().readFeature(data);
-		_features.getGeometry().transform('EPSG:' + 4326, 'EPSG:' + this._mapService.getSrid());
-		_features.set('srid', 4326, true);
-
-		const f = new Feature();
-		f.setGeometry(_features.getGeometry());
-		f.setStyle(createStyleFnFromJson(data.style));
-
-		return f;
-	}
 
 	_setup(store) {
 
@@ -128,18 +119,31 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 		const onChange = ({ layers }) => {
 			this._vectorLayer.getSource().clear();
 
-			const features = layers.map(l => l.features).flat();
-			if (features === undefined || features.length === 0) {
+			const toOlFeature = (data, draggable) => {
+				const _features = new GeoJSON().readFeature(data);
+				_features.getGeometry().transform('EPSG:' + 4326, 'EPSG:' + this._mapService.getSrid());
+				_features.set('srid', 4326, true);
+
+				const f = new Feature();
+				f.setGeometry(_features.getGeometry());
+				f.setStyle(createStyleFnFromJson(data.style));
+				f.draggable = draggable;
+
+				return f;
+			};
+
+			const olFeatures = layers.map(l => l.features.map(f => toOlFeature(f, l.draggable)))
+				.flat();
+
+			if (olFeatures.length === 0) {
 				return;
 			}
 
-			this._vectorLayer.getSource().addFeatures(
-				features.map(this._toOlFeature, this).filter(olFeature => !!olFeature));
+			this._vectorLayer.getSource().addFeatures(olFeatures);
 
 			const polygon = fromExtent(this._vectorLayer.getSource().getExtent());
 			polygon.scale(1.2);
 			fit(polygon.getExtent());
-
 
 			this._map.renderSync();
 		};
