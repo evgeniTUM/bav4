@@ -38,8 +38,6 @@ export class EaOlMap extends OlMap {
 		});
 	}
 
-
-
 	extendedCss() {
 		return html`
 		<style>
@@ -50,10 +48,6 @@ export class EaOlMap extends OlMap {
 		}
 		</style>
 		`;
-	}
-
-	createView(model) {
-		return super.createView(model);
 	}
 
 	//    Erweiterung des CSS Imports um EAB spezifische Style definitionen
