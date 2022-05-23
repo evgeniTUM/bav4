@@ -37,8 +37,12 @@
 	font-family: Arial, sans-serif; 
 	font-size: 18px;
 	pointer-events: none;
-
 }
+
+.is-tablet .header__emblem_label {
+	display: none;
+}
+
 :host .header__background {
 	position: absolute;
 	z-index: -1;
