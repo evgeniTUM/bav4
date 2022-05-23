@@ -4,13 +4,13 @@ export const provide = (lang) => {
 		case 'en':
 			return {
 				//the first part of the snake_case key should be the name of the related module
-				baselayer_switcher_header: 'Base maps'
+				baselayer_switcher_header: 'Background maps'
 			};
 
 		case 'de':
 			return {
 				//the first part of the snake_case key should be the name of the related module
-				baselayer_switcher_header: 'Basiskarten'
+				baselayer_switcher_header: 'Hintergrundkarten'
 			};
 
 		default:

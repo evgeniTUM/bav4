@@ -22,7 +22,7 @@ export const provide = (lang) => {
 		case 'de':
 			return {
 				//the first part of the snake_case key should be the name of the related module
-				layerManager_title: 'Ebenen',
+				layerManager_title: 'Ausgewählte Karten',
 				layerManager_change_visibility: 'Sichtbarkeit umschalten',
 				layerManager_opacity: 'Opazität',
 				layerManager_collapse: 'Eigenschaften einklappen',

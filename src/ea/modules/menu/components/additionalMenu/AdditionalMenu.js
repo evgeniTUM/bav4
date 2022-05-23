@@ -60,13 +60,7 @@ export class AdditionalMenu extends MvuElement {
 	/**
 	 * @override
 	*/
-	createView(model) {
-
-		const { isPortrait } = model;
-
-		const getOrientationClass = () => {
-			return isPortrait ? 'is-portrait' : 'is-landscape';
-		};
+	createView() {
 
 		const toggleModule = (id) => {
 			if (this._moduleId === id) {
@@ -76,11 +70,6 @@ export class AdditionalMenu extends MvuElement {
 				setCurrentModule(id);
 			}
 		};
-		//
-		//		const getAnimatedBorderClass = () => {
-		//			return isFetching ? 'animated-action-button__border__running' : '';
-		//		};
-
 		const toggleContributionModule = () => {
 			const moduleId = EAContribution.tag;
 			toggleTaggingMode();
