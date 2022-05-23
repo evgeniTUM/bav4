@@ -1,6 +1,6 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
-import { OlMap } from '../../../../../modules/map/components/olMap/OlMap';
+import { OlMap } from '../../../../../modules/olMap/components/OlMap';
 import css from './olMap.css';
 
 /**

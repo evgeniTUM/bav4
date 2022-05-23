@@ -12,7 +12,7 @@ import { activateMapClick, deactivateMapClick } from '../../../../../../../../sr
 import { mapclickReducer, MAPCLICK_REQUEST } from '../../../../../../../../src/ea/store/mapclick/mapclick.reducer';
 import { $injector } from '../../../../../../../../src/injection';
 import { FIT_REQUESTED, positionReducer } from '../../../../../../../../src/store/position/position.reducer';
-import { simulateMapBrowserEvent } from '../../../../../../../modules/map/components/olMap/mapTestUtils';
+import { simulateMapBrowserEvent } from '../../../../../../../modules/olMap/mapTestUtils';
 import { TestUtils } from '../../../../../../../test-utils.js';
 
 

@@ -4,7 +4,7 @@ import { geofeatureReducer } from '../../../../../../src/ea/store/geofeature/geo
 import { setMapCursorStyle } from '../../../../../../src/ea/store/mapclick/mapclick.action';
 import { mapclickReducer } from '../../../../../../src/ea/store/mapclick/mapclick.reducer';
 import { $injector } from '../../../../../../src/injection';
-import { getDefaultLayerOptions } from '../../../../../../src/modules/map/components/olMap/handler/OlLayerHandler';
+import { getDefaultLayerOptions } from '../../../../../../src/modules/olMap/handler/OlLayerHandler';
 import { WmsGeoResource } from '../../../../../../src/services/domain/geoResources';
 import { addLayer, removeLayer } from '../../../../../../src/store/layers/layers.action';
 import { layersReducer } from '../../../../../../src/store/layers/layers.reducer';

@@ -7,10 +7,10 @@ import { Vector as VectorSource } from 'ol/source';
 import { $injector } from '../../../../../../../injection';
 import { setLocation } from '../../../../../../store/contribution/contribution.action';
 import { observe } from '../../../../../../../utils/storeUtils';
-import { HelpTooltip } from '../../../../../../../modules/map/components/olMap/HelpTooltip';
-import { markerStyleFunction } from '../../../../../../../modules/map/components/olMap/olStyleUtils';
-import { highlightCoordinateFeatureStyleFunction } from '../../../../../../../modules/map/components/olMap/handler/highlight/styleUtils';
-import { OlLayerHandler } from '../../../../../../../modules/map/components/olMap/handler/OlLayerHandler';
+import { HelpTooltip } from '../../../../../../../modules/olMap/tooltip/HelpTooltip';
+import { markerStyleFunction } from '../../../../../../../modules/olMap/utils/olStyleUtils';
+import { highlightCoordinateFeatureStyleFunction } from '../../../../../../../modules/olMap/handler/highlight/styleUtils';
+import { OlLayerHandler } from '../../../../../../../modules/olMap/handler/OlLayerHandler';
 
 
 
