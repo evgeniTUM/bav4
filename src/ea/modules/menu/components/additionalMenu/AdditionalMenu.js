@@ -105,16 +105,7 @@ export class AdditionalMenu extends MvuElement {
 		const translate = (key) => this._translationService.translate(key);
 
 		return html`
-			<style>${css}</style>		
-		<div class="${getOrientationClass()} "> 
-			<ul class="ba-list">
-			<li class="ba-list-item  ba-list-item__header">
-				<span class="ba-list-item__text ">
-				<span class="ba-list-item__primary-text">
-					Zusatzfunktionen
-				</span>
-			</span>
-		</li>
+		<style>${css}</style>		
 		<li class="ba-list-item" @click="${toggleContributionModule}">
 			<span class="ba-list-item__pre">
 				<span class="ba-list-item__icon icon-mitmachboerse">
