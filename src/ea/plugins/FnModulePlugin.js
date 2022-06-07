@@ -1,7 +1,7 @@
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { observe } from '../../utils/storeUtils';
-import { addGeoFeatureLayer, addGeoFeatures, clearLayer, clearMap, removeGeoFeatures } from '../store/geofeature/geofeature.action';
+import { addGeoFeatureLayer, addGeoFeatures, addGeoresourceId, clearLayer, clearMap, removeGeoFeatures } from '../store/geofeature/geofeature.action';
 import { activateMapClick, deactivateMapClick } from '../store/mapclick/mapclick.action';
 
 
@@ -19,6 +19,7 @@ const ZOOM_EXPAND = 'expandto';
 const CLICK_IN_MAP_SIMULATION = 'clickInMap';
 const ACTIVATE_MAPCLICK = 'activate_mapclick';
 const CANCEL_MAPCLICK = 'cancel_mapclick';
+const ACTIVATE_GEORESOURCE = 'activateGeoResource';
 
 /**
  * @class
@@ -87,6 +88,9 @@ export class FnModulePlugin extends BaPlugin {
 				break;
 			case CANCEL_MAPCLICK:
 				deactivateMapClick();
+				break;
+			case ACTIVATE_GEORESOURCE:
+				addGeoresourceId(message);
 				break;
 			default:
 				console.error('unbeḱannter Code ' + data.code);

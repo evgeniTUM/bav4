@@ -3,7 +3,7 @@
  * @module highlight/action
  */
 import { $injector } from '../../../injection';
-import { ADD_FEATURE, ADD_GEORESOURCE_ID, ADD_LAYER, CLEAR_LAYER, CLEAR_MAP, REMOVE_FEATURE, REMOVE_LAYER } from './geofeature.reducer';
+import { ADD_FEATURE, ACTIVATE_GEORESOURCE, ADD_LAYER, CLEAR_LAYER, CLEAR_MAP, REMOVE_FEATURE, REMOVE_LAYER } from './geofeature.reducer';
 
 
 /**
@@ -120,7 +120,7 @@ export const removeGeoFeatures = (layerId, ids) => {
  */
 export const addGeoresourceId = (id) => {
 	getStore().dispatch({
-		type: ADD_GEORESOURCE_ID,
+		type: ACTIVATE_GEORESOURCE,
 		payload: id
 	});
 };

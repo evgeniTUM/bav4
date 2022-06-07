@@ -16,7 +16,7 @@ describe('geofeatureReducer', () => {
 
 		expect(store.getState().geofeature.layers).toHaveSize(0);
 		expect(store.getState().geofeature.active).toBeFalse(0);
-		expect(store.getState().geofeature.georesourceIds).toEqual([]);
+		expect(store.getState().geofeature.activeGeoresources).toEqual([]);
 	});
 
 	it('adds a non-draggable layer', () => {
@@ -113,7 +113,7 @@ describe('geofeatureReducer', () => {
 		addGeoresourceId('id42');
 		addGeoresourceId('id24');
 
-		expect(store.getState().geofeature.georesourceIds).toEqual(['id42', 'id24']);
+		expect(store.getState().geofeature.activeGeoresources).toEqual(['id42', 'id24']);
 	});
 
 
