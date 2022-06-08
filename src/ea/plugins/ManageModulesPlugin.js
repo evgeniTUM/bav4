@@ -1,3 +1,4 @@
+import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { addLayer, removeLayer } from '../../store/layers/layers.action';
 import { close, open } from '../../store/mainMenu/mainMenu.action';
@@ -15,6 +16,7 @@ export class ManageModulesPlugin extends BaPlugin {
 		super();
 
 		this._lastModule = '';
+		this._activeGeoResources = new Set();
 	}
 
 	/**
@@ -68,7 +70,30 @@ export class ManageModulesPlugin extends BaPlugin {
 
 		};
 
+		const { GeoResourceService: geoResourceService } = $injector.inject('GeoResourceService');
+		const onActiveGeoResourcesChanged = (ids) => {
+
+			const idsToAdd = ids.filter(id => !this._activeGeoResources.has(id));
+			const idsToRemove = Array.from(this._activeGeoResources).filter(id => !new Set(ids).has(id));
+
+			const layerId = (resId) => `module-georesource-${resId}`;
+
+			idsToAdd.forEach(id => {
+				const wmsResource = geoResourceService.byId(id);
+
+				addLayer(layerId(id), { geoResourceId: id, label: wmsResource.label });
+				this._activeGeoResources.add(id);
+			});
+
+			idsToRemove.forEach(id => {
+				removeLayer(layerId(id));
+				this._activeGeoResources.delete(id);
+			});
+
+		};
+
 		observe(store, state => state.module.current, onModuleChange);
+		observe(store, state => state.module.activeGeoResources, onActiveGeoResourcesChanged);
 
 	}
 }

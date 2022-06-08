@@ -1,4 +1,4 @@
-import { addGeoFeatureLayer, addGeoFeatures, addGeoresourceId, clearLayer, clearMap, removeGeoFeatureLayer, removeGeoFeatures } from '../../../../src/ea/store/geofeature/geofeature.action';
+import { addGeoFeatureLayer, addGeoFeatures, clearLayer, clearMap, removeGeoFeatureLayer, removeGeoFeatures } from '../../../../src/ea/store/geofeature/geofeature.action';
 import { geofeatureReducer, initialState } from '../../../../src/ea/store/geofeature/geofeature.reducer';
 import { TestUtils } from '../../../test-utils';
 
@@ -16,7 +16,6 @@ describe('geofeatureReducer', () => {
 
 		expect(store.getState().geofeature.layers).toHaveSize(0);
 		expect(store.getState().geofeature.active).toBeFalse(0);
-		expect(store.getState().geofeature.activeGeoresources).toEqual([]);
 	});
 
 	it('adds a non-draggable layer', () => {
@@ -107,14 +106,7 @@ describe('geofeatureReducer', () => {
 		expect(store.getState().geofeature).toEqual(initialState);
 	});
 
-	it('adds a georesourceId', () => {
-		const store = setup();
 
-		addGeoresourceId('id42');
-		addGeoresourceId('id24');
-
-		expect(store.getState().geofeature.activeGeoresources).toEqual(['id42', 'id24']);
-	});
 
 
 });

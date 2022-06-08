@@ -3,7 +3,7 @@
  * @module highlight/action
  */
 import { $injector } from '../../../injection';
-import { ADD_FEATURE, ACTIVATE_GEORESOURCE, ADD_LAYER, CLEAR_LAYER, CLEAR_MAP, REMOVE_FEATURE, REMOVE_LAYER } from './geofeature.reducer';
+import { ADD_FEATURE, ADD_LAYER, CLEAR_LAYER, CLEAR_MAP, REMOVE_FEATURE, REMOVE_LAYER } from './geofeature.reducer';
 
 
 /**
@@ -109,19 +109,6 @@ export const removeGeoFeatures = (layerId, ids) => {
 	getStore().dispatch({
 		type: REMOVE_FEATURE,
 		payload: { layerId, ids }
-	});
-};
-
-/**
- * Removes a (permanent or temporary) feature by its id.
- * If two or more feature have the same id, all of them are removed.
- * @param {Array.<String>} ids GeoFeature ids
- * @function
- */
-export const addGeoresourceId = (id) => {
-	getStore().dispatch({
-		type: ACTIVATE_GEORESOURCE,
-		payload: id
 	});
 };
 

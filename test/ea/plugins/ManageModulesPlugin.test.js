@@ -5,23 +5,33 @@ import { MixerModuleContent } from '../../../src/ea/modules/toolbox/components/m
 import { RedesignModuleContent } from '../../../src/ea/modules/toolbox/components/redesignModuleContent/RedesignModuleContent.js';
 import { ResearchModuleContent } from '../../../src/ea/modules/toolbox/components/researchModuleContent/ResearchModuleContent.js';
 import { ManageModulesPlugin } from '../../../src/ea/plugins/ManageModulesPlugin.js';
-import { setCurrentModule } from '../../../src/ea/store/module/module.action.js';
+import { activateGeoResource, deactivateGeoResource, setCurrentModule } from '../../../src/ea/store/module/module.action.js';
 import { moduleReducer } from '../../../src/ea/store/module/module.reducer.js';
-import { layersReducer } from '../../../src/store/layers/layers.reducer.js';
+import { $injector } from '../../../src/injection/index.js';
+import { layersReducer, LAYER_ADDED, LAYER_REMOVED } from '../../../src/store/layers/layers.reducer.js';
 import { createMainMenuReducer } from '../../../src/store/mainMenu/mainMenu.reducer.js';
 import { TestUtils } from '../../test-utils.js';
 
 
 describe('ManageModulesPlugin', () => {
 
+	const geoResourceServiceMock = { byId: () => ({ label: 'label' }) };
+
+	const storeActions = [];
+
 	const setup = (state) => {
 
+		storeActions.length = 0;
+
 		const store = TestUtils.setupStoreAndDi(state, {
+			spyReducer: (state, action) => storeActions.push(action),
 			layers: layersReducer,
 			module: moduleReducer,
 			mainMenu: createMainMenuReducer()
 		});
 
+		$injector
+			.registerSingleton('GeoResourceService', geoResourceServiceMock);
 		return store;
 	};
 
@@ -82,6 +92,55 @@ describe('ManageModulesPlugin', () => {
 
 		setCurrentModule('something');
 		expect(store.getState().mainMenu.open).toBeTrue();
+	});
+
+	it('activates a georesource', async () => {
+		const store = setup();
+
+		const instanceUnderTest = new ManageModulesPlugin();
+		await instanceUnderTest.register(store);
+		spyOn(geoResourceServiceMock, 'byId').and.returnValue({ label: 'label-for-42' });
+
+		activateGeoResource('42');
+
+		expect(geoResourceServiceMock.byId).toHaveBeenCalledWith('42');
+
+		const actions = storeActions.filter(a => a.type === LAYER_ADDED);
+		expect(actions).toHaveSize(1);
+		expect(actions[0].payload).toEqual({
+			id: 'module-georesource-42',
+			properties: {
+				geoResourceId: '42',
+				label: 'label-for-42'
+			}
+		});
+	});
+
+	it('activates a georesource only once', async () => {
+		const store = setup();
+
+		const instanceUnderTest = new ManageModulesPlugin();
+		await instanceUnderTest.register(store);
+
+		activateGeoResource('42');
+		activateGeoResource('42');
+
+		const actions = storeActions.filter(a => a.type === LAYER_ADDED);
+		expect(actions).toHaveSize(1);
+	});
+
+	it('deactivates a georesource', async () => {
+		const store = setup();
+
+		const instanceUnderTest = new ManageModulesPlugin();
+		await instanceUnderTest.register(store);
+		activateGeoResource('42');
+
+		deactivateGeoResource('42');
+
+		const actions = storeActions.filter(a => a.type === LAYER_REMOVED);
+		expect(actions).toHaveSize(1);
+		expect(actions[0].payload).toEqual('module-georesource-42');
 	});
 
 });

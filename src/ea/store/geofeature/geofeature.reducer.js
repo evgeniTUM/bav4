@@ -3,7 +3,6 @@ export const REMOVE_LAYER = 'geofeature/feature/removeLayer';
 export const ADD_FEATURE = 'geofeature/feature/add';
 export const CLEAR_LAYER = 'geofeature/clearLayer';
 export const REMOVE_FEATURE = 'geofeature/remove/id';
-export const ACTIVATE_GEORESOURCE = 'geofeature/georesource/activate';
 export const CLEAR_MAP = 'geofeature/clearMap';
 
 export const initialState = {
@@ -15,11 +14,7 @@ export const initialState = {
 	/**
 	 * @property {boolean}
 	 */
-	active: false,
-	/**
-	 * @property {Array<string>}
-	 */
-	activeGeoresources: []
+	active: false
 
 };
 
@@ -83,12 +78,6 @@ export const geofeatureReducer = (state = initialState, action) => {
 		}
 		case CLEAR_MAP: {
 			return initialState;
-		}
-		case ACTIVATE_GEORESOURCE: {
-			return {
-				...state,
-				activeGeoresources: [...state.activeGeoresources, payload]
-			};
 		}
 	}
 
