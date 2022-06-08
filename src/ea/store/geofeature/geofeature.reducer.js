@@ -7,7 +7,7 @@ export const CLEAR_MAP = 'geofeature/clearMap';
 
 export const initialState = {
 	/**
-	 * @property {Layer|null}
+	 * @property {Array<Layer>}
 	 */
 	layers: [],
 
@@ -15,6 +15,7 @@ export const initialState = {
 	 * @property {boolean}
 	 */
 	active: false
+
 };
 
 export const geofeatureReducer = (state = initialState, action) => {

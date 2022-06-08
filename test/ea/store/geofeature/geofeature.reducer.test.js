@@ -105,4 +105,8 @@ describe('geofeatureReducer', () => {
 
 		expect(store.getState().geofeature).toEqual(initialState);
 	});
+
+
+
+
 });

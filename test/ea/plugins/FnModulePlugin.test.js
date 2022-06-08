@@ -4,6 +4,7 @@ import { fnModuleCommReducer } from '../../../src/ea/store/fnModuleComm/fnModule
 import { ADD_FEATURE, ADD_LAYER, CLEAR_LAYER, CLEAR_MAP, geofeatureReducer, REMOVE_FEATURE } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
 import { activateMapClick, deactivateMapClick, requestMapClick } from '../../../src/ea/store/mapclick/mapclick.action.js';
 import { mapclickReducer, MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE } from '../../../src/ea/store/mapclick/mapclick.reducer';
+import { ACTIVATE_GEORESOURCE, DEACTIVATE_ALL_GEORESOURCES } from '../../../src/ea/store/module/module.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
 import { pointerReducer } from '../../../src/store/pointer/pointer.reducer';
 import { TestUtils } from '../../test-utils.js';
@@ -111,7 +112,7 @@ describe('FnModulePlugin', () => {
 	});
 
 
-	it('clears map when closing module', async () => {
+	it('clears map and active georesources when closing module', async () => {
 		const module = 'dom1';
 		const domain = 'http://test-site';
 
@@ -125,8 +126,8 @@ describe('FnModulePlugin', () => {
 
 		closeFnModule();
 
-		const lastAction = storeActions.pop();
-		expect(lastAction.type).toEqual(CLEAR_MAP);
+		expect(storeActions.filter(a => a.type === CLEAR_MAP).length).toBeGreaterThan(0);
+		expect(storeActions.filter(a => a.type === DEACTIVATE_ALL_GEORESOURCES).length).toBeGreaterThan(0);
 	});
 
 	describe('when communication is open,', () => {
@@ -306,6 +307,38 @@ describe('FnModulePlugin', () => {
 			expect(windowMock.messages).toHaveSize(0);
 		});
 
+		it('activate a georesource on message \'activateGeoResource\'', async () => {
+			await setupOpen();
+
+			windowMock.listenerFunction({
+				data: {
+					code: 'activateGeoResource',
+					module: domain,
+					message: '42'
+				},
+				event: { origin: module }
+			});
+
+			const lastAction = storeActions.pop();
+			expect(lastAction.type).toEqual(ACTIVATE_GEORESOURCE);
+			expect(lastAction.payload).toEqual('42');
+		});
+
+		it('deactivates all georesources on message \'deactivateGeoResource\'', async () => {
+			await setupOpen();
+
+			windowMock.listenerFunction({
+				data: {
+					code: 'deactivateGeoResource',
+					module: domain,
+					message: null
+				},
+				event: { origin: module }
+			});
+
+			const lastAction = storeActions.pop();
+			expect(lastAction.type).toEqual(DEACTIVATE_ALL_GEORESOURCES);
+		});
 	});
 
 });
