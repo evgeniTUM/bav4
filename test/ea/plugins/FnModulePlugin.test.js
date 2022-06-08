@@ -6,10 +6,26 @@ import { activateMapClick, deactivateMapClick, requestMapClick } from '../../../
 import { mapclickReducer, MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE } from '../../../src/ea/store/mapclick/mapclick.reducer';
 import { ACTIVATE_GEORESOURCE, DEACTIVATE_ALL_GEORESOURCES } from '../../../src/ea/store/module/module.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
-import { pointerReducer } from '../../../src/store/pointer/pointer.reducer';
+import { CLICK_CHANGED, pointerReducer } from '../../../src/store/pointer/pointer.reducer';
 import { ZOOM_CENTER_CHANGED } from '../../../src/store/position/position.reducer.js';
 import { TestUtils } from '../../test-utils.js';
 
+const GEOJSON_SAMPLE_DATA = {
+	features: [
+		{
+			geometry: {
+				crs: {
+					type: 'name',
+					properties: { name: 'EPSG:4326' }
+				},
+				coordinates: [42.0, 24.0],
+				type: 'Point'
+			},
+			id: '1876369769',
+			type: 'Feature'
+		}
+	]
+};
 
 describe('FnModulePlugin', () => {
 	const windowMock = {
@@ -226,7 +242,8 @@ describe('FnModulePlugin', () => {
 					module: domain,
 					message: {
 						layerId: 42,
-						id: 24 }
+						id: 24
+					}
 				},
 				event: { origin: module }
 
@@ -353,32 +370,36 @@ describe('FnModulePlugin', () => {
 					code: 'zoomAndCenter',
 					module: domain,
 					message: {
-						geojson: {
-							features: [
-								{
-									geometry: {
-										crs: {
-											type: 'name',
-											properties: { name: 'EPSG:4326' }
-										},
-										coordinates: [42.0, 24.0],
-										type: 'Point'
-									},
-									id: '1876369769',
-									type: 'Feature'
-								}
-							]
-						},
-						'zoom': 11
+						geojson: GEOJSON_SAMPLE_DATA,
+						zoom: 11
 					}
 				},
 				event: { origin: module }
 			});
 
-			const lastAction = storeActions.find(a => a.type === ZOOM_CENTER_CHANGED);
-			expect(lastAction).toBeDefined();
-			expect(lastAction.type).toEqual(ZOOM_CENTER_CHANGED);
-			expect(lastAction.payload).toEqual({ zoom: 11, center: [42.0, 24.0] });
+			const action = storeActions.find(a => a.type === ZOOM_CENTER_CHANGED);
+			expect(action).toBeDefined();
+			expect(action.payload).toEqual({ zoom: 11, center: [42.0, 24.0] });
 		});
+
+		it('clicks inside map on \'clickInMap\' message', async () => {
+			await setupOpen();
+
+			windowMock.listenerFunction({
+				data: {
+					code: 'clickInMap',
+					module: domain,
+					message: {
+						geojson: GEOJSON_SAMPLE_DATA
+					}
+				},
+				event: { origin: module }
+			});
+
+			const action = storeActions.find(a => a.type === CLICK_CHANGED);
+			expect(action).toBeDefined();
+			expect(action.payload._payload).toEqual({ coordinate: [42.0, 24.0] });
+		});
+
 	});
 });
