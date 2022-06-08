@@ -144,8 +144,6 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 			const polygon = fromExtent(this._vectorLayer.getSource().getExtent());
 			polygon.scale(1.2);
 			fit(polygon.getExtent());
-
-			this._map.renderSync();
 		};
 
 		this._registeredObservers = [
