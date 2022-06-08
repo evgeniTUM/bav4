@@ -1,6 +1,7 @@
 import GeoJSON from 'ol/format/GeoJSON';
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
+import { setClick } from '../../store/pointer/pointer.action';
 import { changeZoomAndCenter } from '../../store/position/position.action';
 import { observe } from '../../utils/storeUtils';
 import { addGeoFeatureLayer, addGeoFeatures, clearLayer, clearMap, removeGeoFeatures } from '../store/geofeature/geofeature.action';
@@ -55,6 +56,13 @@ export class FnModulePlugin extends BaPlugin {
 
 		const message = data.message;
 
+		const getCoordinates = (geojson) => {
+			const feature = new GeoJSON().readFeature(geojson);
+			feature.getGeometry().transform('EPSG:' + 4326, 'EPSG:' + this._mapService.getSrid());
+			feature.set('srid', 4326, true);
+			return feature.getGeometry().getCoordinates();
+		};
+
 		switch (data.code) {
 			case MODULE_HANDSHAKE:
 				break;
@@ -85,22 +93,16 @@ export class FnModulePlugin extends BaPlugin {
 			case ZOOM_2_EXTENT:
 				break;
 			case ZOOM_N_CENTER_TO_FEATURE:
-			{
-				const feature = new GeoJSON().readFeature(message.geojson.features[0]);
-				feature.getGeometry().transform('EPSG:' + 4326, 'EPSG:' + this._mapService.getSrid());
-				feature.set('srid', 4326, true);
-				const coordinates = feature.getGeometry().getCoordinates();
-
 				changeZoomAndCenter({
 					zoom: message.zoom,
-					center: coordinates
+					center: getCoordinates(message.geojson.features[0])
 				});
 
 				break;
-			}
 			case ZOOM_EXPAND:
 				break;
 			case CLICK_IN_MAP_SIMULATION:
+				setClick({ coordinate: getCoordinates(message.geojson.features[0]) });
 				break;
 			case ACTIVATE_MAPCLICK:
 				activateMapClick(message);
