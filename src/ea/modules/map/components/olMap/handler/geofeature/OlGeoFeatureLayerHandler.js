@@ -119,17 +119,15 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 		const onChange = ({ layers }) => {
 
 			const toOlFeature = (data, draggable) => {
-				const _features = new GeoJSON().readFeature(data);
-				_features.getGeometry().transform('EPSG:' + 4326, 'EPSG:' + this._mapService.getSrid());
-				_features.set('srid', 4326, true);
+				const feature = new GeoJSON().readFeature(data);
+				feature.getGeometry().transform('EPSG:' + 4326, 'EPSG:' + this._mapService.getSrid());
+				feature.set('srid', 4326, true);
 
-				const f = new Feature();
-				f.setGeometry(_features.getGeometry());
-				f.setStyle(createStyleFnFromJson(data.style));
-				f.draggable = draggable;
-				f.expandTo = data.expandTo;
+				feature.setStyle(createStyleFnFromJson(data.style));
+				feature.draggable = draggable;
+				feature.expandTo = data.expandTo;
 
-				return f;
+				return feature;
 			};
 
 			const zoomToLayer = (layer) => {
