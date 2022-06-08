@@ -7,6 +7,7 @@ import { mapclickReducer, MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE } from '../../.
 import { ACTIVATE_GEORESOURCE, DEACTIVATE_ALL_GEORESOURCES } from '../../../src/ea/store/module/module.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
 import { pointerReducer } from '../../../src/store/pointer/pointer.reducer';
+import { ZOOM_CENTER_CHANGED } from '../../../src/store/position/position.reducer.js';
 import { TestUtils } from '../../test-utils.js';
 
 
@@ -37,6 +38,12 @@ describe('FnModulePlugin', () => {
 		toLonLat: (coords) => coords
 	};
 
+	const mapServiceMock = {
+		getMaxZoomLevel: () => 20,
+		getMinZoomLevel: () => 1,
+		getSrid: () => 4326
+	};
+
 	const setup = (state) => {
 		windowMock.messages = [];
 
@@ -48,13 +55,10 @@ describe('FnModulePlugin', () => {
 			pointer: pointerReducer
 		});
 
-		$injector.registerSingleton(
-			'EnvironmentService', environmentServiceMock
-		);
-
-		$injector.registerSingleton(
-			'CoordinateService', coordinateServiceMock
-		);
+		$injector
+			.registerSingleton('EnvironmentService', environmentServiceMock)
+			.registerSingleton('CoordinateService', coordinateServiceMock)
+			.registerSingleton('MapService', mapServiceMock);
 
 
 
@@ -197,7 +201,8 @@ describe('FnModulePlugin', () => {
 					message: {
 						layerId: 42,
 						geojson: { features: [geojson] },
-						style: { template: 'geolocation' }
+						style: { template: 'geolocation' },
+						expandTo: true
 					}
 				},
 				event: { origin: module }
@@ -208,7 +213,7 @@ describe('FnModulePlugin', () => {
 			expect(lastAction.type).toEqual(ADD_FEATURE);
 			expect(lastAction.payload).toEqual({
 				layerId: 42,
-				features: [{ ...geojson, style: { template: 'geolocation' } }]
+				features: [{ ...geojson, style: { template: 'geolocation' }, expandTo: true }]
 			});
 		});
 
@@ -339,6 +344,41 @@ describe('FnModulePlugin', () => {
 			const lastAction = storeActions.pop();
 			expect(lastAction.type).toEqual(DEACTIVATE_ALL_GEORESOURCES);
 		});
-	});
 
+		it('zooms and centers map on \'zoomAndCenter\' message', async () => {
+			await setupOpen();
+
+			windowMock.listenerFunction({
+				data: {
+					code: 'zoomAndCenter',
+					module: domain,
+					message: {
+						geojson: {
+							features: [
+								{
+									geometry: {
+										crs: {
+											type: 'name',
+											properties: { name: 'EPSG:4326' }
+										},
+										coordinates: [42.0, 24.0],
+										type: 'Point'
+									},
+									id: '1876369769',
+									type: 'Feature'
+								}
+							]
+						},
+						'zoom': 11
+					}
+				},
+				event: { origin: module }
+			});
+
+			const lastAction = storeActions.find(a => a.type === ZOOM_CENTER_CHANGED);
+			expect(lastAction).toBeDefined();
+			expect(lastAction.type).toEqual(ZOOM_CENTER_CHANGED);
+			expect(lastAction.payload).toEqual({ zoom: 11, center: [42.0, 24.0] });
+		});
+	});
 });

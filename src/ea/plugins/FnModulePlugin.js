@@ -1,6 +1,7 @@
+import GeoJSON from 'ol/format/GeoJSON';
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
-import { deactivate } from '../../store/draw/draw.action';
+import { changeZoomAndCenter } from '../../store/position/position.action';
 import { observe } from '../../utils/storeUtils';
 import { addGeoFeatureLayer, addGeoFeatures, clearLayer, clearMap, removeGeoFeatures } from '../store/geofeature/geofeature.action';
 import { activateMapClick, deactivateMapClick } from '../store/mapclick/mapclick.action';
@@ -35,11 +36,13 @@ export class FnModulePlugin extends BaPlugin {
 		const data = event.data;
 
 		const {
-			StoreService: storeService
+			StoreService: storeService,
+			MapService: mapService
 		}
-			= $injector.inject('StoreService');
+			= $injector.inject('StoreService', 'MapService');
 
 		this._storeService = storeService;
+		this._mapService = mapService;
 
 		const state = this._storeService.getStore().getState();
 
@@ -63,7 +66,8 @@ export class FnModulePlugin extends BaPlugin {
 			case ADD_FEATURE: {
 				const features = message.geojson.features.map(f => ({
 					...f,
-					style: message.style
+					style: message.style,
+					expandTo: message.expandTo
 				}));
 				addGeoFeatures(message.layerId, features);
 				break;
@@ -81,7 +85,19 @@ export class FnModulePlugin extends BaPlugin {
 			case ZOOM_2_EXTENT:
 				break;
 			case ZOOM_N_CENTER_TO_FEATURE:
+			{
+				const feature = new GeoJSON().readFeature(message.geojson.features[0]);
+				feature.getGeometry().transform('EPSG:' + 4326, 'EPSG:' + this._mapService.getSrid());
+				feature.set('srid', 4326, true);
+				const coordinates = feature.getGeometry().getCoordinates();
+
+				changeZoomAndCenter({
+					zoom: message.zoom,
+					center: coordinates
+				});
+
 				break;
+			}
 			case ZOOM_EXPAND:
 				break;
 			case CLICK_IN_MAP_SIMULATION:

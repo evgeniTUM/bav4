@@ -152,11 +152,23 @@ describe('OlGeoFeatureLayerHandler', () => {
 				const classUnderTest = new OlGeoFeatureLayerHandler();
 				classUnderTest.activate(map);
 
-				addGeoFeatures(layerId, [GEOJSON_SAMPLE_DATA]);
+				addGeoFeatures(layerId, [{ ...GEOJSON_SAMPLE_DATA, expandTo: true }]);
 
 				const fitActions = storeActions.filter(a => a.type === FIT_REQUESTED);
 				expect(fitActions).toHaveSize(1);
 				expect(fitActions[0].payload._payload.extent).toEqual([-1, -1, 11, 11]);
+			});
+
+			it('does not fit the map when flag expandTo = false', () => {
+				const map = setupWithLayer();
+
+				const classUnderTest = new OlGeoFeatureLayerHandler();
+				classUnderTest.activate(map);
+
+				addGeoFeatures(layerId, [{ ...GEOJSON_SAMPLE_DATA, expandTo: false }]);
+
+				const fitActions = storeActions.filter(a => a.type === FIT_REQUESTED);
+				expect(fitActions).toHaveSize(0);
 			});
 
 			it('shows features in store slice \'geofeatures\'', async () => {
