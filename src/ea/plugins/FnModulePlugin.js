@@ -1,6 +1,5 @@
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
-import { deactivate } from '../../store/draw/draw.action';
 import { observe } from '../../utils/storeUtils';
 import { addGeoFeatureLayer, addGeoFeatures, clearLayer, clearMap, removeGeoFeatures } from '../store/geofeature/geofeature.action';
 import { activateMapClick, deactivateMapClick } from '../store/mapclick/mapclick.action';
@@ -63,7 +62,8 @@ export class FnModulePlugin extends BaPlugin {
 			case ADD_FEATURE: {
 				const features = message.geojson.features.map(f => ({
 					...f,
-					style: message.style
+					style: message.style,
+					expandTo: message.expandTo
 				}));
 				addGeoFeatures(message.layerId, features);
 				break;

@@ -117,7 +117,6 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 		};
 
 		const onChange = ({ layers }) => {
-			this._vectorLayer.getSource().clear();
 
 			const toOlFeature = (data, draggable) => {
 				const _features = new GeoJSON().readFeature(data);
@@ -128,9 +127,26 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 				f.setGeometry(_features.getGeometry());
 				f.setStyle(createStyleFnFromJson(data.style));
 				f.draggable = draggable;
+				f.expandTo = data.expandTo;
 
 				return f;
 			};
+
+			const zoomToLayer = (layer) => {
+				const extentFeatures = layer.getSource().getFeatures().filter(f => f.expandTo);
+				if (extentFeatures.length === 0) {
+					return;
+				}
+
+				const extentVector = new VectorSource();
+				extentVector.addFeatures(extentFeatures);
+
+				const polygon = fromExtent(extentVector.getExtent());
+				polygon.scale(1.2);
+				fit(polygon.getExtent());
+			};
+
+			this._vectorLayer.getSource().clear();
 
 			const olFeatures = layers.map(l => l.features.map(f => toOlFeature(f, l.draggable)))
 				.flat();
@@ -141,9 +157,8 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 			this._vectorLayer.getSource().addFeatures(olFeatures);
 
-			const polygon = fromExtent(this._vectorLayer.getSource().getExtent());
-			polygon.scale(1.2);
-			fit(polygon.getExtent());
+			zoomToLayer(this._vectorLayer);
+
 		};
 
 		this._registeredObservers = [

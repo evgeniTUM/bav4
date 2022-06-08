@@ -197,7 +197,8 @@ describe('FnModulePlugin', () => {
 					message: {
 						layerId: 42,
 						geojson: { features: [geojson] },
-						style: { template: 'geolocation' }
+						style: { template: 'geolocation' },
+						expandTo: true
 					}
 				},
 				event: { origin: module }
@@ -208,7 +209,7 @@ describe('FnModulePlugin', () => {
 			expect(lastAction.type).toEqual(ADD_FEATURE);
 			expect(lastAction.payload).toEqual({
 				layerId: 42,
-				features: [{ ...geojson, style: { template: 'geolocation' } }]
+				features: [{ ...geojson, style: { template: 'geolocation' }, expandTo: true }]
 			});
 		});
 
