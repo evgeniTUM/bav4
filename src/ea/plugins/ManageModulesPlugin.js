@@ -75,7 +75,7 @@ export class ManageModulesPlugin extends BaPlugin {
 		const onActiveGeoResourcesChanged = (ids) => {
 
 			if (ids.length > 0) {
-				addLayer(WMS_ACTIONS_LAYER_ID, { label: 'wms-actions-layer', constraints: { hidden: true, alwaysTop: false } });
+				addLayer(WMS_ACTIONS_LAYER_ID, { label: 'wms-actions-layer', constraints: { hidden: true, alwaysTop: true } });
 			}
 			else {
 				removeLayer(WMS_ACTIONS_LAYER_ID);

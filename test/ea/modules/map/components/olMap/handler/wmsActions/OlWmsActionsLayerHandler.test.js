@@ -5,9 +5,9 @@ import { fromLonLat } from 'ol/proj';
 import { OSM, TileDebug } from 'ol/source';
 import { OlWmsActionsLayerHandler, WMS_ACTIONS_LAYER_ID } from '../../../../../../../../src/ea/modules/map/components/olMap/handler/wmsActions/OlWmsActionsLayerHandler';
 import { addGeoFeatureLayer } from '../../../../../../../../src/ea/store/geofeature/geofeature.action';
-import { moduleReducer } from '../../../../../../../../src/ea/store/module/module.reducer';
-import { CLICK_CHANGED } from '../../../../../../../../src/store/pointer/pointer.reducer';
-import { positionReducer } from '../../../../../../../../src/store/position/position.reducer';
+import { highlightCoordinateFeatureStyleFunction } from '../../../../../../../../src/modules/olMap/handler/highlight/styleUtils';
+import { setClick } from '../../../../../../../../src/store/pointer/pointer.action';
+import { CLICK_CHANGED, pointerReducer } from '../../../../../../../../src/store/pointer/pointer.reducer';
 import { simulateMapBrowserEvent } from '../../../../../../../modules/olMap/mapTestUtils';
 import { TestUtils } from '../../../../../../../test-utils.js';
 
@@ -22,8 +22,7 @@ describe('OlWmsActionsLayerHandler', () => {
 
 		const store = TestUtils.setupStoreAndDi(state, {
 			spyReducer: (state, action) => storeActions.push(action),
-			position: positionReducer,
-			module: moduleReducer
+			pointer: pointerReducer
 		});
 		return store;
 	};
@@ -95,6 +94,20 @@ describe('OlWmsActionsLayerHandler', () => {
 				const mapclickRequestActions = storeActions.filter(a => a.type === CLICK_CHANGED);
 				expect(mapclickRequestActions).toHaveSize(1);
 				expect(mapclickRequestActions[0].payload.payload).toEqual({ coordinate });
+			});
+
+			it('sets position of marker on mouse click', async () => {
+				const map = setupWithLayer();
+
+				const classUnderTest = new OlWmsActionsLayerHandler();
+				classUnderTest.activate(map);
+
+				const coordinate = [38, 75];
+
+				setClick({ coordinate });
+
+				expect(classUnderTest._marker.getStyle()()).toEqual(highlightCoordinateFeatureStyleFunction());
+				expect(classUnderTest._marker.getGeometry().getCoordinates()).toEqual([38, 75]);
 			});
 		});
 	});
