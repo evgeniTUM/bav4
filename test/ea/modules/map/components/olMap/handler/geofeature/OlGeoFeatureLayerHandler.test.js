@@ -10,7 +10,10 @@ import { addGeoFeatureLayer, addGeoFeatures, clearLayer } from '../../../../../.
 import { geofeatureReducer } from '../../../../../../../../src/ea/store/geofeature/geofeature.reducer';
 import { activateMapClick, deactivateMapClick } from '../../../../../../../../src/ea/store/mapclick/mapclick.action';
 import { mapclickReducer, MAPCLICK_REQUEST } from '../../../../../../../../src/ea/store/mapclick/mapclick.reducer';
+import { activateGeoResource, deactivateGeoResource } from '../../../../../../../../src/ea/store/module/module.action';
+import { moduleReducer } from '../../../../../../../../src/ea/store/module/module.reducer';
 import { $injector } from '../../../../../../../../src/injection';
+import { CLICK_CHANGED } from '../../../../../../../../src/store/pointer/pointer.reducer';
 import { FIT_REQUESTED, positionReducer } from '../../../../../../../../src/store/position/position.reducer';
 import { simulateMapBrowserEvent } from '../../../../../../../modules/olMap/mapTestUtils';
 import { TestUtils } from '../../../../../../../test-utils.js';
@@ -45,7 +48,8 @@ describe('OlGeoFeatureLayerHandler', () => {
 			spyReducer: (state, action) => storeActions.push(action),
 			geofeature: geofeatureReducer,
 			mapclick: mapclickReducer,
-			position: positionReducer
+			position: positionReducer,
+			module: moduleReducer
 		});
 		$injector
 			.registerSingleton('TranslationService', translationServiceMock)
@@ -207,70 +211,122 @@ describe('OlGeoFeatureLayerHandler', () => {
 			});
 
 
-			it('sends a \'mapclick/request\' event on pointer click', async () => {
-				const map = setupWithLayer();
+			describe(' - mouse interactions - ', () => {
 
-				const classUnderTest = new OlGeoFeatureLayerHandler();
-				classUnderTest.activate(map);
+				it('sends a \'mapclick/request\' event on mouse click when state.mapclick.active is true', async () => {
+					const map = setupWithLayer();
 
-				const coordinate = [38, 75];
+					const classUnderTest = new OlGeoFeatureLayerHandler();
+					classUnderTest.activate(map);
 
-				simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, ...coordinate);
+					const coordinate = [38, 75];
 
-				const mapclickRequestActions = storeActions.filter(a => a.type === MAPCLICK_REQUEST);
-				expect(mapclickRequestActions).toHaveSize(1);
-				expect(mapclickRequestActions[0].payload.payload).toEqual(coordinate);
-			});
+					activateMapClick();
+					simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, ...coordinate);
 
-			it('help tooltip is not active on init', () => {
-				const map = setupWithLayer();
+					const mapclickRequestActions = storeActions.filter(a => a.type === MAPCLICK_REQUEST);
+					expect(mapclickRequestActions).toHaveSize(1);
+					expect(mapclickRequestActions[0].payload.payload).toEqual(coordinate);
+				});
 
-				const classUnderTest = new OlGeoFeatureLayerHandler();
+				it('does not send a \'mapclick/request\' event on mouse click when state.mapclick.active is false', async () => {
+					const map = setupWithLayer();
 
-				classUnderTest.activate(map);
+					const classUnderTest = new OlGeoFeatureLayerHandler();
+					classUnderTest.activate(map);
 
-				expect(classUnderTest._helpTooltip.active).toBeFalse();
-			});
+					const coordinate = [38, 75];
 
-			it('help tooltip is active when mapclick.active is true', () => {
-				const map = setupWithLayer();
+					deactivateMapClick();
+					simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, ...coordinate);
 
-				const classUnderTest = new OlGeoFeatureLayerHandler();
-				classUnderTest.activate(map);
+					const mapclickRequestActions = storeActions.filter(a => a.type === MAPCLICK_REQUEST);
+					expect(mapclickRequestActions).toHaveSize(0);
+				});
 
-				activateMapClick();
-				expect(classUnderTest._helpTooltip.active).toBeTrue();
+				it('help tooltip is not active on init', () => {
+					const map = setupWithLayer();
 
-				deactivateMapClick();
-				expect(classUnderTest._helpTooltip.active).toBeFalse();
-			});
+					const classUnderTest = new OlGeoFeatureLayerHandler();
 
-			it('help tooltip shows message on mousemove', () => {
-				const map = setupWithLayer();
+					classUnderTest.activate(map);
 
-				const classUnderTest = new OlGeoFeatureLayerHandler();
-				classUnderTest.activate(map);
-				activateMapClick();
+					expect(classUnderTest._helpTooltip.active).toBeFalse();
+				});
 
-				expect(classUnderTest._helpTooltip._tooltipMessageProvideFunction()).toEqual('ea_map_select_region');
+				it('help tooltip is active when mapclick.active is true', () => {
+					const map = setupWithLayer();
 
-				const notifySpy = spyOn(classUnderTest._helpTooltip, 'notify');
-				simulateMapBrowserEvent(map, MapBrowserEventType.POINTERMOVE, 10, 0);
+					const classUnderTest = new OlGeoFeatureLayerHandler();
+					classUnderTest.activate(map);
 
-				expect(notifySpy).toHaveBeenCalledWith(jasmine.objectContaining({ coordinate: [10, 0] }));
-			});
+					activateMapClick();
+					expect(classUnderTest._helpTooltip.active).toBeTrue();
 
-			it('sets map cursor style to crosshair when mapclick.active', () => {
-				const map = setupWithLayer();
+					deactivateMapClick();
+					expect(classUnderTest._helpTooltip.active).toBeFalse();
+				});
 
-				const classUnderTest = new OlGeoFeatureLayerHandler();
-				classUnderTest.activate(map);
+				it('help tooltip shows message on mousemove', () => {
+					const map = setupWithLayer();
 
-				activateMapClick();
-				expect(store.getState().mapclick.mapCursorStyle).toEqual('crosshair');
+					const classUnderTest = new OlGeoFeatureLayerHandler();
+					classUnderTest.activate(map);
+					activateMapClick();
 
-				deactivateMapClick();
-				expect(store.getState().mapclick.mapCursorStyle).toEqual('auto');
+					expect(classUnderTest._helpTooltip._tooltipMessageProvideFunction()).toEqual('ea_map_select_region');
+
+					const notifySpy = spyOn(classUnderTest._helpTooltip, 'notify');
+					simulateMapBrowserEvent(map, MapBrowserEventType.POINTERMOVE, 10, 0);
+
+					expect(notifySpy).toHaveBeenCalledWith(jasmine.objectContaining({ coordinate: [10, 0] }));
+				});
+
+				it('sets map cursor style to crosshair when mapclick.active', () => {
+					const map = setupWithLayer();
+
+					const classUnderTest = new OlGeoFeatureLayerHandler();
+					classUnderTest.activate(map);
+
+					activateMapClick();
+					expect(store.getState().mapclick.mapCursorStyle).toEqual('crosshair');
+
+					deactivateMapClick();
+					expect(store.getState().mapclick.mapCursorStyle).toEqual('auto');
+				});
+
+				it('triggers a \'CLICK_CHANGED\' event on mouse click when there are geoResources active', async () => {
+					const map = setupWithLayer();
+
+					const classUnderTest = new OlGeoFeatureLayerHandler();
+					classUnderTest.activate(map);
+
+					const coordinate = [38, 75];
+
+					activateGeoResource('test');
+					simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, ...coordinate);
+
+					const mapclickRequestActions = storeActions.filter(a => a.type === CLICK_CHANGED);
+					expect(mapclickRequestActions).toHaveSize(1);
+					expect(mapclickRequestActions[0].payload.payload).toEqual({ coordinate });
+				});
+
+				it('deos not trigger a \'CLICK_CHANGED\' event on mouse click when there are no geoResources active', async () => {
+
+					const map = setupWithLayer();
+
+					const classUnderTest = new OlGeoFeatureLayerHandler();
+					classUnderTest.activate(map);
+
+					const coordinate = [38, 75];
+
+					deactivateGeoResource();
+					simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, ...coordinate);
+
+					const mapclickRequestActions = storeActions.filter(a => a.type === CLICK_CHANGED);
+					expect(mapclickRequestActions).toHaveSize(0);
+				});
+
 			});
 		});
 	});

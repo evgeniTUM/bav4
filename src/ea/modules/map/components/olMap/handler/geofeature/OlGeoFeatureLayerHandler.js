@@ -9,6 +9,7 @@ import { Vector as VectorSource } from 'ol/source';
 import { $injector } from '../../../../../../../injection';
 import { OlLayerHandler } from '../../../../../../../modules/olMap/handler/OlLayerHandler';
 import { HelpTooltip } from '../../../../../../../modules/olMap/tooltip/HelpTooltip';
+import { setClick } from '../../../../../../../store/pointer/pointer.action';
 import { fit } from '../../../../../../../store/position/position.action';
 import { observe } from '../../../../../../../utils/storeUtils';
 import { deactivateMapClick, requestMapClick, setMapCursorStyle } from '../../../../../../store/mapclick/mapclick.action';
@@ -23,7 +24,7 @@ export const GEO_FEATURE_LAYER_ID = 'geofeature_layer';
 export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 	constructor() {
-		super(GEO_FEATURE_LAYER_ID, { preventDefaultClickHandling: false, preventDefaultContextClickHandling: false });
+		super(GEO_FEATURE_LAYER_ID);
 		const { StoreService, CoordinateService, MapService, TranslationService } = $injector
 			.inject('StoreService', 'CoordinateService', 'MapService', 'TranslationService');
 
@@ -99,7 +100,19 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 	_setup(store) {
 
-		this._listeners.push(this._map.on(MapBrowserEventType.CLICK, (event) => requestMapClick(event.coordinate)));
+		const onMapClick = (event) => {
+			const state = store.getState();
+
+			if (state.mapclick.active) {
+				requestMapClick(event.coordinate);
+			}
+
+			if (state.module.activeGeoResources.length > 0) {
+				setClick({ coordinate: event.coordinate });
+			}
+		};
+
+		this._listeners.push(this._map.on(MapBrowserEventType.CLICK, onMapClick));
 
 		const message = this._translationService.translate('ea_map_select_region');
 		this._helpTooltip.messageProvideFunction = () => message;
