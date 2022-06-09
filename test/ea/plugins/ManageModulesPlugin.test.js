@@ -163,7 +163,7 @@ describe('ManageModulesPlugin', () => {
 			a.type === LAYER_ADDED &&
 			a.payload.id === WMS_ACTIONS_LAYER_ID);
 		expect(actions).toHaveSize(1);
-		expect(actions[0].payload.properties).toEqual({ label: 'wms-actions-layer', constraints: { hidden: true, alwaysTop: false } });
+		expect(actions[0].payload.properties).toEqual({ label: 'wms-actions-layer', constraints: { hidden: true, alwaysTop: true } });
 	});
 
 	it('deactivates OlWmsActionsLayerHandler when no georesource layer is active', async () => {

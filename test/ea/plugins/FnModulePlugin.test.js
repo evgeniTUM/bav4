@@ -132,7 +132,7 @@ describe('FnModulePlugin', () => {
 	});
 
 
-	it('clears map and active georesources when closing module', async () => {
+	it('clears map when closing module', async () => {
 		const module = 'dom1';
 		const domain = 'http://test-site';
 
@@ -147,6 +147,39 @@ describe('FnModulePlugin', () => {
 		closeFnModule();
 
 		expect(storeActions.filter(a => a.type === CLEAR_MAP).length).toBeGreaterThan(0);
+	});
+
+	it('clears active georesources when closing module', async () => {
+		const module = 'dom1';
+		const domain = 'http://test-site';
+
+		const store = setup();
+
+		const instanceUnderTest = new FnModulePlugin();
+		await instanceUnderTest.register(store);
+
+		window.ea_moduleWindow = { dom1: windowMock };
+		openFnModuleComm(module, domain);
+
+		closeFnModule();
+
+		expect(storeActions.filter(a => a.type === DEACTIVATE_ALL_GEORESOURCES).length).toBeGreaterThan(0);
+	});
+
+	it('reset featureInfo state when closing module', async () => {
+		const module = 'dom1';
+		const domain = 'http://test-site';
+
+		const store = setup();
+
+		const instanceUnderTest = new FnModulePlugin();
+		await instanceUnderTest.register(store);
+
+		window.ea_moduleWindow = { dom1: windowMock };
+		openFnModuleComm(module, domain);
+
+		closeFnModule();
+
 		expect(storeActions.filter(a => a.type === DEACTIVATE_ALL_GEORESOURCES).length).toBeGreaterThan(0);
 	});
 

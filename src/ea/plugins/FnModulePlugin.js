@@ -1,6 +1,7 @@
 import GeoJSON from 'ol/format/GeoJSON';
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
+import { abortOrReset } from '../../store/featureInfo/featureInfo.action';
 import { setClick } from '../../store/pointer/pointer.action';
 import { changeZoomAndCenter } from '../../store/position/position.action';
 import { observe } from '../../utils/storeUtils';
@@ -162,6 +163,7 @@ export class FnModulePlugin extends BaPlugin {
 				//deaktiviere das Module
 				clearMap();
 				deactivateAllGeoResources();
+				abortOrReset();
 				this.implPostCodeMessageFnModule('close', scope.module, scope.domain, targetWindow);
 			}
 		};
