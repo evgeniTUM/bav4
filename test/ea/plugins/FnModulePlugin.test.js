@@ -2,7 +2,7 @@ import { FnModulePlugin } from '../../../src/ea/plugins/FnModulePlugin.js';
 import { closeFnModule, openFnModuleComm } from '../../../src/ea/store/fnModuleComm/fnModuleComm.action.js';
 import { fnModuleCommReducer } from '../../../src/ea/store/fnModuleComm/fnModuleComm.reducer.js';
 import { ADD_FEATURE, ADD_LAYER, CLEAR_LAYER, CLEAR_MAP, geofeatureReducer, REMOVE_FEATURE } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
-import { activateMapClick, deactivateMapClick, requestMapClick } from '../../../src/ea/store/mapclick/mapclick.action.js';
+import { activateMapClick, requestMapClick } from '../../../src/ea/store/mapclick/mapclick.action.js';
 import { mapclickReducer, MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE } from '../../../src/ea/store/mapclick/mapclick.reducer';
 import { ACTIVATE_GEORESOURCE, DEACTIVATE_ALL_GEORESOURCES } from '../../../src/ea/store/module/module.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
@@ -306,7 +306,7 @@ describe('FnModulePlugin', () => {
 			expect(lastAction.payload).toEqual('42');
 		});
 
-		it('sends a \'mapclick\' message on \'mapclick.coordinate\' event when state.mapclick.active is true', async () => {
+		it('sends a \'mapclick\' message on \'mapclick.coordinate\' event', async () => {
 			await setupOpen();
 
 			activateMapClick();
@@ -320,13 +320,6 @@ describe('FnModulePlugin', () => {
 					id: undefined,
 					coord: '42,24'
 				});
-
-			windowMock.messages = [];
-
-			deactivateMapClick();
-			requestMapClick([42.0, 24.0]);
-
-			expect(windowMock.messages).toHaveSize(0);
 		});
 
 		it('activate a georesource on message \'activateGeoResource\'', async () => {

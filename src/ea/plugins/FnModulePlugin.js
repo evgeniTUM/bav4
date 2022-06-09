@@ -167,18 +167,16 @@ export class FnModulePlugin extends BaPlugin {
 		};
 
 		const sendCoordinate = (evt, state) => {
-			if (state.mapclick.active) {
-				const _coord = coordinateService.toLonLat(evt.payload);
-				const scope = state.fnModuleComm;
-				const json = {
-					code: 'mapclick',
-					module: scope.module,
-					id: state.mapclick.listener_id,
-					coord: _coord.toString()
-				};
-				const iframeWindow = window.ea_moduleWindow[scope.module];
-				iframeWindow.postMessage(json, scope.domain);
-			}
+			const _coord = coordinateService.toLonLat(evt.payload);
+			const scope = state.fnModuleComm;
+			const json = {
+				code: 'mapclick',
+				module: scope.module,
+				id: state.mapclick.listener_id,
+				coord: _coord.toString()
+			};
+			const iframeWindow = window.ea_moduleWindow[scope.module];
+			iframeWindow.postMessage(json, scope.domain);
 		};
 
 		observe(store, state => state.fnModuleComm.active, onChange);
