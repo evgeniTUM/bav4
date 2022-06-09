@@ -1,5 +1,6 @@
 import { CONTRIBUTION_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/contribution/OlContributionHandler.js';
 import { GEO_FEATURE_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler.js';
+import { WMS_ACTIONS_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/wmsActions/OlWmsActionsLayerHandler.js';
 import { EAContribution } from '../../../src/ea/modules/toolbox/components/contribution/EAContribution.js';
 import { MixerModuleContent } from '../../../src/ea/modules/toolbox/components/mixerModuleContent/MixerModuleContent.js';
 import { RedesignModuleContent } from '../../../src/ea/modules/toolbox/components/redesignModuleContent/RedesignModuleContent.js';
@@ -94,7 +95,7 @@ describe('ManageModulesPlugin', () => {
 		expect(store.getState().mainMenu.open).toBeTrue();
 	});
 
-	it('activates a georesource', async () => {
+	it('activates a georesource layer', async () => {
 		const store = setup();
 
 		const instanceUnderTest = new ManageModulesPlugin();
@@ -105,7 +106,10 @@ describe('ManageModulesPlugin', () => {
 
 		expect(geoResourceServiceMock.byId).toHaveBeenCalledWith('42');
 
-		const actions = storeActions.filter(a => a.type === LAYER_ADDED);
+		const actions = storeActions.filter(a =>
+			a.type === LAYER_ADDED &&
+			a.payload.id === 'module-georesource-42');
+
 		expect(actions).toHaveSize(1);
 		expect(actions[0].payload).toEqual({
 			id: 'module-georesource-42',
@@ -116,7 +120,7 @@ describe('ManageModulesPlugin', () => {
 		});
 	});
 
-	it('activates a georesource only once', async () => {
+	it('activates a georesource layer only once', async () => {
 		const store = setup();
 
 		const instanceUnderTest = new ManageModulesPlugin();
@@ -125,11 +129,13 @@ describe('ManageModulesPlugin', () => {
 		activateGeoResource('42');
 		activateGeoResource('42');
 
-		const actions = storeActions.filter(a => a.type === LAYER_ADDED);
+		const actions = storeActions.filter(a =>
+			a.type === LAYER_ADDED &&
+			a.payload.id === 'module-georesource-42');
 		expect(actions).toHaveSize(1);
 	});
 
-	it('deactivates a georesource', async () => {
+	it('deactivates a georesource layer', async () => {
 		const store = setup();
 
 		const instanceUnderTest = new ManageModulesPlugin();
@@ -138,9 +144,41 @@ describe('ManageModulesPlugin', () => {
 
 		deactivateGeoResource('42');
 
-		const actions = storeActions.filter(a => a.type === LAYER_REMOVED);
+		const actions = storeActions.filter(a =>
+			a.type === LAYER_REMOVED &&
+			a.payload === 'module-georesource-42');
 		expect(actions).toHaveSize(1);
 		expect(actions[0].payload).toEqual('module-georesource-42');
+	});
+
+	it('activates OlWmsActionsLayerHandler when a georesource layer is active', async () => {
+		const store = setup();
+
+		const instanceUnderTest = new ManageModulesPlugin();
+		await instanceUnderTest.register(store);
+
+		activateGeoResource('42');
+
+		const actions = storeActions.filter(a =>
+			a.type === LAYER_ADDED &&
+			a.payload.id === WMS_ACTIONS_LAYER_ID);
+		expect(actions).toHaveSize(1);
+		expect(actions[0].payload.properties).toEqual({ label: 'wms-actions-layer', constraints: { hidden: true, alwaysTop: false } });
+	});
+
+	it('deactivates OlWmsActionsLayerHandler when no georesource layer is active', async () => {
+		const store = setup();
+
+		const instanceUnderTest = new ManageModulesPlugin();
+		await instanceUnderTest.register(store);
+
+		activateGeoResource('42');
+		deactivateGeoResource('42');
+
+		const actions = storeActions.filter(a =>
+			a.type === LAYER_REMOVED &&
+			a.payload === WMS_ACTIONS_LAYER_ID);
+		expect(actions).toHaveSize(1);
 	});
 
 });

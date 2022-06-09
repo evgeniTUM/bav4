@@ -1,4 +1,3 @@
-import Feature from 'ol/Feature';
 import GeoJSON from 'ol/format/GeoJSON';
 import { fromExtent } from 'ol/geom/Polygon';
 import { Translate } from 'ol/interaction';
@@ -9,7 +8,6 @@ import { Vector as VectorSource } from 'ol/source';
 import { $injector } from '../../../../../../../injection';
 import { OlLayerHandler } from '../../../../../../../modules/olMap/handler/OlLayerHandler';
 import { HelpTooltip } from '../../../../../../../modules/olMap/tooltip/HelpTooltip';
-import { setClick } from '../../../../../../../store/pointer/pointer.action';
 import { fit } from '../../../../../../../store/position/position.action';
 import { observe } from '../../../../../../../utils/storeUtils';
 import { deactivateMapClick, requestMapClick, setMapCursorStyle } from '../../../../../../store/mapclick/mapclick.action';
@@ -33,7 +31,6 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 		this._coordinateService = CoordinateService;
 		this._mapService = MapService;
 		this._helpTooltip = new HelpTooltip();
-		this._positionFeature = new Feature();
 		this._vectorLayer = null;
 
 		this._registeredObservers = [];
@@ -53,11 +50,11 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 		const createLayer = () => {
 
-			const source = new VectorSource({ wrapX: false, features: [this._positionFeature] });
+			const source = new VectorSource({ wrapX: false });
 			const layer = new VectorLayer({
 				source: source
 			});
-			layer.label = 'keine Ahnung';//translate('map_olMap_handler_draw_layer_label');
+			layer.label = 'geofeatures-layer';
 			return layer;
 		};
 
@@ -105,10 +102,6 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 			if (state.mapclick.active) {
 				requestMapClick(event.coordinate);
-			}
-
-			if (state.module.activeGeoResources.length > 0) {
-				setClick({ coordinate: event.coordinate });
 			}
 		};
 

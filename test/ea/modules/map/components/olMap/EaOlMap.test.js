@@ -136,6 +136,17 @@ describe('OlMap', () => {
 		}
 	};
 
+	const wmsActionsLayerHandlerMock = {
+		activate() { },
+		deactivate() { },
+		get id() {
+			return 'olWmsActionsLayerHandlerMockId';
+		},
+		get options() {
+			return getDefaultLayerOptions();
+		}
+	};
+
 	const vectorLayerServiceMock = {};
 
 	const setup = (state) => {
@@ -183,7 +194,8 @@ describe('OlMap', () => {
 			.registerSingleton('VectorLayerService', vectorLayerServiceMock)
 			.registerSingleton('LayerService', layerServiceMock)
 			.registerSingleton('OlContributionHandler', contributionLayerHandlerMock)
-			.registerSingleton('OlGeoFeatureLayerHandler', geoFeatureLayerHandlerMock);
+			.registerSingleton('OlGeoFeatureLayerHandler', geoFeatureLayerHandlerMock)
+			.registerSingleton('OlWmsActionsLayerHandler', wmsActionsLayerHandlerMock);
 
 		return TestUtils.render(EaOlMap.tag);
 	};

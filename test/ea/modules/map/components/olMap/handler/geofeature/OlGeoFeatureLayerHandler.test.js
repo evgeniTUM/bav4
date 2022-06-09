@@ -10,11 +10,9 @@ import { addGeoFeatureLayer, addGeoFeatures, clearLayer } from '../../../../../.
 import { geofeatureReducer } from '../../../../../../../../src/ea/store/geofeature/geofeature.reducer';
 import { activateMapClick, deactivateMapClick } from '../../../../../../../../src/ea/store/mapclick/mapclick.action';
 import { mapclickReducer, MAPCLICK_REQUEST } from '../../../../../../../../src/ea/store/mapclick/mapclick.reducer';
-import { activateGeoResource, deactivateGeoResource } from '../../../../../../../../src/ea/store/module/module.action';
 import { moduleReducer } from '../../../../../../../../src/ea/store/module/module.reducer';
 import { $injector } from '../../../../../../../../src/injection';
-import { CLICK_CHANGED } from '../../../../../../../../src/store/pointer/pointer.reducer';
-import { FIT_REQUESTED, positionReducer } from '../../../../../../../../src/store/position/position.reducer';
+import { FIT_REQUESTED } from '../../../../../../../../src/store/position/position.reducer';
 import { simulateMapBrowserEvent } from '../../../../../../../modules/olMap/mapTestUtils';
 import { TestUtils } from '../../../../../../../test-utils.js';
 
@@ -48,7 +46,6 @@ describe('OlGeoFeatureLayerHandler', () => {
 			spyReducer: (state, action) => storeActions.push(action),
 			geofeature: geofeatureReducer,
 			mapclick: mapclickReducer,
-			position: positionReducer,
 			module: moduleReducer
 		});
 		$injector
@@ -293,38 +290,6 @@ describe('OlGeoFeatureLayerHandler', () => {
 
 					deactivateMapClick();
 					expect(store.getState().mapclick.mapCursorStyle).toEqual('auto');
-				});
-
-				it('triggers a \'CLICK_CHANGED\' event on mouse click when there are geoResources active', async () => {
-					const map = setupWithLayer();
-
-					const classUnderTest = new OlGeoFeatureLayerHandler();
-					classUnderTest.activate(map);
-
-					const coordinate = [38, 75];
-
-					activateGeoResource('test');
-					simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, ...coordinate);
-
-					const mapclickRequestActions = storeActions.filter(a => a.type === CLICK_CHANGED);
-					expect(mapclickRequestActions).toHaveSize(1);
-					expect(mapclickRequestActions[0].payload.payload).toEqual({ coordinate });
-				});
-
-				it('deos not trigger a \'CLICK_CHANGED\' event on mouse click when there are no geoResources active', async () => {
-
-					const map = setupWithLayer();
-
-					const classUnderTest = new OlGeoFeatureLayerHandler();
-					classUnderTest.activate(map);
-
-					const coordinate = [38, 75];
-
-					deactivateGeoResource();
-					simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, ...coordinate);
-
-					const mapclickRequestActions = storeActions.filter(a => a.type === CLICK_CHANGED);
-					expect(mapclickRequestActions).toHaveSize(0);
 				});
 
 			});
