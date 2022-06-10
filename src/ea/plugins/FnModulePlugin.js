@@ -27,11 +27,13 @@ const CANCEL_MAPCLICK = 'cancel_mapclick';
 const ACTIVATE_GEORESOURCE = 'activateGeoResource';
 const DEACTIVATE_GEORESOURCE = 'deactivateGeoResource';
 
+const buffer = { features: [] };
 /**
  * @class
  * @author gkunze
  */
 export class FnModulePlugin extends BaPlugin {
+
 
 	fnModuleMessageListener(e) {
 		const event = (e.message !== undefined) ? e.message : e;
@@ -78,7 +80,16 @@ export class FnModulePlugin extends BaPlugin {
 					style: message.style,
 					expandTo: message.expandTo
 				}));
-				addGeoFeatures(message.layerId, features);
+
+				buffer.features = [...buffer.features, ...features];
+
+				setTimeout(() => {
+					if (buffer.features.length > 0) {
+						addGeoFeatures(message.layerId, buffer.features);
+						buffer.features = [];
+					}
+				}, 100);
+
 				break;
 			}
 			case REMOVE_FEATURE_BY_ID:
@@ -157,6 +168,7 @@ export class FnModulePlugin extends BaPlugin {
 			if (active) {
 				//aktiviere das Module
 				//sende per postMessage
+				buffer.features = [];
 				this.implPostCodeMessageFnModule('open', scope.module, scope.domain, targetWindow);
 			}
 			else {
@@ -164,6 +176,7 @@ export class FnModulePlugin extends BaPlugin {
 				clearMap();
 				deactivateAllGeoResources();
 				abortOrReset();
+				buffer.features = [];
 				this.implPostCodeMessageFnModule('close', scope.module, scope.domain, targetWindow);
 			}
 		};

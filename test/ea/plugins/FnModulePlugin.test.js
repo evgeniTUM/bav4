@@ -81,6 +81,14 @@ describe('FnModulePlugin', () => {
 		return store;
 	};
 
+	beforeEach(async () => {
+		jasmine.clock().install();
+	});
+
+	afterEach(function () {
+		jasmine.clock().uninstall();
+	});
+
 
 	it('sends open messages when opening module', async () => {
 		const module = 'dom1';
@@ -166,7 +174,7 @@ describe('FnModulePlugin', () => {
 		expect(storeActions.filter(a => a.type === DEACTIVATE_ALL_GEORESOURCES).length).toBeGreaterThan(0);
 	});
 
-	it('reset featureInfo state when closing module', async () => {
+	it('resets featureInfo state when closing module', async () => {
 		const module = 'dom1';
 		const domain = 'http://test-site';
 
@@ -258,12 +266,42 @@ describe('FnModulePlugin', () => {
 
 			});
 
+			jasmine.clock().tick(150);
+
 			const lastAction = storeActions.pop();
 			expect(lastAction.type).toEqual(ADD_FEATURE);
 			expect(lastAction.payload).toEqual({
 				layerId: 42,
 				features: [{ ...geojson, style: { template: 'geolocation' }, expandTo: true }]
 			});
+		});
+
+		it('buffers new geofeatures for 100ms', async () => {
+			await setupOpen();
+			const geojson = {
+				type: 'i identify as a geojson'
+			};
+
+			const msg = {
+				data: {
+					code: 'addfeature',
+					module: domain,
+					message: {
+						layerId: 42,
+						geojson: { features: [geojson] },
+						style: { template: 'geolocation' },
+						expandTo: true
+					}
+				},
+				event: { origin: module }
+			};
+
+			Array.from({ length: 500 }).forEach(() => windowMock.listenerFunction(msg));
+
+			jasmine.clock().tick(110);
+
+			const actions = storeActions.filter(a => a.type === ADD_FEATURE);
+			expect(actions.length).toEqual(1);
 		});
 
 		it('removes geofeature on message \'removefeature\'', async () => {
@@ -287,7 +325,7 @@ describe('FnModulePlugin', () => {
 			expect(lastAction.payload).toEqual({ layerId: 42, ids: [24] });
 		});
 
-		it('adds mapclick on message \'activate_mapclick\'', async () => {
+		it('activates mapclicks on message \'activate_mapclick\'', async () => {
 			await setupOpen();
 
 			windowMock.listenerFunction({
@@ -305,7 +343,7 @@ describe('FnModulePlugin', () => {
 			expect(lastAction.payload).toEqual(42);
 		});
 
-		it('removes mapclick on message \'cancel_mapclick\'', async () => {
+		it('deactivates mapclicks on message \'cancel_mapclick\'', async () => {
 			await setupOpen();
 
 			windowMock.listenerFunction({
@@ -355,7 +393,7 @@ describe('FnModulePlugin', () => {
 				});
 		});
 
-		it('activate a georesource on message \'activateGeoResource\'', async () => {
+		it('activates a georesource on message \'activateGeoResource\'', async () => {
 			await setupOpen();
 
 			windowMock.listenerFunction({
