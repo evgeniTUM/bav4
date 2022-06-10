@@ -118,7 +118,7 @@ export class FnModulePlugin extends BaPlugin {
 			}
 			case ZOOM_N_CENTER_TO_FEATURE:
 				changeZoomAndCenter({
-					zoom: message.zoom,
+					zoom: message.zoom + 4.7,
 					center: getFeature(message.geojson.features[0])
 						.getGeometry()
 						.getCoordinates()

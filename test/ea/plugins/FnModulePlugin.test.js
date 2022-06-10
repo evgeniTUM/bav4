@@ -426,8 +426,10 @@ describe('FnModulePlugin', () => {
 			expect(lastAction.type).toEqual(DEACTIVATE_ALL_GEORESOURCES);
 		});
 
-		it('zooms and centers map on \'zoomAndCenter\' message', async () => {
+		it('zooms and centers map on \'zoomAndCenter\' message by a zoom factor of 4.7', async () => {
 			await setupOpen();
+
+			const zoomFactor = 4.7;
 
 			windowMock.listenerFunction({
 				data: {
@@ -443,7 +445,7 @@ describe('FnModulePlugin', () => {
 
 			const action = storeActions.find(a => a.type === ZOOM_CENTER_CHANGED);
 			expect(action).toBeDefined();
-			expect(action.payload).toEqual({ zoom: 11, center: [42.0, 24.0] });
+			expect(action.payload).toEqual({ zoom: 11 + zoomFactor, center: [42.0, 24.0] });
 		});
 
 		it('fits the map on \'zoom2Extent\' message with 20% scale', async () => {
