@@ -7,7 +7,7 @@ import { mapclickReducer, MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE } from '../../.
 import { ACTIVATE_GEORESOURCE, DEACTIVATE_ALL_GEORESOURCES } from '../../../src/ea/store/module/module.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
 import { CLICK_CHANGED, pointerReducer } from '../../../src/store/pointer/pointer.reducer';
-import { ZOOM_CENTER_CHANGED } from '../../../src/store/position/position.reducer.js';
+import { FIT_REQUESTED, ZOOM_CENTER_CHANGED } from '../../../src/store/position/position.reducer.js';
 import { TestUtils } from '../../test-utils.js';
 
 const GEOJSON_SAMPLE_DATA = {
@@ -445,6 +445,43 @@ describe('FnModulePlugin', () => {
 			expect(action).toBeDefined();
 			expect(action.payload).toEqual({ zoom: 11, center: [42.0, 24.0] });
 		});
+
+		it('fits the map on \'zoom2Extent\' message with 20% scale', async () => {
+			await setupOpen();
+
+			windowMock.listenerFunction({
+				data: {
+					code: 'zoom2Extent',
+					module: domain,
+					message: {
+						geojson: {
+							features: [
+								{
+									geometry: {
+										crs: {
+											type: 'name',
+											properties: { name: 'EPSG:4326' }
+										},
+										coordinates: [[[2.5, 2.5], [2.5, 2.5], [3, 3], [4, 4], [5, 5]]],
+										type: 'Polygon'
+									},
+									id: '530497279',
+									type: 'Feature'
+								}
+							],
+							type: 'FeatureCollection'
+						}
+					}
+				},
+				event: { origin: module }
+			});
+
+			const action = storeActions.find(a => a.type === FIT_REQUESTED);
+			expect(action).toBeDefined();
+			expect(action.payload._payload).toEqual({ extent: [2.25, 2.25, 5.25, 5.25], options: {} });
+		});
+
+
 
 		it('clicks inside map on \'clickInMap\' message', async () => {
 			await setupOpen();

@@ -1,9 +1,11 @@
 import GeoJSON from 'ol/format/GeoJSON';
+import { fromExtent } from 'ol/geom/Polygon';
+import VectorSource from 'ol/source/Vector';
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { abortOrReset } from '../../store/featureInfo/featureInfo.action';
 import { setClick } from '../../store/pointer/pointer.action';
-import { changeZoomAndCenter } from '../../store/position/position.action';
+import { changeZoomAndCenter, fit } from '../../store/position/position.action';
 import { observe } from '../../utils/storeUtils';
 import { addGeoFeatureLayer, addGeoFeatures, clearLayer, clearMap, removeGeoFeatures } from '../store/geofeature/geofeature.action';
 import { activateMapClick, deactivateMapClick } from '../store/mapclick/mapclick.action';
@@ -59,11 +61,12 @@ export class FnModulePlugin extends BaPlugin {
 
 		const message = data.message;
 
-		const getCoordinates = (geojson) => {
+		const getFeature = (geojson) => {
 			const feature = new GeoJSON().readFeature(geojson);
 			feature.getGeometry().transform('EPSG:' + 4326, 'EPSG:' + this._mapService.getSrid());
 			feature.set('srid', 4326, true);
-			return feature.getGeometry().getCoordinates();
+
+			return feature;
 		};
 
 		switch (data.code) {
@@ -102,19 +105,34 @@ export class FnModulePlugin extends BaPlugin {
 				break;
 			case ZOOM:
 				break;
-			case ZOOM_2_EXTENT:
+			case ZOOM_2_EXTENT:	{
+				const extentVector = new VectorSource({
+					features: [getFeature(message.geojson.features[0])]
+				});
+				const polygon = fromExtent(extentVector.getExtent());
+
+				polygon.scale(1.2);
+				fit(polygon.getExtent());
+
 				break;
+			}
 			case ZOOM_N_CENTER_TO_FEATURE:
 				changeZoomAndCenter({
 					zoom: message.zoom,
-					center: getCoordinates(message.geojson.features[0])
+					center: getFeature(message.geojson.features[0])
+						.getGeometry()
+						.getCoordinates()
 				});
 
 				break;
 			case ZOOM_EXPAND:
 				break;
 			case CLICK_IN_MAP_SIMULATION:
-				setClick({ coordinate: getCoordinates(message.geojson.features[0]) });
+				setClick({
+					coordinate: getFeature(message.geojson.features[0])
+						.getGeometry()
+						.getCoordinates()
+				});
 				break;
 			case ACTIVATE_MAPCLICK:
 				activateMapClick(message);
