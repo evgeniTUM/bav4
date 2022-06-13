@@ -1,6 +1,7 @@
 import { $injector } from '../../../injection';
 import { Analyse3DModuleContent } from '../../modules/toolbox/components/analyse3d/Analyse3DModuleContent';
 import { EAContribution } from '../../modules/toolbox/components/contribution/EAContribution';
+import { GeothermModuleContent } from '../../modules/toolbox/components/geotherm/GeothermModuleContent';
 import { MixerModuleContent } from '../../modules/toolbox/components/mixerModuleContent/MixerModuleContent';
 import { RedesignModuleContent } from '../../modules/toolbox/components/redesignModuleContent/RedesignModuleContent';
 import { ResearchModuleContent } from '../../modules/toolbox/components/researchModuleContent/ResearchModuleContent';
@@ -15,7 +16,8 @@ export const ModuleId = Object.freeze([
 	ResearchModuleContent.tag,
 	RedesignModuleContent.tag,
 	EAContribution.tag,
-	Analyse3DModuleContent.tag
+	Analyse3DModuleContent.tag,
+	GeothermModuleContent.tag
 ]);
 
 

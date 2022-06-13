@@ -1,4 +1,3 @@
-import { Analyse3DModuleContent } from '../../../../../../src/ea/modules/toolbox/components/analyse3d/Analyse3DModuleContent';
 import { GeothermModuleContent } from '../../../../../../src/ea/modules/toolbox/components/geotherm/GeothermModuleContent';
 import { AbstractModuleContent } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/AbstractModuleContent';
 import { fnModuleCommReducer } from '../../../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
