@@ -4,3 +4,4 @@ import './components/mixerModuleContent';
 import './components/redesignModuleContent';
 import './components/contribution';
 import './components/researchModuleContent';
+import './components/analyse3d';

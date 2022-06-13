@@ -3,6 +3,7 @@ import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import { toggleTaggingMode } from '../../../../store/contribution/contribution.action';
 import { setCurrentModule } from '../../../../store/module/module.action';
+import { Analyse3DModuleContent } from '../../../toolbox/components/analyse3d/Analyse3DModuleContent';
 import { EAContribution } from '../../../toolbox/components/contribution/EAContribution';
 import { MixerModuleContent } from '../../../toolbox/components/mixerModuleContent/MixerModuleContent';
 import { RedesignModuleContent } from '../../../toolbox/components/redesignModuleContent/RedesignModuleContent';
@@ -70,25 +71,14 @@ export class AdditionalMenu extends MvuElement {
 				setCurrentModule(id);
 			}
 		};
+
 		const toggleContributionModule = () => {
-			const moduleId = EAContribution.tag;
 			toggleTaggingMode();
-			toggleModule(moduleId);
+			toggleModule(EAContribution.tag);
 		};
 
-		const toggleMixerModule = () => {
-			const moduleId = MixerModuleContent.tag;
-			toggleModule(moduleId);
-		};
-
-		const toggleRedesignModule = () => {
-			const moduleId = RedesignModuleContent.tag;
-			toggleModule(moduleId);
-		};
-
-		const toggleResearchModule = () => {
-			const moduleId = ResearchModuleContent.tag;
-			toggleModule(moduleId);
+		const activateModuleFn = (module) => {
+			return () => toggleModule(module);
 		};
 
 		const translate = (key) => this._translationService.translate(key);
@@ -109,7 +99,7 @@ export class AdditionalMenu extends MvuElement {
 				</span>
 			</span>
 		</li>
-		<li class="ba-list-item" @click="${toggleResearchModule}">
+		<li class="ba-list-item" @click="${activateModuleFn(ResearchModuleContent.tag)}">
 			<span class="ba-list-item__pre">
 				<span class="ba-list-item__icon icon-recherche">
 				</span>
@@ -123,7 +113,7 @@ export class AdditionalMenu extends MvuElement {
 				</span>
 			</span>
 		</li>
-		<li class="ba-list-item" @click="${toggleMixerModule}">
+		<li class="ba-list-item" @click="${activateModuleFn(MixerModuleContent.tag)}">
 				<span class="ba-list-item__pre">
 					<span class="ba-list-item__icon icon-mischpult">
 					</span>
@@ -137,7 +127,7 @@ export class AdditionalMenu extends MvuElement {
 					</span>
 				</span>
 		</li>
-		<li class="ba-list-item" @click="${toggleRedesignModule}">
+		<li class="ba-list-item" @click="${activateModuleFn(RedesignModuleContent.tag)}">
 				<span class="ba-list-item__pre">
 					<span class="ba-list-item__icon icon-mischpult">
 					</span>
@@ -151,7 +141,7 @@ export class AdditionalMenu extends MvuElement {
 					</span>
 				</span>
 		</li>
-		<li class="ba-list-item">
+		<li class="ba-list-item" @click="${activateModuleFn(Analyse3DModuleContent.tag)}">
 			<span class="ba-list-item__pre">
 				<span class="ba-list-item__icon icon-3d_wind">
 				</span>
