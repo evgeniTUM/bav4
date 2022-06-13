@@ -6,6 +6,7 @@ import { open } from '../../../../../store/mainMenu/mainMenu.action';
 import { setCurrentModule } from '../../../../store/module/module.action';
 import { Analyse3DModuleContent } from '../analyse3d/Analyse3DModuleContent';
 import { EAContribution } from '../contribution/EAContribution';
+import { GeothermModuleContent } from '../geotherm/GeothermModuleContent';
 import { MixerModuleContent } from '../mixerModuleContent/MixerModuleContent';
 import { RedesignModuleContent } from '../redesignModuleContent/RedesignModuleContent';
 import { ResearchModuleContent } from '../researchModuleContent/ResearchModuleContent';
@@ -73,6 +74,8 @@ export class ModuleContainer extends MvuElement {
 					return html`${unsafeHTML(`<${ResearchModuleContent.tag}/>`)}`;
 				case Analyse3DModuleContent.tag:
 					return html`${unsafeHTML(`<${Analyse3DModuleContent.tag}/>`)}`;
+				case GeothermModuleContent.tag:
+					return html`${unsafeHTML(`<${GeothermModuleContent.tag}/>`)}`;
 				default:
 					return nothing;
 			}

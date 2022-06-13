@@ -1,5 +1,6 @@
 import { Analyse3DModuleContent } from '../../../../../../src/ea/modules/toolbox/components/analyse3d/Analyse3DModuleContent';
 import { EAContribution } from '../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
+import { GeothermModuleContent } from '../../../../../../src/ea/modules/toolbox/components/geotherm/GeothermModuleContent';
 import { MixerModuleContent } from '../../../../../../src/ea/modules/toolbox/components/mixerModuleContent/MixerModuleContent';
 import { ModuleContainer } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/ModuleContainer';
 import { RedesignModuleContent } from '../../../../../../src/ea/modules/toolbox/components/redesignModuleContent/RedesignModuleContent';
@@ -19,7 +20,8 @@ const modules = [
 	ResearchModuleContent.tag,
 	RedesignModuleContent.tag,
 	EAContribution.tag,
-	Analyse3DModuleContent.tag
+	Analyse3DModuleContent.tag,
+	GeothermModuleContent.tag
 ];
 
 
