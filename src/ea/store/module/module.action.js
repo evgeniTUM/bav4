@@ -2,9 +2,9 @@ import { $injector } from '../../../injection';
 import { Analyse3DModuleContent } from '../../modules/toolbox/components/analyse3d/Analyse3DModuleContent';
 import { EAContribution } from '../../modules/toolbox/components/contribution/EAContribution';
 import { GeothermModuleContent } from '../../modules/toolbox/components/geotherm/GeothermModuleContent';
-import { MixerModuleContent } from '../../modules/toolbox/components/mixerModuleContent/MixerModuleContent';
-import { RedesignModuleContent } from '../../modules/toolbox/components/redesignModuleContent/RedesignModuleContent';
-import { ResearchModuleContent } from '../../modules/toolbox/components/researchModuleContent/ResearchModuleContent';
+import { MixerModuleContent } from '../../modules/toolbox/components/mixer/MixerModuleContent';
+import { RedesignModuleContent } from '../../modules/toolbox/components/redesign/RedesignModuleContent';
+import { ResearchModuleContent } from '../../modules/toolbox/components/research/ResearchModuleContent';
 import { ACTIVATE_GEORESOURCE, DEACTIVATE_ALL_GEORESOURCES, DEACTIVATE_GEORESOURCE, SET_CURRENT_MODULE } from './module.reducer';
 
 /**

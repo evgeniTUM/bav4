@@ -4,9 +4,9 @@ import { AdditionalMenu } from '../../../../../../src/ea/modules/menu/components
 import { Analyse3DModuleContent } from '../../../../../../src/ea/modules/toolbox/components/analyse3d/Analyse3DModuleContent';
 import { EAContribution } from '../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
 import { GeothermModuleContent } from '../../../../../../src/ea/modules/toolbox/components/geotherm/GeothermModuleContent';
-import { MixerModuleContent } from '../../../../../../src/ea/modules/toolbox/components/mixerModuleContent/MixerModuleContent';
-import { RedesignModuleContent } from '../../../../../../src/ea/modules/toolbox/components/redesignModuleContent/RedesignModuleContent';
-import { ResearchModuleContent } from '../../../../../../src/ea/modules/toolbox/components/researchModuleContent/ResearchModuleContent';
+import { MixerModuleContent } from '../../../../../../src/ea/modules/toolbox/components/mixer/MixerModuleContent';
+import { RedesignModuleContent } from '../../../../../../src/ea/modules/toolbox/components/redesign/RedesignModuleContent';
+import { ResearchModuleContent } from '../../../../../../src/ea/modules/toolbox/components/research/ResearchModuleContent';
 import { contributionReducer, SET_STATE } from '../../../../../../src/ea/store/contribution/contribution.reducer';
 import { moduleReducer, SET_CURRENT_MODULE } from '../../../../../../src/ea/store/module/module.reducer';
 import { $injector } from '../../../../../../src/injection';

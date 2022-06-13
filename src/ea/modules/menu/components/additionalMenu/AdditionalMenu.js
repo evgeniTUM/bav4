@@ -6,9 +6,9 @@ import { setCurrentModule } from '../../../../store/module/module.action';
 import { Analyse3DModuleContent } from '../../../toolbox/components/analyse3d/Analyse3DModuleContent';
 import { EAContribution } from '../../../toolbox/components/contribution/EAContribution';
 import { GeothermModuleContent } from '../../../toolbox/components/geotherm/GeothermModuleContent';
-import { MixerModuleContent } from '../../../toolbox/components/mixerModuleContent/MixerModuleContent';
-import { RedesignModuleContent } from '../../../toolbox/components/redesignModuleContent/RedesignModuleContent';
-import { ResearchModuleContent } from '../../../toolbox/components/researchModuleContent/ResearchModuleContent';
+import { MixerModuleContent } from '../../../toolbox/components/mixer/MixerModuleContent';
+import { RedesignModuleContent } from '../../../toolbox/components/redesign/RedesignModuleContent';
+import { ResearchModuleContent } from '../../../toolbox/components/research/ResearchModuleContent';
 import css from './additionalMenu.css';
 
 

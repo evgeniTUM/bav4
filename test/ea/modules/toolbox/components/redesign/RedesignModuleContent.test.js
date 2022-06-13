@@ -1,14 +1,14 @@
-import { MixerModuleContent } from '../../../../../../src/ea/modules/toolbox/components/mixerModuleContent/MixerModuleContent';
+import { RedesignModuleContent } from '../../../../../../src/ea/modules/toolbox/components/redesign/RedesignModuleContent';
 import { AbstractModuleContent } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/AbstractModuleContent';
 import { fnModuleCommReducer } from '../../../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
 import { geofeatureReducer } from '../../../../../../src/ea/store/geofeature/geofeature.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { TestUtils } from '../../../../../test-utils';
 
-window.customElements.define(MixerModuleContent.tag, MixerModuleContent);
+window.customElements.define(RedesignModuleContent.tag, RedesignModuleContent);
 
 
-describe('MixerModuleContent', () => {
+describe('RedesignModuleContent', () => {
 
 	const storeActions = [];
 
@@ -28,7 +28,7 @@ describe('MixerModuleContent', () => {
 		$injector
 			.registerSingleton('TranslationService', { translate: (key) => key })
 			.registerSingleton('ConfigService', configServiceMock);
-		return TestUtils.render(MixerModuleContent.tag);
+		return TestUtils.render(RedesignModuleContent.tag);
 	};
 
 	describe('class', () => {
@@ -43,10 +43,10 @@ describe('MixerModuleContent', () => {
 		it('has correct configuration', async () => {
 			const element = await setup();
 			expect(element.getConfig()).toEqual({
-				iframe: 'myMixerIFrame',
-				module: 'mixer',
-				frame_id: 'mixer_iframe',
-				header_title: 'toolbox_mixer_header'
+				iframe: 'myRedesignIFrame',
+				module: 'redesign',
+				frame_id: 'redesign_iframe',
+				header_title: 'toolbox_redesign_header'
 			});
 		});
 
