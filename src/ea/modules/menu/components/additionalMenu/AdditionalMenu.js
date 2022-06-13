@@ -5,6 +5,7 @@ import { toggleTaggingMode } from '../../../../store/contribution/contribution.a
 import { setCurrentModule } from '../../../../store/module/module.action';
 import { Analyse3DModuleContent } from '../../../toolbox/components/analyse3d/Analyse3DModuleContent';
 import { EAContribution } from '../../../toolbox/components/contribution/EAContribution';
+import { GeothermModuleContent } from '../../../toolbox/components/geotherm/GeothermModuleContent';
 import { MixerModuleContent } from '../../../toolbox/components/mixerModuleContent/MixerModuleContent';
 import { RedesignModuleContent } from '../../../toolbox/components/redesignModuleContent/RedesignModuleContent';
 import { ResearchModuleContent } from '../../../toolbox/components/researchModuleContent/ResearchModuleContent';
@@ -144,7 +145,7 @@ export class AdditionalMenu extends MvuElement {
 				</span>
 			</span>
 		</li>
-		<li id="geotherm" class="ba-list-item">
+		<li id="geotherm" class="ba-list-item" @click="${toggleModuleFn(GeothermModuleContent.tag)}">
 			<span class="ba-list-item__pre">
 				<span class="ba-list-item__icon icon-standortcheck">
 				</span>

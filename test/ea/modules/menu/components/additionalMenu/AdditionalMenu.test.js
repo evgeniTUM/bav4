@@ -3,6 +3,7 @@
 import { AdditionalMenu } from '../../../../../../src/ea/modules/menu/components/additionalMenu/AdditionalMenu';
 import { Analyse3DModuleContent } from '../../../../../../src/ea/modules/toolbox/components/analyse3d/Analyse3DModuleContent';
 import { EAContribution } from '../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
+import { GeothermModuleContent } from '../../../../../../src/ea/modules/toolbox/components/geotherm/GeothermModuleContent';
 import { MixerModuleContent } from '../../../../../../src/ea/modules/toolbox/components/mixerModuleContent/MixerModuleContent';
 import { RedesignModuleContent } from '../../../../../../src/ea/modules/toolbox/components/redesignModuleContent/RedesignModuleContent';
 import { ResearchModuleContent } from '../../../../../../src/ea/modules/toolbox/components/researchModuleContent/ResearchModuleContent';
@@ -104,7 +105,8 @@ describe('AdditionalMenu', () => {
 				{ id: 'mixer', tag: MixerModuleContent.tag },
 				{ id: 'redesign', tag: RedesignModuleContent.tag },
 				{ id: 'research', tag: ResearchModuleContent.tag },
-				{ id: 'analyse3d', tag: Analyse3DModuleContent.tag }
+				{ id: 'analyse3d', tag: Analyse3DModuleContent.tag },
+				{ id: 'geotherm', tag: GeothermModuleContent.tag }
 			];
 
 			modules.forEach((module) => {
