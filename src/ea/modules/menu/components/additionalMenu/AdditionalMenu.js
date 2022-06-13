@@ -12,7 +12,6 @@ import css from './additionalMenu.css';
 
 
 const Update_IsOpen = 'update_isOpen';
-const Update_Fetching = 'update_fetching';
 const Update_IsPortrait_HasMinWidth = 'update_isPortrait_hasMinWidth';
 /**
  * Container for Modules
@@ -25,7 +24,6 @@ export class AdditionalMenu extends MvuElement {
 	constructor() {
 		super({
 			isOpen: false,
-			isFetching: false,
 			isPortrait: false,
 			hasMinWidth: false
 		});
@@ -45,15 +43,12 @@ export class AdditionalMenu extends MvuElement {
 		switch (type) {
 			case Update_IsOpen:
 				return { ...model, isOpen: data };
-			case Update_Fetching:
-				return { ...model, isFetching: data };
 			case Update_IsPortrait_HasMinWidth:
 				return { ...model, ...data };
 		}
 	}
 
 	onInitialize() {
-		this.observe(state => state.network.fetching, fetching => this.signal(Update_Fetching, fetching));
 		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
 		this.observe(state => state.module.current, current => this._moduleId = current);
 	}
@@ -63,29 +58,23 @@ export class AdditionalMenu extends MvuElement {
 	*/
 	createView() {
 
-		const toggleModule = (id) => {
-			if (this._moduleId === id) {
-				setCurrentModule(null);
-			}
-			else {
-				setCurrentModule(id);
-			}
+		const toggleModuleFn = (id) => {
+			return () => {
+				const moduleTag = this._moduleId === id ? null : id;
+				setCurrentModule(moduleTag);
+			};
 		};
 
 		const toggleContributionModule = () => {
 			toggleTaggingMode();
-			toggleModule(EAContribution.tag);
-		};
-
-		const activateModuleFn = (module) => {
-			return () => toggleModule(module);
+			toggleModuleFn(EAContribution.tag)();
 		};
 
 		const translate = (key) => this._translationService.translate(key);
 
 		return html`
 		<style>${css}</style>		
-		<li class="ba-list-item" @click="${toggleContributionModule}">
+		<li id="contribution" class="ba-list-item" @click="${toggleContributionModule}">
 			<span class="ba-list-item__pre">
 				<span class="ba-list-item__icon icon-mitmachboerse">
 				</span>
@@ -99,7 +88,7 @@ export class AdditionalMenu extends MvuElement {
 				</span>
 			</span>
 		</li>
-		<li class="ba-list-item" @click="${activateModuleFn(ResearchModuleContent.tag)}">
+		<li id="research" class="ba-list-item" @click="${toggleModuleFn(ResearchModuleContent.tag)}">
 			<span class="ba-list-item__pre">
 				<span class="ba-list-item__icon icon-recherche">
 				</span>
@@ -113,7 +102,7 @@ export class AdditionalMenu extends MvuElement {
 				</span>
 			</span>
 		</li>
-		<li class="ba-list-item" @click="${activateModuleFn(MixerModuleContent.tag)}">
+		<li id="mixer" class="ba-list-item" @click="${toggleModuleFn(MixerModuleContent.tag)}">
 				<span class="ba-list-item__pre">
 					<span class="ba-list-item__icon icon-mischpult">
 					</span>
@@ -127,7 +116,7 @@ export class AdditionalMenu extends MvuElement {
 					</span>
 				</span>
 		</li>
-		<li class="ba-list-item" @click="${activateModuleFn(RedesignModuleContent.tag)}">
+		<li id="redesign" class="ba-list-item" @click="${toggleModuleFn(RedesignModuleContent.tag)}">
 				<span class="ba-list-item__pre">
 					<span class="ba-list-item__icon icon-mischpult">
 					</span>
@@ -141,7 +130,7 @@ export class AdditionalMenu extends MvuElement {
 					</span>
 				</span>
 		</li>
-		<li class="ba-list-item" @click="${activateModuleFn(Analyse3DModuleContent.tag)}">
+		<li id="analyse3d" class="ba-list-item" @click="${toggleModuleFn(Analyse3DModuleContent.tag)}">
 			<span class="ba-list-item__pre">
 				<span class="ba-list-item__icon icon-3d_wind">
 				</span>
@@ -155,7 +144,7 @@ export class AdditionalMenu extends MvuElement {
 				</span>
 			</span>
 		</li>
-		<li class="ba-list-item">
+		<li id="geotherm" class="ba-list-item">
 			<span class="ba-list-item__pre">
 				<span class="ba-list-item__icon icon-standortcheck">
 				</span>
