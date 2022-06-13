@@ -4,6 +4,7 @@ import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import { open } from '../../../../../store/mainMenu/mainMenu.action';
 import { setCurrentModule } from '../../../../store/module/module.action';
+import { Analyse3DModuleContent } from '../analyse3d/Analyse3DModuleContent';
 import { EAContribution } from '../contribution/EAContribution';
 import { MixerModuleContent } from '../mixerModuleContent/MixerModuleContent';
 import { RedesignModuleContent } from '../redesignModuleContent/RedesignModuleContent';
@@ -70,6 +71,8 @@ export class ModuleContainer extends MvuElement {
 					return html`${unsafeHTML(`<${EAContribution.tag}/>`)}`;
 				case ResearchModuleContent.tag:
 					return html`${unsafeHTML(`<${ResearchModuleContent.tag}/>`)}`;
+				case Analyse3DModuleContent.tag:
+					return html`${unsafeHTML(`<${Analyse3DModuleContent.tag}/>`)}`;
 				default:
 					return nothing;
 			}

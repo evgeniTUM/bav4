@@ -46,7 +46,7 @@ describe('Analyse3DModuleContent', () => {
 				iframe: 'myAnalyse3DIFrame',
 				module: 'analyse3d',
 				frame_id: 'analyse3d_iframe',
-				header_title: 'toolbox_recherche_header'
+				header_title: 'toolbox_analyse3d'
 			});
 		});
 

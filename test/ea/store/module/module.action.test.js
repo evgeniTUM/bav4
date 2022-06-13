@@ -8,7 +8,7 @@ import { ModuleId } from '../../../../src/ea/store/module/module.action';
 describe('toolAction', () => {
 
 	it('exports a ModuleId enum', () => {
-		expect(Object.keys(ModuleId).length).toBe(4);
+		expect(Object.keys(ModuleId).length).toBe(5);
 		expect(Object.isFrozen(ModuleId)).toBeTrue();
 		expect(ModuleId).toEqual([
 			MixerModuleContent.tag,

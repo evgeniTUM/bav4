@@ -13,7 +13,7 @@ export class Analyse3DModuleContent extends AbstractModuleContent {
 			iframe: 'myAnalyse3DIFrame',
 			module: 'analyse3d',
 			frame_id: 'analyse3d_iframe',
-			header_title: translate('toolbox_recherche_header')
+			header_title: translate('toolbox_analyse3d')
 
 		};
 	}

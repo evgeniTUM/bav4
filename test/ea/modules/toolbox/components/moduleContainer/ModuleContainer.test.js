@@ -1,3 +1,4 @@
+import { Analyse3DModuleContent } from '../../../../../../src/ea/modules/toolbox/components/analyse3d/Analyse3DModuleContent';
 import { EAContribution } from '../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
 import { MixerModuleContent } from '../../../../../../src/ea/modules/toolbox/components/mixerModuleContent/MixerModuleContent';
 import { ModuleContainer } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/ModuleContainer';
@@ -17,7 +18,8 @@ const modules = [
 	MixerModuleContent.tag,
 	ResearchModuleContent.tag,
 	RedesignModuleContent.tag,
-	EAContribution.tag
+	EAContribution.tag,
+	Analyse3DModuleContent.tag
 ];
 
 
