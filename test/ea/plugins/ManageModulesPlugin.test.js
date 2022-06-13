@@ -2,9 +2,9 @@ import { CONTRIBUTION_LAYER_ID } from '../../../src/ea/modules/map/components/ol
 import { GEO_FEATURE_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler.js';
 import { WMS_ACTIONS_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/wmsActions/OlWmsActionsLayerHandler.js';
 import { EAContribution } from '../../../src/ea/modules/toolbox/components/contribution/EAContribution.js';
-import { MixerModuleContent } from '../../../src/ea/modules/toolbox/components/mixerModuleContent/MixerModuleContent.js';
-import { RedesignModuleContent } from '../../../src/ea/modules/toolbox/components/redesignModuleContent/RedesignModuleContent.js';
-import { ResearchModuleContent } from '../../../src/ea/modules/toolbox/components/researchModuleContent/ResearchModuleContent.js';
+import { MixerModuleContent } from '../../../src/ea/modules/toolbox/components/mixer/MixerModuleContent.js';
+import { RedesignModuleContent } from '../../../src/ea/modules/toolbox/components/redesign/RedesignModuleContent.js';
+import { ResearchModuleContent } from '../../../src/ea/modules/toolbox/components/research/ResearchModuleContent.js';
 import { ManageModulesPlugin } from '../../../src/ea/plugins/ManageModulesPlugin.js';
 import { activateGeoResource, deactivateGeoResource, setCurrentModule } from '../../../src/ea/store/module/module.action.js';
 import { moduleReducer } from '../../../src/ea/store/module/module.reducer.js';

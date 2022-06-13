@@ -7,9 +7,9 @@ import { CONTRIBUTION_LAYER_ID } from '../modules/map/components/olMap/handler/c
 import { GEO_FEATURE_LAYER_ID } from '../modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler';
 import { WMS_ACTIONS_LAYER_ID } from '../modules/map/components/olMap/handler/wmsActions/OlWmsActionsLayerHandler';
 import { EAContribution } from '../modules/toolbox/components/contribution/EAContribution';
-import { MixerModuleContent } from '../modules/toolbox/components/mixerModuleContent/MixerModuleContent';
-import { RedesignModuleContent } from '../modules/toolbox/components/redesignModuleContent/RedesignModuleContent';
-import { ResearchModuleContent } from '../modules/toolbox/components/researchModuleContent/ResearchModuleContent';
+import { MixerModuleContent } from '../modules/toolbox/components/mixer/MixerModuleContent';
+import { RedesignModuleContent } from '../modules/toolbox/components/redesign/RedesignModuleContent';
+import { ResearchModuleContent } from '../modules/toolbox/components/research/ResearchModuleContent';
 import { ModuleId } from '../store/module/module.action';
 
 export class ManageModulesPlugin extends BaPlugin {

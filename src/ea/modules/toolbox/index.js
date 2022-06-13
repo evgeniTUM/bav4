@@ -1,7 +1,9 @@
-import './i18n';
-import './components/moduleContainer';
-import './components/mixerModuleContent';
-import './components/redesignModuleContent';
-import './components/contribution';
-import './components/researchModuleContent';
 import './components/analyse3d';
+import './components/contribution';
+import './components/geotherm';
+import './components/mixer';
+import './components/moduleContainer';
+import './components/redesign';
+import './components/research';
+import './i18n';
+

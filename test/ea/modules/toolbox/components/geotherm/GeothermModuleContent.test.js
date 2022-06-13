@@ -1,14 +1,14 @@
-import { RedesignModuleContent } from '../../../../../../src/ea/modules/toolbox/components/redesignModuleContent/RedesignModuleContent';
+import { GeothermModuleContent } from '../../../../../../src/ea/modules/toolbox/components/geotherm/GeothermModuleContent';
 import { AbstractModuleContent } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/AbstractModuleContent';
 import { fnModuleCommReducer } from '../../../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
 import { geofeatureReducer } from '../../../../../../src/ea/store/geofeature/geofeature.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { TestUtils } from '../../../../../test-utils';
 
-window.customElements.define(RedesignModuleContent.tag, RedesignModuleContent);
+window.customElements.define(GeothermModuleContent.tag, GeothermModuleContent);
 
 
-describe('RedesignModuleContent', () => {
+describe('GeothermModuleContent', () => {
 
 	const storeActions = [];
 
@@ -28,7 +28,7 @@ describe('RedesignModuleContent', () => {
 		$injector
 			.registerSingleton('TranslationService', { translate: (key) => key })
 			.registerSingleton('ConfigService', configServiceMock);
-		return TestUtils.render(RedesignModuleContent.tag);
+		return TestUtils.render(GeothermModuleContent.tag);
 	};
 
 	describe('class', () => {
@@ -43,10 +43,10 @@ describe('RedesignModuleContent', () => {
 		it('has correct configuration', async () => {
 			const element = await setup();
 			expect(element.getConfig()).toEqual({
-				iframe: 'myRedesignIFrame',
-				module: 'redesign',
-				frame_id: 'redesign_iframe',
-				header_title: 'toolbox_redesign_header'
+				iframe: 'myGeothermIFrame',
+				module: 'geotherm',
+				frame_id: 'geotherm_iframe',
+				header_title: 'toolbox_geotherm'
 			});
 		});
 
