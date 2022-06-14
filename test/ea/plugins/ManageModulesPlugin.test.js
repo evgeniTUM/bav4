@@ -1,6 +1,5 @@
 import { CONTRIBUTION_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/contribution/OlContributionHandler.js';
 import { GEO_FEATURE_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler.js';
-import { WMS_ACTIONS_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/wmsActions/OlWmsActionsLayerHandler.js';
 import { EAContribution } from '../../../src/ea/modules/toolbox/components/contribution/EAContribution.js';
 import { MixerModuleContent } from '../../../src/ea/modules/toolbox/components/mixer/MixerModuleContent.js';
 import { RedesignModuleContent } from '../../../src/ea/modules/toolbox/components/redesign/RedesignModuleContent.js';
@@ -149,36 +148,6 @@ describe('ManageModulesPlugin', () => {
 			a.payload === 'module-georesource-42');
 		expect(actions).toHaveSize(1);
 		expect(actions[0].payload).toEqual('module-georesource-42');
-	});
-
-	it('activates OlWmsActionsLayerHandler when a georesource layer is active', async () => {
-		const store = setup();
-
-		const instanceUnderTest = new ManageModulesPlugin();
-		await instanceUnderTest.register(store);
-
-		activateGeoResource('42');
-
-		const actions = storeActions.filter(a =>
-			a.type === LAYER_ADDED &&
-			a.payload.id === WMS_ACTIONS_LAYER_ID);
-		expect(actions).toHaveSize(1);
-		expect(actions[0].payload.properties).toEqual({ label: 'wms-actions-layer', constraints: { hidden: true, alwaysTop: true } });
-	});
-
-	it('deactivates OlWmsActionsLayerHandler when no georesource layer is active', async () => {
-		const store = setup();
-
-		const instanceUnderTest = new ManageModulesPlugin();
-		await instanceUnderTest.register(store);
-
-		activateGeoResource('42');
-		deactivateGeoResource('42');
-
-		const actions = storeActions.filter(a =>
-			a.type === LAYER_REMOVED &&
-			a.payload === WMS_ACTIONS_LAYER_ID);
-		expect(actions).toHaveSize(1);
 	});
 
 });

@@ -5,7 +5,6 @@ import { close, open } from '../../store/mainMenu/mainMenu.action';
 import { observe } from '../../utils/storeUtils';
 import { CONTRIBUTION_LAYER_ID } from '../modules/map/components/olMap/handler/contribution/OlContributionHandler';
 import { GEO_FEATURE_LAYER_ID } from '../modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler';
-import { WMS_ACTIONS_LAYER_ID } from '../modules/map/components/olMap/handler/wmsActions/OlWmsActionsLayerHandler';
 import { EAContribution } from '../modules/toolbox/components/contribution/EAContribution';
 import { MixerModuleContent } from '../modules/toolbox/components/mixer/MixerModuleContent';
 import { RedesignModuleContent } from '../modules/toolbox/components/redesign/RedesignModuleContent';
@@ -73,14 +72,6 @@ export class ManageModulesPlugin extends BaPlugin {
 
 		const { GeoResourceService: geoResourceService } = $injector.inject('GeoResourceService');
 		const onActiveGeoResourcesChanged = (ids) => {
-
-			if (ids.length > 0) {
-				addLayer(WMS_ACTIONS_LAYER_ID, { label: 'wms-actions-layer', constraints: { hidden: true, alwaysTop: true } });
-			}
-			else {
-				removeLayer(WMS_ACTIONS_LAYER_ID);
-			}
-
 			const idsToAdd = ids.filter(id => !this._activeGeoResources.has(id));
 			const idsToRemove = Array.from(this._activeGeoResources).filter(id => !new Set(ids).has(id));
 

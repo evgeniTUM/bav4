@@ -20,13 +20,11 @@ export class EaOlMap extends OlMap {
 		});
 		const {
 			OlGeoFeatureLayerHandler: olGeoFeatureLayerHandler,
-			OlContributionHandler: olContributionHandler,
-			OlWmsActionsLayerHandler: olWmsActionsLayerHandler
-		} = $injector.inject('OlGeoFeatureLayerHandler', 'OlContributionHandler', 'OlWmsActionsLayerHandler');
+			OlContributionHandler: olContributionHandler
+		} = $injector.inject('OlGeoFeatureLayerHandler', 'OlContributionHandler');
 		//
 		this._layerHandler.set(olGeoFeatureLayerHandler.id, olGeoFeatureLayerHandler);
 		this._layerHandler.set(olContributionHandler.id, olContributionHandler);
-		this._layerHandler.set(olWmsActionsLayerHandler.id, olWmsActionsLayerHandler);
 
 		this._cursorStyle = 'auto';
 	}

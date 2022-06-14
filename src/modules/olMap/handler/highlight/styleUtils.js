@@ -146,4 +146,13 @@ export const createAnimation = (map, feature) => {
 	return animate;
 };
 
+export const eabMarkerStyleFunction = () => new Style({
+	image: new Icon({
+		anchor: [0.5, 1],
+		anchorXUnits: 'fraction',
+		anchorYUnits: 'fraction',
+		src: 'assets/marker.png'
+	})
+});
+
 

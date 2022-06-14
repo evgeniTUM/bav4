@@ -22,7 +22,7 @@ export const GEO_FEATURE_LAYER_ID = 'geofeature_layer';
 export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 	constructor() {
-		super(GEO_FEATURE_LAYER_ID);
+		super(GEO_FEATURE_LAYER_ID, { preventDefaultClickHandling: false, preventDefaultContextClickHandling: false });
 		const { StoreService, CoordinateService, MapService, TranslationService } = $injector
 			.inject('StoreService', 'CoordinateService', 'MapService', 'TranslationService');
 
