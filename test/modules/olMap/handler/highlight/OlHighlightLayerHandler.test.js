@@ -5,7 +5,7 @@ import Map from 'ol/Map';
 import { fromLonLat } from 'ol/proj';
 import View from 'ol/View';
 import { OlHighlightLayerHandler } from '../../../../../src/modules/olMap/handler/highlight/OlHighlightLayerHandler';
-import { highlightAnimatedCoordinateFeatureStyleFunction, highlightCoordinateFeatureStyleFunction, highlightGeometryFeatureStyleFunction, highlightTemporaryCoordinateFeatureStyleFunction, highlightTemporaryGeometryFeatureStyleFunction } from '../../../../../src/modules/olMap/handler/highlight/styleUtils';
+import { eabMarkerStyleFunction, highlightAnimatedCoordinateFeatureStyleFunction, highlightCoordinateFeatureStyleFunction, highlightGeometryFeatureStyleFunction, highlightTemporaryCoordinateFeatureStyleFunction, highlightTemporaryGeometryFeatureStyleFunction } from '../../../../../src/modules/olMap/handler/highlight/styleUtils';
 import WKT from 'ol/format/WKT';
 import GeoJSON from 'ol/format/GeoJSON';
 import { Point } from 'ol/geom';
@@ -220,7 +220,7 @@ describe('OlHighlightLayerHandler', () => {
 			expect(styledFeature0.getStyle()()).toEqual(highlightCoordinateFeatureStyleFunction());
 			expect(styledFeature1.getStyle()()).toEqual(highlightTemporaryCoordinateFeatureStyleFunction());
 			expect(animatePointFeatureSyp).toHaveBeenCalledWith(animatedFeature);
-			expect(styledFeature3.getStyle()()).toEqual(highlightAnimatedCoordinateFeatureStyleFunction());
+			expect(styledFeature3.getStyle()()).toEqual(eabMarkerStyleFunction());
 		});
 
 		it('sets the correct style features containing a HighlightGeometry', () => {

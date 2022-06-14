@@ -3,7 +3,7 @@ import { $injector } from '../../../../injection';
 import { observe } from '../../../../utils/storeUtils';
 import { HIGHLIGHT_LAYER_ID } from '../../../../plugins/HighlightPlugin';
 import Feature from 'ol/Feature';
-import { createAnimation, highlightAnimatedCoordinateFeatureStyleFunction, highlightCoordinateFeatureStyleFunction, highlightGeometryFeatureStyleFunction, highlightTemporaryCoordinateFeatureStyleFunction, highlightTemporaryGeometryFeatureStyleFunction } from './styleUtils';
+import { createAnimation, eabMarkerStyleFunction, highlightAnimatedCoordinateFeatureStyleFunction, highlightCoordinateFeatureStyleFunction, highlightGeometryFeatureStyleFunction, highlightTemporaryCoordinateFeatureStyleFunction, highlightTemporaryGeometryFeatureStyleFunction } from './styleUtils';
 import { Vector as VectorSource } from 'ol/source';
 import { Vector as VectorLayer } from 'ol/layer';
 import { Point } from 'ol/geom';
@@ -102,7 +102,7 @@ export class OlHighlightLayerHandler extends OlLayerHandler {
 					this._animatePointFeature(olFeature);
 					break;
 				case HighlightFeatureType.QUERY_SUCCESS:
-					olFeature.setStyle(highlightAnimatedCoordinateFeatureStyleFunction);
+					olFeature.setStyle(eabMarkerStyleFunction);
 			}
 		}
 		else {
