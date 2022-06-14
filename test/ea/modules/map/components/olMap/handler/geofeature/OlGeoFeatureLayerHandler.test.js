@@ -62,7 +62,7 @@ describe('OlGeoFeatureLayerHandler', () => {
 		expect(handler.activate).toBeTruthy();
 		expect(handler.deactivate).toBeTruthy();
 		expect(handler.id).toBe(GEO_FEATURE_LAYER_ID);
-		expect(handler.options).toEqual({ preventDefaultClickHandling: true, preventDefaultContextClickHandling: true });
+		expect(handler.options).toEqual({ preventDefaultClickHandling: false, preventDefaultContextClickHandling: false });
 	});
 
 	describe('when activated over olMap,', () => {
