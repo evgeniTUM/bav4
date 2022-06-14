@@ -1,15 +1,15 @@
-import { TestUtils } from '../../../../test-utils';
-import { highlightReducer } from '../../../../../src/store/highlight/highlight.reducer';
-import { addHighlightFeatures, clearHighlightFeatures, HighlightFeatureType, HighlightGeometryType } from '../../../../../src/store/highlight/highlight.action';
+import { Feature } from 'ol';
+import GeoJSON from 'ol/format/GeoJSON';
+import WKT from 'ol/format/WKT';
+import { Point } from 'ol/geom';
 import Map from 'ol/Map';
 import { fromLonLat } from 'ol/proj';
 import View from 'ol/View';
 import { OlHighlightLayerHandler } from '../../../../../src/modules/olMap/handler/highlight/OlHighlightLayerHandler';
-import { eabMarkerStyleFunction, highlightAnimatedCoordinateFeatureStyleFunction, highlightCoordinateFeatureStyleFunction, highlightGeometryFeatureStyleFunction, highlightTemporaryCoordinateFeatureStyleFunction, highlightTemporaryGeometryFeatureStyleFunction } from '../../../../../src/modules/olMap/handler/highlight/styleUtils';
-import WKT from 'ol/format/WKT';
-import GeoJSON from 'ol/format/GeoJSON';
-import { Point } from 'ol/geom';
-import { Feature } from 'ol';
+import { eabMarkerStyleFunction, highlightCoordinateFeatureStyleFunction, highlightGeometryFeatureStyleFunction, highlightTemporaryCoordinateFeatureStyleFunction, highlightTemporaryGeometryFeatureStyleFunction } from '../../../../../src/modules/olMap/handler/highlight/styleUtils';
+import { addHighlightFeatures, clearHighlightFeatures, HighlightFeatureType, HighlightGeometryType } from '../../../../../src/store/highlight/highlight.action';
+import { highlightReducer } from '../../../../../src/store/highlight/highlight.reducer';
+import { TestUtils } from '../../../../test-utils';
 
 describe('OlHighlightLayerHandler', () => {
 
