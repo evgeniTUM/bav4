@@ -8,8 +8,8 @@
 	-webkit-mask-size: cover;
 	cursor: pointer;
 	display: inline-block;
-	height: 1.6em;
-	width: 1.6em;
+	height: 2em;
+	width: 2em;
 }
 .inactive {
 	background: var(--text3);
