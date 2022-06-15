@@ -2,6 +2,8 @@ export const SET_CURRENT_MODULE = 'module/set_current';
 export const ACTIVATE_GEORESOURCE = 'module/georesource/activate';
 export const DEACTIVATE_GEORESOURCE = 'module/georesource/deactivate';
 export const DEACTIVATE_ALL_GEORESOURCES = 'module/georesource/deactivate_all';
+export const DEACTIVATE_LEGEND = 'module/legend/deactivate';
+export const ACTIVATE_LEGEND = 'module/legend/activate';
 
 export const initialState = {
 
@@ -13,7 +15,12 @@ export const initialState = {
 	/**
 	 * @property {Array<string>}
 	 */
-	activeGeoResources: []
+	activeGeoResources: [],
+
+	/**
+	 * @property {boolean}
+	 */
+	legendActive: false
 };
 
 export const moduleReducer = (state = initialState, action) => {
@@ -49,6 +56,18 @@ export const moduleReducer = (state = initialState, action) => {
 			return {
 				...state,
 				activeGeoResources: []
+			};
+		}
+		case ACTIVATE_LEGEND: {
+			return {
+				...state,
+				legendActive: true
+			};
+		}
+		case DEACTIVATE_LEGEND: {
+			return {
+				...state,
+				legendActive: false
 			};
 		}
 	}
