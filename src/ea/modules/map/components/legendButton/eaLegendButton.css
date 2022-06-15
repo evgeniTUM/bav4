@@ -45,9 +45,6 @@
 	}
 }
 
-.denied {
-	background: var(--secondary-bg-color)
-}
 .legend-button {
 	background-color: var(--primary-color);
 	display: inline-block;
