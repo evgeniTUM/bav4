@@ -1,6 +1,6 @@
 .legend-icon {
-	mask: url("./assets/geolocation.svg");
-	-webkit-mask-image: url("./assets/geolocation.svg");
+	mask: url("./assets/legend.svg");
+	-webkit-mask-image: url("./assets/legend.svg");
 	background: var(--text3);
 }
 .icon {
