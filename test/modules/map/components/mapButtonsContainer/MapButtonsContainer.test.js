@@ -30,7 +30,7 @@ describe('MapButtonsContainer', () => {
 			const element = await setup();
 
 			expect(element.shadowRoot.querySelector('div').children).toHaveSize(5);
-			expect(element.shadowRoot.querySelectorAll('ba-legend-button')).toHaveSize(1);
+			expect(element.shadowRoot.querySelectorAll('ea-legend-button')).toHaveSize(1);
 			expect(element.shadowRoot.querySelectorAll('ba-rotation-button')).toHaveSize(1);
 			expect(element.shadowRoot.querySelectorAll('ba-geolocation-button')).toHaveSize(1);
 			expect(element.shadowRoot.querySelectorAll('ba-zoom-buttons')).toHaveSize(1);
