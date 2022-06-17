@@ -55,6 +55,7 @@ export class MapButtonsContainer extends MvuElement {
             <style>${css}</style>
             <div class="map-buttons-container ${getOrientationClass()} ${getMinWidthClass()}">
 				<ba-rotation-button></ba-rotation-button>
+				<ea-legend-button></ea-legend-button>
 				<ba-geolocation-button></ba-geolocation-button>
 				<ba-zoom-buttons></ba-zoom-buttons>
 				<ba-extent-button></ba-extent-button>                     

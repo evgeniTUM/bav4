@@ -1,0 +1,68 @@
+.legend-icon {
+	mask: url("./assets/legend.svg");
+	-webkit-mask-image: url("./assets/legend.svg");
+	background: var(--text3);
+}
+.icon {
+	mask-size: cover;
+	-webkit-mask-size: cover;
+	cursor: pointer;
+	display: inline-block;
+	height: 2em;
+	width: 2em;
+}
+.inactive {
+	background: var(--text3);
+}
+.active {
+	background: var(--error-color) !important;
+}
+
+.active .legend-icon {
+	background: var(--text3);
+	animation-name: stretch;
+	animation-duration: 4s; 
+	animation-timing-function: ease-out; 
+	animation-delay: 0;
+	animation-direction: alternate;
+	animation-iteration-count: infinite;
+	animation-fill-mode: none;
+	animation-play-state: running;
+}
+
+@keyframes stretch {
+	0% {
+		transform: scale(1);
+	}
+	10% {
+		transform: scale(1.2);	
+	}
+	20% {
+		transform: scale(1);		
+	}
+	100% {
+		transform: scale(1);		
+	}
+}
+
+.legend-button {
+	background-color: var(--primary-color);
+	display: inline-block;
+	height: 2.5em;
+	width: 2.5em;
+	border-radius: 50%;
+	border: none;
+	outline: none;
+	padding-top: 0.2em;
+}
+.legend-button:hover , .legend-button:focus {
+	transform: scale(1.1);
+}
+.legend-button:focus {
+
+	box-shadow: 0 0 0 .2em var(--primary-color-lighter);
+}
+.legend-button:active {
+	transform: scale(1.15);
+	border: none;
+}

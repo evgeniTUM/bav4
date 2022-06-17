@@ -5,7 +5,7 @@ import { GeothermModuleContent } from '../../modules/toolbox/components/geotherm
 import { MixerModuleContent } from '../../modules/toolbox/components/mixer/MixerModuleContent';
 import { RedesignModuleContent } from '../../modules/toolbox/components/redesign/RedesignModuleContent';
 import { ResearchModuleContent } from '../../modules/toolbox/components/research/ResearchModuleContent';
-import { ACTIVATE_GEORESOURCE, DEACTIVATE_ALL_GEORESOURCES, DEACTIVATE_GEORESOURCE, SET_CURRENT_MODULE } from './module.reducer';
+import { ACTIVATE_GEORESOURCE, ACTIVATE_LEGEND, DEACTIVATE_ALL_GEORESOURCES, DEACTIVATE_GEORESOURCE, DEACTIVATE_LEGEND, SET_CURRENT_MODULE } from './module.reducer';
 
 /**
  * Available modules.
@@ -29,7 +29,6 @@ const getStore = () => {
 /**
 * Sets the tag of the currently active module.
 * @param {initeger} features
-* @function
 */
 export const setCurrentModule = (id) => {
 	getStore().dispatch({
@@ -41,7 +40,6 @@ export const setCurrentModule = (id) => {
 /**
  * Activates a wms geo resource.
  * @param {String} id GeoResource id
- * @function
  */
 export const activateGeoResource = (id) => {
 	getStore().dispatch({
@@ -53,7 +51,6 @@ export const activateGeoResource = (id) => {
 /**
  * Deactivates a wms geo resource.
  * @param {String} id GeoResource id
- * @function
  */
 export const deactivateGeoResource = (id) => {
 	getStore().dispatch({
@@ -65,7 +62,6 @@ export const deactivateGeoResource = (id) => {
 /**
  * Deactivates all wms geo resources.
  * @param {String} id GeoResource id
- * @function
  */
 export const deactivateAllGeoResources = () => {
 	getStore().dispatch({
@@ -74,3 +70,23 @@ export const deactivateAllGeoResources = () => {
 	});
 };
 
+
+/**
+ * Activates the legend.
+ */
+export const activateLegend = () => {
+	getStore().dispatch({
+		type: ACTIVATE_LEGEND,
+		payload: null
+	});
+};
+
+/**
+ * Deactivates the legend.
+ */
+export const deactivateLegend = () => {
+	getStore().dispatch({
+		type: DEACTIVATE_LEGEND,
+		payload: null
+	});
+};
