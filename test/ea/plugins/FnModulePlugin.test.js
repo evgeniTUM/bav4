@@ -6,6 +6,8 @@ import { activateMapClick, requestMapClick } from '../../../src/ea/store/mapclic
 import { mapclickReducer, MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE } from '../../../src/ea/store/mapclick/mapclick.reducer';
 import { ACTIVATE_GEORESOURCE, DEACTIVATE_ALL_GEORESOURCES } from '../../../src/ea/store/module/module.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
+import { FEATURE_INFO_REQUEST_ABORT } from '../../../src/store/featureInfo/featureInfo.reducer.js';
+import { CLEAR_FEATURES } from '../../../src/store/highlight/highlight.reducer.js';
 import { CLICK_CHANGED, pointerReducer } from '../../../src/store/pointer/pointer.reducer';
 import { FIT_REQUESTED, ZOOM_CENTER_CHANGED } from '../../../src/store/position/position.reducer.js';
 import { TestUtils } from '../../test-utils.js';
@@ -188,7 +190,24 @@ describe('FnModulePlugin', () => {
 
 		closeFnModule();
 
-		expect(storeActions.filter(a => a.type === DEACTIVATE_ALL_GEORESOURCES).length).toBeGreaterThan(0);
+		expect(storeActions.filter(a => a.type === FEATURE_INFO_REQUEST_ABORT).length).toBeGreaterThan(0);
+	});
+
+	it('clears highlight features when closing module', async () => {
+		const module = 'dom1';
+		const domain = 'http://test-site';
+
+		const store = setup();
+
+		const instanceUnderTest = new FnModulePlugin();
+		await instanceUnderTest.register(store);
+
+		window.ea_moduleWindow = { dom1: windowMock };
+		openFnModuleComm(module, domain);
+
+		closeFnModule();
+
+		expect(storeActions.filter(a => a.type === CLEAR_FEATURES).length).toBeGreaterThan(0);
 	});
 
 	describe('when communication is open,', () => {
@@ -372,9 +391,41 @@ describe('FnModulePlugin', () => {
 				event: { origin: module }
 			});
 
-			const lastAction = storeActions.pop();
-			expect(lastAction.type).toEqual(CLEAR_LAYER);
-			expect(lastAction.payload).toEqual('42');
+			const actions = storeActions.filter(a => a.type === CLEAR_LAYER);
+			expect(actions).toHaveSize(1);
+			expect(actions[0].payload).toEqual('42');
+		});
+
+		it('clears hightlighed features on message \'clearmap\'', async () => {
+			await setupOpen();
+
+			windowMock.listenerFunction({
+				data: {
+					code: 'clearmap',
+					module: domain,
+					message: 42
+				},
+				event: { origin: module }
+			});
+
+			const actions = storeActions.filter(a => a.type === CLEAR_FEATURES);
+			expect(actions).toHaveSize(1);
+		});
+
+		it('clears featureInfo on message \'clearmap\'', async () => {
+			await setupOpen();
+
+			windowMock.listenerFunction({
+				data: {
+					code: 'clearmap',
+					module: domain,
+					message: 42
+				},
+				event: { origin: module }
+			});
+
+			const actions = storeActions.filter(a => a.type === FEATURE_INFO_REQUEST_ABORT);
+			expect(actions).toHaveSize(1);
 		});
 
 		it('sends a \'mapclick\' message on \'mapclick.coordinate\' event', async () => {

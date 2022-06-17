@@ -4,6 +4,7 @@ import VectorSource from 'ol/source/Vector';
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { abortOrReset } from '../../store/featureInfo/featureInfo.action';
+import { clearHighlightFeatures } from '../../store/highlight/highlight.action';
 import { setClick } from '../../store/pointer/pointer.action';
 import { changeZoomAndCenter, fit } from '../../store/position/position.action';
 import { observe } from '../../utils/storeUtils';
@@ -60,6 +61,7 @@ export class FnModulePlugin extends BaPlugin {
 		}
 
 		const message = data.message;
+		console.log(data);
 
 		const getFeature = (geojson) => {
 			const feature = new GeoJSON().readFeature(geojson);
@@ -98,9 +100,12 @@ export class FnModulePlugin extends BaPlugin {
 			case REMOVE_FEATURE_BY_ID:
 				removeGeoFeatures(message.layerId, [message.id]);
 				break;
-			case CLEAR_MAP:
+			case CLEAR_MAP: {
 				clearLayer(message.toString());
+				clearHighlightFeatures();
+				abortOrReset();
 				break;
+			}
 			case REMOVE_LAYER:
 				break;
 			case ZOOM:
@@ -192,8 +197,9 @@ export class FnModulePlugin extends BaPlugin {
 			else {
 				//deaktiviere das Module
 				clearMap();
-				deactivateAllGeoResources();
 				abortOrReset();
+				clearHighlightFeatures();
+				deactivateAllGeoResources();
 				buffer.features = [];
 				this.implPostCodeMessageFnModule('close', scope.module, scope.domain, targetWindow);
 			}
