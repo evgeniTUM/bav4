@@ -61,7 +61,6 @@ export class FnModulePlugin extends BaPlugin {
 		}
 
 		const message = data.message;
-		console.log(data);
 
 		const getFeature = (geojson) => {
 			const feature = new GeoJSON().readFeature(geojson);
