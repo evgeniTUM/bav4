@@ -1,6 +1,7 @@
 import { EaLegendButton } from '../../../../../../src/ea/modules/map/components/legendButton/EaLegendButton';
+import { activateLegend } from '../../../../../../src/ea/store/module/module.action';
+import { initialState, moduleReducer } from '../../../../../../src/ea/store/module/module.reducer';
 import { $injector } from '../../../../../../src/injection';
-import { geolocationReducer } from '../../../../../../src/store/geolocation/geolocation.reducer';
 import { TestUtils } from '../../../../../test-utils';
 
 window.customElements.define(EaLegendButton.tag, EaLegendButton);
@@ -8,17 +9,12 @@ window.customElements.define(EaLegendButton.tag, EaLegendButton);
 
 describe('LegendButton', () => {
 	let store;
-	const defaultState = {
-		active: false, denied: false, tracking: false, accuracy: null, position: null
-	};
 
-	const setup = async (geolocationState = defaultState) => {
+	const setup = async () => {
 
-		const state = {
-			geolocation: geolocationState
-		};
+		const state = { module: initialState };
 
-		store = TestUtils.setupStoreAndDi(state, { geolocation: geolocationReducer });
+		store = TestUtils.setupStoreAndDi(state, { module: moduleReducer });
 		$injector
 			.registerSingleton('TranslationService', { translate: (key) => key });
 
@@ -37,7 +33,9 @@ describe('LegendButton', () => {
 
 
 		it('shows legend button in active state', async () => {
-			const element = await setup({ ...defaultState, active: true });
+			const element = await setup();
+
+			activateLegend();
 
 			expect(element.shadowRoot.querySelector('.legend')).toBeTruthy();
 			expect(element.shadowRoot.querySelector('.legend-button').title).toBe('map_legendButton_title_deactivate');
@@ -47,22 +45,17 @@ describe('LegendButton', () => {
 	});
 
 	describe('when clicked', () => {
-		it('activates geolocation', async () => {
+		it('activates/deactivates legend', async () => {
 			const element = await setup();
 
-			expect(store.getState().geolocation.active).toBe(false);
 			element.shadowRoot.querySelector('button').click();
 
-			expect(store.getState().geolocation.active).toBe(true);
-		});
+			expect(store.getState().module.legendActive).toBe(true);
 
-		it('deactivates geolocation', async () => {
-			const element = await setup({ ...defaultState, active: true });
-
-			expect(store.getState().geolocation.active).toBe(true);
 			element.shadowRoot.querySelector('button').click();
 
-			expect(store.getState().geolocation.active).toBe(false);
+			expect(store.getState().module.legendActive).toBe(false);
 		});
+
 	});
 });

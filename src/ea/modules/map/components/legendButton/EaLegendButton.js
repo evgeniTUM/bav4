@@ -1,9 +1,9 @@
 import { html } from 'lit-html';
-import css from './eaLegendButton.css';
 import { classMap } from 'lit-html/directives/class-map.js';
-import { BaElement } from '../../../../../modules/BaElement';
 import { $injector } from '../../../../../injection';
-import { activate, deactivate } from '../../../../../store/geolocation/geolocation.action';
+import { BaElement } from '../../../../../modules/BaElement';
+import { activateLegend, deactivateLegend } from '../../../../store/module/module.action';
+import css from './eaLegendButton.css';
 
 export class EaLegendButton extends BaElement {
 
@@ -21,10 +21,10 @@ export class EaLegendButton extends BaElement {
 		const translate = (key) => this._translationService.translate(key);
 		const onClick = () => {
 			if (active) {
-				deactivate();
+				deactivateLegend();
 			}
 			else {
-				activate();
+				activateLegend();
 			}
 		};
 
@@ -47,8 +47,8 @@ export class EaLegendButton extends BaElement {
 	}
 
 	extractState(globalState) {
-		const { geolocation: { active } } = globalState;
-		return { active };
+		const { module: { legendActive } } = globalState;
+		return { active: legendActive };
 	}
 
 
