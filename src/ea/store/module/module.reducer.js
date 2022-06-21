@@ -4,6 +4,8 @@ export const DEACTIVATE_GEORESOURCE = 'module/georesource/deactivate';
 export const DEACTIVATE_ALL_GEORESOURCES = 'module/georesource/deactivate_all';
 export const DEACTIVATE_LEGEND = 'module/legend/deactivate';
 export const ACTIVATE_LEGEND = 'module/legend/activate';
+export const SET_LEGEND_GEORESOURCE_ID = 'module/legend/set';
+export const CLEAR_LEGEND_GEORESOURCE_ID = 'module/legend/clear';
 
 export const initialState = {
 
@@ -20,7 +22,13 @@ export const initialState = {
 	/**
 	 * @property {boolean}
 	 */
-	legendActive: false
+	legendActive: false,
+
+	/**
+	 * @property {String|null}
+	 */
+	legendGeoresourceId: null
+
 };
 
 export const moduleReducer = (state = initialState, action) => {
@@ -68,6 +76,18 @@ export const moduleReducer = (state = initialState, action) => {
 			return {
 				...state,
 				legendActive: false
+			};
+		}
+		case SET_LEGEND_GEORESOURCE_ID: {
+			return {
+				...state,
+				legendGeoresourceId: payload
+			};
+		}
+		case CLEAR_LEGEND_GEORESOURCE_ID: {
+			return {
+				...state,
+				legendGeoresourceId: null
 			};
 		}
 	}
