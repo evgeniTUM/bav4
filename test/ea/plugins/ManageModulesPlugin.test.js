@@ -94,9 +94,10 @@ describe('ManageModulesPlugin', () => {
 	});
 
 	describe('when closing a module, ', () => {
+		let store;
 
-		it('opens the main menu', async () => {
-			const store = setup();
+		beforeEach(async () => {
+			store = setup();
 
 			const instanceUnderTest = new ManageModulesPlugin();
 			await instanceUnderTest.register(store);
@@ -105,108 +106,58 @@ describe('ManageModulesPlugin', () => {
 
 			setCurrentModule(MixerModuleContent.tag);
 			setCurrentModule('something');
+		});
 
+		it('opens the main menu', async () => {
 			expect(store.getState().mainMenu.open).toBeTrue();
 		});
 
 		it('clears map', async () => {
-			const store = setup();
-
-			const instanceUnderTest = new ManageModulesPlugin();
-			await instanceUnderTest.register(store);
-
-			setCurrentModule(MixerModuleContent.tag);
-			setCurrentModule(null);
-
 			expect(storeActions.filter(a => a.type === CLEAR_MAP).length).toBeGreaterThan(0);
 		});
 
 		it('clears active georesources', async () => {
-			const store = setup();
-
-			const instanceUnderTest = new ManageModulesPlugin();
-			await instanceUnderTest.register(store);
-
-			setCurrentModule(MixerModuleContent.tag);
-			setCurrentModule(null);
-
 			expect(storeActions.filter(a => a.type === DEACTIVATE_ALL_GEORESOURCES).length).toBeGreaterThan(0);
 		});
 
 		it('resets featureInfo state', async () => {
-
-			const store = setup();
-
-			const instanceUnderTest = new ManageModulesPlugin();
-			await instanceUnderTest.register(store);
-
-			setCurrentModule(MixerModuleContent.tag);
-			setCurrentModule(null);
 			expect(storeActions.filter(a => a.type === FEATURE_INFO_REQUEST_ABORT).length).toBeGreaterThan(0);
 		});
 
 		it('clears highlight features', async () => {
-			const store = setup();
-
-			const instanceUnderTest = new ManageModulesPlugin();
-			await instanceUnderTest.register(store);
-
-			setCurrentModule(MixerModuleContent.tag);
-			setCurrentModule(null);
-
 			expect(storeActions.filter(a => a.type === CLEAR_FEATURES).length).toBeGreaterThan(0);
 		});
 	});
 
 
 	describe('when switching module, ', () => {
+		let store;
 
-		it('clears map', async () => {
-			const store = setup();
+		beforeEach(async () => {
+			store = setup();
 
 			const instanceUnderTest = new ManageModulesPlugin();
 			await instanceUnderTest.register(store);
 
+			expect(store.getState().mainMenu.open).toBeTrue();
+
 			setCurrentModule(MixerModuleContent.tag);
 			setCurrentModule(ResearchModuleContent.tag);
+		});
 
+		it('clears map', async () => {
 			expect(storeActions.filter(a => a.type === CLEAR_MAP).length).toBeGreaterThan(0);
 		});
 
 		it('clears active georesources', async () => {
-			const store = setup();
-
-			const instanceUnderTest = new ManageModulesPlugin();
-			await instanceUnderTest.register(store);
-
-			setCurrentModule(MixerModuleContent.tag);
-			setCurrentModule(ResearchModuleContent.tag);
-
 			expect(storeActions.filter(a => a.type === DEACTIVATE_ALL_GEORESOURCES).length).toBeGreaterThan(0);
 		});
 
 		it('resets featureInfo state', async () => {
-
-			const store = setup();
-
-			const instanceUnderTest = new ManageModulesPlugin();
-			await instanceUnderTest.register(store);
-
-			setCurrentModule(MixerModuleContent.tag);
-			setCurrentModule(ResearchModuleContent.tag);
-
 			expect(storeActions.filter(a => a.type === FEATURE_INFO_REQUEST_ABORT).length).toBeGreaterThan(0);
 		});
 
 		it('clears highlight features', async () => {
-			const store = setup();
-
-			const instanceUnderTest = new ManageModulesPlugin();
-			await instanceUnderTest.register(store);
-
-			setCurrentModule(MixerModuleContent.tag);
-			setCurrentModule(ResearchModuleContent.tag);
-
 			expect(storeActions.filter(a => a.type === CLEAR_FEATURES).length).toBeGreaterThan(0);
 		});
 	});
