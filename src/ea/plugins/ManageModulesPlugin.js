@@ -29,15 +29,16 @@ export class ManageModulesPlugin extends BaPlugin {
 	async register(store) {
 
 		const handleMainMenu = (currentModule, lastModule) => {
-			if (ModuleId.includes(currentModule)) {
-				close();
-			}
-			else if (ModuleId.includes(lastModule)) {
+			if (ModuleId.includes(lastModule)) {
 				clearMap();
 				abortOrReset();
 				clearHighlightFeatures();
 				deactivateAllGeoResources();
 				open();
+			}
+
+			if (ModuleId.includes(currentModule)) {
+				close();
 			}
 		};
 

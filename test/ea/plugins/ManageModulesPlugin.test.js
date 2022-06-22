@@ -92,6 +92,7 @@ describe('ManageModulesPlugin', () => {
 		setCurrentModule(ResearchModuleContent.tag);
 		expect(store.getState().mainMenu.open).toBeFalse();
 	});
+
 	describe('when closing a module, ', () => {
 
 		it('opens the main menu', async () => {
@@ -152,6 +153,59 @@ describe('ManageModulesPlugin', () => {
 
 			setCurrentModule(MixerModuleContent.tag);
 			setCurrentModule(null);
+
+			expect(storeActions.filter(a => a.type === CLEAR_FEATURES).length).toBeGreaterThan(0);
+		});
+	});
+
+
+	describe('when switching module, ', () => {
+
+		it('clears map', async () => {
+			const store = setup();
+
+			const instanceUnderTest = new ManageModulesPlugin();
+			await instanceUnderTest.register(store);
+
+			setCurrentModule(MixerModuleContent.tag);
+			setCurrentModule(ResearchModuleContent.tag);
+
+			expect(storeActions.filter(a => a.type === CLEAR_MAP).length).toBeGreaterThan(0);
+		});
+
+		it('clears active georesources', async () => {
+			const store = setup();
+
+			const instanceUnderTest = new ManageModulesPlugin();
+			await instanceUnderTest.register(store);
+
+			setCurrentModule(MixerModuleContent.tag);
+			setCurrentModule(ResearchModuleContent.tag);
+
+			expect(storeActions.filter(a => a.type === DEACTIVATE_ALL_GEORESOURCES).length).toBeGreaterThan(0);
+		});
+
+		it('resets featureInfo state', async () => {
+
+			const store = setup();
+
+			const instanceUnderTest = new ManageModulesPlugin();
+			await instanceUnderTest.register(store);
+
+			setCurrentModule(MixerModuleContent.tag);
+			setCurrentModule(ResearchModuleContent.tag);
+
+			expect(storeActions.filter(a => a.type === FEATURE_INFO_REQUEST_ABORT).length).toBeGreaterThan(0);
+		});
+
+		it('clears highlight features', async () => {
+			const store = setup();
+
+			const instanceUnderTest = new ManageModulesPlugin();
+			await instanceUnderTest.register(store);
+
+			setCurrentModule(MixerModuleContent.tag);
+			setCurrentModule(ResearchModuleContent.tag);
 
 			expect(storeActions.filter(a => a.type === CLEAR_FEATURES).length).toBeGreaterThan(0);
 		});
