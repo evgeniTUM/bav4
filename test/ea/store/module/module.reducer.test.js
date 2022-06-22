@@ -1,4 +1,4 @@
-import { activateGeoResource, activateLegend, deactivateAllGeoResources, deactivateGeoResource, deactivateLegend, setCurrentModule } from '../../../../src/ea/store/module/module.action';
+import { activateGeoResource, activateLegend, clearLegendGeoresourceId, deactivateAllGeoResources, deactivateGeoResource, deactivateLegend, setCurrentModule, setLegendGeoresourceId } from '../../../../src/ea/store/module/module.action';
 import { moduleReducer } from '../../../../src/ea/store/module/module.reducer';
 import { TestUtils } from '../../../test-utils';
 
@@ -16,6 +16,7 @@ describe('module Reducer', () => {
 		expect(store.getState().module.current).toBe(null);
 		expect(store.getState().module.activeGeoResources).toEqual([]);
 		expect(store.getState().module.legendActive).toEqual(false);
+		expect(store.getState().module.legendGeoresourceId).toEqual(null);
 	});
 
 	it('sets the module id', () => {
@@ -65,6 +66,18 @@ describe('module Reducer', () => {
 		deactivateLegend();
 
 		expect(store.getState().module.legendActive).toEqual(false);
+	});
+
+	it('sets/resets the georesource id for the legend', () => {
+		const store = setup();
+
+		setLegendGeoresourceId('id42');
+
+		expect(store.getState().module.legendGeoresourceId).toEqual('id42');
+
+		clearLegendGeoresourceId('id42');
+
+		expect(store.getState().module.legendGeoresourceId).toEqual(null);
 	});
 
 });
