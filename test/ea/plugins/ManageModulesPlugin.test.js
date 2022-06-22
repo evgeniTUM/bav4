@@ -5,9 +5,12 @@ import { MixerModuleContent } from '../../../src/ea/modules/toolbox/components/m
 import { RedesignModuleContent } from '../../../src/ea/modules/toolbox/components/redesign/RedesignModuleContent.js';
 import { ResearchModuleContent } from '../../../src/ea/modules/toolbox/components/research/ResearchModuleContent.js';
 import { ManageModulesPlugin } from '../../../src/ea/plugins/ManageModulesPlugin.js';
+import { CLEAR_MAP } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
 import { activateGeoResource, deactivateGeoResource, setCurrentModule } from '../../../src/ea/store/module/module.action.js';
-import { moduleReducer } from '../../../src/ea/store/module/module.reducer.js';
+import { DEACTIVATE_ALL_GEORESOURCES, moduleReducer } from '../../../src/ea/store/module/module.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
+import { FEATURE_INFO_REQUEST_ABORT } from '../../../src/store/featureInfo/featureInfo.reducer.js';
+import { CLEAR_FEATURES } from '../../../src/store/highlight/highlight.reducer.js';
 import { layersReducer, LAYER_ADDED, LAYER_REMOVED } from '../../../src/store/layers/layers.reducer.js';
 import { createMainMenuReducer } from '../../../src/store/mainMenu/mainMenu.reducer.js';
 import { TestUtils } from '../../test-utils.js';
@@ -75,8 +78,7 @@ describe('ManageModulesPlugin', () => {
 		});
 	});
 
-
-	it('toggles the main menu when opening/closing a module', async () => {
+	it('when opening a module, closes the main menu', async () => {
 		const store = setup();
 
 		const instanceUnderTest = new ManageModulesPlugin();
@@ -89,9 +91,75 @@ describe('ManageModulesPlugin', () => {
 
 		setCurrentModule(ResearchModuleContent.tag);
 		expect(store.getState().mainMenu.open).toBeFalse();
+	});
 
-		setCurrentModule('something');
-		expect(store.getState().mainMenu.open).toBeTrue();
+	describe('when closing a module, ', () => {
+		let store;
+
+		beforeEach(async () => {
+			store = setup();
+
+			const instanceUnderTest = new ManageModulesPlugin();
+			await instanceUnderTest.register(store);
+
+			expect(store.getState().mainMenu.open).toBeTrue();
+
+			setCurrentModule(MixerModuleContent.tag);
+			setCurrentModule('something');
+		});
+
+		it('opens the main menu', async () => {
+			expect(store.getState().mainMenu.open).toBeTrue();
+		});
+
+		it('clears map', async () => {
+			expect(storeActions.filter(a => a.type === CLEAR_MAP).length).toBeGreaterThan(0);
+		});
+
+		it('clears active georesources', async () => {
+			expect(storeActions.filter(a => a.type === DEACTIVATE_ALL_GEORESOURCES).length).toBeGreaterThan(0);
+		});
+
+		it('resets featureInfo state', async () => {
+			expect(storeActions.filter(a => a.type === FEATURE_INFO_REQUEST_ABORT).length).toBeGreaterThan(0);
+		});
+
+		it('clears highlight features', async () => {
+			expect(storeActions.filter(a => a.type === CLEAR_FEATURES).length).toBeGreaterThan(0);
+		});
+	});
+
+
+	describe('when switching module, ', () => {
+		let store;
+
+		beforeEach(async () => {
+			store = setup();
+
+			const instanceUnderTest = new ManageModulesPlugin();
+			await instanceUnderTest.register(store);
+
+			expect(store.getState().mainMenu.open).toBeTrue();
+
+			setCurrentModule(MixerModuleContent.tag);
+			setCurrentModule(ResearchModuleContent.tag);
+		});
+
+		it('clears map', async () => {
+			expect(storeActions.filter(a => a.type === CLEAR_MAP).length).toBeGreaterThan(0);
+		});
+
+		it('clears active georesources', async () => {
+			expect(storeActions.filter(a => a.type === DEACTIVATE_ALL_GEORESOURCES).length).toBeGreaterThan(0);
+		});
+
+		it('resets featureInfo state', async () => {
+			expect(storeActions.filter(a => a.type === FEATURE_INFO_REQUEST_ABORT).length).toBeGreaterThan(0);
+		});
+
+		it('clears highlight features', async () => {
+			expect(storeActions.filter(a => a.type === CLEAR_FEATURES).length).toBeGreaterThan(0);
+		});
 	});
 
 	it('activates a georesource layer', async () => {

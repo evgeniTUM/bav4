@@ -8,7 +8,7 @@ import { clearHighlightFeatures } from '../../store/highlight/highlight.action';
 import { setClick } from '../../store/pointer/pointer.action';
 import { changeZoomAndCenter, fit } from '../../store/position/position.action';
 import { observe } from '../../utils/storeUtils';
-import { addGeoFeatureLayer, addGeoFeatures, clearLayer, clearMap, removeGeoFeatures } from '../store/geofeature/geofeature.action';
+import { addGeoFeatureLayer, addGeoFeatures, clearLayer, removeGeoFeatures } from '../store/geofeature/geofeature.action';
 import { activateMapClick, deactivateMapClick } from '../store/mapclick/mapclick.action';
 import { activateGeoResource, deactivateAllGeoResources } from '../store/module/module.action';
 
@@ -195,10 +195,6 @@ export class FnModulePlugin extends BaPlugin {
 			}
 			else {
 				//deaktiviere das Module
-				clearMap();
-				abortOrReset();
-				clearHighlightFeatures();
-				deactivateAllGeoResources();
 				buffer.features = [];
 				this.implPostCodeMessageFnModule('close', scope.module, scope.domain, targetWindow);
 			}

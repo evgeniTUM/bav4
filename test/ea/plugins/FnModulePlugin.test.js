@@ -1,7 +1,7 @@
 import { FnModulePlugin } from '../../../src/ea/plugins/FnModulePlugin.js';
 import { closeFnModule, openFnModuleComm } from '../../../src/ea/store/fnModuleComm/fnModuleComm.action.js';
 import { fnModuleCommReducer } from '../../../src/ea/store/fnModuleComm/fnModuleComm.reducer.js';
-import { ADD_FEATURE, ADD_LAYER, CLEAR_LAYER, CLEAR_MAP, geofeatureReducer, REMOVE_FEATURE } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
+import { ADD_FEATURE, ADD_LAYER, CLEAR_LAYER, geofeatureReducer, REMOVE_FEATURE } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
 import { activateMapClick, requestMapClick } from '../../../src/ea/store/mapclick/mapclick.action.js';
 import { mapclickReducer, MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE } from '../../../src/ea/store/mapclick/mapclick.reducer';
 import { ACTIVATE_GEORESOURCE, DEACTIVATE_ALL_GEORESOURCES } from '../../../src/ea/store/module/module.reducer.js';
@@ -139,75 +139,6 @@ describe('FnModulePlugin', () => {
 				},
 				domain: domain
 			});
-	});
-
-
-	it('clears map when closing module', async () => {
-		const module = 'dom1';
-		const domain = 'http://test-site';
-
-		const store = setup();
-
-		const instanceUnderTest = new FnModulePlugin();
-		await instanceUnderTest.register(store);
-
-		window.ea_moduleWindow = { dom1: windowMock };
-		openFnModuleComm(module, domain);
-
-		closeFnModule();
-
-		expect(storeActions.filter(a => a.type === CLEAR_MAP).length).toBeGreaterThan(0);
-	});
-
-	it('clears active georesources when closing module', async () => {
-		const module = 'dom1';
-		const domain = 'http://test-site';
-
-		const store = setup();
-
-		const instanceUnderTest = new FnModulePlugin();
-		await instanceUnderTest.register(store);
-
-		window.ea_moduleWindow = { dom1: windowMock };
-		openFnModuleComm(module, domain);
-
-		closeFnModule();
-
-		expect(storeActions.filter(a => a.type === DEACTIVATE_ALL_GEORESOURCES).length).toBeGreaterThan(0);
-	});
-
-	it('resets featureInfo state when closing module', async () => {
-		const module = 'dom1';
-		const domain = 'http://test-site';
-
-		const store = setup();
-
-		const instanceUnderTest = new FnModulePlugin();
-		await instanceUnderTest.register(store);
-
-		window.ea_moduleWindow = { dom1: windowMock };
-		openFnModuleComm(module, domain);
-
-		closeFnModule();
-
-		expect(storeActions.filter(a => a.type === FEATURE_INFO_REQUEST_ABORT).length).toBeGreaterThan(0);
-	});
-
-	it('clears highlight features when closing module', async () => {
-		const module = 'dom1';
-		const domain = 'http://test-site';
-
-		const store = setup();
-
-		const instanceUnderTest = new FnModulePlugin();
-		await instanceUnderTest.register(store);
-
-		window.ea_moduleWindow = { dom1: windowMock };
-		openFnModuleComm(module, domain);
-
-		closeFnModule();
-
-		expect(storeActions.filter(a => a.type === CLEAR_FEATURES).length).toBeGreaterThan(0);
 	});
 
 	describe('when communication is open,', () => {
