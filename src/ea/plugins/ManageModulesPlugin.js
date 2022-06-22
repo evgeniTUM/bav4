@@ -1,5 +1,7 @@
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
+import { abortOrReset } from '../../store/featureInfo/featureInfo.action';
+import { clearHighlightFeatures } from '../../store/highlight/highlight.action';
 import { addLayer, removeLayer } from '../../store/layers/layers.action';
 import { close, open } from '../../store/mainMenu/mainMenu.action';
 import { observe } from '../../utils/storeUtils';
@@ -9,7 +11,8 @@ import { EAContribution } from '../modules/toolbox/components/contribution/EACon
 import { MixerModuleContent } from '../modules/toolbox/components/mixer/MixerModuleContent';
 import { RedesignModuleContent } from '../modules/toolbox/components/redesign/RedesignModuleContent';
 import { ResearchModuleContent } from '../modules/toolbox/components/research/ResearchModuleContent';
-import { ModuleId } from '../store/module/module.action';
+import { clearMap } from '../store/geofeature/geofeature.action';
+import { deactivateAllGeoResources, ModuleId } from '../store/module/module.action';
 
 export class ManageModulesPlugin extends BaPlugin {
 	constructor() {
@@ -30,6 +33,10 @@ export class ManageModulesPlugin extends BaPlugin {
 				close();
 			}
 			else if (ModuleId.includes(lastModule)) {
+				clearMap();
+				abortOrReset();
+				clearHighlightFeatures();
+				deactivateAllGeoResources();
 				open();
 			}
 		};
