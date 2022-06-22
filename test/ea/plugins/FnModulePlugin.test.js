@@ -8,6 +8,7 @@ import { ACTIVATE_GEORESOURCE, DEACTIVATE_ALL_GEORESOURCES } from '../../../src/
 import { $injector } from '../../../src/injection/index.js';
 import { FEATURE_INFO_REQUEST_ABORT } from '../../../src/store/featureInfo/featureInfo.reducer.js';
 import { CLEAR_FEATURES } from '../../../src/store/highlight/highlight.reducer.js';
+import { OPEN_CLOSED_CHANGED } from '../../../src/store/mainMenu/mainMenu.reducer.js';
 import { CLICK_CHANGED, pointerReducer } from '../../../src/store/pointer/pointer.reducer';
 import { FIT_REQUESTED, ZOOM_CENTER_CHANGED } from '../../../src/store/position/position.reducer.js';
 import { TestUtils } from '../../test-utils.js';
@@ -208,6 +209,25 @@ describe('FnModulePlugin', () => {
 		closeFnModule();
 
 		expect(storeActions.filter(a => a.type === CLEAR_FEATURES).length).toBeGreaterThan(0);
+	});
+
+	it('opens the main menu when closing module', async () => {
+		const module = 'dom1';
+		const domain = 'http://test-site';
+
+		const store = setup();
+
+		const instanceUnderTest = new FnModulePlugin();
+		await instanceUnderTest.register(store);
+
+		window.ea_moduleWindow = { dom1: windowMock };
+		openFnModuleComm(module, domain);
+
+		closeFnModule();
+
+		const openCloseActions = storeActions.filter(a => a.type === OPEN_CLOSED_CHANGED);
+		expect(openCloseActions.length).toBeGreaterThan(0);
+		expect(openCloseActions[0].payload).toBeTrue();
 	});
 
 	describe('when communication is open,', () => {

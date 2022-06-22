@@ -5,6 +5,7 @@ import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { abortOrReset } from '../../store/featureInfo/featureInfo.action';
 import { clearHighlightFeatures } from '../../store/highlight/highlight.action';
+import { open } from '../../store/mainMenu/mainMenu.action';
 import { setClick } from '../../store/pointer/pointer.action';
 import { changeZoomAndCenter, fit } from '../../store/position/position.action';
 import { observe } from '../../utils/storeUtils';
@@ -197,6 +198,7 @@ export class FnModulePlugin extends BaPlugin {
 				//deaktiviere das Module
 				clearMap();
 				abortOrReset();
+				open();
 				clearHighlightFeatures();
 				deactivateAllGeoResources();
 				buffer.features = [];
