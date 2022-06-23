@@ -210,23 +210,39 @@ describe('OlGeoFeatureLayerHandler', () => {
 
 			describe(' - mouse interactions - ', () => {
 
-				it('sends a \'mapclick/request\' event on mouse click when state.mapclick.active is true', async () => {
-					const map = setupWithLayer();
+				describe('when mapclick.active is true, ', () => {
 
-					const classUnderTest = new OlGeoFeatureLayerHandler();
-					classUnderTest.activate(map);
+					let map;
 
-					const coordinate = [38, 75];
+					let classUnderTest;
+					beforeEach(async () => {
+						map = setupWithLayer();
 
-					activateMapClick();
-					simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, ...coordinate);
+						classUnderTest = new OlGeoFeatureLayerHandler();
+						classUnderTest.activate(map);
 
-					const mapclickRequestActions = storeActions.filter(a => a.type === MAPCLICK_REQUEST);
-					expect(mapclickRequestActions).toHaveSize(1);
-					expect(mapclickRequestActions[0].payload.payload).toEqual(coordinate);
+						activateMapClick();
+					});
+
+					it('sends a \'mapclick/request\' event on mouse click', async () => {
+						const coordinate = [38, 75];
+
+						simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, ...coordinate);
+
+						const mapclickRequestActions = storeActions.filter(a => a.type === MAPCLICK_REQUEST);
+						expect(mapclickRequestActions).toHaveSize(1);
+						expect(mapclickRequestActions[0].payload.payload).toEqual(coordinate);
+					});
+
+
+					it('deactivates defaultClickHandling', async () => {
+						expect(classUnderTest._options.preventDefaultClickHandling).toBeTrue();
+						expect(classUnderTest._options.preventDefaultContextClickHandling).toBeTrue();
+					});
 				});
 
-				it('does not send a \'mapclick/request\' event on mouse click when state.mapclick.active is false', async () => {
+
+				it('when mapclick.active is false, does not send a \'mapclick/request\' event on mouse click', async () => {
 					const map = setupWithLayer();
 
 					const classUnderTest = new OlGeoFeatureLayerHandler();
