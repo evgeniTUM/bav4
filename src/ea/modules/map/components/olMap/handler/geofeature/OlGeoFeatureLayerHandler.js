@@ -115,10 +115,14 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 			if (active) {
 				this._helpTooltip.activate(this._map);
 				setMapCursorStyle('crosshair');
+				this._options.preventDefaultClickHandling = true;
+				this._options.preventDefaultContextClickHandling = true;
 			}
 			else {
 				this._helpTooltip.deactivate();
 				setMapCursorStyle('auto');
+				this._options.preventDefaultClickHandling = false;
+				this._options.preventDefaultContextClickHandling = false;
 			}
 		};
 
