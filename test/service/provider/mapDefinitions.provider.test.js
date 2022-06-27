@@ -25,7 +25,7 @@ describe('MapDefinitions provider', () => {
 			expect(sridDefinitionsForView()).toEqual([{ label: 'UTM', code: 25832, digits: 0 }, { label: 'WGS84', code: 4326, digits: 5 }]);
 			expect(defaultGeodeticSrid).toEqual(25832);
 			expect(minZoomLevel).toBe(5);
-			expect(maxZoomLevel).toBe(28);
+			expect(maxZoomLevel).toBe(19);
 		});
 
 		it('sridDefinitionsForView provides coordinate dependent definitions for a 25832 coordinate', () => {
