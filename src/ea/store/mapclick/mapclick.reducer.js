@@ -40,7 +40,6 @@ export const mapclickReducer = (state = initialState, action) => {
 
 			return {
 				...state,
-				coordinate: null,
 				active: false
 			};
 		}
