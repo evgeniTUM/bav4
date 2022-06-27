@@ -36,7 +36,7 @@ export const getBvvMapDefinitions = () => {
 		sridDefinitionsForView: getBvvSridDefinitionsForView,
 		defaultGeodeticSrid: 25832,
 		minZoomLevel: 5,
-		maxZoomLevel: 28 // just for Grundsteuer, needs to be reset to 19/20 later
+		maxZoomLevel: 19 // just for Grundsteuer, needs to be reset to 19/20 later
 	};
 };
 
