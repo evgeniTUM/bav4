@@ -1,4 +1,4 @@
-import { activateGeoResource, activateLegend, clearLegendGeoresourceId, deactivateAllGeoResources, deactivateGeoResource, deactivateLegend, setCurrentModule, setLegendGeoresourceId } from '../../../../src/ea/store/module/module.action';
+import { activateGeoResource, activateLegend, addLegendGeoresourceId, clearLegendGeoresourceIds, deactivateAllGeoResources, deactivateGeoResource, deactivateLegend, removeLegendGeoresourceId, setCurrentModule } from '../../../../src/ea/store/module/module.action';
 import { moduleReducer } from '../../../../src/ea/store/module/module.reducer';
 import { TestUtils } from '../../../test-utils';
 
@@ -16,7 +16,7 @@ describe('module Reducer', () => {
 		expect(store.getState().module.current).toBe(null);
 		expect(store.getState().module.activeGeoResources).toEqual([]);
 		expect(store.getState().module.legendActive).toEqual(false);
-		expect(store.getState().module.legendGeoresourceId).toEqual(null);
+		expect(store.getState().module.legendGeoresourceIds).toEqual([]);
 	});
 
 	it('sets the module id', () => {
@@ -68,16 +68,32 @@ describe('module Reducer', () => {
 		expect(store.getState().module.legendActive).toEqual(false);
 	});
 
-	it('sets/resets the georesource id for the legend', () => {
+	it('adds georesource id to the legend', () => {
 		const store = setup();
 
-		setLegendGeoresourceId('id42');
+		addLegendGeoresourceId('id42');
+		addLegendGeoresourceId('id43');
 
-		expect(store.getState().module.legendGeoresourceId).toEqual('id42');
-
-		clearLegendGeoresourceId('id42');
-
-		expect(store.getState().module.legendGeoresourceId).toEqual(null);
+		expect(store.getState().module.legendGeoresourceIds).toEqual(['id42', 'id43']);
 	});
 
+	it('adds georesource id from the legend', () => {
+		const store = setup();
+
+		addLegendGeoresourceId('id42');
+		removeLegendGeoresourceId('id42');
+
+		expect(store.getState().module.legendGeoresourceIds).toEqual([]);
+	});
+
+	it('clears all georesource ids from the legend', () => {
+		const store = setup();
+
+		addLegendGeoresourceId('id42');
+		addLegendGeoresourceId('id43');
+
+		clearLegendGeoresourceIds();
+
+		expect(store.getState().module.legendGeoresourceIds).toEqual([]);
+	});
 });
