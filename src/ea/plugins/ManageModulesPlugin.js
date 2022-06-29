@@ -7,7 +7,9 @@ import { close, open } from '../../store/mainMenu/mainMenu.action';
 import { observe } from '../../utils/storeUtils';
 import { CONTRIBUTION_LAYER_ID } from '../modules/map/components/olMap/handler/contribution/OlContributionHandler';
 import { GEO_FEATURE_LAYER_ID } from '../modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler';
+import { Analyse3DModuleContent } from '../modules/toolbox/components/analyse3d/Analyse3DModuleContent';
 import { EAContribution } from '../modules/toolbox/components/contribution/EAContribution';
+import { GeothermModuleContent } from '../modules/toolbox/components/geotherm/GeothermModuleContent';
 import { MixerModuleContent } from '../modules/toolbox/components/mixer/MixerModuleContent';
 import { RedesignModuleContent } from '../modules/toolbox/components/redesign/RedesignModuleContent';
 import { ResearchModuleContent } from '../modules/toolbox/components/research/ResearchModuleContent';
@@ -51,6 +53,8 @@ export class ManageModulesPlugin extends BaPlugin {
 				case MixerModuleContent.tag:
 				case RedesignModuleContent.tag:
 				case ResearchModuleContent.tag:
+				case Analyse3DModuleContent.tag:
+				case GeothermModuleContent.tag:
 					removeLayer(GEO_FEATURE_LAYER_ID);
 					break;
 			}
@@ -64,6 +68,8 @@ export class ManageModulesPlugin extends BaPlugin {
 				case MixerModuleContent.tag:
 				case RedesignModuleContent.tag:
 				case ResearchModuleContent.tag:
+				case Analyse3DModuleContent.tag:
+				case GeothermModuleContent.tag:
 					addLayer(GEO_FEATURE_LAYER_ID, { label: 'Verwaltungseinheiten', constraints: { hidden: true, alwaysTop: true } });
 					break;
 			}

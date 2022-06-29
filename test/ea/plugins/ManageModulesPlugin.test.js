@@ -1,6 +1,8 @@
 import { CONTRIBUTION_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/contribution/OlContributionHandler.js';
 import { GEO_FEATURE_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler.js';
+import { Analyse3DModuleContent } from '../../../src/ea/modules/toolbox/components/analyse3d/Analyse3DModuleContent.js';
 import { EAContribution } from '../../../src/ea/modules/toolbox/components/contribution/EAContribution.js';
+import { GeothermModuleContent } from '../../../src/ea/modules/toolbox/components/geotherm/GeothermModuleContent.js';
 import { MixerModuleContent } from '../../../src/ea/modules/toolbox/components/mixer/MixerModuleContent.js';
 import { RedesignModuleContent } from '../../../src/ea/modules/toolbox/components/redesign/RedesignModuleContent.js';
 import { ResearchModuleContent } from '../../../src/ea/modules/toolbox/components/research/ResearchModuleContent.js';
@@ -64,7 +66,13 @@ describe('ManageModulesPlugin', () => {
 
 		expect(store.getState().layers.active.length).toBe(0);
 
-		[MixerModuleContent.tag, RedesignModuleContent.tag, ResearchModuleContent.tag].forEach(tag => {
+		[
+			MixerModuleContent.tag,
+			RedesignModuleContent.tag,
+			ResearchModuleContent.tag,
+			Analyse3DModuleContent.tag,
+			GeothermModuleContent.tag
+		].forEach(tag => {
 			setCurrentModule(tag);
 
 			expect(store.getState().layers.active.length).toBe(1);
