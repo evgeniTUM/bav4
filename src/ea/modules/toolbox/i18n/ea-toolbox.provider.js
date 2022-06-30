@@ -15,9 +15,7 @@ export const provide = (lang) => {
 				ea_contribution_button_tag: 'Tag location',
 				ea_contribution_button_tag_cancel: 'Cancel',
 				ea_contribution_button_finish: 'Finish',
-				ea_contribution_coordinates_text: 'Facility coordinates',
-
-				ea_legend_title: 'Legend'
+				ea_contribution_coordinates_text: 'Facility coordinates'
 			};
 
 		case 'de':
@@ -34,9 +32,7 @@ export const provide = (lang) => {
 				ea_contribution_button_tag: 'Standort markieren',
 				ea_contribution_button_tag_cancel: 'Abbrechen',
 				ea_contribution_button_finish: 'Beenden',
-				ea_contribution_coordinates_text: 'Koordinaten der Anlage',
-
-				ea_legend_title: 'Legende'
+				ea_contribution_coordinates_text: 'Koordinaten der Anlage'
 			};
 
 		default:
