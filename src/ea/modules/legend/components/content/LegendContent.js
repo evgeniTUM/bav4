@@ -1,7 +1,7 @@
 import { html } from 'lit-html';
-import { $injector } from '../../../injection';
-import { MvuElement } from '../../../modules/MvuElement';
-import { bvvCapabilitiesProvider } from '../../../services/provider/wmsCapabilities.provider';
+import { $injector } from '../../../../../injection';
+import { MvuElement } from '../../../../../modules/MvuElement';
+import { bvvCapabilitiesProvider } from '../../../../../services/provider/wmsCapabilities.provider';
 import css from './legendContent.css';
 
 const Update_legend_active = 'update_legend_active';

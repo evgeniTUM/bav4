@@ -1,7 +1,4 @@
-
 import './i18n';
-import { LegendContent } from './LegendContent';
+import './components/content';
+import './components/button';
 
-if (!window.customElements.get(LegendContent.tag)) {
-	window.customElements.define(LegendContent.tag, LegendContent);
-}
