@@ -113,7 +113,7 @@ export class LegendContent extends MvuElement {
 
 		const content = visibleLayers.map(l => html`
 			<div>${l.title}</div>
-			<img src="${l.legendUrl}"></img>
+			<img src="${l.legendUrl}" @dragstart=${(e) => e.preventDefault()}></img>
 		`);
 
 		return html`
