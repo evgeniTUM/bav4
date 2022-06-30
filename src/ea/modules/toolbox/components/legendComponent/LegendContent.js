@@ -97,6 +97,10 @@ export class LegendContent extends MvuElement {
 	}
 
 	createView(model) {
+		if (!model.legendActive) {
+			return null;
+		}
+
 		const translate = (key) => this._translationService.translate(key);
 
 		const center = this._storeService.getStore().getState().position.center;
