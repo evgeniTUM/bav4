@@ -1,6 +1,6 @@
 
 import { LegendContent } from '../../../../../../src/ea/modules/legend/components/content/LegendContent';
-import { deactivateLegend } from '../../../../../../src/ea/store/module/module.action';
+import { activateLegend, deactivateLegend } from '../../../../../../src/ea/store/module/module.action';
 import { initialState, moduleReducer } from '../../../../../../src/ea/store/module/module.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { layersReducer } from '../../../../../../src/store/layers/layers.reducer';
@@ -13,7 +13,12 @@ window.customElements.define(LegendContent.tag, LegendContent);
 describe('LegendContent', () => {
 	let store;
 
-	const mapServiceMock = {};
+	const mapServiceMock = {
+		calcResolution: () => {
+			return 500;
+		}
+	};
+
 	const geoResourceServiceMock = {};
 
 	const setup = async () => {
@@ -42,6 +47,18 @@ describe('LegendContent', () => {
 			expect(element.shadowRoot.children.length).toBe(0);
 		});
 
+		describe('when activated', () => {
+			let element;
 
+			beforeEach(async () => {
+				element = await setup();
+				activateLegend();
+			});
+
+			it('renders the legend', async () => {
+				expect(element.shadowRoot.querySelector('.ea-legend__title').innerText).toEqual('ea_legend_title');
+				expect(element.shadowRoot.querySelector('.ea-legend__title').innerText).toEqual('ea_legend_title');
+			});
+		});
 	});
 });

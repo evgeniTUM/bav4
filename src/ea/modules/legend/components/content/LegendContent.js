@@ -116,7 +116,7 @@ export class LegendContent extends MvuElement {
 			.filter(l => resolution > l.maxResolution && resolution < l.minResolution);
 
 		const content = visibleLayers.map(l => html`
-			<div>${l.title}</div>
+			<div class="ea-legend-item__title">${l.title}</div>
 			<img src="${l.legendUrl}" @dragstart=${(e) => e.preventDefault()}></img>
 		`);
 
