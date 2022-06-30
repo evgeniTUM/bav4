@@ -1,4 +1,5 @@
-import { EaLegendButton } from '../../../../../../src/ea/modules/map/components/legendButton/EaLegendButton';
+
+import { EaLegendButton } from '../../../../../../src/ea/modules/legend/components/button/EaLegendButton';
 import { activateLegend } from '../../../../../../src/ea/store/module/module.action';
 import { initialState, moduleReducer } from '../../../../../../src/ea/store/module/module.reducer';
 import { $injector } from '../../../../../../src/injection';

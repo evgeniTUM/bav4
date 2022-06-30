@@ -1,4 +1,4 @@
-import { html } from 'lit-html';
+import { html, nothing } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import { bvvCapabilitiesProvider } from '../../../../../services/provider/wmsCapabilities.provider';
@@ -98,7 +98,7 @@ export class LegendContent extends MvuElement {
 
 	createView(model) {
 		if (!model.legendActive) {
-			return null;
+			return nothing;
 		}
 
 		const translate = (key) => this._translationService.translate(key);
