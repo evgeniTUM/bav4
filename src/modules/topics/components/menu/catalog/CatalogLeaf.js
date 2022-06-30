@@ -1,11 +1,11 @@
 import { html, nothing } from 'lit-html';
-import { AbstractContentPanel } from '../../../../menu/components/mainMenu/content/AbstractContentPanel';
-import css from './catalogLeaf.css';
+import { setLegendGeoresourceId as setLegendGeoresourceId, clearLegendGeoresourceId as clearLegendGeoresourceId } from '../../../../../ea/store/module/module.action';
 import { $injector } from '../../../../../injection';
 import { addLayer, removeLayer } from '../../../../../store/layers/layers.action';
-import infoSvg from '../assets/info.svg';
 import { openModal } from '../../../../../store/modal/modal.action';
-import { clearLegendGeoresourceIds, addLegendGeoresourceId, removeLegendGeoresourceId } from '../../../../../ea/store/module/module.action';
+import { AbstractContentPanel } from '../../../../menu/components/mainMenu/content/AbstractContentPanel';
+import infoSvg from '../assets/info.svg';
+import css from './catalogLeaf.css';
 
 /**
  * @class
@@ -60,11 +60,11 @@ export class CatalogLeaf extends AbstractContentPanel {
 			};
 
 			const onMouseEnter = async () => {
-				addLegendGeoresourceId(geoResourceId);
+				setLegendGeoresourceId(geoResourceId);
 			};
 
 			const onMouseLeave = async () => {
-				removeLegendGeoresourceId(geoResourceId);
+				clearLegendGeoresourceId();
 			};
 
 			return html`

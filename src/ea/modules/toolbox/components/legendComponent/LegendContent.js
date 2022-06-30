@@ -14,9 +14,9 @@ export class LegendContent extends MvuElement {
 	constructor() {
 		super({
 			legendActive: true,
-			layers: [],
-			zoom: 0,
-			previewLayer: null
+			activeLayers: [],
+			previewLayers: [],
+			zoom: 0
 		});
 
 		const { StoreService, TranslationService, MapService, GeoResourceService } = $injector
@@ -36,15 +36,39 @@ export class LegendContent extends MvuElement {
 				return { ...model, legendActive: data };
 
 			case Update_layers:
-				return { ...model, layers: data };
+				return { ...model, activeLayers: data };
 
 			case Update_preview_layer:
-				return { ...model, previewLayer: data };
+				return { ...model, previewLayers: data };
 
 			case Update_zoom:
 				return { ...model, zoom: data };
 		}
 	}
+
+	async _extractWmsLayerItems(geoResourceId) {
+		if (!geoResourceId) {
+			return [];
+		}
+
+		const georesource = this._geoResourceService.byId(geoResourceId);
+		if (!georesource._layers) {
+			return [];
+		}
+
+		const result = await bvvCapabilitiesProvider(georesource._url);
+
+		const layerFilter = georesource._layers.split(',');
+		return result.layers
+			.filter(l => layerFilter.includes(l.name))
+			.map(l => ({
+				title: l.title,
+				legendUrl: l.legendUrl,
+				minResolution: l.minResolution,
+				maxResolution: l.maxResolution
+			}));
+	}
+
 
 	/**
 	 * @override
@@ -53,22 +77,23 @@ export class LegendContent extends MvuElement {
 		this.observe(state => state.module.legendActive, active => this.signal(Update_legend_active, active));
 		this.observe(state => state.position.zoom, zoom => this.signal(Update_zoom, zoom));
 
-		const updateLayers = async (layers) => {
+		const updateActiveLayers = async (layers) => {
 			if (layers.length === 0) {
 				this.signal(Update_layers, []);
 				return;
 			}
 
-			const georesource = this._geoResourceService.byId(layers[0]);
-			const layerFilter = georesource._layers.split(',');
+			const wmsLayers = await Promise.all(layers.map(l => this._extractWmsLayerItems(l.id)));
 
-			const result = await bvvCapabilitiesProvider(georesource._url);
-			const wmsLayers = result.layers.filter(l => layerFilter.includes(l.name));
-
-			this.signal(Update_layers, wmsLayers);
+			this.signal(Update_layers, wmsLayers.flat(1));
 		};
 
-		this.observe(state => state.module.legendGeoresourceIds, updateLayers);
+		const updatePreviewLayer = async (geoResourceId) => {
+			this.signal(Update_preview_layer, await this._extractWmsLayerItems(geoResourceId));
+		};
+
+		this.observe(state => state.module.legendGeoresourceId, updatePreviewLayer);
+		this.observe(state => state.layers.active, updateActiveLayers);
 	}
 
 	createView(model) {
@@ -77,10 +102,16 @@ export class LegendContent extends MvuElement {
 		const center = this._storeService.getStore().getState().position.center;
 		const resolution = this._mapService.calcResolution(model.zoom, center);
 
-		const activeLayers = model.layers
+		const layers = [...model.previewLayers, ...model.activeLayers];
+		const uniqueLayers = Array.from(new Set(layers.map(l => l.title)))
+			.map(title => {
+				return layers.find(a => a.title === title);
+			});
+
+		const visibleLayers = uniqueLayers
 			.filter(l => resolution > l.maxResolution && resolution < l.minResolution);
 
-		const content = activeLayers.map(l => html`
+		const content = visibleLayers.map(l => html`
 			<div>${l.title}</div>
 			<img src="${l.legendUrl}"></img>
 		`);

@@ -5,7 +5,7 @@ import { GeothermModuleContent } from '../../modules/toolbox/components/geotherm
 import { MixerModuleContent } from '../../modules/toolbox/components/mixer/MixerModuleContent';
 import { RedesignModuleContent } from '../../modules/toolbox/components/redesign/RedesignModuleContent';
 import { ResearchModuleContent } from '../../modules/toolbox/components/research/ResearchModuleContent';
-import { ACTIVATE_GEORESOURCE, ACTIVATE_LEGEND, CLEAR_LEGEND_GEORESOURCE_ID, DEACTIVATE_ALL_GEORESOURCES, DEACTIVATE_GEORESOURCE, DEACTIVATE_LEGEND, SET_CURRENT_MODULE, ADD_LEGEND_GEORESOURCE_ID, REMOVE_LEGEND_GEORESOURCE_ID } from './module.reducer';
+import { ACTIVATE_GEORESOURCE, ACTIVATE_LEGEND, CLEAR_LEGEND_GEORESOURCE_ID, DEACTIVATE_ALL_GEORESOURCES, DEACTIVATE_GEORESOURCE, DEACTIVATE_LEGEND, SET_CURRENT_MODULE, SET_LEGEND_GEORESOURCE_ID, REMOVE_LEGEND_GEORESOURCE_ID } from './module.reducer';
 
 /**
  * Available modules.
@@ -94,19 +94,9 @@ export const deactivateLegend = () => {
 /**
  * Adds a georesource id to the legend.
  */
-export const addLegendGeoresourceId = (id) => {
+export const setLegendGeoresourceId = (id) => {
 	getStore().dispatch({
-		type: ADD_LEGEND_GEORESOURCE_ID,
-		payload: id
-	});
-};
-
-/**
- * Remove a georesource id from the legend.
- */
-export const removeLegendGeoresourceId = (id) => {
-	getStore().dispatch({
-		type: REMOVE_LEGEND_GEORESOURCE_ID,
+		type: SET_LEGEND_GEORESOURCE_ID,
 		payload: id
 	});
 };
@@ -114,7 +104,7 @@ export const removeLegendGeoresourceId = (id) => {
 /**
  * Clears the georesource ids for the legend.
  */
-export const clearLegendGeoresourceIds = () => {
+export const clearLegendGeoresourceId = () => {
 	getStore().dispatch({
 		type: CLEAR_LEGEND_GEORESOURCE_ID,
 		payload: null

@@ -4,8 +4,7 @@ export const DEACTIVATE_GEORESOURCE = 'module/georesource/deactivate';
 export const DEACTIVATE_ALL_GEORESOURCES = 'module/georesource/deactivate_all';
 export const DEACTIVATE_LEGEND = 'module/legend/deactivate';
 export const ACTIVATE_LEGEND = 'module/legend/activate';
-export const ADD_LEGEND_GEORESOURCE_ID = 'module/legend/add';
-export const REMOVE_LEGEND_GEORESOURCE_ID = 'module/legend/remove';
+export const SET_LEGEND_GEORESOURCE_ID = 'module/legend/add';
 export const CLEAR_LEGEND_GEORESOURCE_ID = 'module/legend/clear';
 
 export const initialState = {
@@ -28,7 +27,7 @@ export const initialState = {
 	/**
 	 * @property {String|null}
 	 */
-	legendGeoresourceIds: []
+	legendGeoresourceId: null
 
 };
 
@@ -79,22 +78,16 @@ export const moduleReducer = (state = initialState, action) => {
 				legendActive: false
 			};
 		}
-		case ADD_LEGEND_GEORESOURCE_ID: {
+		case SET_LEGEND_GEORESOURCE_ID: {
 			return {
 				...state,
-				legendGeoresourceIds: [...state.legendGeoresourceIds, payload]
-			};
-		}
-		case REMOVE_LEGEND_GEORESOURCE_ID: {
-			return {
-				...state,
-				legendGeoresourceIds: state.legendGeoresourceIds.filter(id => id !== payload)
+				legendGeoresourceId: payload
 			};
 		}
 		case CLEAR_LEGEND_GEORESOURCE_ID: {
 			return {
 				...state,
-				legendGeoresourceIds: []
+				legendGeoresourceId: null
 			};
 		}
 	}
