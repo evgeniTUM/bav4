@@ -111,10 +111,12 @@ export class LegendContent extends MvuElement {
 
 		const translate = (key) => this._translationService.translate(key);
 
+		const activeLayersSorted = model.activeLayers.sort((a, b) => a.title.localeCompare(b.title));
+
 		const center = this._storeService.getStore().getState().position.center;
 		const resolution = this._mapService.calcResolution(model.zoom, center);
 
-		const visibleLayers = [...model.previewLayers, ...model.activeLayers]
+		const visibleLayers = [...model.previewLayers, ...activeLayersSorted]
 			.filter(l => resolution > l.maxResolution && resolution < l.minResolution);
 
 		const content = visibleLayers.map(l => html`
