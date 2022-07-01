@@ -189,5 +189,35 @@ describe('LegendContent', () => {
 			});
 		});
 
+		it('ignores preview layer if it is already active', async () => {
+			const element = await setup();
+			mockWmsLayerItems(element);
+
+			addLayer('id1');
+			addLayer('id2');
+			setLegendGeoresourceId('id1');
+
+			setTimeout(() => {
+				const model = element.getModel();
+				expect(model.previewLayers).toEqual([]);
+			});
+
+		});
+
+		it('clears preview layer if it is added to active layers', async () => {
+			const element = await setup();
+			mockWmsLayerItems(element);
+
+			setLegendGeoresourceId('id2');
+			addLayer('id1');
+			addLayer('id2');
+
+			setTimeout(() => {
+				const model = element.getModel();
+				expect(model.previewLayers).toEqual([]);
+			});
+
+		});
+
 	});
 });
