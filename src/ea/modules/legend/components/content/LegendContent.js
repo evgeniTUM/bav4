@@ -35,8 +35,13 @@ export class LegendContent extends MvuElement {
 			case Update_legend_active:
 				return { ...model, legendActive: data };
 
-			case Update_layers:
-				return { ...model, activeLayers: data };
+			case Update_layers: {
+				const activeLayers = data;
+				const activeLayersTitles = activeLayers.map(l => l.title);
+				const previewLayers = model.previewLayers.filter(l => !activeLayersTitles.includes(l.title));
+
+				return { ...model, activeLayers, previewLayers };
+			}
 
 			case Update_preview_layer: {
 				const activeLayerTitles = model.activeLayers.map(l => l.title);

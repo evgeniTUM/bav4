@@ -2,6 +2,7 @@
 import { LegendContent } from '../../../../../../src/ea/modules/legend/components/content/LegendContent';
 import { moduleReducer } from '../../../../../../src/ea/store/module/module.reducer';
 import { $injector } from '../../../../../../src/injection';
+import { addLayer } from '../../../../../../src/store/layers/layers.action';
 import { layersReducer } from '../../../../../../src/store/layers/layers.reducer';
 import { positionReducer } from '../../../../../../src/store/position/position.reducer';
 import { TestUtils } from '../../../../../test-utils';
@@ -13,13 +14,13 @@ describe('LegendContent', () => {
 
 	const mapServiceMock = {
 		calcResolution: () => {
-			return 500;
+			return 50;
 		}
 	};
 
 	const geoResourceServiceMock = {
 		byId: (id) => {
-			null;
+			return null;
 		}
 	};
 
@@ -49,16 +50,39 @@ describe('LegendContent', () => {
 
 		it('renders the legend', async () => {
 			const element = await setup({
-				module: { legendActive: true },
-				layers: { active: [{ id: 'id42' }] }
+				module: { legendActive: true }
 			});
 
-			expect(element.shadowRoot.querySelector('.ea-legend__title').innerText).toEqual('ea_legend_title');
-			const itemTitles = element.shadowRoot.querySelectorAll('.ea-legend-item__title');
-			const itemImages = element.shadowRoot.querySelectorAll('img');
+			spyOn(element, '_extractWmsLayerItems')
+				.withArgs('id42').and.returnValue([{
+					title: 'title1',
+					minResolution: 100,
+					maxResolution: 0,
+					legendUrl: 'https://url1/img'
+				}])
+				.withArgs('id24').and.returnValue([{
+					title: 'title2',
+					minResolution: 99,
+					maxResolution: 1,
+					legendUrl: 'https://url2/img'
+				}]);
 
-			expect(itemTitles.length).toBe(2);
-			expect(itemImages.length).toBe(2);
+			addLayer('id42');
+			addLayer('id24');
+
+			setTimeout(() => {
+				expect(element.shadowRoot.querySelector('.ea-legend__title').innerText).toEqual('ea_legend_title');
+				const itemTitles = element.shadowRoot.querySelectorAll('.ea-legend-item__title');
+				const itemImages = element.shadowRoot.querySelectorAll('img');
+
+				expect(itemTitles.length).toBe(2);
+				expect(itemImages.length).toBe(2);
+
+				expect(itemTitles[0].innerText).toEqual('title1');
+				expect(itemTitles[1].innerText).toEqual('title2');
+				expect(itemImages[0].src).toEqual('https://url1/img');
+				expect(itemImages[1].src).toEqual('https://url2/img');
+			});
 
 		});
 	});
