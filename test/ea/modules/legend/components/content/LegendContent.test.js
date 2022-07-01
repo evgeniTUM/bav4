@@ -1,5 +1,6 @@
 
 import { LegendContent } from '../../../../../../src/ea/modules/legend/components/content/LegendContent';
+import { setLegendGeoresourceId } from '../../../../../../src/ea/store/module/module.action';
 import { moduleReducer } from '../../../../../../src/ea/store/module/module.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { addLayer } from '../../../../../../src/store/layers/layers.action';
@@ -9,7 +10,6 @@ import { positionReducer } from '../../../../../../src/store/position/position.r
 import { TestUtils } from '../../../../../test-utils';
 
 window.customElements.define(LegendContent.tag, LegendContent);
-
 
 describe('LegendContent', () => {
 
@@ -89,7 +89,7 @@ describe('LegendContent', () => {
 
 
 		describe('renders model correctly, ', () => {
-			it('shows preview layer first', async () => {
+			it('shows preview layers and then active layers', async () => {
 				const element = await setup();
 
 				element._model = {
@@ -127,15 +127,10 @@ describe('LegendContent', () => {
 
 				element.render();
 
-				const itemTitles = element.shadowRoot.querySelectorAll('.ea-legend-item__title');
 				const itemImages = element.shadowRoot.querySelectorAll('img');
 
-				expect(itemTitles.length).toBe(3);
 				expect(itemImages.length).toBe(3);
 
-				expect(itemTitles[0].innerText).toEqual(layerItem3.title);
-				expect(itemTitles[1].innerText).toEqual(layerItem1.title);
-				expect(itemTitles[2].innerText).toEqual(layerItem2.title);
 				expect(itemImages[0].src).toEqual(layerItem3.legendUrl);
 				expect(itemImages[1].src).toEqual(layerItem1.legendUrl);
 				expect(itemImages[2].src).toEqual(layerItem2.legendUrl);
@@ -165,6 +160,32 @@ describe('LegendContent', () => {
 
 				changeZoom(3);
 				expect(element.shadowRoot.querySelectorAll('img').length).toBe(1);
+			});
+		});
+
+		it('updates model on active layer change', async () => {
+			const element = await setup();
+			mockWmsLayerItems(element);
+
+			addLayer('id1');
+			addLayer('id2');
+
+			setTimeout(() => {
+				const model = element.getModel();
+				expect(model.activeLayers).toEqual([layerItem1, layerItem2]);
+			});
+
+		});
+
+		it('updates model on preview layer change', async () => {
+			const element = await setup();
+			mockWmsLayerItems(element);
+
+			setLegendGeoresourceId('id1');
+
+			setTimeout(() => {
+				const model = element.getModel();
+				expect(model.previewLayers).toEqual([layerItem1]);
 			});
 		});
 
