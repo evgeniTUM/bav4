@@ -1,4 +1,4 @@
-import { activateGeoResource, activateLegend, clearLegendGeoresourceId, deactivateAllGeoResources, deactivateGeoResource, deactivateLegend, setCurrentModule, setLegendGeoresourceId } from '../../../../src/ea/store/module/module.action';
+import { activateGeoResource, activateLegend, clearPreviewGeoresourceId, deactivateAllGeoResources, deactivateGeoResource, deactivateLegend, setCurrentModule, setPreviewGeoresourceId } from '../../../../src/ea/store/module/module.action';
 import { moduleReducer } from '../../../../src/ea/store/module/module.reducer';
 import { TestUtils } from '../../../test-utils';
 
@@ -71,7 +71,7 @@ describe('module Reducer', () => {
 	it('sets the georesource id for the legend', () => {
 		const store = setup();
 
-		setLegendGeoresourceId('id42');
+		setPreviewGeoresourceId('id42');
 
 		expect(store.getState().module.legendGeoresourceId).toEqual('id42');
 	});
@@ -79,9 +79,9 @@ describe('module Reducer', () => {
 	it('clears the georesource id for the legend', () => {
 		const store = setup();
 
-		setLegendGeoresourceId('id42');
+		setPreviewGeoresourceId('id42');
 
-		clearLegendGeoresourceId();
+		clearPreviewGeoresourceId();
 
 		expect(store.getState().module.legendGeoresourceId).toBeNull();
 	});

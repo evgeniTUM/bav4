@@ -1,6 +1,6 @@
 
 import { LegendContent } from '../../../../../../src/ea/modules/legend/components/content/LegendContent';
-import { setLegendGeoresourceId } from '../../../../../../src/ea/store/module/module.action';
+import { setPreviewGeoresourceId } from '../../../../../../src/ea/store/module/module.action';
 import { moduleReducer } from '../../../../../../src/ea/store/module/module.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { addLayer } from '../../../../../../src/store/layers/layers.action';
@@ -181,7 +181,7 @@ describe('LegendContent', () => {
 			const element = await setup();
 			mockWmsLayerItems(element);
 
-			setLegendGeoresourceId('id1');
+			setPreviewGeoresourceId('id1');
 
 			setTimeout(() => {
 				const model = element.getModel();
@@ -195,7 +195,7 @@ describe('LegendContent', () => {
 
 			addLayer('id1');
 			addLayer('id2');
-			setLegendGeoresourceId('id1');
+			setPreviewGeoresourceId('id1');
 
 			setTimeout(() => {
 				const model = element.getModel();
@@ -208,7 +208,7 @@ describe('LegendContent', () => {
 			const element = await setup();
 			mockWmsLayerItems(element);
 
-			setLegendGeoresourceId('id2');
+			setPreviewGeoresourceId('id2');
 			addLayer('id1');
 			addLayer('id2');
 

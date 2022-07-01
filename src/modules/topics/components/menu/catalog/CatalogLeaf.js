@@ -1,5 +1,5 @@
 import { html, nothing } from 'lit-html';
-import { setLegendGeoresourceId as setLegendGeoresourceId, clearLegendGeoresourceId as clearLegendGeoresourceId } from '../../../../../ea/store/module/module.action';
+import { clearPreviewGeoresourceId, setPreviewGeoresourceId } from '../../../../../ea/store/module/module.action';
 import { $injector } from '../../../../../injection';
 import { addLayer, removeLayer } from '../../../../../store/layers/layers.action';
 import { openModal } from '../../../../../store/modal/modal.action';
@@ -60,11 +60,11 @@ export class CatalogLeaf extends AbstractContentPanel {
 			};
 
 			const onMouseEnter = async () => {
-				setLegendGeoresourceId(geoResourceId);
+				setPreviewGeoresourceId(geoResourceId);
 			};
 
 			const onMouseLeave = async () => {
-				clearLegendGeoresourceId();
+				clearPreviewGeoresourceId();
 			};
 
 			return html`
