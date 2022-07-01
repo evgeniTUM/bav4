@@ -4,6 +4,7 @@ import { moduleReducer } from '../../../../../../src/ea/store/module/module.redu
 import { $injector } from '../../../../../../src/injection';
 import { addLayer } from '../../../../../../src/store/layers/layers.action';
 import { layersReducer } from '../../../../../../src/store/layers/layers.reducer';
+import { changeZoom } from '../../../../../../src/store/position/position.action';
 import { positionReducer } from '../../../../../../src/store/position/position.reducer';
 import { TestUtils } from '../../../../../test-utils';
 
@@ -15,7 +16,9 @@ describe('LegendContent', () => {
 	const mapServiceMock = {
 		calcResolution: () => {
 			return 50;
-		}
+		},
+		getMaxZoomLevel: () => 100,
+		getMinZoomLevel: () => 0
 	};
 
 	const geoResourceServiceMock = {
@@ -24,9 +27,11 @@ describe('LegendContent', () => {
 		}
 	};
 
+	let store;
+
 	const setup = async (state = {}) => {
 
-		TestUtils.setupStoreAndDi(state, {
+		store = TestUtils.setupStoreAndDi(state, {
 			module: moduleReducer,
 			position: positionReducer,
 			layers: layersReducer
@@ -35,8 +40,6 @@ describe('LegendContent', () => {
 			.registerSingleton('TranslationService', { translate: (key) => key })
 			.registerSingleton('MapService', mapServiceMock)
 			.registerSingleton('GeoResourceService', geoResourceServiceMock);
-
-
 
 		return await TestUtils.render(LegendContent.tag);
 	};
@@ -98,21 +101,18 @@ describe('LegendContent', () => {
 
 				element.render();
 
-				setTimeout(() => {
-					expect(element.shadowRoot.querySelector('.ea-legend__title').innerText).toEqual('ea_legend_title');
-					const itemTitles = element.shadowRoot.querySelectorAll('.ea-legend-item__title');
-					const itemImages = element.shadowRoot.querySelectorAll('img');
+				const itemTitles = element.shadowRoot.querySelectorAll('.ea-legend-item__title');
+				const itemImages = element.shadowRoot.querySelectorAll('img');
 
-					expect(itemTitles.length).toBe(3);
-					expect(itemImages.length).toBe(3);
+				expect(itemTitles.length).toBe(3);
+				expect(itemImages.length).toBe(3);
 
-					expect(itemTitles[0].innerText).toEqual(layerItem3.title);
-					expect(itemTitles[1].innerText).toEqual(layerItem1.title);
-					expect(itemTitles[2].innerText).toEqual(layerItem2.title);
-					expect(itemImages[0].src).toEqual(layerItem3.legendUrl);
-					expect(itemImages[1].src).toEqual(layerItem1.legendUrl);
-					expect(itemImages[2].src).toEqual(layerItem2.legendUrl);
-				});
+				expect(itemTitles[0].innerText).toEqual(layerItem3.title);
+				expect(itemTitles[1].innerText).toEqual(layerItem1.title);
+				expect(itemTitles[2].innerText).toEqual(layerItem2.title);
+				expect(itemImages[0].src).toEqual(layerItem3.legendUrl);
+				expect(itemImages[1].src).toEqual(layerItem1.legendUrl);
+				expect(itemImages[2].src).toEqual(layerItem2.legendUrl);
 			});
 
 			it('sorts active layers alphabetically', async () => {
@@ -127,22 +127,44 @@ describe('LegendContent', () => {
 
 				element.render();
 
-				setTimeout(() => {
-					expect(element.shadowRoot.querySelector('.ea-legend__title').innerText).toEqual('ea_legend_title');
-					const itemTitles = element.shadowRoot.querySelectorAll('.ea-legend-item__title');
-					const itemImages = element.shadowRoot.querySelectorAll('img');
+				const itemTitles = element.shadowRoot.querySelectorAll('.ea-legend-item__title');
+				const itemImages = element.shadowRoot.querySelectorAll('img');
 
-					expect(itemTitles.length).toBe(3);
-					expect(itemImages.length).toBe(3);
+				expect(itemTitles.length).toBe(3);
+				expect(itemImages.length).toBe(3);
 
-					expect(itemTitles[0].innerText).toEqual(layerItem3.title);
-					expect(itemTitles[1].innerText).toEqual(layerItem1.title);
-					expect(itemTitles[2].innerText).toEqual(layerItem2.title);
-					expect(itemImages[0].src).toEqual(layerItem3.legendUrl);
-					expect(itemImages[1].src).toEqual(layerItem1.legendUrl);
-					expect(itemImages[2].src).toEqual(layerItem2.legendUrl);
-				});
+				expect(itemTitles[0].innerText).toEqual(layerItem3.title);
+				expect(itemTitles[1].innerText).toEqual(layerItem1.title);
+				expect(itemTitles[2].innerText).toEqual(layerItem2.title);
+				expect(itemImages[0].src).toEqual(layerItem3.legendUrl);
+				expect(itemImages[1].src).toEqual(layerItem1.legendUrl);
+				expect(itemImages[2].src).toEqual(layerItem2.legendUrl);
+			});
 
+			it('filters layers by current resolution on zoomLevel change', async () => {
+				const element = await setup();
+
+				const center = store.getState().position.center;
+				spyOn(mapServiceMock, 'calcResolution')
+					.withArgs(1, center).and.returnValue(50)
+					.withArgs(2, center).and.returnValue(20)
+					.withArgs(3, center).and.returnValue(10);
+
+				element._model = {
+					legendActive: true,
+					activeLayers: [layerItem1, layerItem2, layerItem3],
+					previewLayers: [],
+					zoom: 1
+				};
+
+				element.render();
+				expect(element.shadowRoot.querySelectorAll('img').length).toBe(3);
+
+				changeZoom(2);
+				expect(element.shadowRoot.querySelectorAll('img').length).toBe(2);
+
+				changeZoom(3);
+				expect(element.shadowRoot.querySelectorAll('img').length).toBe(1);
 			});
 		});
 
