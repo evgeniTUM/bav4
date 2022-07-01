@@ -38,8 +38,12 @@ export class LegendContent extends MvuElement {
 			case Update_layers:
 				return { ...model, activeLayers: data };
 
-			case Update_preview_layer:
-				return { ...model, previewLayers: data };
+			case Update_preview_layer: {
+				const activeLayerTitles = model.activeLayers.map(l => l.title);
+				const previewLayers = data.filter(l => !activeLayerTitles.includes(l.title));
+
+				return { ...model, previewLayers };
+			}
 
 			case Update_zoom:
 				return { ...model, zoom: data };
@@ -69,13 +73,11 @@ export class LegendContent extends MvuElement {
 			}));
 	}
 
-
 	/**
 	 * @override
 	 */
 	onInitialize() {
 		this.observe(state => state.module.legendActive, active => this.signal(Update_legend_active, active));
-		this.observe(state => state.position.zoom, zoom => this.signal(Update_zoom, zoom));
 
 		const updateActiveLayers = async (layers) => {
 			if (layers.length === 0) {
@@ -94,6 +96,7 @@ export class LegendContent extends MvuElement {
 
 		this.observe(state => state.module.legendGeoresourceId, updatePreviewLayer);
 		this.observe(state => state.layers.active, updateActiveLayers);
+		this.observe(state => state.position.zoom, zoom => this.signal(Update_zoom, zoom));
 	}
 
 	createView(model) {
@@ -106,13 +109,7 @@ export class LegendContent extends MvuElement {
 		const center = this._storeService.getStore().getState().position.center;
 		const resolution = this._mapService.calcResolution(model.zoom, center);
 
-		const layers = [...model.previewLayers, ...model.activeLayers];
-		const uniqueLayers = Array.from(new Set(layers.map(l => l.title)))
-			.map(title => {
-				return layers.find(a => a.title === title);
-			});
-
-		const visibleLayers = uniqueLayers
+		const visibleLayers = [...model.previewLayers, ...model.activeLayers]
 			.filter(l => resolution > l.maxResolution && resolution < l.minResolution);
 
 		const content = visibleLayers.map(l => html`

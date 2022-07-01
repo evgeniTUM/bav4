@@ -1,7 +1,6 @@
 
 import { LegendContent } from '../../../../../../src/ea/modules/legend/components/content/LegendContent';
-import { activateLegend, deactivateLegend } from '../../../../../../src/ea/store/module/module.action';
-import { initialState, moduleReducer } from '../../../../../../src/ea/store/module/module.reducer';
+import { moduleReducer } from '../../../../../../src/ea/store/module/module.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { layersReducer } from '../../../../../../src/store/layers/layers.reducer';
 import { positionReducer } from '../../../../../../src/store/position/position.reducer';
@@ -11,7 +10,6 @@ window.customElements.define(LegendContent.tag, LegendContent);
 
 
 describe('LegendContent', () => {
-	let store;
 
 	const mapServiceMock = {
 		calcResolution: () => {
@@ -19,13 +17,15 @@ describe('LegendContent', () => {
 		}
 	};
 
-	const geoResourceServiceMock = {};
+	const geoResourceServiceMock = {
+		byId: (id) => {
+			null;
+		}
+	};
 
-	const setup = async () => {
+	const setup = async (state = {}) => {
 
-		const state = { module: initialState };
-
-		store = TestUtils.setupStoreAndDi(state, {
+		TestUtils.setupStoreAndDi(state, {
 			module: moduleReducer,
 			position: positionReducer,
 			layers: layersReducer
@@ -43,22 +43,23 @@ describe('LegendContent', () => {
 		it('renders nothing when module.legendActive is false', async () => {
 			const element = await setup();
 
-			deactivateLegend();
 			expect(element.shadowRoot.children.length).toBe(0);
 		});
 
-		describe('when activated', () => {
-			let element;
 
-			beforeEach(async () => {
-				element = await setup();
-				activateLegend();
+		it('renders the legend', async () => {
+			const element = await setup({
+				module: { legendActive: true },
+				layers: { active: [{ id: 'id42' }] }
 			});
 
-			it('renders the legend', async () => {
-				expect(element.shadowRoot.querySelector('.ea-legend__title').innerText).toEqual('ea_legend_title');
-				expect(element.shadowRoot.querySelector('.ea-legend__title').innerText).toEqual('ea_legend_title');
-			});
+			expect(element.shadowRoot.querySelector('.ea-legend__title').innerText).toEqual('ea_legend_title');
+			const itemTitles = element.shadowRoot.querySelectorAll('.ea-legend-item__title');
+			const itemImages = element.shadowRoot.querySelectorAll('img');
+
+			expect(itemTitles.length).toBe(2);
+			expect(itemImages.length).toBe(2);
+
 		});
 	});
 });
