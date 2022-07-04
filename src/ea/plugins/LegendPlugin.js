@@ -12,7 +12,6 @@ export class LegendPlugin extends BaPlugin {
 		this._activeLayers = [];
 	}
 
-
 	async _extractWmsLayerItems(geoResourceId) {
 		if (!geoResourceId) {
 			return [];
@@ -26,13 +25,13 @@ export class LegendPlugin extends BaPlugin {
 		const result = await bvvCapabilitiesProvider(georesource._url);
 
 		const layerFilter = georesource._layers.split(',');
-		return result.layers
-			.filter(l => layerFilter.includes(l.name))
+		return result
+			.filter(l => layerFilter.includes(l._layers))
 			.map(l => ({
-				title: l.title,
-				legendUrl: l.legendUrl,
-				minResolution: l.minResolution,
-				maxResolution: l.maxResolution
+				title: l._label,
+				legendUrl: l._extraParams.legendUrl,
+				minResolution: l._extraParams.minResolution,
+				maxResolution: l._extraParams.maxResolution
 			}));
 	}
 

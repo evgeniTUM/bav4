@@ -8,8 +8,16 @@ export const bvvCapabilitiesProvider = async (url, sourceType, isAuthenticated) 
 	const { HttpService: httpService, ConfigService: configService } = $injector.inject('HttpService', 'ConfigService');
 	const endpoint = configService.getValueAsPath('BACKEND_URL') + 'wms/getCapabilities';
 
-	const getExtraParams = (capabilities) => {
-		return capabilities.maxHeight && capabilities.maxWidth ? { maxHeight: capabilities.maxHeight, maxWidth: capabilities.maxWidth } : {};
+	const getExtraParams = (layer, capabilities) => {
+
+		const params = {
+			legendUrl: layer.legendUrl,
+			minResolution: layer.minResolution,
+			maxResolution: layer.maxResolution
+		};
+
+		const dimensions = capabilities.maxHeight && capabilities.maxWidth ? { maxHeight: capabilities.maxHeight, maxWidth: capabilities.maxWidth } : {};
+		return { ...dimensions, ...params };
 	};
 
 	const getAuthenticationType = (isBaaAuthenticated) => {
@@ -25,7 +33,7 @@ export const bvvCapabilitiesProvider = async (url, sourceType, isAuthenticated) 
 			capabilities.formatsGetMap[0])
 			.setAuthenticationType(getAuthenticationType(isAuthenticated))
 			.setQueryable(layer.queryable)
-			.setExtraParams(getExtraParams(capabilities));
+			.setExtraParams(getExtraParams(layer, capabilities));
 	};
 
 	const readCapabilities = (capabilities) => {
@@ -51,7 +59,7 @@ export const bvvCapabilitiesProvider = async (url, sourceType, isAuthenticated) 
 	const result = await httpService.post(endpoint, JSON.stringify(data), MediaType.JSON);
 	switch (result.status) {
 		case 200:
-			return await result.json();
+			return readCapabilities(await result.json()) ?? [];
 		case 404:
 			return [];
 		default:
