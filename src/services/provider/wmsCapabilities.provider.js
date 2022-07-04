@@ -51,7 +51,7 @@ export const bvvCapabilitiesProvider = async (url, sourceType, isAuthenticated) 
 	const result = await httpService.post(endpoint, JSON.stringify(data), MediaType.JSON);
 	switch (result.status) {
 		case 200:
-			return readCapabilities(await result.json()) ?? [];
+			return await result.json();
 		case 404:
 			return [];
 		default:

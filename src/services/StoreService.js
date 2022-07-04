@@ -91,7 +91,8 @@ export class StoreService {
 				ImportPlugin: importPlugin,
 				ConfigService: configService,
 				ManageModulesPlugin: manageModulesPlugin,
-				FnModulePlugin: fnModulePlugin
+				FnModulePlugin: fnModulePlugin,
+				LegendPlugin: legendPlugin
 			}
 				= $injector.inject(
 					'TopicsPlugin',
@@ -109,7 +110,8 @@ export class StoreService {
 					'ImportPlugin',
 					'ConfigService',
 					'ManageModulesPlugin',
-					'FnModulePlugin'
+					'FnModulePlugin',
+					'LegendPlugin'
 				);
 
 			setTimeout(async () => {
@@ -128,6 +130,7 @@ export class StoreService {
 				await importPlugin.register(this._store);
 				await manageModulesPlugin.register(this._store);
 				await fnModulePlugin.register(this._store);
+				await legendPlugin.register(this._store);
 				//we remove all query params shown in the browsers address bar
 				if (configService.getValue('RUNTIME_MODE') !== 'development') {
 					environmentService.getWindow().history.replaceState(null, '', location.href.split('?')[0]);
