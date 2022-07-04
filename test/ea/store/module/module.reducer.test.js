@@ -1,4 +1,4 @@
-import { activateGeoResource, activateLegend, clearPreviewGeoresourceId, deactivateAllGeoResources, deactivateGeoResource, deactivateLegend, setCurrentModule, setPreviewGeoresourceId } from '../../../../src/ea/store/module/module.action';
+import { activateGeoResource, activateLegend, clearPreviewGeoresourceId, deactivateAllGeoResources, deactivateGeoResource, deactivateLegend, setCurrentModule, setLegendItems, setPreviewGeoresourceId } from '../../../../src/ea/store/module/module.action';
 import { moduleReducer } from '../../../../src/ea/store/module/module.reducer';
 import { TestUtils } from '../../../test-utils';
 
@@ -17,6 +17,7 @@ describe('module Reducer', () => {
 		expect(store.getState().module.activeGeoResources).toEqual([]);
 		expect(store.getState().module.legendActive).toEqual(false);
 		expect(store.getState().module.legendGeoresourceId).toBeNull();
+		expect(store.getState().module.legendItems).toEqual([]);
 	});
 
 	it('sets the module id', () => {
@@ -84,5 +85,15 @@ describe('module Reducer', () => {
 		clearPreviewGeoresourceId();
 
 		expect(store.getState().module.legendGeoresourceId).toBeNull();
+	});
+
+	it('sets the legend items', () => {
+		const store = setup();
+
+		const legendItems1 = { title: 'title1', maxResolution: 100, minResolution: 0, legendUrl: 'url1' };
+		const legendItems2 = { title: 'title2', maxResolution: 100, minResolution: 0, legendUrl: 'url2' };
+		setLegendItems([legendItems1, legendItems2]);
+
+		expect(store.getState().module.legendItems).toEqual([legendItems1, legendItems2]);
 	});
 });
