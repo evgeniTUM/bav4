@@ -54,6 +54,11 @@ describe('StoreService', () => {
 		const manageModulesPluginMock = {
 			register() {}
 		};
+
+		const legendPluginMock = {
+			register() {}
+		};
+
 		const windowMock = {
 			history: {
 				replaceState() { }
@@ -84,6 +89,7 @@ describe('StoreService', () => {
 				.registerSingleton('ConfigService', configService)
 				.registerSingleton('FnModulePlugin', fnModulePluginMock)
 				.registerSingleton('ManageModulesPlugin', manageModulesPluginMock)
+				.registerSingleton('LegendPlugin', legendPluginMock)
 
 				.ready();
 		};
@@ -139,6 +145,9 @@ describe('StoreService', () => {
 			const mainMenuPluginSpy = spyOn(mainMenuPluginMock, 'register');
 			const mediaPluginSpy = spyOn(mediaPluginMock, 'register');
 			const importPluginSpy = spyOn(importPluginMock, 'register');
+			const fnModulePluginSpy = spyOn(fnModulePluginMock, 'register');
+			const manageModulesPlugingSpy = spyOn(manageModulesPluginMock, 'register');
+			const legendPluginSpy = spyOn(legendPluginMock, 'register');
 			const instanceUnderTest = new StoreService();
 
 			setupInjector();
@@ -160,6 +169,9 @@ describe('StoreService', () => {
 			expect(mainMenuPluginSpy).toHaveBeenCalledWith(store);
 			expect(mediaPluginSpy).toHaveBeenCalledWith(store);
 			expect(importPluginSpy).toHaveBeenCalledWith(store);
+			expect(fnModulePluginSpy).toHaveBeenCalledWith(store);
+			expect(manageModulesPlugingSpy).toHaveBeenCalledWith(store);
+			expect(legendPluginSpy).toHaveBeenCalledWith(store);
 		});
 
 		describe('query parameter', () => {
