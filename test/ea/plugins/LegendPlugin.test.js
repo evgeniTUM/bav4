@@ -2,7 +2,7 @@ import { LegendPlugin } from '../../../src/ea/plugins/LegendPlugin.js';
 import { activateLegend, deactivateLegend, setPreviewGeoresourceId } from '../../../src/ea/store/module/module.action.js';
 import { moduleReducer } from '../../../src/ea/store/module/module.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
-import { addLayer, removeLayer } from '../../../src/store/layers/layers.action';
+import { addLayer, modifyLayer, removeLayer } from '../../../src/store/layers/layers.action';
 import { layersReducer } from '../../../src/store/layers/layers.reducer.js';
 import { TestUtils } from '../../test-utils.js';
 
@@ -78,6 +78,20 @@ describe('ManageModulesPlugin', () => {
 
 			setTimeout(() => {
 				expect(store.getState().module.legendItems).toEqual([layerItem1, layerItem2]);
+			});
+		});
+
+
+		it('show legend only for visible layers', async () => {
+			const store = await setupActive();
+
+			addLayer('id1');
+			addLayer('id2');
+			addLayer('id3');
+			modifyLayer('id2', { visible: false });
+
+			setTimeout(() => {
+				expect(store.getState().module.legendItems).toEqual([layerItem1, layerItem3]);
 			});
 		});
 

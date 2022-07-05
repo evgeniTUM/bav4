@@ -62,7 +62,10 @@ export class LegendPlugin extends BaPlugin {
 			// save current parameters in global state
 			syncObject.layerChange = layers;
 
-			const wmsLayers = await Promise.all(layers.map(l => this._extractWmsLayerItems(l.id)));
+			const wmsLayers = await Promise.all(
+				layers
+					.filter(l => l.visible)
+					.map(l => this._extractWmsLayerItems(l.id)));
 
 			// check if another event was triggered => current run is obsolete => abort
 			if (syncObject.layerChange !== layers) {
