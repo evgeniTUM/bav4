@@ -6,6 +6,7 @@ import css from './geoResourceResultItem.css';
 import { MvuElement } from '../../../../../MvuElement';
 import { $injector } from '../../../../../../injection';
 import { createUniqueId } from '../../../../../../utils/numberUtils';
+import { clearPreviewGeoresourceId, setPreviewGeoresourceId } from '../../../../../../ea/store/module/module.action';
 
 const Update_IsPortrait = 'update_isPortrait';
 const Update_GeoResourceSearchResult = 'update_geoResourceSearchResult';
@@ -68,10 +69,12 @@ export class GeoResourceResultItem extends MvuElement {
 			//add a preview layer
 			addLayer(GeoResourceResultItem._tmpLayerId(result.geoResourceId),
 				{ label: result.label, geoResourceId: result.geoResourceId, constraints: { hidden: true, alwaysTop: true } });
+			setPreviewGeoresourceId(result.geoResourceId);
 		};
 		const onMouseLeave = (result) => {
 			//remove the preview layer
 			removeLayer(GeoResourceResultItem._tmpLayerId(result.geoResourceId));
+			clearPreviewGeoresourceId();
 		};
 		const onClick = (result) => {
 			//remove the preview layer

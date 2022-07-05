@@ -14,7 +14,7 @@ export class LegendPlugin extends BaPlugin {
 
 	async _extractWmsLayerItems(geoResourceId) {
 		const georesource = this._geoResourceService.byId(geoResourceId);
-		if (!georesource._layers) {
+		if (!georesource || !georesource._layers) {
 			return [];
 		}
 
@@ -49,18 +49,18 @@ export class LegendPlugin extends BaPlugin {
 		let previewLayers = [];
 
 
-		// a synchronization object:
+		// A synchronization object:
 		// Make sure that the last action always takes precedence.
-		// Dp this by capturing the paramters and after an await checking
-		// if parameters have changed.
+		// Do this by capturing the parameters and after an "async await"
+		// checking if parameters have changed.
 		const syncObject = {
-			layerChange: null,
-			previewChange: null
+			onActiveLayersChange: null,
+			onPreviewIdChange: null
 		};
 
 		const onActiveLayersChange = async (layers) => {
 			// save current parameters in global state
-			syncObject.layerChange = layers;
+			syncObject.onActiveLayersChange = layers;
 
 			const wmsLayers = await Promise.all(
 				layers
@@ -68,7 +68,7 @@ export class LegendPlugin extends BaPlugin {
 					.map(l => this._extractWmsLayerItems(l.id)));
 
 			// check if another event was triggered => current run is obsolete => abort
-			if (syncObject.layerChange !== layers) {
+			if (syncObject.onActiveLayersChange !== layers) {
 				return;
 			}
 
@@ -86,12 +86,12 @@ export class LegendPlugin extends BaPlugin {
 			}
 
 			// save current parameters in global state
-			syncObject.previewChange = geoResourceId;
+			syncObject.onPreviewIdChange = geoResourceId;
 
 			const layers = geoResourceId ? await this._extractWmsLayerItems(geoResourceId) : [];
 
 			// check if another event was triggered => current run is obsolete => abort
-			if (syncObject.previewChange !== geoResourceId) {
+			if (syncObject.onPreviewIdChange !== geoResourceId) {
 				return;
 			}
 
