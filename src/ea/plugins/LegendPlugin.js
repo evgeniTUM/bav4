@@ -13,10 +13,6 @@ export class LegendPlugin extends BaPlugin {
 	}
 
 	async _extractWmsLayerItems(geoResourceId) {
-		if (!geoResourceId) {
-			return [];
-		}
-
 		const georesource = this._geoResourceService.byId(geoResourceId);
 		if (!georesource._layers) {
 			return [];
@@ -45,20 +41,35 @@ export class LegendPlugin extends BaPlugin {
 		this._geoResourceService = GeoResourceService;
 
 		const updateLegendItems = (activeLayers, previewLayers) => {
-			setLegendItems([...previewLayers, ...activeLayers]);
+			const sortedActiveLayers = activeLayers.sort((a, b) => a.title.localeCompare(b.title));
+			setLegendItems([...previewLayers, ...sortedActiveLayers]);
 		};
 
 		let activeLayers = [];
 		let previewLayers = [];
 
+
+		// a synchronization object:
+		// Make sure that the last action always takes precedence.
+		// Dp this by capturing the paramters and after an await checking
+		// if parameters have changed.
+		const syncObject = {
+			layerChange: null,
+			previewChange: null
+		};
+
 		const onActiveLayersChange = async (layers) => {
-			if (layers.length === 0) {
-				setLegendItems([]);
-				return;
-			}
+			// save current parameters in global state
+			syncObject.layerChange = layers;
+
 			const wmsLayers = await Promise.all(layers.map(l => this._extractWmsLayerItems(l.id)));
 
-			activeLayers = wmsLayers.flat(1).sort((a, b) => a.title.localeCompare(b.title));
+			// check if another event was triggered => current run is obsolete => abort
+			if (syncObject.layerChange !== layers) {
+				return;
+			}
+
+			activeLayers = wmsLayers.flat(1);
 
 			const activeLayersTitles = activeLayers.map(l => l.title);
 			previewLayers = previewLayers.filter(l => !activeLayersTitles.includes(l.title));
@@ -67,7 +78,19 @@ export class LegendPlugin extends BaPlugin {
 		};
 
 		const onPreviewIdChange = async (geoResourceId) => {
+			if (!store.getState().module.legendActive) {
+				return;
+			}
+
+			// save current parameters in global state
+			syncObject.previewChange = geoResourceId;
+
 			const layers = geoResourceId ? await this._extractWmsLayerItems(geoResourceId) : [];
+
+			// check if another event was triggered => current run is obsolete => abort
+			if (syncObject.previewChange !== geoResourceId) {
+				return;
+			}
 
 			const activeLayerTitles = activeLayers.map(l => l.title);
 			previewLayers = layers.filter(l => !activeLayerTitles.includes(l.title));

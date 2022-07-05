@@ -1,8 +1,8 @@
 import { LegendPlugin } from '../../../src/ea/plugins/LegendPlugin.js';
-import { setPreviewGeoresourceId } from '../../../src/ea/store/module/module.action.js';
+import { activateLegend, deactivateLegend, setPreviewGeoresourceId } from '../../../src/ea/store/module/module.action.js';
 import { moduleReducer } from '../../../src/ea/store/module/module.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
-import { addLayer } from '../../../src/store/layers/layers.action';
+import { addLayer, removeLayer } from '../../../src/store/layers/layers.action';
 import { layersReducer } from '../../../src/store/layers/layers.reducer.js';
 import { TestUtils } from '../../test-utils.js';
 
@@ -55,82 +55,142 @@ describe('ManageModulesPlugin', () => {
 			.withArgs('id3').and.returnValue([layerItem3]);
 	};
 
-	it('creates legend items on active layer change', async () => {
-		const store = await setup();
-		const instanceUnderTest = new LegendPlugin();
-		await instanceUnderTest.register(store);
 
-		mockWmsLayerItems(instanceUnderTest);
+	describe('when legendActive is true, ', () => {
 
-		addLayer('id1');
-		addLayer('id2');
+		const setupActive = async () => {
+			const store = await setup();
+			const instanceUnderTest = new LegendPlugin();
+			await instanceUnderTest.register(store);
 
-		setTimeout(() => {
-			expect(store.getState().module.legendItems).toEqual([layerItem1, layerItem2]);
+			mockWmsLayerItems(instanceUnderTest);
+
+			activateLegend();
+
+			return store;
+		};
+
+		it('creates legend items on active layer change', async () => {
+			const store = await setupActive();
+
+			addLayer('id1');
+			addLayer('id2');
+
+			setTimeout(() => {
+				expect(store.getState().module.legendItems).toEqual([layerItem1, layerItem2]);
+			});
+		});
+
+		it('create preview layers items first', async () => {
+			const store = await setupActive();
+
+			addLayer('id3');
+			setPreviewGeoresourceId('id2');
+			addLayer('id1');
+
+			setTimeout(() => {
+				expect(store.getState().module.legendItems).toEqual([layerItem2, layerItem1, layerItem3]);
+			});
+		});
+
+		it('sorts active layers alphabetically', async () => {
+			const store = await setupActive();
+
+			addLayer('id2');
+			addLayer('id3');
+			addLayer('id1');
+
+			setTimeout(() => {
+				expect(store.getState().module.legendItems).toEqual([layerItem1, layerItem2, layerItem3]);
+			});
+		});
+
+
+		it('ignores preview layer if it is already active', async () => {
+			const store = await setupActive();
+
+			addLayer('id1');
+			setPreviewGeoresourceId('id1');
+
+			setTimeout(() => {
+				expect(store.getState().module.legendItems).toEqual([layerItem1]);
+			});
+		});
+
+		it('clears preview layer if it is added to active layers', async () => {
+			const store = await setupActive();
+
+			setPreviewGeoresourceId('id1');
+			addLayer('id1');
+
+			setTimeout(() => {
+				expect(store.getState().module.legendItems).toEqual([layerItem1]);
+			});
+		});
+
+		it('handles several incoming preview events correctly', async () => {
+			const store = await setupActive();
+
+			setPreviewGeoresourceId('id1');
+			setPreviewGeoresourceId('id2');
+			setPreviewGeoresourceId('id3');
+			setPreviewGeoresourceId(null);
+
+			setTimeout(() => {
+				expect(store.getState().module.legendItems).toEqual([]);
+			});
+		});
+
+
+		it('handles several incoming active layers changes correctly', async () => {
+			const store = await setupActive();
+
+			addLayer('id1');
+			addLayer('id2');
+			addLayer('id3');
+			removeLayer('id1');
+			removeLayer('id2');
+			removeLayer('id3');
+
+			setTimeout(() => {
+				expect(store.getState().module.legendItems).toEqual([]);
+			});
 		});
 	});
 
-	it('create preview layers items first', async () => {
-		const store = await setup();
-		const instanceUnderTest = new LegendPlugin();
-		await instanceUnderTest.register(store);
+	describe('when legendActive is false, ', () => {
 
-		mockWmsLayerItems(instanceUnderTest);
+		const setupInactive = async () => {
+			const store = await setup();
+			const instanceUnderTest = new LegendPlugin();
+			await instanceUnderTest.register(store);
 
-		addLayer('id3');
-		setPreviewGeoresourceId('id2');
-		addLayer('id1');
+			mockWmsLayerItems(instanceUnderTest);
 
-		setTimeout(() => {
-			expect(store.getState().module.legendItems).toEqual([layerItem2, layerItem1, layerItem3]);
+			deactivateLegend();
+
+			return store;
+		};
+
+		it('updates active layers even if legendActive is false', async () => {
+			const store = await setupInactive();
+
+			addLayer('id1');
+
+			setTimeout(() => {
+				expect(store.getState().module.legendItems).toEqual([layerItem1]);
+			});
+		});
+
+		it('does not legend on preview id change', async () => {
+			const store = await setupInactive();
+
+			setPreviewGeoresourceId('id1');
+
+			setTimeout(() => {
+				expect(store.getState().module.legendItems).toEqual([]);
+			});
+
 		});
 	});
-
-	it('sorts active layers alphabetically', async () => {
-		const store = await setup();
-		const instanceUnderTest = new LegendPlugin();
-		await instanceUnderTest.register(store);
-
-		mockWmsLayerItems(instanceUnderTest);
-
-		addLayer('id2');
-		addLayer('id3');
-		addLayer('id1');
-
-		setTimeout(() => {
-			expect(store.getState().module.legendItems).toEqual([layerItem1, layerItem2, layerItem3]);
-		});
-	});
-
-
-	it('ignores preview layer if it is already active', async () => {
-		const store = await setup();
-		const instanceUnderTest = new LegendPlugin();
-		await instanceUnderTest.register(store);
-
-		mockWmsLayerItems(instanceUnderTest);
-
-		addLayer('id1');
-		setPreviewGeoresourceId('id1');
-
-		setTimeout(() => {
-			expect(store.getState().module.legendItems).toEqual([layerItem1]);
-		});
-	});
-
-	it('clears preview layer if it is added to active layers', async () => {
-		const store = await setup();
-		const instanceUnderTest = new LegendPlugin();
-		await instanceUnderTest.register(store);
-
-		mockWmsLayerItems(instanceUnderTest);
-
-		setPreviewGeoresourceId('id1');
-		addLayer('id1');
-
-		setTimeout(() => {
-			expect(store.getState().module.legendItems).toEqual([layerItem1]);
-		});
-	});
-
 });
