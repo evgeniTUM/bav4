@@ -5,11 +5,10 @@ import { observe } from '../../utils/storeUtils';
 import { setLegendItems } from '../store/module/module.action';
 
 export class LegendPlugin extends BaPlugin {
-	constructor() {
+	constructor(capabilitiesProvider = bvvCapabilitiesProvider) {
 		super();
 
-		this._previewLayers = [];
-		this._activeLayers = [];
+		this._capabilitiesProvider = capabilitiesProvider;
 	}
 
 	async _extractWmsLayerItems(geoResourceId) {
@@ -18,7 +17,7 @@ export class LegendPlugin extends BaPlugin {
 			return [];
 		}
 
-		const result = await bvvCapabilitiesProvider(georesource._url);
+		const result = await this._capabilitiesProvider(georesource._url);
 
 		const layerFilter = georesource._layers.split(',');
 		return result
