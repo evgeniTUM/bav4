@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 
-import { AdditionalMenu } from '../../../../../../src/ea/modules/menu/components/additionalMenu/AdditionalMenu';
+import { AdditionalMenu } from '../../../../../../src/ea/modules/menu/components/mainMenu/content/additionalMenu/AdditionalMenu';
 import { EaMiscContentPanel } from '../../../../../../src/ea/modules/menu/components/mainMenu/content/misc/EaMiscContentPanel';
 import { EaMainMenu } from '../../../../../../src/ea/modules/menu/components/mainMenu/EaMainMenu';
 import { EaTopicsContentPanel } from '../../../../../../src/ea/modules/topics/components/menu/EaTopicsContentPanel';
