@@ -8,6 +8,7 @@ import { ACTIVATE_GEORESOURCE, DEACTIVATE_ALL_GEORESOURCES } from '../../../src/
 import { $injector } from '../../../src/injection/index.js';
 import { FEATURE_INFO_REQUEST_ABORT } from '../../../src/store/featureInfo/featureInfo.reducer.js';
 import { CLEAR_FEATURES } from '../../../src/store/highlight/highlight.reducer.js';
+import { OPEN_CLOSED_CHANGED } from '../../../src/store/mainMenu/mainMenu.reducer.js';
 import { CLICK_CHANGED, pointerReducer } from '../../../src/store/pointer/pointer.reducer';
 import { FIT_REQUESTED, ZOOM_CENTER_CHANGED } from '../../../src/store/position/position.reducer.js';
 import { TestUtils } from '../../test-utils.js';
@@ -430,7 +431,42 @@ describe('FnModulePlugin', () => {
 			expect(action.payload).toEqual({ zoom: 11 + zoomFactor, center: [42.0, 24.0] });
 		});
 
-		it('fits the map on \'zoom2Extent\' message with 20% scale and clears feature info', async () => {
+		it('fits the map on \'zoom2Extent\' message with 20% scale', async () => {
+			await setupOpen();
+
+			windowMock.listenerFunction({
+				data: {
+					code: 'zoom2Extent',
+					module: domain,
+					message: {
+						geojson: {
+							features: [
+								{
+									geometry: {
+										crs: {
+											type: 'name',
+											properties: { name: 'EPSG:4326' }
+										},
+										coordinates: [[[2.5, 2.5], [2.5, 2.5], [3, 3], [4, 4], [5, 5]]],
+										type: 'Polygon'
+									},
+									id: '530497279',
+									type: 'Feature'
+								}
+							],
+							type: 'FeatureCollection'
+						}
+					}
+				},
+				event: { origin: module }
+			});
+
+			const action = storeActions.find(a => a.type === FIT_REQUESTED);
+			expect(action).toBeDefined();
+			expect(action.payload._payload).toEqual({ extent: [2.25, 2.25, 5.25, 5.25], options: {} });
+		});
+
+		it('clears FeatureInfo and closes main menu on \'zoom2Extent\' message', async () => {
 			await setupOpen();
 
 			windowMock.listenerFunction({
@@ -463,9 +499,9 @@ describe('FnModulePlugin', () => {
 			const abortFeatureInfoAction = storeActions.find(a => a.type === FEATURE_INFO_REQUEST_ABORT);
 			expect(abortFeatureInfoAction).toBeDefined();
 
-			const action = storeActions.find(a => a.type === FIT_REQUESTED);
-			expect(action).toBeDefined();
-			expect(action.payload._payload).toEqual({ extent: [2.25, 2.25, 5.25, 5.25], options: {} });
+			const openCloseAction = storeActions.find(a => a.type === OPEN_CLOSED_CHANGED);
+			expect(openCloseAction).toBeDefined();
+			expect(openCloseAction.payload).toEqual(false);
 		});
 
 		it('clicks inside map on \'clickInMap\' message', async () => {
