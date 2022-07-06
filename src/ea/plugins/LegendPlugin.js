@@ -5,24 +5,19 @@ import { observe } from '../../utils/storeUtils';
 import { setLegendItems } from '../store/module/module.action';
 
 export class LegendPlugin extends BaPlugin {
-	constructor() {
+	constructor(capabilitiesProvider = bvvCapabilitiesProvider) {
 		super();
 
-		this._previewLayers = [];
-		this._activeLayers = [];
+		this._capabilitiesProvider = capabilitiesProvider;
 	}
 
 	async _extractWmsLayerItems(geoResourceId) {
-		if (!geoResourceId) {
-			return [];
-		}
-
 		const georesource = this._geoResourceService.byId(geoResourceId);
-		if (!georesource._layers) {
+		if (!georesource || !georesource._layers) {
 			return [];
 		}
 
-		const result = await bvvCapabilitiesProvider(georesource._url);
+		const result = await this._capabilitiesProvider(georesource._url);
 
 		const layerFilter = georesource._layers.split(',');
 		return result
@@ -45,20 +40,38 @@ export class LegendPlugin extends BaPlugin {
 		this._geoResourceService = GeoResourceService;
 
 		const updateLegendItems = (activeLayers, previewLayers) => {
-			setLegendItems([...previewLayers, ...activeLayers]);
+			const sortedActiveLayers = activeLayers.sort((a, b) => a.title.localeCompare(b.title));
+			setLegendItems([...previewLayers, ...sortedActiveLayers]);
 		};
 
 		let activeLayers = [];
 		let previewLayers = [];
 
+
+		// A synchronization object:
+		// Make sure that the last action always takes precedence.
+		// Do this by capturing the parameters and after an "async await"
+		// checking if parameters have changed.
+		const syncObject = {
+			onActiveLayersChange: null,
+			onPreviewIdChange: null
+		};
+
 		const onActiveLayersChange = async (layers) => {
-			if (layers.length === 0) {
-				setLegendItems([]);
+			// save current parameters in global state
+			syncObject.onActiveLayersChange = layers;
+
+			const wmsLayers = await Promise.all(
+				layers
+					.filter(l => l.visible)
+					.map(l => this._extractWmsLayerItems(l.id)));
+
+			// check if another event was triggered => current run is obsolete => abort
+			if (syncObject.onActiveLayersChange !== layers) {
 				return;
 			}
-			const wmsLayers = await Promise.all(layers.map(l => this._extractWmsLayerItems(l.id)));
 
-			activeLayers = wmsLayers.flat(1).sort((a, b) => a.title.localeCompare(b.title));
+			activeLayers = wmsLayers.flat(1);
 
 			const activeLayersTitles = activeLayers.map(l => l.title);
 			previewLayers = previewLayers.filter(l => !activeLayersTitles.includes(l.title));
@@ -67,7 +80,19 @@ export class LegendPlugin extends BaPlugin {
 		};
 
 		const onPreviewIdChange = async (geoResourceId) => {
+			if (!store.getState().module.legendActive) {
+				return;
+			}
+
+			// save current parameters in global state
+			syncObject.onPreviewIdChange = geoResourceId;
+
 			const layers = geoResourceId ? await this._extractWmsLayerItems(geoResourceId) : [];
+
+			// check if another event was triggered => current run is obsolete => abort
+			if (syncObject.onPreviewIdChange !== geoResourceId) {
+				return;
+			}
 
 			const activeLayerTitles = activeLayers.map(l => l.title);
 			previewLayers = layers.filter(l => !activeLayerTitles.includes(l.title));
