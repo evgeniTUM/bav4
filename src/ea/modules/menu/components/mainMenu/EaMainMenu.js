@@ -4,7 +4,7 @@ import { EaTopicsContentPanel } from '../../../../../ea/modules/topics/component
 import { $injector } from '../../../../../injection';
 import { MainMenu } from '../../../../../modules/menu/components/mainMenu/MainMenu';
 import { TabId } from '../../../../../store/mainMenu/mainMenu.action';
-import { AdditionalMenu } from '../additionalMenu/AdditionalMenu';
+import { AdditionalMenu } from './content/additionalMenu/AdditionalMenu';
 import { EaMiscContentPanel } from './content/misc/EaMiscContentPanel';
 
 

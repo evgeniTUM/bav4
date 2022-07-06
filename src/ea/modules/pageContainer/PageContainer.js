@@ -9,7 +9,10 @@ export class PageContainer extends MvuElement {
 	 */
 	createView() {
 		// eslint-disable-next-line no-undef
-		const content = page.content;
+		const pageContent = page.content;
+
+		// eslint-disable-next-line no-undef
+		const sidebarContent = sidebar.content;
 
 		return html`
 		<style>${css}</style>
@@ -17,10 +20,10 @@ export class PageContainer extends MvuElement {
   		<div class="page" >
     		<div class="row">
   	    		<div class="main column" >
-					${content}
+					${pageContent}
 				</div>
 				<div class="sidebar column">
-					<ea-module-container></ea-module-container>
+					${sidebarContent}
 				</div>
 			</div>
 		</div>`;
