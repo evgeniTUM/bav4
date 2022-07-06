@@ -64,7 +64,7 @@ export class LegendPlugin extends BaPlugin {
 			const wmsLayers = await Promise.all(
 				layers
 					.filter(l => l.visible)
-					.map(l => this._extractWmsLayerItems(l.id)));
+					.map(l => this._extractWmsLayerItems(l.geoResourceId)));
 
 			// check if another event was triggered => current run is obsolete => abort
 			if (syncObject.onActiveLayersChange !== layers) {
