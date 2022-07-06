@@ -61,6 +61,7 @@ export class FnModulePlugin extends BaPlugin {
 		}
 
 		const message = data.message;
+		console.log(data);
 
 		const getFeature = (geojson) => {
 			const feature = new GeoJSON().readFeature(geojson);
@@ -110,6 +111,7 @@ export class FnModulePlugin extends BaPlugin {
 			case ZOOM:
 				break;
 			case ZOOM_2_EXTENT:	{
+				abortOrReset();
 				const extentVector = new VectorSource({
 					features: [getFeature(message.geojson.features[0])]
 				});

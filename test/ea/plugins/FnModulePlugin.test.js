@@ -430,7 +430,7 @@ describe('FnModulePlugin', () => {
 			expect(action.payload).toEqual({ zoom: 11 + zoomFactor, center: [42.0, 24.0] });
 		});
 
-		it('fits the map on \'zoom2Extent\' message with 20% scale', async () => {
+		it('fits the map on \'zoom2Extent\' message with 20% scale and clears feature info', async () => {
 			await setupOpen();
 
 			windowMock.listenerFunction({
@@ -460,12 +460,13 @@ describe('FnModulePlugin', () => {
 				event: { origin: module }
 			});
 
+			const abortFeatureInfoAction = storeActions.find(a => a.type === FEATURE_INFO_REQUEST_ABORT);
+			expect(abortFeatureInfoAction).toBeDefined();
+
 			const action = storeActions.find(a => a.type === FIT_REQUESTED);
 			expect(action).toBeDefined();
 			expect(action.payload._payload).toEqual({ extent: [2.25, 2.25, 5.25, 5.25], options: {} });
 		});
-
-
 
 		it('clicks inside map on \'clickInMap\' message', async () => {
 			await setupOpen();
