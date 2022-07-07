@@ -1,7 +1,7 @@
 .ea-legend {
 	min-width: 15em;
 	max-width: 20em;
-	max-height: 45em;
+	max-height: calc(100vh - 21em);
 	overflow: scroll;
 	top: 0;
 	right: 0;
