@@ -5,6 +5,7 @@ import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { abortOrReset } from '../../store/featureInfo/featureInfo.action';
 import { clearHighlightFeatures } from '../../store/highlight/highlight.action';
+import { close } from '../../store/mainMenu/mainMenu.action';
 import { setClick } from '../../store/pointer/pointer.action';
 import { changeZoomAndCenter, fit } from '../../store/position/position.action';
 import { observe } from '../../utils/storeUtils';
@@ -110,6 +111,7 @@ export class FnModulePlugin extends BaPlugin {
 			case ZOOM:
 				break;
 			case ZOOM_2_EXTENT:	{
+
 				const extentVector = new VectorSource({
 					features: [getFeature(message.geojson.features[0])]
 				});
@@ -117,6 +119,9 @@ export class FnModulePlugin extends BaPlugin {
 
 				polygon.scale(1.2);
 				fit(polygon.getExtent());
+
+				abortOrReset();
+				close();
 
 				break;
 			}
