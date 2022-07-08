@@ -68,11 +68,14 @@ export class LegendContent extends MvuElement {
 
 		return html`
         <style>${css}</style>
-            <div class="ea-legend">
-				<div class="ea-legend__title">
-					${translate('ea_legend_title')}
+            <div class="ea-legend-container">
+				<div class="ea-legend-filler"></div>
+				<div class="ea-legend-content">
+					<div class="ea-legend__title">
+						${translate('ea_legend_title')}
+					</div>
+					${content}
 				</div>
-				${content}
 			</div>
         `;
 	}
