@@ -27,10 +27,6 @@
 	box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
 }
 
-*::-webkit-scrollbar {
-  width: 5px;
-}
-
 .ea-legend__title {
 	padding: .8em 1.5em;
 	font-weight: bold;
