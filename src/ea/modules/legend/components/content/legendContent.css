@@ -23,7 +23,6 @@
 
 .ea-legend-content {
 	overflow: auto;
-	scrollbar-width: thin;
 	background-color: var(--primary-bg-color);
 	box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
 }
