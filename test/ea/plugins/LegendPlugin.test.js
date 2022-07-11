@@ -13,20 +13,6 @@ describe('ManageModulesPlugin', () => {
 
 	const storeActions = [];
 
-	const setup = (state) => {
-
-		storeActions.length = 0;
-
-		const store = TestUtils.setupStoreAndDi(state, {
-			layers: layersReducer,
-			module: moduleReducer
-		});
-
-		$injector
-			.registerSingleton('WmsCapabilitiesService', wmsCapabilitiesServiceMock);
-		return store;
-	};
-
 	const layerItem1 = {
 		title: 'title1',
 		minResolution: 100,
@@ -48,29 +34,35 @@ describe('ManageModulesPlugin', () => {
 		legendUrl: 'https://url2/img'
 	};
 
-	const mockWmsLayerItems = () => {
+	const setup = async (state) => {
+
+		storeActions.length = 0;
+
+		const store = TestUtils.setupStoreAndDi(state, {
+			layers: layersReducer,
+			module: moduleReducer
+		});
+
+		$injector
+			.registerSingleton('WmsCapabilitiesService', wmsCapabilitiesServiceMock);
+
+		const instanceUnderTest = new LegendPlugin();
+		await instanceUnderTest.register(store);
+
 		spyOn(wmsCapabilitiesServiceMock, 'getWmsLayers')
 			.withArgs('id1').and.returnValue([layerItem1])
 			.withArgs('id2').and.returnValue([layerItem2])
 			.withArgs('id3').and.returnValue([layerItem3]);
+
+
+		return store;
 	};
 
 	describe('when legendActive is true, ', () => {
 
-		const setupActive = async () => {
-			const store = await setup();
-			const instanceUnderTest = new LegendPlugin();
-			await instanceUnderTest.register(store);
-
-			mockWmsLayerItems();
-
-			activateLegend();
-
-			return store;
-		};
-
 		it('creates legend items on active layer change', async () => {
-			const store = await setupActive();
+			const store = await setup();
+			activateLegend();
 
 			addLayer('id1');
 			addLayer('id2');
@@ -82,7 +74,8 @@ describe('ManageModulesPlugin', () => {
 
 
 		it('show legend only for visible layers', async () => {
-			const store = await setupActive();
+			const store = await setup();
+			activateLegend();
 
 			addLayer('id1');
 			addLayer('id2');
@@ -95,7 +88,8 @@ describe('ManageModulesPlugin', () => {
 		});
 
 		it('create preview layers items first', async () => {
-			const store = await setupActive();
+			const store = await setup();
+			activateLegend();
 
 			addLayer('id3');
 			setPreviewGeoresourceId('id2');
@@ -107,7 +101,8 @@ describe('ManageModulesPlugin', () => {
 		});
 
 		it('sorts active layers alphabetically', async () => {
-			const store = await setupActive();
+			const store = await setup();
+			activateLegend();
 
 			addLayer('id2');
 			addLayer('id3');
@@ -120,7 +115,8 @@ describe('ManageModulesPlugin', () => {
 
 
 		it('ignores preview layer if it is already active', async () => {
-			const store = await setupActive();
+			const store = await setup();
+			activateLegend();
 
 			addLayer('id1');
 			setPreviewGeoresourceId('id1');
@@ -131,7 +127,8 @@ describe('ManageModulesPlugin', () => {
 		});
 
 		it('clears preview layer if it is added to active layers', async () => {
-			const store = await setupActive();
+			const store = await setup();
+			activateLegend();
 
 			setPreviewGeoresourceId('id1');
 			addLayer('id1');
@@ -142,7 +139,8 @@ describe('ManageModulesPlugin', () => {
 		});
 
 		it('handles several incoming preview events correctly', async () => {
-			const store = await setupActive();
+			const store = await setup();
+			activateLegend();
 
 			setPreviewGeoresourceId('id1');
 			setPreviewGeoresourceId('id2');
@@ -156,7 +154,8 @@ describe('ManageModulesPlugin', () => {
 
 
 		it('handles several incoming active layers changes correctly', async () => {
-			const store = await setupActive();
+			const store = await setup();
+			activateLegend();
 
 			addLayer('id1');
 			addLayer('id2');
@@ -173,20 +172,9 @@ describe('ManageModulesPlugin', () => {
 
 	describe('when legendActive is false, ', () => {
 
-		const setupInactive = async () => {
-			const store = await setup();
-			const instanceUnderTest = new LegendPlugin();
-			await instanceUnderTest.register(store);
-
-			mockWmsLayerItems();
-
-			deactivateLegend();
-
-			return store;
-		};
-
 		it('updates active layers even if legendActive is false', async () => {
-			const store = await setupInactive();
+			const store = await setup();
+			deactivateLegend();
 
 			addLayer('id1');
 
@@ -196,7 +184,8 @@ describe('ManageModulesPlugin', () => {
 		});
 
 		it('does not legend on preview id change', async () => {
-			const store = await setupInactive();
+			const store = await setup();
+			deactivateLegend();
 
 			setPreviewGeoresourceId('id1');
 
