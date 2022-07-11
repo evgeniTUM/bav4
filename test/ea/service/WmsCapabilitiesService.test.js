@@ -94,6 +94,45 @@ describe('WmsCapabilitiesService', () => {
 				{ title: 'name2', legendUrl: 'url2', minResolution: 0, maxResolution: 1 }
 			]);
 		});
+
+		it('implements memoization for capablitiesProvider', async () => {
+			const instanceUnderTest = new WmsCapabilitiesService();
+
+			spyOn(geoResourceServiceMock, 'byId')
+				.withArgs('id1').and.returnValue({
+					_id: 'id1',
+					_url: 'url42',
+					_layers: 'l1'
+				})
+				.withArgs('id2').and.returnValue({
+					_id: 'id2',
+					_url: 'url42',
+					_layers: 'l2'
+				});
+
+			let providerCalls = 0;
+			instanceUnderTest._wmsCapabilitiesProvider = async () => {
+				providerCalls++;
+
+				return [
+					{ _label: 'name1', _layers: 'l1', _extraParams: { legendUrl: 'url1', minResolution: 0, maxResolution: 1 } },
+					{ _label: 'name2', _layers: 'l2', _extraParams: { legendUrl: 'url2', minResolution: 0, maxResolution: 1 } }
+				];
+			};
+
+			const resultRunOne = await instanceUnderTest.getWmsLayers('id1');
+			const resultRunTwo = await instanceUnderTest.getWmsLayers('id2');
+
+
+			expect(resultRunOne).toEqual([
+				{ title: 'name1', legendUrl: 'url1', minResolution: 0, maxResolution: 1 }
+			]);
+			expect(resultRunTwo).toEqual([
+				{ title: 'name2', legendUrl: 'url2', minResolution: 0, maxResolution: 1 }
+			]);
+
+			expect(providerCalls).toEqual(1);
+		});
 	});
 
 });

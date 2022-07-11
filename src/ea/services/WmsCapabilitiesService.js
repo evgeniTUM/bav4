@@ -26,6 +26,8 @@ export class WmsCapabilitiesService {
 			this._cache[georesource._url]
 			: await this._wmsCapabilitiesProvider(georesource._url, sourceType, isAuthenticated);
 
+		this._cache[georesource._url] = capabilities;
+
 		const layerFilter = georesource._layers.split(',');
 		const result = capabilities
 			.filter(l => layerFilter.includes(l._layers))
