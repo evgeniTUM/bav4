@@ -2,7 +2,6 @@ import { LegendPlugin } from '../../../src/ea/plugins/LegendPlugin.js';
 import { activateLegend, deactivateLegend, setPreviewGeoresourceId } from '../../../src/ea/store/module/module.action.js';
 import { moduleReducer } from '../../../src/ea/store/module/module.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
-import { bvvCapabilitiesProvider } from '../../../src/services/provider/wmsCapabilities.provider.js';
 import { addLayer, modifyLayer, removeLayer } from '../../../src/store/layers/layers.action';
 import { layersReducer } from '../../../src/store/layers/layers.reducer.js';
 import { TestUtils } from '../../test-utils.js';
@@ -10,23 +9,9 @@ import { TestUtils } from '../../test-utils.js';
 
 describe('ManageModulesPlugin', () => {
 
-	const geoResourceServiceMock = { byId: () => ({ label: 'label' }) };
+	const wmsCapabilitiesServiceMock = { getWmsLayers: () => ([]) };
 
 	const storeActions = [];
-
-	const setup = (state) => {
-
-		storeActions.length = 0;
-
-		const store = TestUtils.setupStoreAndDi(state, {
-			layers: layersReducer,
-			module: moduleReducer
-		});
-
-		$injector
-			.registerSingleton('GeoResourceService', geoResourceServiceMock);
-		return store;
-	};
 
 	const layerItem1 = {
 		title: 'title1',
@@ -49,114 +34,35 @@ describe('ManageModulesPlugin', () => {
 		legendUrl: 'https://url2/img'
 	};
 
-	describe('extractWmsLayerItems method', () => {
+	const setup = async (state) => {
 
-		it('return empty list when unknown goeresource id', async () => {
-			const store = await setup();
-			const instanceUnderTest = new LegendPlugin();
-			await instanceUnderTest.register(store);
+		storeActions.length = 0;
 
-			const byIdSpy = spyOn(geoResourceServiceMock, 'byId')
-				.withArgs('id1').and.returnValue(null);
-
-			expect(await instanceUnderTest._extractWmsLayerItems('id1')).toEqual([]);
-			expect(byIdSpy).toHaveBeenCalled();
+		const store = TestUtils.setupStoreAndDi(state, {
+			layers: layersReducer,
+			module: moduleReducer
 		});
 
-		it('return empty list when goeresource has no _layers element', async () => {
-			const store = await setup();
-			const instanceUnderTest = new LegendPlugin();
-			await instanceUnderTest.register(store);
+		$injector
+			.registerSingleton('WmsCapabilitiesService', wmsCapabilitiesServiceMock);
 
-			const byIdSpy = spyOn(geoResourceServiceMock, 'byId')
-				.withArgs('id1').and.returnValue({ id: 'id1' });
+		const instanceUnderTest = new LegendPlugin();
+		await instanceUnderTest.register(store);
 
-			expect(await instanceUnderTest._extractWmsLayerItems('id1')).toEqual([]);
-			expect(byIdSpy).toHaveBeenCalled();
-		});
-
-		it('uses bvvCapabilites provider', async () => {
-			const store = await setup();
-			const instanceUnderTest = new LegendPlugin();
-			await instanceUnderTest.register(store);
-
-			expect(instanceUnderTest._capabilitiesProvider).toEqual(bvvCapabilitiesProvider);
-		});
-
-		it('calls capabilites provider to get the wms capabilities', async () => {
-			const store = await setup();
-			const instanceUnderTest = new LegendPlugin();
-			await instanceUnderTest.register(store);
-
-			spyOn(geoResourceServiceMock, 'byId')
-				.withArgs('id1').and.returnValue({
-					id: 'id1',
-					_url: 'url42',
-					_layers: 'l1,l2'
-				});
-
-			let actualUrl = null;
-			instanceUnderTest._capabilitiesProvider = async (url) => {
-				actualUrl = url;
-
-				return [] ;
-			};
-
-			await instanceUnderTest._extractWmsLayerItems('id1');
-
-			expect(actualUrl).toEqual('url42');
-		});
-
-		it('maps wms resources to legend items', async () => {
-			const store = await setup();
-			const instanceUnderTest = new LegendPlugin();
-			await instanceUnderTest.register(store);
-
-			spyOn(geoResourceServiceMock, 'byId')
-				.withArgs('id1').and.returnValue({
-					_id: 'id1',
-					_url: 'url42',
-					_layers: 'l1,l2'
-				});
-
-			instanceUnderTest._capabilitiesProvider = async () => [
-				{ _label: 'name1', _layers: 'l1', _extraParams: { legendUrl: 'url1', minResolution: 0, maxResolution: 1 } },
-				{ _label: 'name2', _layers: 'l2', _extraParams: { legendUrl: 'url2', minResolution: 0, maxResolution: 1 } },
-				{ _label: 'name3', _layers: 'l3', _extraParams: { legendUrl: 'url3', minResolution: 0, maxResolution: 1 } }
-			];
-
-			const actual = await instanceUnderTest._extractWmsLayerItems('id1');
-
-			expect(actual).toEqual([
-				{ title: 'name1', legendUrl: 'url1', minResolution: 0, maxResolution: 1 },
-				{ title: 'name2', legendUrl: 'url2', minResolution: 0, maxResolution: 1 }
-			]);
-		});
-	});
-
-	const mockWmsLayerItems = (obj) => {
-		spyOn(obj, '_extractWmsLayerItems')
+		spyOn(wmsCapabilitiesServiceMock, 'getWmsLayers')
 			.withArgs('id1').and.returnValue([layerItem1])
 			.withArgs('id2').and.returnValue([layerItem2])
 			.withArgs('id3').and.returnValue([layerItem3]);
+
+
+		return store;
 	};
 
 	describe('when legendActive is true, ', () => {
 
-		const setupActive = async () => {
-			const store = await setup();
-			const instanceUnderTest = new LegendPlugin();
-			await instanceUnderTest.register(store);
-
-			mockWmsLayerItems(instanceUnderTest);
-
-			activateLegend();
-
-			return store;
-		};
-
 		it('creates legend items on active layer change', async () => {
-			const store = await setupActive();
+			const store = await setup();
+			activateLegend();
 
 			addLayer('id1');
 			addLayer('id2');
@@ -168,7 +74,8 @@ describe('ManageModulesPlugin', () => {
 
 
 		it('show legend only for visible layers', async () => {
-			const store = await setupActive();
+			const store = await setup();
+			activateLegend();
 
 			addLayer('id1');
 			addLayer('id2');
@@ -181,7 +88,8 @@ describe('ManageModulesPlugin', () => {
 		});
 
 		it('create preview layers items first', async () => {
-			const store = await setupActive();
+			const store = await setup();
+			activateLegend();
 
 			addLayer('id3');
 			setPreviewGeoresourceId('id2');
@@ -193,7 +101,8 @@ describe('ManageModulesPlugin', () => {
 		});
 
 		it('sorts active layers alphabetically', async () => {
-			const store = await setupActive();
+			const store = await setup();
+			activateLegend();
 
 			addLayer('id2');
 			addLayer('id3');
@@ -206,7 +115,8 @@ describe('ManageModulesPlugin', () => {
 
 
 		it('ignores preview layer if it is already active', async () => {
-			const store = await setupActive();
+			const store = await setup();
+			activateLegend();
 
 			addLayer('id1');
 			setPreviewGeoresourceId('id1');
@@ -217,7 +127,8 @@ describe('ManageModulesPlugin', () => {
 		});
 
 		it('clears preview layer if it is added to active layers', async () => {
-			const store = await setupActive();
+			const store = await setup();
+			activateLegend();
 
 			setPreviewGeoresourceId('id1');
 			addLayer('id1');
@@ -228,7 +139,8 @@ describe('ManageModulesPlugin', () => {
 		});
 
 		it('handles several incoming preview events correctly', async () => {
-			const store = await setupActive();
+			const store = await setup();
+			activateLegend();
 
 			setPreviewGeoresourceId('id1');
 			setPreviewGeoresourceId('id2');
@@ -242,7 +154,8 @@ describe('ManageModulesPlugin', () => {
 
 
 		it('handles several incoming active layers changes correctly', async () => {
-			const store = await setupActive();
+			const store = await setup();
+			activateLegend();
 
 			addLayer('id1');
 			addLayer('id2');
@@ -259,20 +172,9 @@ describe('ManageModulesPlugin', () => {
 
 	describe('when legendActive is false, ', () => {
 
-		const setupInactive = async () => {
-			const store = await setup();
-			const instanceUnderTest = new LegendPlugin();
-			await instanceUnderTest.register(store);
-
-			mockWmsLayerItems(instanceUnderTest);
-
-			deactivateLegend();
-
-			return store;
-		};
-
 		it('updates active layers even if legendActive is false', async () => {
-			const store = await setupInactive();
+			const store = await setup();
+			deactivateLegend();
 
 			addLayer('id1');
 
@@ -282,7 +184,8 @@ describe('ManageModulesPlugin', () => {
 		});
 
 		it('does not legend on preview id change', async () => {
-			const store = await setupInactive();
+			const store = await setup();
+			deactivateLegend();
 
 			setPreviewGeoresourceId('id1');
 
