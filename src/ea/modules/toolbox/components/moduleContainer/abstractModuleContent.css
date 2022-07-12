@@ -5,6 +5,10 @@
 	padding: 30px;
 }
 
+#redesign_iframe.iframe {
+    border: 0;
+}
+
 .iframe {
 	width: 100%;
 	height: 100%;
