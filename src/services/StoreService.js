@@ -63,12 +63,12 @@ export class StoreService {
 			notifications: notificationReducer,
 			featureInfo: featureInfoReducer,
 			media: createMediaReducer(),
-			import: importReducer,
 			mapclick: mapclickReducer,
 			geofeature: geofeatureReducer,
 			contribution: contributionReducer,
 			fnModuleComm: fnModuleCommReducer,
-			module: moduleReducer
+			module: moduleReducer,
+			import: importReducer
 		});
 
 		this._store = createStore(rootReducer);
@@ -87,12 +87,12 @@ export class StoreService {
 				MediaPlugin: mediaPlugin,
 				FeatureInfoPlugin: featureInfoPlugin,
 				MainMenuPlugin: mainMenuPlugin,
-				EnvironmentService: environmentService,
 				ImportPlugin: importPlugin,
-				ConfigService: configService,
 				ManageModulesPlugin: manageModulesPlugin,
 				FnModulePlugin: fnModulePlugin,
-				LegendPlugin: legendPlugin
+				LegendPlugin: legendPlugin,
+				SearchPlugin: searchPlugin,
+				HistoryStatePlugin: HistoryStatePlugin
 			}
 				= $injector.inject(
 					'TopicsPlugin',
@@ -106,12 +106,12 @@ export class StoreService {
 					'MediaPlugin',
 					'FeatureInfoPlugin',
 					'MainMenuPlugin',
-					'EnvironmentService',
 					'ImportPlugin',
-					'ConfigService',
 					'ManageModulesPlugin',
 					'FnModulePlugin',
-					'LegendPlugin'
+					'LegendPlugin',
+					'SearchPlugin',
+					'HistoryStatePlugin'
 				);
 
 			setTimeout(async () => {
@@ -131,10 +131,8 @@ export class StoreService {
 				await manageModulesPlugin.register(this._store);
 				await fnModulePlugin.register(this._store);
 				await legendPlugin.register(this._store);
-				//we remove all query params shown in the browsers address bar
-				if (configService.getValue('RUNTIME_MODE') !== 'development') {
-					environmentService.getWindow().history.replaceState(null, '', location.href.split('?')[0]);
-				}
+				await searchPlugin.register(this._store);
+				await HistoryStatePlugin.register(this._store); // should be registered as last plugin
 			});
 		});
 	}

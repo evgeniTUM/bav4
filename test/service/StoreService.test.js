@@ -41,6 +41,12 @@ describe('StoreService', () => {
 		const importPluginMock = {
 			register: () => { }
 		};
+		const searchPluginMock = {
+			register: () => { }
+		};
+		const historyStatePluginMock = {
+			register: () => { }
+		};
 		const mainMenuPluginMock = {
 			register() { }
 		};
@@ -57,15 +63,6 @@ describe('StoreService', () => {
 
 		const legendPluginMock = {
 			register() {}
-		};
-
-		const windowMock = {
-			history: {
-				replaceState() { }
-			}
-		};
-		const configService = {
-			getValue: () => { }
 		};
 
 		const setupInjector = () => {
@@ -85,11 +82,11 @@ describe('StoreService', () => {
 				.registerSingleton('MainMenuPlugin', mainMenuPluginMock)
 				.registerSingleton('MediaPlugin', mediaPluginMock)
 				.registerSingleton('ImportPlugin', importPluginMock)
-				.registerSingleton('EnvironmentService', { getWindow: () => windowMock })
-				.registerSingleton('ConfigService', configService)
 				.registerSingleton('FnModulePlugin', fnModulePluginMock)
 				.registerSingleton('ManageModulesPlugin', manageModulesPluginMock)
 				.registerSingleton('LegendPlugin', legendPluginMock)
+				.registerSingleton('SearchPlugin', searchPluginMock)
+				.registerSingleton('HistoryStatePlugin', historyStatePluginMock)
 
 				.ready();
 		};
@@ -148,6 +145,8 @@ describe('StoreService', () => {
 			const fnModulePluginSpy = spyOn(fnModulePluginMock, 'register');
 			const manageModulesPlugingSpy = spyOn(manageModulesPluginMock, 'register');
 			const legendPluginSpy = spyOn(legendPluginMock, 'register');
+			const searchPluginSpy = spyOn(searchPluginMock, 'register');
+			const historyStatePluginSpy = spyOn(historyStatePluginMock, 'register');
 			const instanceUnderTest = new StoreService();
 
 			setupInjector();
@@ -172,35 +171,8 @@ describe('StoreService', () => {
 			expect(fnModulePluginSpy).toHaveBeenCalledWith(store);
 			expect(manageModulesPlugingSpy).toHaveBeenCalledWith(store);
 			expect(legendPluginSpy).toHaveBeenCalledWith(store);
-		});
-
-		describe('query parameter', () => {
-
-			it('removes all query params by calling #replaceState on history', async () => {
-				const replaceStateMock = spyOn(windowMock.history, 'replaceState');
-				new StoreService();
-
-				setupInjector();
-
-				//we need two timeout calls: async plugins registration is done within a timeout function
-				await TestUtils.timeout();
-				await TestUtils.timeout();
-
-				expect(replaceStateMock).toHaveBeenCalled();
-			});
-
-			it('does NOT remove query params in deployment mode', async () => {
-				const replaceStateMock = spyOn(windowMock.history, 'replaceState');
-				spyOn(configService, 'getValue').and.returnValue('development');
-				new StoreService();
-
-				setupInjector();
-
-				//we need two timeout calls: async plugins registration is done within a timeout function
-				await TestUtils.timeout();
-				await TestUtils.timeout();
-				expect(replaceStateMock).not.toHaveBeenCalled();
-			});
+			expect(searchPluginSpy).toHaveBeenCalledWith(store);
+			expect(historyStatePluginSpy).toHaveBeenCalledWith(store);
 		});
 	});
 });

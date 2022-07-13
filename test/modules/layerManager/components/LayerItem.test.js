@@ -7,6 +7,9 @@ import { $injector } from '../../../../src/injection';
 import { modalReducer } from '../../../../src/store/modal/modal.reducer';
 import { isTemplateResult } from '../../../../src/utils/checks';
 import { TEST_ID_ATTRIBUTE_NAME } from '../../../../src/utils/markup';
+import { EventLike } from '../../../../src/utils/storeUtils';
+import { positionReducer } from '../../../../src/store/position/position.reducer';
+import { VectorGeoResource, VectorSourceType, WmsGeoResource } from '../../../../src/services/domain/geoResources';
 
 
 window.customElements.define(LayerItem.tag, LayerItem);
@@ -43,10 +46,12 @@ describe('LayerItem', () => {
 	};
 
 	describe('when layer item is rendered', () => {
+		const geoResourceService = { byId: () => { } };
 
 		const setup = async (layer) => {
 			TestUtils.setupStoreAndDi({}, { layers: layersReducer });
 			$injector.registerSingleton('TranslationService', { translate: (key) => key });
+			$injector.registerSingleton('GeoResourceService', geoResourceService);
 			const element = await TestUtils.render(LayerItem.tag);
 			element.layer = layer;
 			return element;
@@ -148,12 +153,28 @@ describe('LayerItem', () => {
 			expect(element.shadowRoot.querySelector('#copy').matches('.ishidden')).toBeTrue();
 		});
 
-		it('hides inactive copy button', async () => {
+		it('hides inactive info button', async () => {
 			const layer = { ...createDefaultLayerProperties(), id: 'id0', label: 'label0', visible: true, zIndex: 0, opacity: 1, collapsed: true, constraints: { metaData: false } };
 			const element = await setup(layer);
 
 			expect(element.shadowRoot.querySelector('#info')).toBeTruthy();
 			expect(element.shadowRoot.querySelector('#info').matches('.ishidden')).toBeTrue();
+		});
+
+		it('displays zoomToExtent button', async () => {
+			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', label: 'label0', visible: true, zIndex: 0, opacity: 1, collapsed: true };
+			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'id0', VectorSourceType.KML));
+			const element = await setup(layer);
+			expect(element.shadowRoot.querySelector('#zoomToExtent')).toBeTruthy();
+		});
+
+		it('hides inactive zoomToExtent button', async () => {
+			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', label: 'label0', visible: true, zIndex: 0, opacity: 1, collapsed: true, constraints: { metaData: false } };
+			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new WmsGeoResource('geoResourceId0', 'id0', '', [], ''));
+			const element = await setup(layer);
+
+			expect(element.shadowRoot.querySelector('#zoomToExtent')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#zoomToExtent').matches('.ishidden')).toBeTrue();
 		});
 
 		it('contains test-id attributes', async () => {
@@ -189,10 +210,14 @@ describe('LayerItem', () => {
 				layers: {
 					active: [layer],
 					background: 'bg0'
+				},
+				position: {
+					fitRequest: new EventLike(null)
 				}
 			};
-			const store = TestUtils.setupStoreAndDi(state, { layers: layersReducer, modal: modalReducer });
+			const store = TestUtils.setupStoreAndDi(state, { layers: layersReducer, modal: modalReducer, position: positionReducer });
 			$injector.registerSingleton('TranslationService', { translate: (key) => key });
+			$injector.registerSingleton('GeoResourceService', { byId: () => { } });
 			return store;
 		};
 
@@ -245,6 +270,18 @@ describe('LayerItem', () => {
 			expect(store.getState().modal.data.title).toBe('label0');
 			expect(isTemplateResult(store.getState().modal.data.content)).toBeTrue();
 		});
+
+		it('click on zoomToExtent icon changes state in store', async () => {
+			const store = setup();
+			const element = await TestUtils.render(LayerItem.tag);
+			element.layer = { ...layer };
+
+			const zoomToExtentButton = element.shadowRoot.querySelector('#zoomToExtent');
+
+			zoomToExtentButton.click();
+
+			expect(store.getState().position.fitLayerRequest.payload.id).toEqual('id0');
+		});
 	});
 
 
@@ -254,6 +291,7 @@ describe('LayerItem', () => {
 		const setup = (state) => {
 			store = TestUtils.setupStoreAndDi(state, { layers: layersReducer });
 			$injector.registerSingleton('TranslationService', { translate: (key) => key });
+			$injector.registerSingleton('GeoResourceService', { byId: () => { } });
 			return store;
 		};
 
@@ -430,6 +468,7 @@ describe('LayerItem', () => {
 
 			const store = TestUtils.setupStoreAndDi({}, { layers: layersReducer, modal: modalReducer });
 			$injector.registerSingleton('TranslationService', { translate: (key) => key });
+			$injector.registerSingleton('GeoResourceService', { byId: () => { } });
 			return store;
 		};
 		describe('on collapse', () => {

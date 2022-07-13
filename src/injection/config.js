@@ -37,6 +37,8 @@ import { ImportPlugin } from '../plugins/ImportPlugin';
 import { SecurityService } from '../services/SecurityService';
 import { ImportWmsService } from '../services/ImportWmsService';
 import { BaaCredentialService } from '../services/BaaCredentialService';
+import { SearchPlugin } from '../plugins/SearchPlugin';
+import { HistoryStatePlugin } from '../plugins/HistoryStatePlugin';
 
 
 $injector
@@ -77,6 +79,8 @@ $injector
 	.registerSingleton('FeatureInfoPlugin', new FeatureInfoPlugin())
 	.registerSingleton('MainMenuPlugin', new MainMenuPlugin())
 	.registerSingleton('ImportPlugin', new ImportPlugin())
+	.registerSingleton('SearchPlugin', new SearchPlugin())
+	.registerSingleton('HistoryStatePlugin', new HistoryStatePlugin())
 	.registerModule(mapModule)
 	.registerModule(topicsModule);
 //Import Energieatlas Plugins für Erweiterung muss nach der registrierung der services erfolgen
