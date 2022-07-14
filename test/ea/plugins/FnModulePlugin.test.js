@@ -463,7 +463,7 @@ describe('FnModulePlugin', () => {
 
 			const action = storeActions.find(a => a.type === FIT_REQUESTED);
 			expect(action).toBeDefined();
-			expect(action.payload._payload).toEqual({ extent: [2.25, 2.25, 5.25, 5.25], options: {} });
+			expect(action.payload._payload.extent).toEqual([2.25, 2.25, 5.25, 5.25]);
 		});
 
 		it('clears FeatureInfo and closes main menu on \'zoom2Extent\' message', async () => {
