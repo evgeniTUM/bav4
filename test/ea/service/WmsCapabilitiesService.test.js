@@ -133,6 +133,31 @@ describe('WmsCapabilitiesService', () => {
 
 			expect(providerCalls).toEqual(1);
 		});
+
+		it('do not call provider more than once for an unavaible url', async () => {
+			const instanceUnderTest = new WmsCapabilitiesService();
+
+			spyOn(geoResourceServiceMock, 'byId')
+				.withArgs('id1').and.returnValue({
+					_id: 'id1',
+					_url: 'url1',
+					_layers: 'l'
+				});
+
+			let providerCalls = 0;
+			instanceUnderTest._wmsCapabilitiesProvider = async () => {
+				providerCalls++;
+				throw 'url is not available';
+			};
+
+			const result1 = await instanceUnderTest.getWmsLayers('id1');
+			const result2 = await instanceUnderTest.getWmsLayers('id1');
+
+			expect(result1).toEqual([]);
+			expect(result1).toEqual(result2);
+
+			expect(providerCalls).toEqual(1);
+		});
 	});
 
 });

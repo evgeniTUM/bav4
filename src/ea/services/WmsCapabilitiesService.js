@@ -1,7 +1,7 @@
 import { $injector } from '../../injection';
 import { SourceType, SourceTypeName } from '../../services/domain/sourceType';
-
 import { bvvCapabilitiesProvider } from '../../services/provider/wmsCapabilities.provider';
+import { sleep } from '../../utils/sleep';
 
 export class WmsCapabilitiesService {
 
@@ -11,33 +11,57 @@ export class WmsCapabilitiesService {
 	constructor(wmsCapabilitiesProvider = bvvCapabilitiesProvider) {
 		this._wmsCapabilitiesProvider = wmsCapabilitiesProvider;
 		this._cache = {};
+		this._isLocked = false;
 	}
 
 	async getWmsLayers(geoResourceId, isAuthenticated = false) {
 		const { GeoResourceService } = $injector.inject('GeoResourceService');
 
-		const sourceType = new SourceType(SourceTypeName.WMS, '1.1.1');
 		const georesource = GeoResourceService.byId(geoResourceId);
 		if (!georesource || !georesource._layers) {
 			return [];
 		}
 
-		const capabilities = georesource._url in this._cache ?
-			this._cache[georesource._url]
-			: await this._wmsCapabilitiesProvider(georesource._url, sourceType, isAuthenticated);
+		const filterCapabilities = (georesource, capabilities) => {
+			const layerFilter = georesource._layers.split(',');
+			return capabilities
+				.filter(l => layerFilter.includes(l._layers))
+				.map(l => ({
+					title: l._label,
+					legendUrl: l._extraParams.legendUrl,
+					minResolution: l._extraParams.minResolution,
+					maxResolution: l._extraParams.maxResolution
+				}));
+		};
 
-		this._cache[georesource._url] = capabilities;
 
-		const layerFilter = georesource._layers.split(',');
-		const result = capabilities
-			.filter(l => layerFilter.includes(l._layers))
-			.map(l => ({
-				title: l._label,
-				legendUrl: l._extraParams.legendUrl,
-				minResolution: l._extraParams.minResolution,
-				maxResolution: l._extraParams.maxResolution
-			}));
+		if (!(georesource._url in this._cache)) {
 
-		return result;
+			while (this._isLocked) {
+				await sleep(50);
+			}
+
+			// check again if url was cached in the mean time
+			if (georesource._url in this._cache) {
+				return filterCapabilities(georesource, this._cache[georesource._url]);
+			}
+
+			this._isLocked = true;
+
+			let capabilities = [];
+			try {
+				const sourceType = new SourceType(SourceTypeName.WMS, '1.1.1');
+				capabilities = await this._wmsCapabilitiesProvider(georesource._url, sourceType, isAuthenticated);
+			}
+			catch (e) {
+				console.warn('could not load capabilities for URL ' + georesource._url);
+			}
+			finally {
+				this._cache[georesource._url] = capabilities;
+				this._isLocked = false;
+			}
+		}
+
+		return filterCapabilities(georesource, this._cache[georesource._url]);
 	}
 }
