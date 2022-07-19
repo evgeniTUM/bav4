@@ -48,27 +48,14 @@ describe('ModuleContent', () => {
 		return TestUtils.render(ConcreteModuleContent.tag);
 	};
 
-	beforeEach(async () => {
-		jasmine.clock().install();
-	});
-
-	afterEach(function () {
-		jasmine.clock().uninstall();
-	});
-
-
-
 	it('stores the iframe-window in a global variable', async () => {
 		const element = await setup();
-		jasmine.clock().tick(10000);
 
-		setTimeout(() => {
-			const frameId = element.getConfig().frame_id;
-			const iframeWindow = element.shadowRoot.getElementById(frameId).contentWindow;
+		const frameId = element.getConfig().frame_id;
+		const iframeWindow = element.shadowRoot.getElementById(frameId).contentWindow;
 
-			expect(window.ea_moduleWindow).toHaveSize(1);
-			expect(window.ea_moduleWindow[element.getConfig().module]).toEqual(iframeWindow);
-		});
+		expect(window.ea_moduleWindow).toHaveSize(1);
+		expect(window.ea_moduleWindow[element.getConfig().module]).toEqual(iframeWindow);
 	});
 
 	it('removes global variable when element disconnects from dom', async () => {
@@ -76,21 +63,27 @@ describe('ModuleContent', () => {
 
 		element.disconnectedCallback();
 
-		expect(window.ea_moduleWindow).toHaveSize(0);
+		expect(window.ea_moduleWindow).toEqual({});
 	});
 
 	it('opens fnCommModule when element renders', async () => {
-		const element = await setup();
-		jasmine.clock().tick(10000);
+		const unmockedSetTimeout = setTimeout;
 
-		setTimeout(() => {
-			const lastAction = storeActions.pop();
-			expect(lastAction.type).toEqual(OPEN_MODULE_REQUESTED);
-			expect(lastAction.payload).toEqual({
-				module: element.getConfig().module,
-				domain: 'MODULE_BACKEND_URL'
-			});
+		jasmine.clock().install();
+
+		const element = await setup();
+
+		await new Promise(r => unmockedSetTimeout(r, 50));
+		jasmine.clock().tick(1010);
+
+		const lastAction = storeActions.pop();
+		expect(lastAction.type).toEqual(OPEN_MODULE_REQUESTED);
+		expect(lastAction.payload).toEqual({
+			module: element.getConfig().module,
+			domain: 'MODULE_BACKEND_URL'
 		});
+
+		jasmine.clock().uninstall();
 	});
 
 	it('closes fnCommModule when element disconnects from dom', async () => {
@@ -98,6 +91,7 @@ describe('ModuleContent', () => {
 
 		element.disconnectedCallback();
 
+		expect(window.ea_moduleWindow).toEqual({});
 		expect(storeActions.pop().type).toEqual(MODULE_RESET_REQUESTED);
 	});
 

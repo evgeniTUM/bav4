@@ -91,6 +91,7 @@ export class StoreService {
 				ManageModulesPlugin: manageModulesPlugin,
 				FnModulePlugin: fnModulePlugin,
 				LegendPlugin: legendPlugin,
+				LayerVisibilityNotificationPlugin: layerVisibilityNotificationPlugin,
 				SearchPlugin: searchPlugin,
 				HistoryStatePlugin: HistoryStatePlugin
 			}
@@ -110,6 +111,7 @@ export class StoreService {
 					'ManageModulesPlugin',
 					'FnModulePlugin',
 					'LegendPlugin',
+					'LayerVisibilityNotificationPlugin',
 					'SearchPlugin',
 					'HistoryStatePlugin'
 				);
@@ -131,6 +133,7 @@ export class StoreService {
 				await manageModulesPlugin.register(this._store);
 				await fnModulePlugin.register(this._store);
 				await legendPlugin.register(this._store);
+				await layerVisibilityNotificationPlugin.register(this._store);
 				await searchPlugin.register(this._store);
 				await HistoryStatePlugin.register(this._store); // should be registered as last plugin
 			});

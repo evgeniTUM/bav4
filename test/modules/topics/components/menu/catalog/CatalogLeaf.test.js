@@ -10,6 +10,7 @@ import { Checkbox } from '../../../../../../src/modules/commons/components/check
 import { modalReducer } from '../../../../../../src/store/modal/modal.reducer';
 import { isTemplateResult } from '../../../../../../src/utils/checks';
 import { TEST_ID_ATTRIBUTE_NAME } from '../../../../../../src/utils/markup';
+import { positionReducer } from '../../../../../../src/store/position/position.reducer';
 
 
 
@@ -21,6 +22,16 @@ describe('CatalogLeaf', () => {
 	const geoResourceServiceMock = {
 		byId() { }
 	};
+
+	const mapServiceMock = {
+		calcResolution: () => {
+			return 50;
+		},
+		getMaxZoomLevel: () => 100,
+		getMinZoomLevel: () => 0
+	};
+
+	const wmsCapabilitiesServiceMock = { getWmsLayers: () => ([]) };
 
 	let store;
 
@@ -37,11 +48,17 @@ describe('CatalogLeaf', () => {
 			}
 		};
 
-		store = TestUtils.setupStoreAndDi(state, { topics: topicsReducer, layers: layersReducer, modal: modalReducer });
+		store = TestUtils.setupStoreAndDi(state, {
+			topics: topicsReducer,
+			layers: layersReducer,
+			position: positionReducer,
+			modal: modalReducer });
 
 		$injector
 			.registerSingleton('GeoResourceService', geoResourceServiceMock)
-			.registerSingleton('TranslationService', { translate: (key) => key });
+			.registerSingleton('TranslationService', { translate: (key) => key })
+			.registerSingleton('MapService', mapServiceMock)
+			.registerSingleton('WmsCapabilitiesService', wmsCapabilitiesServiceMock);
 
 		return TestUtils.render(CatalogLeaf.tag);
 	};

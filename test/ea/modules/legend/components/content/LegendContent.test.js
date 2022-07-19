@@ -113,5 +113,14 @@ describe('LegendContent', () => {
 			changeZoom(3);
 			expect(element.shadowRoot.querySelectorAll('img').length).toBe(1);
 		});
+
+		it('removes duplicate legend items', async () => {
+			const element = await setup();
+			activateLegend();
+
+			setLegendItems([layerItem1, layerItem1]);
+
+			expect(element.shadowRoot.querySelectorAll('img').length).toBe(1);
+		});
 	});
 });

@@ -1,16 +1,13 @@
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
-import { bvvCapabilitiesProvider } from '../../services/provider/wmsCapabilities.provider';
 import { observe } from '../../utils/storeUtils';
 import { setLegendItems } from '../store/module/module.action';
 
 export class LegendPlugin extends BaPlugin {
-	constructor(capabilitiesProvider = bvvCapabilitiesProvider) {
+	constructor() {
 		super();
 
 		const { WmsCapabilitiesService } = $injector.inject('WmsCapabilitiesService');
-
-		this._capabilitiesProvider = capabilitiesProvider;
 		this._wmsCapabilitiesService = WmsCapabilitiesService;
 	}
 
