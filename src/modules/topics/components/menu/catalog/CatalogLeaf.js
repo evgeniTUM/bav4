@@ -76,7 +76,7 @@ export class CatalogLeaf extends AbstractContentPanel {
 
 			let validResolution = true;
 			if (this._wmsLayers.length > 0) {
-				const resolution = this._mapService.calcResolution(state.mapZoom, state.mapCenter);
+				const resolution = state.mapResolution;
 				const visibleLayers = this._wmsLayers
 					.filter(l => resolution > l.maxResolution && resolution < l.minResolution);
 
@@ -111,13 +111,13 @@ export class CatalogLeaf extends AbstractContentPanel {
 		//our local state contains values derived form the global state and local data (_catalogPart)
 		const {
 			layers: { active: activeLayers, ready: layersStoreReady },
-			position: { zoom: mapZoom, center: mapCenter }
+			module: { mapResolution }
 		} = globalState;
 
 		const geoResourceId = this._catalogPart ? this._catalogPart.geoResourceId : null;
 		const checked = geoResourceId ? activeLayers.map(geoResource => geoResource.id).includes(geoResourceId) : false;
 
-		return { layersStoreReady, geoResourceId, checked, mapZoom, mapCenter };
+		return { layersStoreReady, geoResourceId, checked, mapResolution };
 	}
 
 

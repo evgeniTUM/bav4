@@ -11,13 +11,12 @@ export class LayerVisibilityNotificationPlugin extends BaPlugin {
 	 */
 	async register(store) {
 
-		const { WmsCapabilitiesService, MapService, TranslationService } = $injector
-			.inject('WmsCapabilitiesService', 'MapService', 'TranslationService');
+		const { WmsCapabilitiesService, TranslationService } = $injector
+			.inject('WmsCapabilitiesService', 'TranslationService');
 
 		const translate = (key) => TranslationService.translate(key);
 
 		this._wmsCapabilitiesService = WmsCapabilitiesService;
-		this._mapService = MapService;
 
 		let state = [];
 
@@ -28,9 +27,7 @@ export class LayerVisibilityNotificationPlugin extends BaPlugin {
 					.map(l => this._wmsCapabilitiesService.getWmsLayers(l.geoResourceId)));
 
 
-			const zoom = store.getState().position.zoom;
-			const center = store.getState().position.center;
-			const resolution = this._mapService.calcResolution(zoom, center);
+			const resolution = store.getState().module.mapResolution;
 			state = wmsLayers
 				.flat(1)
 				.map(l => ({
@@ -39,10 +36,7 @@ export class LayerVisibilityNotificationPlugin extends BaPlugin {
 				}));
 		};
 
-		const onZoomChange = (zoom) => {
-			const center = store.getState().position.center;
-			const resolution = this._mapService.calcResolution(zoom, center);
-
+		const onResolutionChange = (resolution) => {
 			const newState = state
 				.map(l => ({
 					...l,
@@ -62,6 +56,6 @@ export class LayerVisibilityNotificationPlugin extends BaPlugin {
 		};
 
 		observe(store, state => state.layers.active, onActiveLayersChange);
-		observe(store, state => state.position.zoom, onZoomChange);
+		observe(store, state => state.module.mapResolution, onResolutionChange);
 	}
 }

@@ -1,4 +1,5 @@
 import { LayerVisibilityNotificationPlugin } from '../../../src/ea/plugins/LayerVisibilityNotificationPlugin.js';
+import { setMapResolution } from '../../../src/ea/store/module/module.action.js';
 import { moduleReducer } from '../../../src/ea/store/module/module.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
 import { addLayer } from '../../../src/store/layers/layers.action';
@@ -13,14 +14,6 @@ import { TestUtils } from '../../test-utils.js';
 describe('LayerVisibilityNotificationPlugin', () => {
 
 	const wmsCapabilitiesServiceMock = { getWmsLayers: () => ([]) };
-
-	const mapServiceMock = {
-		calcResolution: () => {
-			return 50;
-		},
-		getMaxZoomLevel: () => 100,
-		getMinZoomLevel: () => 0
-	};
 
 	const translationServiceMock = {
 		translate: key => key
@@ -57,7 +50,6 @@ describe('LayerVisibilityNotificationPlugin', () => {
 
 		$injector
 			.registerSingleton('WmsCapabilitiesService', wmsCapabilitiesServiceMock)
-			.registerSingleton('MapService', mapServiceMock)
 			.registerSingleton('TranslationService', translationServiceMock);
 
 		const instanceUnderTest = new LayerVisibilityNotificationPlugin();
@@ -72,25 +64,19 @@ describe('LayerVisibilityNotificationPlugin', () => {
 
 	it('shows a notification on zoom change and a active layer not visible anymore', async () => {
 
-		const store = await setup();
-		const center = store.getState().position.center;
-		spyOn(mapServiceMock, 'calcResolution')
-			.withArgs(1, center).and.returnValue(10)
-			.withArgs(2, center).and.returnValue(50)
-			.withArgs(3, center).and.returnValue(55)
-			.withArgs(4, center).and.returnValue(90);
+		await setup();
 
 		const waitForAsyncFunctionsToRun = new Promise(r => setTimeout(r));
 
-		changeZoom(1);
 		addLayer('id1');
+		setMapResolution(10);
 		await waitForAsyncFunctionsToRun;
 
 		let notificationActions = storeActions.filter(a => a.type === NOTIFICATION_ADDED);
 		expect(notificationActions.length).toBe(0);
 
 
-		changeZoom(2);
+		setMapResolution(50);
 		await waitForAsyncFunctionsToRun;
 
 		notificationActions = storeActions.filter(a => a.type === NOTIFICATION_ADDED);
@@ -101,8 +87,8 @@ describe('LayerVisibilityNotificationPlugin', () => {
 		});
 
 		storeActions.length = 0;
-		changeZoom(3);
-		changeZoom(4);
+		setMapResolution(55);
+		setMapResolution(90);
 		await waitForAsyncFunctionsToRun;
 
 		notificationActions = storeActions.filter(a => a.type === NOTIFICATION_ADDED);
