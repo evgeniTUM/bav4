@@ -8,7 +8,7 @@ export const provide = (lang) => {
 
 		case 'de':
 			return {
-				ea_notification_layer_not_visible: 'ist in diser Kartenauflösung nicht darstellbar.'
+				ea_notification_layer_not_visible: ' ist in dieser Kartenauflösung nicht darstellbar.'
 			};
 
 		default:

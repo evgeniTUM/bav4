@@ -37,8 +37,6 @@ export class LayerVisibilityNotificationPlugin extends BaPlugin {
 					...l,
 					isDisplayed: resolution > l.maxResolution && resolution < l.minResolution
 				}));
-
-
 		};
 
 		const onZoomChange = (zoom) => {
@@ -56,8 +54,9 @@ export class LayerVisibilityNotificationPlugin extends BaPlugin {
 
 			const delta = newNotDisplayedIds.filter(l => oldDisplayedIds.includes(l));
 
+			const titles = [...new Set(delta)];
 			const msg = translate('ea_notification_layer_not_visible');
-			delta.forEach(title => emitNotification(title + msg, LevelTypes.INFO));
+			titles.forEach(title => emitNotification(`"${title}" ${msg}`, LevelTypes.INFO));
 
 			state = newState;
 		};

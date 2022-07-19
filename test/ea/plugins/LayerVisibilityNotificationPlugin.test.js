@@ -96,7 +96,7 @@ describe('LayerVisibilityNotificationPlugin', () => {
 		notificationActions = storeActions.filter(a => a.type === NOTIFICATION_ADDED);
 		expect(notificationActions.length).toBe(1);
 		expect(notificationActions[0].payload._payload).toEqual({
-			content: 'title1' + 'ea_notification_layer_not_visible',
+			content: '"title1" ea_notification_layer_not_visible',
 			level: LevelTypes.INFO
 		});
 
