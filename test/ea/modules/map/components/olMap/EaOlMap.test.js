@@ -3,6 +3,7 @@ import { EaOlMap } from '../../../../../../src/ea/modules/map/components/olMap/E
 import { geofeatureReducer } from '../../../../../../src/ea/store/geofeature/geofeature.reducer';
 import { setMapCursorStyle } from '../../../../../../src/ea/store/mapclick/mapclick.action';
 import { mapclickReducer } from '../../../../../../src/ea/store/mapclick/mapclick.reducer';
+import { moduleReducer } from '../../../../../../src/ea/store/module/module.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { getDefaultLayerOptions } from '../../../../../../src/modules/olMap/handler/OlLayerHandler';
 import { WmsGeoResource } from '../../../../../../src/services/domain/geoResources';
@@ -14,6 +15,7 @@ import { createNoInitialStateMediaReducer } from '../../../../../../src/store/me
 import { networkReducer } from '../../../../../../src/store/network/network.reducer';
 import { notificationReducer } from '../../../../../../src/store/notifications/notifications.reducer';
 import { pointerReducer } from '../../../../../../src/store/pointer/pointer.reducer';
+import { changeZoom } from '../../../../../../src/store/position/position.action';
 import { positionReducer } from '../../../../../../src/store/position/position.reducer';
 import { TestUtils } from '../../../../../test-utils';
 
@@ -138,12 +140,11 @@ describe('OlMap', () => {
 
 	const vectorLayerServiceMock = {};
 
+	let store;
+
 	const setup = (state) => {
 		const defaultState = {
 			position: {
-				// zoom: initialZoomLevel,
-				// center: initialCenter,
-				// rotation: initialRotationValue,
 				fitRequest: null
 			}, media: {
 				portrait: false,
@@ -156,7 +157,7 @@ describe('OlMap', () => {
 			...state
 		};
 
-		TestUtils.setupStoreAndDi(combinedState, {
+		store = TestUtils.setupStoreAndDi(combinedState, {
 			map: mapReducer,
 			pointer: pointerReducer,
 			position: positionReducer,
@@ -166,7 +167,8 @@ describe('OlMap', () => {
 			media: createNoInitialStateMediaReducer(),
 			notifications: notificationReducer,
 			geofeature: geofeatureReducer,
-			mapclick: mapclickReducer
+			mapclick: mapclickReducer,
+			module: moduleReducer
 		});
 
 
@@ -213,6 +215,20 @@ describe('OlMap', () => {
 				removeLayer(contributionLayerHandlerMock.id);
 				expect(activateSpy).not.toHaveBeenCalledWith(map);
 				expect(deactivateSpy).toHaveBeenCalledWith(map);
+			});
+
+			it('sets the map resolution', async () => {
+				await setup();
+
+				expect(store.getState().module.mapResolution).toEqual(4891.96981025128);
+			});
+
+			it('sets the map resolution on zoom change', async () => {
+				await setup();
+
+				changeZoom(10);
+
+				expect(store.getState().module.mapResolution).toEqual(152.8740565703525);
 			});
 		});
 

@@ -7,6 +7,8 @@ export const ACTIVATE_LEGEND = 'module/legend/activate';
 export const SET_LEGEND_ITEMS = 'module/legend/set';
 export const SET_PREVIEW_GEORESOURCE_ID = 'module/legend/preview/add';
 export const CLEAR_PREVIEW_GEORESOURCE_ID = 'module/legend/preview/clear';
+export const SET_MAP_RESOLUTION = 'module/mapResolution/set';
+
 
 export const initialState = {
 
@@ -33,7 +35,12 @@ export const initialState = {
 	/**
 	 * @property {Array<LegendItem>}
 	 */
-	legendItems: []
+	legendItems: [],
+
+	/**
+	 * @property {Double}
+	 */
+	mapResolution: 0.0
 
 };
 
@@ -100,6 +107,12 @@ export const moduleReducer = (state = initialState, action) => {
 			return {
 				...state,
 				legendItems: payload
+			};
+		}
+		case SET_MAP_RESOLUTION: {
+			return {
+				...state,
+				mapResolution: payload
 			};
 		}
 	}
