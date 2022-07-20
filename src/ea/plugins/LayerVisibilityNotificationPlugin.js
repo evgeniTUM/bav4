@@ -42,7 +42,7 @@ export class LayerVisibilityNotificationPlugin extends BaPlugin {
 						layers: await this._wmsCapabilitiesService.getWmsLayers(l.geoResourceId)
 					})));
 
-			const resolution = store.getState().module.mapResolution;
+			const resolution = store.getState().ea.mapResolution;
 			displayState = getDisplayState(wmsLayers, resolution);
 		};
 
