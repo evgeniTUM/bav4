@@ -11,6 +11,7 @@ import { modalReducer } from '../../../../../../src/store/modal/modal.reducer';
 import { isTemplateResult } from '../../../../../../src/utils/checks';
 import { TEST_ID_ATTRIBUTE_NAME } from '../../../../../../src/utils/markup';
 import { positionReducer } from '../../../../../../src/store/position/position.reducer';
+import { moduleReducer } from '../../../../../../src/ea/store/module/module.reducer';
 
 
 
@@ -52,7 +53,9 @@ describe('CatalogLeaf', () => {
 			topics: topicsReducer,
 			layers: layersReducer,
 			position: positionReducer,
-			modal: modalReducer });
+			modal: modalReducer,
+			module: moduleReducer
+		});
 
 		$injector
 			.registerSingleton('GeoResourceService', geoResourceServiceMock)

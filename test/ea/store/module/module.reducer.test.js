@@ -1,4 +1,3 @@
-import { setMapCursorStyle } from '../../../../src/ea/store/mapclick/mapclick.action';
 import { activateGeoResource, activateLegend, clearPreviewGeoresourceId, deactivateAllGeoResources, deactivateGeoResource, deactivateLegend, setCurrentModule, setLegendItems, setMapResolution, setPreviewGeoresourceId } from '../../../../src/ea/store/module/module.action';
 import { moduleReducer } from '../../../../src/ea/store/module/module.reducer';
 import { TestUtils } from '../../../test-utils';

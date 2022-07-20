@@ -77,10 +77,8 @@ export class CatalogLeaf extends AbstractContentPanel {
 			let validResolution = true;
 			if (this._wmsLayers.length > 0) {
 				const resolution = state.mapResolution;
-				const visibleLayers = this._wmsLayers
-					.filter(l => resolution > l.maxResolution && resolution < l.minResolution);
-
-				validResolution = visibleLayers.length > 0;
+				validResolution = this._wmsLayers
+					.some(l => resolution > l.maxResolution && resolution < l.minResolution);
 			}
 			else {
 				setTimeout(async () => {
@@ -88,7 +86,7 @@ export class CatalogLeaf extends AbstractContentPanel {
 					this.updateState();
 				});
 			}
-			const createTitleMsg = (text, validResolution) =>
+			const createTitle = (text, validResolution) =>
 				validResolution ? text : title + translate('ea_notification_layer_not_visible');
 
 
@@ -97,7 +95,7 @@ export class CatalogLeaf extends AbstractContentPanel {
 			${css}		
 			</style>
 			<span class="ba-list-item" @mouseenter=${onMouseEnter} @mouseleave=${onMouseLeave}>		
-					<ba-checkbox class="ba-list-item__text" @toggle=${onToggle}  .disabled=${!geoR || (!validResolution && !checked)} .checked=${checked} tabindex='0' .title=${createTitleMsg(title, validResolution)}><span>${label}</span></ba-checkbox>						
+					<ba-checkbox class="ba-list-item__text" @toggle=${onToggle}  .disabled=${!geoR || (!validResolution && !checked)} .checked=${checked} tabindex='0' .title=${createTitle(title, validResolution)}><span>${label}</span></ba-checkbox>						
 					<div class="ba-icon-button ba-list-item__after vertical-center separator">									                                                                                          
 						<ba-icon id='info' data-test-id .icon='${infoSvg}' .color=${'var(--primary-color)'} .color_hover=${'var(--text3)'} .size=${2} .title=${translate('layerManager_move_up')} @click=${openGeoResourceInfoPanel}></ba-icon>                    							 
 					</div>
