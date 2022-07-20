@@ -51,7 +51,7 @@ export class AdditionalMenu extends MvuElement {
 
 	onInitialize() {
 		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
-		this.observe(state => state.ea.current, current => this._moduleId = current);
+		this.observe(state => state.ea.currentModule, current => this._moduleId = current);
 	}
 
 	/**

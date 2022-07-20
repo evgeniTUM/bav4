@@ -13,7 +13,7 @@ describe('ea.reducer', () => {
 
 	it('has correct initial values', () => {
 		const store = setup();
-		expect(store.getState().ea.current).toBe(null);
+		expect(store.getState().ea.currentModule).toBe(null);
 		expect(store.getState().ea.activeGeoResources).toEqual([]);
 		expect(store.getState().ea.legendActive).toEqual(false);
 		expect(store.getState().ea.legendGeoresourceId).toBeNull();
@@ -25,7 +25,7 @@ describe('ea.reducer', () => {
 		const store = setup();
 
 		setCurrentModule('test-tag');
-		expect(store.getState().ea.current).toBe('test-tag');
+		expect(store.getState().ea.currentModule).toBe('test-tag');
 	});
 
 	it('adds a georesourceId', () => {

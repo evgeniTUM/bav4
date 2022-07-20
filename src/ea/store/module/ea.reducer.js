@@ -15,7 +15,7 @@ export const initialState = {
 	/**
 	 * @property {String|null}
 	 */
-	current: null,
+	currentModule: null,
 
 	/**
 	 * @property {Array<string>}
@@ -52,7 +52,7 @@ export const eaReducer = (state = initialState, action) => {
 
 			return {
 				...state,
-				current: payload
+				currentModule: payload
 			};
 		}
 		case ACTIVATE_GEORESOURCE: {

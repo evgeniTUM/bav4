@@ -105,7 +105,7 @@ export class ManageModulesPlugin extends BaPlugin {
 
 		};
 
-		observe(store, state => state.ea.current, onModuleChange);
+		observe(store, state => state.ea.currentModule, onModuleChange);
 		observe(store, state => state.ea.activeGeoResources, onActiveGeoResourcesChanged);
 
 	}

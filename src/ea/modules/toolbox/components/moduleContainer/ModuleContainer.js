@@ -53,7 +53,7 @@ export class ModuleContainer extends MvuElement {
 	 */
 	onInitialize() {
 		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
-		this.observe(state => state.ea.current, current => this.signal(Update_ModuleId, current));
+		this.observe(state => state.ea.currentModule, current => this.signal(Update_ModuleId, current));
 	}
 
 	/**
