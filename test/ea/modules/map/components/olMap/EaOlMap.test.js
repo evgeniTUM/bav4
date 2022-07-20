@@ -220,7 +220,7 @@ describe('OlMap', () => {
 			it('sets the map resolution', async () => {
 				await setup();
 
-				expect(store.getState().module.mapResolution).toEqual(4891.96981025128);
+				expect(store.getState().ea.mapResolution).toEqual(4891.96981025128);
 			});
 
 			it('sets the map resolution on zoom change', async () => {
@@ -228,7 +228,7 @@ describe('OlMap', () => {
 
 				changeZoom(10);
 
-				expect(store.getState().module.mapResolution).toEqual(152.8740565703525);
+				expect(store.getState().ea.mapResolution).toEqual(152.8740565703525);
 			});
 		});
 

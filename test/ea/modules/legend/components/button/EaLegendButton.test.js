@@ -51,11 +51,11 @@ describe('LegendButton', () => {
 
 			element.shadowRoot.querySelector('button').click();
 
-			expect(store.getState().module.legendActive).toBe(true);
+			expect(store.getState().ea.legendActive).toBe(true);
 
 			element.shadowRoot.querySelector('button').click();
 
-			expect(store.getState().module.legendActive).toBe(false);
+			expect(store.getState().ea.legendActive).toBe(false);
 		});
 
 	});
