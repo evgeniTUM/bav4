@@ -87,7 +87,7 @@ export class CatalogLeaf extends AbstractContentPanel {
 				});
 			}
 			const createTitle = (text, validResolution) =>
-				validResolution ? text : title + translate('ea_notification_layer_not_visible');
+				validResolution ? text : 'Georesource ' + translate('ea_notification_layer_not_visible');
 
 
 			return html`
