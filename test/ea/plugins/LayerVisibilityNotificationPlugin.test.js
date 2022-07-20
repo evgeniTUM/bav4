@@ -6,7 +6,6 @@ import { addLayer } from '../../../src/store/layers/layers.action';
 import { layersReducer } from '../../../src/store/layers/layers.reducer.js';
 import { LevelTypes } from '../../../src/store/notifications/notifications.action.js';
 import { notificationReducer, NOTIFICATION_ADDED } from '../../../src/store/notifications/notifications.reducer.js';
-import { changeZoom } from '../../../src/store/position/position.action.js';
 import { positionReducer } from '../../../src/store/position/position.reducer.js';
 import { TestUtils } from '../../test-utils.js';
 
@@ -62,8 +61,47 @@ describe('LayerVisibilityNotificationPlugin', () => {
 		return store;
 	};
 
-	it('shows a notification on zoom change and a active layer not visible anymore', async () => {
 
+	it('shows a notification if switching from active to inactive layer for wms', async () => {
+		await setup();
+
+		const waitForAsyncFunctionsToRun = new Promise(r => setTimeout(r));
+
+		addLayer('id1', { label: 'wms' });
+		setMapResolution(10);
+		await waitForAsyncFunctionsToRun;
+
+		setMapResolution(50);
+		setMapResolution(55);
+		await waitForAsyncFunctionsToRun;
+
+		const notificationActions = storeActions.filter(a => a.type === NOTIFICATION_ADDED);
+		expect(notificationActions.length).toBe(1);
+		expect(notificationActions[0].payload._payload).toEqual({
+			content: '"wms" ea_notification_layer_not_visible',
+			level: LevelTypes.INFO
+		});
+	});
+
+	it('does not show notification if switching from inactive to active layer for wms', async () => {
+		await setup();
+
+		const waitForAsyncFunctionsToRun = new Promise(r => setTimeout(r));
+
+		addLayer('id1');
+		setMapResolution(50);
+		await waitForAsyncFunctionsToRun;
+
+		storeActions.length = 0;
+
+		setMapResolution(90);
+		await waitForAsyncFunctionsToRun;
+
+		const notificationActions = storeActions.filter(a => a.type === NOTIFICATION_ADDED);
+		expect(notificationActions.length).toBe(0);
+	});
+
+	it('does not show a notification if switching form active to another activ layer for wms', async () => {
 		await setup();
 
 		const waitForAsyncFunctionsToRun = new Promise(r => setTimeout(r));
@@ -72,26 +110,10 @@ describe('LayerVisibilityNotificationPlugin', () => {
 		setMapResolution(10);
 		await waitForAsyncFunctionsToRun;
 
-		let notificationActions = storeActions.filter(a => a.type === NOTIFICATION_ADDED);
-		expect(notificationActions.length).toBe(0);
-
-
-		setMapResolution(50);
-		await waitForAsyncFunctionsToRun;
-
-		notificationActions = storeActions.filter(a => a.type === NOTIFICATION_ADDED);
-		expect(notificationActions.length).toBe(1);
-		expect(notificationActions[0].payload._payload).toEqual({
-			content: '"title1" ea_notification_layer_not_visible',
-			level: LevelTypes.INFO
-		});
-
-		storeActions.length = 0;
-		setMapResolution(55);
 		setMapResolution(90);
 		await waitForAsyncFunctionsToRun;
 
-		notificationActions = storeActions.filter(a => a.type === NOTIFICATION_ADDED);
+		const notificationActions = storeActions.filter(a => a.type === NOTIFICATION_ADDED);
 		expect(notificationActions.length).toBe(0);
 	});
 });

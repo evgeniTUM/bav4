@@ -18,41 +18,49 @@ export class LayerVisibilityNotificationPlugin extends BaPlugin {
 
 		this._wmsCapabilitiesService = WmsCapabilitiesService;
 
-		let state = [];
+		let wmsLayers = [];
+		let displayState = [];
+
+		const getDisplayState = (wmsLayers, resolution) => {
+			const res = wmsLayers
+				.map(entry => ({
+					...entry,
+					isDisplayed: entry.layers.some(
+						l => resolution > l.maxResolution && resolution < l.minResolution
+					)
+				}));
+
+			return res;
+		};
 
 		const onActiveLayersChange = async (layers) => {
-			const wmsLayers = await Promise.all(
+			wmsLayers = await Promise.all(
 				layers
 					.filter(l => l.visible)
-					.map(l => this._wmsCapabilitiesService.getWmsLayers(l.geoResourceId)));
-
+					.map(async l => ({
+						label: l.label,
+						layers: await this._wmsCapabilitiesService.getWmsLayers(l.geoResourceId)
+					})));
 
 			const resolution = store.getState().module.mapResolution;
-			state = wmsLayers
-				.flat(1)
-				.map(l => ({
-					...l,
-					isDisplayed: resolution > l.maxResolution && resolution < l.minResolution
-				}));
+			displayState = getDisplayState(wmsLayers, resolution);
 		};
 
 		const onResolutionChange = (resolution) => {
-			const newState = state
-				.map(l => ({
-					...l,
-					isDisplayed: resolution > l.maxResolution && resolution < l.minResolution
-				}));
+			const newDisplayState = getDisplayState(wmsLayers, resolution);
 
-			const oldDisplayedIds = state.filter(l => l.isDisplayed).map(l => l.title);
-			const newNotDisplayedIds = newState.filter(l => !l.isDisplayed).map(l => l.title);
+			const delta = newDisplayState
+				.filter(wms => !wms.isDisplayed)
+				.filter(wms => {
+					const oldWms = displayState.find(w => w.label === wms.label);
+					return oldWms && oldWms.isDisplayed;
+				});
 
-			const delta = newNotDisplayedIds.filter(l => oldDisplayedIds.includes(l));
-
-			const titles = [...new Set(delta)];
+			const uniqueTitles = [...new Set(delta.map(wms => wms.label))];
 			const msg = translate('ea_notification_layer_not_visible');
-			titles.forEach(title => emitNotification(`"${title}" ${msg}`, LevelTypes.INFO));
+			uniqueTitles.forEach(title => emitNotification(`"${title}" ${msg}`, LevelTypes.INFO));
 
-			state = newState;
+			displayState = newDisplayState;
 		};
 
 		observe(store, state => state.layers.active, onActiveLayersChange);
