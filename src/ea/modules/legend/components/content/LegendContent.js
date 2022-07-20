@@ -4,7 +4,7 @@ import { MvuElement } from '../../../../../modules/MvuElement';
 import css from './legendContent.css';
 
 const Update_legend_active = 'update_legend_active';
-const Update_zoom = 'update_zoom';
+const Update_resolution = 'update_resolution';
 const Update_legend_items = 'update_legend_items';
 
 export class LegendContent extends MvuElement {
@@ -13,14 +13,13 @@ export class LegendContent extends MvuElement {
 		super({
 			legendActive: true,
 			legendItems: [],
-			zoom: 0
+			resolution: 0
 		});
 
-		const { StoreService, TranslationService, MapService } = $injector
-			.inject('StoreService', 'TranslationService', 'MapService');
+		const { StoreService, TranslationService } = $injector
+			.inject('StoreService', 'TranslationService');
 		this._storeService = StoreService;
 		this._translationService = TranslationService;
-		this._mapService = MapService;
 	}
 
 	/**
@@ -34,8 +33,8 @@ export class LegendContent extends MvuElement {
 			case Update_legend_items:
 				return { ...model, legendItems: data };
 
-			case Update_zoom:
-				return { ...model, zoom: data };
+			case Update_resolution:
+				return { ...model, resolution: data };
 		}
 	}
 
@@ -45,7 +44,7 @@ export class LegendContent extends MvuElement {
 	onInitialize() {
 		this.observe(state => state.module.legendActive, active => this.signal(Update_legend_active, active));
 		this.observe(state => state.module.legendItems, items => this.signal(Update_legend_items, items));
-		this.observe(state => state.position.zoom, zoom => this.signal(Update_zoom, zoom));
+		this.observe(state => state.module.mapResolution, resolution => this.signal(Update_resolution, resolution));
 	}
 
 	createView(model) {
@@ -55,13 +54,14 @@ export class LegendContent extends MvuElement {
 
 		const translate = (key) => this._translationService.translate(key);
 
-		const center = this._storeService.getStore().getState().position.center;
-		const resolution = this._mapService.calcResolution(model.zoom, center);
-
+		const resolution = model.resolution;
 		const visibleLayers = model.legendItems
 			.filter(l => resolution > l.maxResolution && resolution < l.minResolution);
 
-		const content = visibleLayers.map(l => html`
+		const uniqueVisibleLayers = [...new Map(visibleLayers.map(item =>
+			[item.title, item])).values()];
+
+		const content = uniqueVisibleLayers.map(l => html`
 			<div class="ea-legend-item__title">${l.title}</div>
 			<img src="${l.legendUrl}" @dragstart=${(e) => e.preventDefault()}></img>
 		`);
