@@ -8,8 +8,8 @@ import { RedesignModuleContent } from '../../../src/ea/modules/toolbox/component
 import { ResearchModuleContent } from '../../../src/ea/modules/toolbox/components/research/ResearchModuleContent.js';
 import { ManageModulesPlugin } from '../../../src/ea/plugins/ManageModulesPlugin.js';
 import { CLEAR_MAP } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
-import { activateGeoResource, deactivateGeoResource, setCurrentModule } from '../../../src/ea/store/module/module.action.js';
-import { DEACTIVATE_ALL_GEORESOURCES, moduleReducer } from '../../../src/ea/store/module/module.reducer.js';
+import { activateGeoResource, deactivateGeoResource, setCurrentModule } from '../../../src/ea/store/module/ea.action.js';
+import { DEACTIVATE_ALL_GEORESOURCES, eaReducer } from '../../../src/ea/store/module/ea.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
 import { FEATURE_INFO_REQUEST_ABORT } from '../../../src/store/featureInfo/featureInfo.reducer.js';
 import { CLEAR_FEATURES } from '../../../src/store/highlight/highlight.reducer.js';
@@ -31,7 +31,7 @@ describe('ManageModulesPlugin', () => {
 		const store = TestUtils.setupStoreAndDi(state, {
 			spyReducer: (state, action) => storeActions.push(action),
 			layers: layersReducer,
-			module: moduleReducer,
+			ea: eaReducer,
 			mainMenu: createMainMenuReducer()
 		});
 

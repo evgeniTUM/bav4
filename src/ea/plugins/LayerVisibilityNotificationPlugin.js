@@ -64,6 +64,6 @@ export class LayerVisibilityNotificationPlugin extends BaPlugin {
 		};
 
 		observe(store, state => state.layers.active, onActiveLayersChange);
-		observe(store, state => state.module.mapResolution, onResolutionChange);
+		observe(store, state => state.ea.mapResolution, onResolutionChange);
 	}
 }

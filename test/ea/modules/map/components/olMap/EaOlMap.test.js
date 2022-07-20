@@ -3,7 +3,7 @@ import { EaOlMap } from '../../../../../../src/ea/modules/map/components/olMap/E
 import { geofeatureReducer } from '../../../../../../src/ea/store/geofeature/geofeature.reducer';
 import { setMapCursorStyle } from '../../../../../../src/ea/store/mapclick/mapclick.action';
 import { mapclickReducer } from '../../../../../../src/ea/store/mapclick/mapclick.reducer';
-import { moduleReducer } from '../../../../../../src/ea/store/module/module.reducer';
+import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { getDefaultLayerOptions } from '../../../../../../src/modules/olMap/handler/OlLayerHandler';
 import { WmsGeoResource } from '../../../../../../src/services/domain/geoResources';
@@ -168,7 +168,7 @@ describe('OlMap', () => {
 			notifications: notificationReducer,
 			geofeature: geofeatureReducer,
 			mapclick: mapclickReducer,
-			module: moduleReducer
+			ea: eaReducer
 		});
 
 

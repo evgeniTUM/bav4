@@ -1,5 +1,5 @@
 import { html, nothing } from 'lit-html';
-import { clearPreviewGeoresourceId, setPreviewGeoresourceId } from '../../../../../ea/store/module/module.action';
+import { clearPreviewGeoresourceId, setPreviewGeoresourceId } from '../../../../../ea/store/module/ea.action';
 import { $injector } from '../../../../../injection';
 import { addLayer, removeLayer } from '../../../../../store/layers/layers.action';
 import { openModal } from '../../../../../store/modal/modal.action';
@@ -109,7 +109,7 @@ export class CatalogLeaf extends AbstractContentPanel {
 		//our local state contains values derived form the global state and local data (_catalogPart)
 		const {
 			layers: { active: activeLayers, ready: layersStoreReady },
-			module: { mapResolution }
+			ea: { mapResolution }
 		} = globalState;
 
 		const geoResourceId = this._catalogPart ? this._catalogPart.geoResourceId : null;

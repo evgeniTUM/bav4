@@ -4,7 +4,7 @@ import { GeothermModuleContent } from '../../../../src/ea/modules/toolbox/compon
 import { MixerModuleContent } from '../../../../src/ea/modules/toolbox/components/mixer/MixerModuleContent';
 import { RedesignModuleContent } from '../../../../src/ea/modules/toolbox/components/redesign/RedesignModuleContent';
 import { ResearchModuleContent } from '../../../../src/ea/modules/toolbox/components/research/ResearchModuleContent';
-import { ModuleId } from '../../../../src/ea/store/module/module.action';
+import { ModuleId } from '../../../../src/ea/store/module/ea.action';
 
 describe('toolAction', () => {
 

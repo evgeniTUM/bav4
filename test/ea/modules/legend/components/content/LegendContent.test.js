@@ -1,7 +1,7 @@
 
 import { LegendContent } from '../../../../../../src/ea/modules/legend/components/content/LegendContent';
-import { activateLegend, setLegendItems, setMapResolution } from '../../../../../../src/ea/store/module/module.action';
-import { moduleReducer } from '../../../../../../src/ea/store/module/module.reducer';
+import { activateLegend, setLegendItems, setMapResolution } from '../../../../../../src/ea/store/module/ea.action';
+import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { positionReducer } from '../../../../../../src/store/position/position.reducer';
 import { TestUtils } from '../../../../../test-utils';
@@ -13,7 +13,7 @@ describe('LegendContent', () => {
 	const setup = async (state = {}) => {
 
 		TestUtils.setupStoreAndDi(state, {
-			module: moduleReducer,
+			ea: eaReducer,
 			position: positionReducer
 		});
 		$injector

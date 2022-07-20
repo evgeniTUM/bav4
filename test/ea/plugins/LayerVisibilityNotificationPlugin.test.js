@@ -1,6 +1,6 @@
 import { LayerVisibilityNotificationPlugin } from '../../../src/ea/plugins/LayerVisibilityNotificationPlugin.js';
-import { setMapResolution } from '../../../src/ea/store/module/module.action.js';
-import { moduleReducer } from '../../../src/ea/store/module/module.reducer.js';
+import { setMapResolution } from '../../../src/ea/store/module/ea.action.js';
+import { eaReducer } from '../../../src/ea/store/module/ea.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
 import { addLayer } from '../../../src/store/layers/layers.action';
 import { layersReducer } from '../../../src/store/layers/layers.reducer.js';
@@ -44,7 +44,7 @@ describe('LayerVisibilityNotificationPlugin', () => {
 			layers: layersReducer,
 			position: positionReducer,
 			notification: notificationReducer,
-			module: moduleReducer
+			ea: eaReducer
 		});
 
 		$injector

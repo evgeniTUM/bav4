@@ -1,7 +1,7 @@
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { observe } from '../../utils/storeUtils';
-import { setLegendItems } from '../store/module/module.action';
+import { setLegendItems } from '../store/module/ea.action';
 
 export class LegendPlugin extends BaPlugin {
 	constructor() {
@@ -24,6 +24,7 @@ export class LegendPlugin extends BaPlugin {
 
 		let activeLayers = [];
 		let previewLayers = [];
+		let legendActive = false;
 
 
 		// A synchronization object:
@@ -58,7 +59,7 @@ export class LegendPlugin extends BaPlugin {
 		};
 
 		const onPreviewIdChange = async (geoResourceId) => {
-			if (!store.getState().module.legendActive) {
+			if (!legendActive) {
 				return;
 			}
 
@@ -78,7 +79,8 @@ export class LegendPlugin extends BaPlugin {
 			updateLegendItems(activeLayers, previewLayers);
 		};
 
+		observe(store, state => state.ea.legendActive, value => legendActive = value);
 		observe(store, state => state.layers.active, onActiveLayersChange);
-		observe(store, state => state.module.legendGeoresourceId, onPreviewIdChange);
+		observe(store, state => state.ea.legendGeoresourceId, onPreviewIdChange);
 	}
 }

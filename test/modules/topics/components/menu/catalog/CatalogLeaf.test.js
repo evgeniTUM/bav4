@@ -11,7 +11,7 @@ import { modalReducer } from '../../../../../../src/store/modal/modal.reducer';
 import { isTemplateResult } from '../../../../../../src/utils/checks';
 import { TEST_ID_ATTRIBUTE_NAME } from '../../../../../../src/utils/markup';
 import { positionReducer } from '../../../../../../src/store/position/position.reducer';
-import { moduleReducer } from '../../../../../../src/ea/store/module/module.reducer';
+import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
 
 
 
@@ -54,7 +54,7 @@ describe('CatalogLeaf', () => {
 			layers: layersReducer,
 			position: positionReducer,
 			modal: modalReducer,
-			module: moduleReducer
+			ea: eaReducer
 		});
 
 		$injector

@@ -2,7 +2,7 @@ import { html } from 'lit-html';
 import { classMap } from 'lit-html/directives/class-map.js';
 import { $injector } from '../../../../../injection';
 import { BaElement } from '../../../../../modules/BaElement';
-import { activateLegend, deactivateLegend } from '../../../../store/module/module.action';
+import { activateLegend, deactivateLegend } from '../../../../store/module/ea.action';
 import css from './eaLegendButton.css';
 
 export class EaLegendButton extends BaElement {
@@ -47,7 +47,7 @@ export class EaLegendButton extends BaElement {
 	}
 
 	extractState(globalState) {
-		const { module: { legendActive } } = globalState;
+		const { ea: { legendActive } } = globalState;
 		return { active: legendActive };
 	}
 

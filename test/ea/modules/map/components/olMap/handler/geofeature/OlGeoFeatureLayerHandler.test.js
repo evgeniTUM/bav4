@@ -10,7 +10,7 @@ import { addGeoFeatureLayer, addGeoFeatures, clearLayer } from '../../../../../.
 import { geofeatureReducer } from '../../../../../../../../src/ea/store/geofeature/geofeature.reducer';
 import { activateMapClick, deactivateMapClick } from '../../../../../../../../src/ea/store/mapclick/mapclick.action';
 import { mapclickReducer, MAPCLICK_REQUEST } from '../../../../../../../../src/ea/store/mapclick/mapclick.reducer';
-import { moduleReducer } from '../../../../../../../../src/ea/store/module/module.reducer';
+import { eaReducer } from '../../../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../../../src/injection';
 import { FIT_REQUESTED } from '../../../../../../../../src/store/position/position.reducer';
 import { simulateMapBrowserEvent } from '../../../../../../../modules/olMap/mapTestUtils';
@@ -46,7 +46,7 @@ describe('OlGeoFeatureLayerHandler', () => {
 			spyReducer: (state, action) => storeActions.push(action),
 			geofeature: geofeatureReducer,
 			mapclick: mapclickReducer,
-			module: moduleReducer
+			ea: eaReducer
 		});
 		$injector
 			.registerSingleton('TranslationService', translationServiceMock)

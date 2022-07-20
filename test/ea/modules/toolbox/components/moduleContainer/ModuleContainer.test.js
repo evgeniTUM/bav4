@@ -5,8 +5,8 @@ import { MixerModuleContent } from '../../../../../../src/ea/modules/toolbox/com
 import { ModuleContainer } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/ModuleContainer';
 import { RedesignModuleContent } from '../../../../../../src/ea/modules/toolbox/components/redesign/RedesignModuleContent';
 import { ResearchModuleContent } from '../../../../../../src/ea/modules/toolbox/components/research/ResearchModuleContent';
-import { setCurrentModule } from '../../../../../../src/ea/store/module/module.action';
-import { moduleReducer } from '../../../../../../src/ea/store/module/module.reducer';
+import { setCurrentModule } from '../../../../../../src/ea/store/module/ea.action';
+import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { createMediaReducer } from '../../../../../../src/store/media/media.reducer';
 import { TestUtils } from '../../../../../test-utils';
@@ -29,7 +29,7 @@ describe('ModuleContainer', () => {
 
 	const setup = async (state) => {
 		TestUtils.setupStoreAndDi(state, {
-			module: moduleReducer,
+			ea: eaReducer,
 			media: createMediaReducer()
 		});
 		$injector

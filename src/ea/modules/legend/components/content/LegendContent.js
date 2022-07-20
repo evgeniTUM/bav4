@@ -42,9 +42,9 @@ export class LegendContent extends MvuElement {
 	 * @override
 	 */
 	onInitialize() {
-		this.observe(state => state.module.legendActive, active => this.signal(Update_legend_active, active));
-		this.observe(state => state.module.legendItems, items => this.signal(Update_legend_items, items));
-		this.observe(state => state.module.mapResolution, resolution => this.signal(Update_resolution, resolution));
+		this.observe(state => state.ea.legendActive, active => this.signal(Update_legend_active, active));
+		this.observe(state => state.ea.legendItems, items => this.signal(Update_legend_items, items));
+		this.observe(state => state.ea.mapResolution, resolution => this.signal(Update_resolution, resolution));
 	}
 
 	createView(model) {

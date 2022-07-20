@@ -44,7 +44,7 @@ export const initialState = {
 
 };
 
-export const moduleReducer = (state = initialState, action) => {
+export const eaReducer = (state = initialState, action) => {
 
 	const { type, payload } = action;
 	switch (type) {

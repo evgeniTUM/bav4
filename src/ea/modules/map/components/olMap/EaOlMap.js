@@ -1,7 +1,7 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { OlMap } from '../../../../../modules/olMap/components/OlMap';
-import { setMapResolution } from '../../../../store/module/module.action';
+import { setMapResolution } from '../../../../store/module/ea.action';
 import css from './olMap.css';
 
 /**

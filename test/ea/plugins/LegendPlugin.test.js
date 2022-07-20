@@ -1,6 +1,6 @@
 import { LegendPlugin } from '../../../src/ea/plugins/LegendPlugin.js';
-import { activateLegend, deactivateLegend, setPreviewGeoresourceId } from '../../../src/ea/store/module/module.action.js';
-import { moduleReducer } from '../../../src/ea/store/module/module.reducer.js';
+import { activateLegend, deactivateLegend, setPreviewGeoresourceId } from '../../../src/ea/store/module/ea.action.js';
+import { eaReducer } from '../../../src/ea/store/module/ea.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
 import { addLayer, modifyLayer, removeLayer } from '../../../src/store/layers/layers.action';
 import { layersReducer } from '../../../src/store/layers/layers.reducer.js';
@@ -40,7 +40,7 @@ describe('ManageModulesPlugin', () => {
 
 		const store = TestUtils.setupStoreAndDi(state, {
 			layers: layersReducer,
-			module: moduleReducer
+			ea: eaReducer
 		});
 
 		$injector
@@ -68,7 +68,7 @@ describe('ManageModulesPlugin', () => {
 			addLayer('id2');
 
 			setTimeout(() => {
-				expect(store.getState().module.legendItems).toEqual([layerItem1, layerItem2]);
+				expect(store.getState().ea.legendItems).toEqual([layerItem1, layerItem2]);
 			});
 		});
 
@@ -83,7 +83,7 @@ describe('ManageModulesPlugin', () => {
 			modifyLayer('id2', { visible: false });
 
 			setTimeout(() => {
-				expect(store.getState().module.legendItems).toEqual([layerItem1, layerItem3]);
+				expect(store.getState().ea.legendItems).toEqual([layerItem1, layerItem3]);
 			});
 		});
 
@@ -96,7 +96,7 @@ describe('ManageModulesPlugin', () => {
 			addLayer('id1');
 
 			setTimeout(() => {
-				expect(store.getState().module.legendItems).toEqual([layerItem2, layerItem1, layerItem3]);
+				expect(store.getState().ea.legendItems).toEqual([layerItem2, layerItem1, layerItem3]);
 			});
 		});
 
@@ -109,7 +109,7 @@ describe('ManageModulesPlugin', () => {
 			addLayer('id1');
 
 			setTimeout(() => {
-				expect(store.getState().module.legendItems).toEqual([layerItem1, layerItem2, layerItem3]);
+				expect(store.getState().ea.legendItems).toEqual([layerItem1, layerItem2, layerItem3]);
 			});
 		});
 
@@ -122,7 +122,7 @@ describe('ManageModulesPlugin', () => {
 			setPreviewGeoresourceId('id1');
 
 			setTimeout(() => {
-				expect(store.getState().module.legendItems).toEqual([layerItem1]);
+				expect(store.getState().ea.legendItems).toEqual([layerItem1]);
 			});
 		});
 
@@ -134,7 +134,7 @@ describe('ManageModulesPlugin', () => {
 			addLayer('id1');
 
 			setTimeout(() => {
-				expect(store.getState().module.legendItems).toEqual([layerItem1]);
+				expect(store.getState().ea.legendItems).toEqual([layerItem1]);
 			});
 		});
 
@@ -148,7 +148,7 @@ describe('ManageModulesPlugin', () => {
 			setPreviewGeoresourceId(null);
 
 			setTimeout(() => {
-				expect(store.getState().module.legendItems).toEqual([]);
+				expect(store.getState().ea.legendItems).toEqual([]);
 			});
 		});
 
@@ -165,7 +165,7 @@ describe('ManageModulesPlugin', () => {
 			removeLayer('id3');
 
 			setTimeout(() => {
-				expect(store.getState().module.legendItems).toEqual([]);
+				expect(store.getState().ea.legendItems).toEqual([]);
 			});
 		});
 	});
@@ -179,7 +179,7 @@ describe('ManageModulesPlugin', () => {
 			addLayer('id1');
 
 			setTimeout(() => {
-				expect(store.getState().module.legendItems).toEqual([layerItem1]);
+				expect(store.getState().ea.legendItems).toEqual([layerItem1]);
 			});
 		});
 
@@ -190,7 +190,7 @@ describe('ManageModulesPlugin', () => {
 			setPreviewGeoresourceId('id1');
 
 			setTimeout(() => {
-				expect(store.getState().module.legendItems).toEqual([]);
+				expect(store.getState().ea.legendItems).toEqual([]);
 			});
 
 		});

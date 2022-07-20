@@ -5,7 +5,7 @@ import { GeothermModuleContent } from '../../modules/toolbox/components/geotherm
 import { MixerModuleContent } from '../../modules/toolbox/components/mixer/MixerModuleContent';
 import { RedesignModuleContent } from '../../modules/toolbox/components/redesign/RedesignModuleContent';
 import { ResearchModuleContent } from '../../modules/toolbox/components/research/ResearchModuleContent';
-import { ACTIVATE_GEORESOURCE, ACTIVATE_LEGEND, CLEAR_PREVIEW_GEORESOURCE_ID, DEACTIVATE_ALL_GEORESOURCES, DEACTIVATE_GEORESOURCE, DEACTIVATE_LEGEND, SET_CURRENT_MODULE, SET_LEGEND_ITEMS, SET_MAP_RESOLUTION, SET_PREVIEW_GEORESOURCE_ID } from './module.reducer';
+import { ACTIVATE_GEORESOURCE, ACTIVATE_LEGEND, CLEAR_PREVIEW_GEORESOURCE_ID, DEACTIVATE_ALL_GEORESOURCES, DEACTIVATE_GEORESOURCE, DEACTIVATE_LEGEND, SET_CURRENT_MODULE, SET_LEGEND_ITEMS, SET_MAP_RESOLUTION, SET_PREVIEW_GEORESOURCE_ID } from './ea.reducer';
 
 /**
  * Available modules.

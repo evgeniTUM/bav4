@@ -2,7 +2,7 @@ import { html } from 'lit-html';
 import { $injector } from '../../../../../../../injection';
 import { MvuElement } from '../../../../../../../modules/MvuElement';
 import { toggleTaggingMode } from '../../../../../../store/contribution/contribution.action';
-import { setCurrentModule } from '../../../../../../store/module/module.action';
+import { setCurrentModule } from '../../../../../../store/module/ea.action';
 import { Analyse3DModuleContent } from '../../../../../toolbox/components/analyse3d/Analyse3DModuleContent';
 import { EAContribution } from '../../../../../toolbox/components/contribution/EAContribution';
 import { GeothermModuleContent } from '../../../../../toolbox/components/geotherm/GeothermModuleContent';
@@ -51,7 +51,7 @@ export class AdditionalMenu extends MvuElement {
 
 	onInitialize() {
 		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
-		this.observe(state => state.module.current, current => this._moduleId = current);
+		this.observe(state => state.ea.current, current => this._moduleId = current);
 	}
 
 	/**
