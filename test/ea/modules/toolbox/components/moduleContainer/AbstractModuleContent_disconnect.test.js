@@ -1,8 +1,9 @@
 import { AbstractModuleContent } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/AbstractModuleContent';
-import { fnModuleCommReducer } from '../../../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
+import { fnModuleCommReducer, MODULE_RESET_REQUESTED } from '../../../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
 import { geofeatureReducer } from '../../../../../../src/ea/store/geofeature/geofeature.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { TestUtils } from '../../../../../test-utils';
+
 
 
 class ConcreteModuleContent extends AbstractModuleContent {
@@ -24,11 +25,7 @@ class ConcreteModuleContent extends AbstractModuleContent {
 window.customElements.define(ConcreteModuleContent.tag, ConcreteModuleContent);
 
 
-/**
- * Test if we save the frame in the global window variable.
- * This has to be a separate test as other tests will asynchronously also change the global variable.
- */
-describe('ModuleContent_onload', () => {
+describe('ModuleContent, when element disconnects from DOM', () => {
 
 	const storeActions = [];
 
@@ -50,15 +47,21 @@ describe('ModuleContent_onload', () => {
 		return TestUtils.render(ConcreteModuleContent.tag);
 	};
 
-
-	it('stores the iframe-window in a global variable', async () => {
+	it('removes global variable', async () => {
 		const element = await setup();
 
-		const frameId = element.getConfig().frame_id;
-		const iframeWindow = element.shadowRoot.getElementById(frameId).contentWindow;
+		element.disconnectedCallback();
 
-		expect(window.ea_moduleWindow).toHaveSize(1);
-		expect(window.ea_moduleWindow[element.getConfig().module]).toEqual(iframeWindow);
+		expect(window.ea_moduleWindow).toEqual({});
+	});
+
+	it('closes fnCommModule', async () => {
+		const element = await setup();
+
+		element.disconnectedCallback();
+
+		expect(window.ea_moduleWindow).toEqual({});
+		expect(storeActions.pop().type).toEqual(MODULE_RESET_REQUESTED);
 	});
 
 });
