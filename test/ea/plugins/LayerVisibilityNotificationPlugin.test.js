@@ -57,7 +57,6 @@ describe('LayerVisibilityNotificationPlugin', () => {
 		spyOn(wmsCapabilitiesServiceMock, 'getWmsLayers')
 			.withArgs('id1').and.returnValue([layerItem1, layerItem2]);
 
-
 		return store;
 	};
 
@@ -65,15 +64,13 @@ describe('LayerVisibilityNotificationPlugin', () => {
 	it('shows a notification if switching from active to inactive layer for wms', async () => {
 		await setup();
 
-		const waitForAsyncFunctionsToRun = new Promise(r => setTimeout(r));
-
 		addLayer('id1', { label: 'wms' });
 		setMapResolution(10);
-		await waitForAsyncFunctionsToRun;
+		await TestUtils.timeout();
 
 		setMapResolution(50);
 		setMapResolution(55);
-		await waitForAsyncFunctionsToRun;
+		await TestUtils.timeout();
 
 		const notificationActions = storeActions.filter(a => a.type === NOTIFICATION_ADDED);
 		expect(notificationActions.length).toBe(1);
@@ -86,16 +83,14 @@ describe('LayerVisibilityNotificationPlugin', () => {
 	it('does not show notification if switching from inactive to active layer for wms', async () => {
 		await setup();
 
-		const waitForAsyncFunctionsToRun = new Promise(r => setTimeout(r));
-
 		addLayer('id1');
 		setMapResolution(50);
-		await waitForAsyncFunctionsToRun;
+		await TestUtils.timeout();
 
 		storeActions.length = 0;
 
 		setMapResolution(90);
-		await waitForAsyncFunctionsToRun;
+		await TestUtils.timeout();
 
 		const notificationActions = storeActions.filter(a => a.type === NOTIFICATION_ADDED);
 		expect(notificationActions.length).toBe(0);
@@ -104,14 +99,12 @@ describe('LayerVisibilityNotificationPlugin', () => {
 	it('does not show a notification if switching form active to another activ layer for wms', async () => {
 		await setup();
 
-		const waitForAsyncFunctionsToRun = new Promise(r => setTimeout(r));
-
 		addLayer('id1');
 		setMapResolution(10);
-		await waitForAsyncFunctionsToRun;
+		await TestUtils.timeout();
 
 		setMapResolution(90);
-		await waitForAsyncFunctionsToRun;
+		await TestUtils.timeout();
 
 		const notificationActions = storeActions.filter(a => a.type === NOTIFICATION_ADDED);
 		expect(notificationActions.length).toBe(0);

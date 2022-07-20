@@ -1,9 +1,8 @@
 import { AbstractModuleContent } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/AbstractModuleContent';
-import { fnModuleCommReducer, MODULE_RESET_REQUESTED, OPEN_MODULE_REQUESTED } from '../../../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
+import { fnModuleCommReducer } from '../../../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
 import { geofeatureReducer } from '../../../../../../src/ea/store/geofeature/geofeature.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { TestUtils } from '../../../../../test-utils';
-
 
 
 class ConcreteModuleContent extends AbstractModuleContent {
@@ -25,7 +24,11 @@ class ConcreteModuleContent extends AbstractModuleContent {
 window.customElements.define(ConcreteModuleContent.tag, ConcreteModuleContent);
 
 
-describe('ModuleContent', () => {
+/**
+ * Test if we save the frame in the global window variable.
+ * This has to be a separate test as other tests will asynchronously also change the global variable.
+ */
+describe('ModuleContent_onload', () => {
 
 	const storeActions = [];
 
@@ -47,41 +50,15 @@ describe('ModuleContent', () => {
 		return TestUtils.render(ConcreteModuleContent.tag);
 	};
 
-	it('removes global variable when element disconnects from dom', async () => {
+
+	it('stores the iframe-window in a global variable', async () => {
 		const element = await setup();
 
-		element.disconnectedCallback();
+		const frameId = element.getConfig().frame_id;
+		const iframeWindow = element.shadowRoot.getElementById(frameId).contentWindow;
 
-		expect(window.ea_moduleWindow).toEqual({});
-	});
-
-	it('opens fnCommModule when element renders', async () => {
-		const unmockedSetTimeout = setTimeout;
-
-		jasmine.clock().install();
-
-		const element = await setup();
-
-		await new Promise(r => unmockedSetTimeout(r, 50));
-		jasmine.clock().tick(1010);
-
-		const lastAction = storeActions.pop();
-		expect(lastAction.type).toEqual(OPEN_MODULE_REQUESTED);
-		expect(lastAction.payload).toEqual({
-			module: element.getConfig().module,
-			domain: 'MODULE_BACKEND_URL'
-		});
-
-		jasmine.clock().uninstall();
-	});
-
-	it('closes fnCommModule when element disconnects from dom', async () => {
-		const element = await setup();
-
-		element.disconnectedCallback();
-
-		expect(window.ea_moduleWindow).toEqual({});
-		expect(storeActions.pop().type).toEqual(MODULE_RESET_REQUESTED);
+		expect(window.ea_moduleWindow).toHaveSize(1);
+		expect(window.ea_moduleWindow[element.getConfig().module]).toEqual(iframeWindow);
 	});
 
 });

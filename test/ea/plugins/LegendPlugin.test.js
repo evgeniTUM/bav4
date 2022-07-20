@@ -67,9 +67,8 @@ describe('ManageModulesPlugin', () => {
 			addLayer('id1');
 			addLayer('id2');
 
-			setTimeout(() => {
-				expect(store.getState().ea.legendItems).toEqual([layerItem1, layerItem2]);
-			});
+			await TestUtils.timeout();
+			expect(store.getState().ea.legendItems).toEqual([layerItem1, layerItem2]);
 		});
 
 
@@ -82,9 +81,8 @@ describe('ManageModulesPlugin', () => {
 			addLayer('id3');
 			modifyLayer('id2', { visible: false });
 
-			setTimeout(() => {
-				expect(store.getState().ea.legendItems).toEqual([layerItem1, layerItem3]);
-			});
+			await TestUtils.timeout();
+			expect(store.getState().ea.legendItems).toEqual([layerItem1, layerItem3]);
 		});
 
 		it('create preview layers items first', async () => {
@@ -95,9 +93,8 @@ describe('ManageModulesPlugin', () => {
 			setPreviewGeoresourceId('id2');
 			addLayer('id1');
 
-			setTimeout(() => {
-				expect(store.getState().ea.legendItems).toEqual([layerItem2, layerItem1, layerItem3]);
-			});
+			await TestUtils.timeout();
+			expect(store.getState().ea.legendItems).toEqual([layerItem2, layerItem1, layerItem3]);
 		});
 
 		it('sorts active layers alphabetically', async () => {
@@ -108,9 +105,8 @@ describe('ManageModulesPlugin', () => {
 			addLayer('id3');
 			addLayer('id1');
 
-			setTimeout(() => {
-				expect(store.getState().ea.legendItems).toEqual([layerItem1, layerItem2, layerItem3]);
-			});
+			await TestUtils.timeout();
+			expect(store.getState().ea.legendItems).toEqual([layerItem1, layerItem2, layerItem3]);
 		});
 
 
@@ -121,9 +117,8 @@ describe('ManageModulesPlugin', () => {
 			addLayer('id1');
 			setPreviewGeoresourceId('id1');
 
-			setTimeout(() => {
-				expect(store.getState().ea.legendItems).toEqual([layerItem1]);
-			});
+			await TestUtils.timeout();
+			expect(store.getState().ea.legendItems).toEqual([layerItem1]);
 		});
 
 		it('clears preview layer if it is added to active layers', async () => {
@@ -133,9 +128,8 @@ describe('ManageModulesPlugin', () => {
 			setPreviewGeoresourceId('id1');
 			addLayer('id1');
 
-			setTimeout(() => {
-				expect(store.getState().ea.legendItems).toEqual([layerItem1]);
-			});
+			await TestUtils.timeout();
+			expect(store.getState().ea.legendItems).toEqual([layerItem1]);
 		});
 
 		it('handles several incoming preview events correctly', async () => {
@@ -147,9 +141,8 @@ describe('ManageModulesPlugin', () => {
 			setPreviewGeoresourceId('id3');
 			setPreviewGeoresourceId(null);
 
-			setTimeout(() => {
-				expect(store.getState().ea.legendItems).toEqual([]);
-			});
+			await TestUtils.timeout();
+			expect(store.getState().ea.legendItems).toEqual([]);
 		});
 
 
@@ -164,9 +157,8 @@ describe('ManageModulesPlugin', () => {
 			removeLayer('id2');
 			removeLayer('id3');
 
-			setTimeout(() => {
-				expect(store.getState().ea.legendItems).toEqual([]);
-			});
+			await TestUtils.timeout();
+			expect(store.getState().ea.legendItems).toEqual([]);
 		});
 	});
 
@@ -178,9 +170,8 @@ describe('ManageModulesPlugin', () => {
 
 			addLayer('id1');
 
-			setTimeout(() => {
-				expect(store.getState().ea.legendItems).toEqual([layerItem1]);
-			});
+			await TestUtils.timeout();
+			expect(store.getState().ea.legendItems).toEqual([layerItem1]);
 		});
 
 		it('does not legend on preview id change', async () => {
@@ -189,10 +180,8 @@ describe('ManageModulesPlugin', () => {
 
 			setPreviewGeoresourceId('id1');
 
-			setTimeout(() => {
-				expect(store.getState().ea.legendItems).toEqual([]);
-			});
-
+			await TestUtils.timeout();
+			expect(store.getState().ea.legendItems).toEqual([]);
 		});
 	});
 });
