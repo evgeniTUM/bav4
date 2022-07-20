@@ -130,7 +130,7 @@ describe('StoreService', () => {
 			expect(reducerKeys.includes('fnModuleComm')).toBeTrue();
 			expect(reducerKeys.includes('geofeature')).toBeTrue();
 			expect(reducerKeys.includes('mapclick')).toBeTrue();
-			expect(reducerKeys.includes('module')).toBeTrue();
+			expect(reducerKeys.includes('ea')).toBeTrue();
 		});
 
 		it('registers all plugins', async () => {
