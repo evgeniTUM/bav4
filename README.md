@@ -1,8 +1,13 @@
-# BayernAtlas v4
+<p align="center">
+   <img src="./logo.svg" height="128">
+</p>
+<h1 align="center">
+   BayernAtlas v4 <br><br>
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ldbv-by/bav4-nomigration/Node.js%20CI?style=for-the-badge)](https://github.com/ldbv-by/bav4-nomigration/actions/workflows/node.js.yml?query=branch%3Amaster)
+   [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ldbv-by/bav4-nomigration/Node.js%20CI?style=for-the-badge)](https://github.com/ldbv-by/bav4-nomigration/actions/workflows/node.js.yml?query=branch%3Amaster)
 [![Coveralls branch](https://img.shields.io/coveralls/github/ldbv-by/bav4-nomigration/master?style=for-the-badge)](https://coveralls.io/github/ldbv-by/bav4-nomigration?branch=master)
 [![GitHub](https://img.shields.io/github/license/ldbv-by/bav4-nomigration?color=blue&style=for-the-badge)](http://www.apache.org/licenses/LICENSE-2.0)
+</h1>
 
 Next-generation web-map viewer based on web standards.
 
@@ -40,7 +45,7 @@ Next-generation web-map viewer based on web standards.
 - Node.js 16
 - npm 8
 
-With [nvm](https://github.com/nvm-sh/nvm) run `nvm install && nvm use`
+Having [nvm](https://github.com/nvm-sh/nvm) installed, just run `nvm install && nvm use`
 
 ### Install
 
@@ -95,6 +100,10 @@ To enable the showcase component, the `SOFTWARE_INFO` property must be set.
 The project's source code is located under `src`, unit, component and e2e tests under `test`.
 
 The source code is distributed among the following directories:
+
+###  `src/domain`
+
+Contains global domain-specific classes and type definitions.
 
 ###  `src/injection`
 

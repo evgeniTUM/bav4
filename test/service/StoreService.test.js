@@ -44,6 +44,9 @@ describe('StoreService', () => {
 		const searchPluginMock = {
 			register: () => { }
 		};
+		const exportMfpPluginMock = {
+			register: () => { }
+		};
 		const historyStatePluginMock = {
 			register: () => { }
 		};
@@ -91,6 +94,7 @@ describe('StoreService', () => {
 				.registerSingleton('LegendPlugin', legendPluginMock)
 				.registerSingleton('LayerVisibilityNotificationPlugin', layerVisibilityNotificationPluginMock)
 				.registerSingleton('SearchPlugin', searchPluginMock)
+				.registerSingleton('ExportMfpPlugin', exportMfpPluginMock)
 				.registerSingleton('HistoryStatePlugin', historyStatePluginMock)
 
 				.ready();
@@ -104,7 +108,7 @@ describe('StoreService', () => {
 			expect(store).toBeDefined();
 
 			const reducerKeys = Object.keys(store.getState());
-			expect(reducerKeys.length).toBe(26);
+			expect(reducerKeys.length).toBe(27);
 			expect(reducerKeys.includes('map')).toBeTrue();
 			expect(reducerKeys.includes('pointer')).toBeTrue();
 			expect(reducerKeys.includes('position')).toBeTrue();
@@ -131,6 +135,7 @@ describe('StoreService', () => {
 			expect(reducerKeys.includes('geofeature')).toBeTrue();
 			expect(reducerKeys.includes('mapclick')).toBeTrue();
 			expect(reducerKeys.includes('ea')).toBeTrue();
+			expect(reducerKeys.includes('mfp')).toBeTrue();
 		});
 
 		it('registers all plugins', async () => {
@@ -152,6 +157,7 @@ describe('StoreService', () => {
 			const legendPluginSpy = spyOn(legendPluginMock, 'register');
 			const layerVisibilityNotificationPluginSpy = spyOn(layerVisibilityNotificationPluginMock, 'register');
 			const searchPluginSpy = spyOn(searchPluginMock, 'register');
+			const exportMfpPluginSpy = spyOn(exportMfpPluginMock, 'register');
 			const historyStatePluginSpy = spyOn(historyStatePluginMock, 'register');
 			const instanceUnderTest = new StoreService();
 
@@ -179,6 +185,7 @@ describe('StoreService', () => {
 			expect(legendPluginSpy).toHaveBeenCalledWith(store);
 			expect(layerVisibilityNotificationPluginSpy).toHaveBeenCalledWith(store);
 			expect(searchPluginSpy).toHaveBeenCalledWith(store);
+			expect(exportMfpPluginSpy).toHaveBeenCalledWith(store);
 			expect(historyStatePluginSpy).toHaveBeenCalledWith(store);
 		});
 	});

@@ -6,6 +6,7 @@ import { clearFixedNotification, emitFixedNotification } from '../../../../store
 import { MvuElement } from '../../../MvuElement';
 import css from './overflowmenu.css';
 import itemcss from './menuitem.css';
+import { TEST_ID_ATTRIBUTE_NAME } from '../../../../utils/markup';
 
 const Update_IsCollapsed = 'update_is_collapsed';
 const Update_Menu_Type = 'update_menu_type';
@@ -16,6 +17,7 @@ const Update_Anchor_Position = 'update_last_anchor_position';
 /**
  * @typedef {Object} MenuOption
  * @property {string} label the label of the menu item
+ * @property {string} [id] the id of the menu item
  * @property {string} [icon] the icon of the menu item; Data-URI of Base64 encoded SVG
  * @property {function} [action] the action to perform, when user press the menu item
  * @property {boolean} [disabled] whether or not the menu item is enabled
@@ -52,6 +54,10 @@ export class OverflowMenu extends MvuElement {
 			anchorPosition: null
 		});
 		this._documentListener = { pointerdown: null, pointerup: null };
+	}
+
+	onInitialize() {
+		this.setAttribute(TEST_ID_ATTRIBUTE_NAME, '');
 	}
 
 	update(type, data, model) {
@@ -211,8 +217,8 @@ export class OverflowMenu extends MvuElement {
 
 	_getItems(menuItems) {
 		const toHtml = (menuItem, id) => {
-			const { label, icon, action, disabled } = menuItem;
-			const menuitemId = `menuitem_${id}`;
+			const { id: customId, label, icon, action, disabled } = menuItem;
+			const menuitemId = customId ? `menuitem_${customId}` : `menuitem_${id}`;
 
 			const getIcon = (id) => {
 				const createIcon = () => {
@@ -252,8 +258,8 @@ export class OverflowMenu extends MvuElement {
 				touch: environmentService.isTouch()
 			};
 			return html`            			
-			<button id=${menuitemId} class='menuitem ${classMap(classes)}' ?disabled=${disabled} .title=${label} @pointerdown=${onPointerDown} @click=${onClick} @pointerup=${onPointerUp}>
-				${getIcon(id)}
+			<button id=${menuitemId} data-test-id class='menuitem ${classMap(classes)}' ?disabled=${disabled} @pointerdown=${onPointerDown} @click=${onClick} @pointerup=${onPointerUp}>
+				${getIcon(customId ? customId : id)}
 				<div class="menuitem__text">${label}</div>
 			</button>`;
 		};
