@@ -70,9 +70,9 @@ describe('ModuleContent, when loaded', () => {
 	});
 
 	it('opens fnCommModule when element renders', async () => {
-		await new Promise(r => setTimeoutUnmocked(r, 100));
+		await new Promise(r => setTimeoutUnmocked(r, 200));
 		jasmine.clock().tick(1010);
-		await new Promise(r => setTimeoutUnmocked(r, 100));
+		await new Promise(r => setTimeoutUnmocked(r, 200));
 
 		const lastAction = storeActions.pop();
 		expect(lastAction.type).toEqual(OPEN_MODULE_REQUESTED);
