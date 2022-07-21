@@ -10,6 +10,9 @@ import { Checkbox } from '../../../../../../src/modules/commons/components/check
 import { modalReducer } from '../../../../../../src/store/modal/modal.reducer';
 import { isTemplateResult } from '../../../../../../src/utils/checks';
 import { TEST_ID_ATTRIBUTE_NAME } from '../../../../../../src/utils/markup';
+import { positionReducer } from '../../../../../../src/store/position/position.reducer';
+import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
+import { setMapResolution, setPreviewGeoresourceId } from '../../../../../../src/ea/store/module/ea.action';
 
 
 
@@ -21,6 +24,16 @@ describe('CatalogLeaf', () => {
 	const geoResourceServiceMock = {
 		byId() { }
 	};
+
+	const mapServiceMock = {
+		calcResolution: () => {
+			return 50;
+		},
+		getMaxZoomLevel: () => 100,
+		getMinZoomLevel: () => 0
+	};
+
+	const wmsCapabilitiesServiceMock = { getWmsLayers: () => ([]) };
 
 	let store;
 
@@ -37,11 +50,19 @@ describe('CatalogLeaf', () => {
 			}
 		};
 
-		store = TestUtils.setupStoreAndDi(state, { topics: topicsReducer, layers: layersReducer, modal: modalReducer });
+		store = TestUtils.setupStoreAndDi(state, {
+			topics: topicsReducer,
+			layers: layersReducer,
+			position: positionReducer,
+			modal: modalReducer,
+			ea: eaReducer
+		});
 
 		$injector
 			.registerSingleton('GeoResourceService', geoResourceServiceMock)
-			.registerSingleton('TranslationService', { translate: (key) => key });
+			.registerSingleton('TranslationService', { translate: (key) => key })
+			.registerSingleton('MapService', mapServiceMock)
+			.registerSingleton('WmsCapabilitiesService', wmsCapabilitiesServiceMock);
 
 		return TestUtils.render(CatalogLeaf.tag);
 	};
@@ -139,6 +160,76 @@ describe('CatalogLeaf', () => {
 					expect(checkbox.disabled).toBeTrue();
 					expect(checkbox.title).toBe('topics_catalog_leaf_no_georesource_title');
 					expect(element.shadowRoot.querySelector('.ba-list-item__text').innerText).toBe(layer.id);
+				});
+			});
+
+			describe('resolution handling', () => {
+
+				it('disables entry when resolution changes and wms is not shown', async () => {
+					spyOn(geoResourceServiceMock, 'byId')
+						.withArgs(layer.id)
+						.and.returnValue(new WMTSGeoResource(layer.id, 'label', 'someUrl'));
+
+					spyOn(wmsCapabilitiesServiceMock, 'getWmsLayers')
+						.withArgs(layer.id)
+						.and.returnValue([{
+							minResolution: 20,
+							maxResolution: 80
+						}]);
+
+					//load leaf data
+					const leaf = (await loadExampleCatalog('foo')).pop();
+					const element = await setup('foo', []);
+
+					//assign data
+					element.data = leaf;
+					await TestUtils.timeout();
+
+					setMapResolution(10);
+
+					const checkbox = element.shadowRoot.querySelector('ba-checkbox');
+					expect(checkbox.disabled).toBeTrue();
+					expect(checkbox.title).toBe('Georesource ea_notification_layer_not_visible');
+				});
+			});
+
+			describe('mouse events', () => {
+
+				it('sets the georesource preview id when mouse on mouseenter', async () => {
+					spyOn(geoResourceServiceMock, 'byId')
+						.withArgs(layer.id)
+						.and.returnValue(new WMTSGeoResource(layer.id, 'label', 'someUrl'));
+
+					//load leaf data
+					const leaf = (await loadExampleCatalog('foo')).pop();
+					const element = await setup('foo', []);
+
+					//assign data
+					element.data = leaf;
+
+					const listItem = element.shadowRoot.querySelector('.ba-list-item');
+					listItem.dispatchEvent(new Event('mouseenter'));
+
+					expect(store.getState().ea.legendGeoresourceId).toEqual('atkis_sw');
+				});
+
+				it('removes the georesource preview id on mouseleave', async () => {
+					spyOn(geoResourceServiceMock, 'byId')
+						.withArgs(layer.id)
+						.and.returnValue(new WMTSGeoResource(layer.id, 'label', 'someUrl'));
+
+					//load leaf data
+					const leaf = (await loadExampleCatalog('foo')).pop();
+					const element = await setup('foo', []);
+
+					//assign data
+					element.data = leaf;
+					setPreviewGeoresourceId('test-resource');
+
+					const listItem = element.shadowRoot.querySelector('.ba-list-item');
+					listItem.dispatchEvent(new Event('mouseleave'));
+
+					expect(store.getState().ea.legendGeoresourceId).toBeNull();
 				});
 			});
 

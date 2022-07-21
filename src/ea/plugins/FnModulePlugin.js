@@ -11,7 +11,7 @@ import { changeZoomAndCenter, fit } from '../../store/position/position.action';
 import { observe } from '../../utils/storeUtils';
 import { addGeoFeatureLayer, addGeoFeatures, clearLayer, removeGeoFeatures } from '../store/geofeature/geofeature.action';
 import { activateMapClick, deactivateMapClick } from '../store/mapclick/mapclick.action';
-import { activateGeoResource, deactivateAllGeoResources } from '../store/module/module.action';
+import { activateGeoResource, deactivateAllGeoResources } from '../store/module/ea.action';
 
 
 const MODULE_HANDSHAKE = 'handshake';

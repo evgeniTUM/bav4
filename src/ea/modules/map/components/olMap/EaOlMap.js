@@ -1,6 +1,7 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { OlMap } from '../../../../../modules/olMap/components/OlMap';
+import { setMapResolution } from '../../../../store/module/ea.action';
 import css from './olMap.css';
 
 /**
@@ -35,6 +36,11 @@ export class EaOlMap extends OlMap {
 		this.observe(state => state.mapclick.mapCursorStyle, (style) => {
 			this._cursorStyle = style;
 			this.render();
+		});
+
+		setMapResolution(this._view.getResolution());
+		this.observeModel(['zoom'], () => {
+			setMapResolution(this._view.getResolution());
 		});
 	}
 

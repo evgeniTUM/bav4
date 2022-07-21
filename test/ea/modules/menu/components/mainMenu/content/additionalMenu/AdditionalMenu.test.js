@@ -8,7 +8,7 @@ import { MixerModuleContent } from '../../../../../../../../src/ea/modules/toolb
 import { RedesignModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/redesign/RedesignModuleContent';
 import { ResearchModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/research/ResearchModuleContent';
 import { contributionReducer, SET_STATE } from '../../../../../../../../src/ea/store/contribution/contribution.reducer';
-import { moduleReducer, SET_CURRENT_MODULE } from '../../../../../../../../src/ea/store/module/module.reducer';
+import { eaReducer, SET_CURRENT_MODULE } from '../../../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../../../src/injection';
 import { MvuElement } from '../../../../../../../../src/modules/MvuElement';
 import { createNoInitialStateMediaReducer } from '../../../../../../../../src/store/media/media.reducer';
@@ -39,7 +39,7 @@ describe('AdditionalMenu', () => {
 			spyReducer: (state, action) => storeActions.push(action),
 			media: createNoInitialStateMediaReducer(),
 			network: networkReducer,
-			module: moduleReducer,
+			ea: eaReducer,
 			contribution: contributionReducer
 		});
 		$injector

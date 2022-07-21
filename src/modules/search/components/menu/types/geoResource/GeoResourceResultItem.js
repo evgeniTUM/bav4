@@ -6,7 +6,7 @@ import css from './geoResourceResultItem.css';
 import { MvuElement } from '../../../../../MvuElement';
 import { $injector } from '../../../../../../injection';
 import { createUniqueId } from '../../../../../../utils/numberUtils';
-import { clearPreviewGeoresourceId, setPreviewGeoresourceId } from '../../../../../../ea/store/module/module.action';
+import { clearPreviewGeoresourceId, setPreviewGeoresourceId } from '../../../../../../ea/store/module/ea.action';
 import { fitLayer } from '../../../../../../store/position/position.action';
 
 const Update_IsPortrait = 'update_isPortrait';

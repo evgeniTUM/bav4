@@ -1,5 +1,5 @@
 import { AbstractModuleContent } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/AbstractModuleContent';
-import { fnModuleCommReducer, MODULE_RESET_REQUESTED, OPEN_MODULE_REQUESTED } from '../../../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
+import { fnModuleCommReducer, MODULE_RESET_REQUESTED } from '../../../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
 import { geofeatureReducer } from '../../../../../../src/ea/store/geofeature/geofeature.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { TestUtils } from '../../../../../test-utils';
@@ -7,7 +7,6 @@ import { TestUtils } from '../../../../../test-utils';
 
 
 class ConcreteModuleContent extends AbstractModuleContent {
-
 	getConfig() {
 
 		return {
@@ -26,7 +25,7 @@ class ConcreteModuleContent extends AbstractModuleContent {
 window.customElements.define(ConcreteModuleContent.tag, ConcreteModuleContent);
 
 
-describe('ModuleContent', () => {
+describe('ModuleContent, when element disconnects from DOM', () => {
 
 	const storeActions = [];
 
@@ -48,56 +47,20 @@ describe('ModuleContent', () => {
 		return TestUtils.render(ConcreteModuleContent.tag);
 	};
 
-	beforeEach(async () => {
-		jasmine.clock().install();
-	});
-
-	afterEach(function () {
-		jasmine.clock().uninstall();
-	});
-
-
-
-	it('stores the iframe-window in a global variable', async () => {
-		const element = await setup();
-		jasmine.clock().tick(10000);
-
-		setTimeout(() => {
-			const frameId = element.getConfig().frame_id;
-			const iframeWindow = element.shadowRoot.getElementById(frameId).contentWindow;
-
-			expect(window.ea_moduleWindow).toHaveSize(1);
-			expect(window.ea_moduleWindow[element.getConfig().module]).toEqual(iframeWindow);
-		});
-	});
-
-	it('removes global variable when element disconnects from dom', async () => {
+	it('removes global variable', async () => {
 		const element = await setup();
 
 		element.disconnectedCallback();
 
-		expect(window.ea_moduleWindow).toHaveSize(0);
+		expect(window.ea_moduleWindow).toEqual({});
 	});
 
-	it('opens fnCommModule when element renders', async () => {
-		const element = await setup();
-		jasmine.clock().tick(10000);
-
-		setTimeout(() => {
-			const lastAction = storeActions.pop();
-			expect(lastAction.type).toEqual(OPEN_MODULE_REQUESTED);
-			expect(lastAction.payload).toEqual({
-				module: element.getConfig().module,
-				domain: 'MODULE_BACKEND_URL'
-			});
-		});
-	});
-
-	it('closes fnCommModule when element disconnects from dom', async () => {
+	it('closes fnCommModule', async () => {
 		const element = await setup();
 
 		element.disconnectedCallback();
 
+		expect(window.ea_moduleWindow).toEqual({});
 		expect(storeActions.pop().type).toEqual(MODULE_RESET_REQUESTED);
 	});
 

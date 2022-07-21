@@ -1,7 +1,7 @@
 
 import { EaLegendButton } from '../../../../../../src/ea/modules/legend/components/button/EaLegendButton';
-import { activateLegend } from '../../../../../../src/ea/store/module/module.action';
-import { initialState, moduleReducer } from '../../../../../../src/ea/store/module/module.reducer';
+import { activateLegend } from '../../../../../../src/ea/store/module/ea.action';
+import { initialState, eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { TestUtils } from '../../../../../test-utils';
 
@@ -13,9 +13,9 @@ describe('LegendButton', () => {
 
 	const setup = async () => {
 
-		const state = { module: initialState };
+		const state = { ea: initialState };
 
-		store = TestUtils.setupStoreAndDi(state, { module: moduleReducer });
+		store = TestUtils.setupStoreAndDi(state, { ea: eaReducer });
 		$injector
 			.registerSingleton('TranslationService', { translate: (key) => key });
 
@@ -51,11 +51,11 @@ describe('LegendButton', () => {
 
 			element.shadowRoot.querySelector('button').click();
 
-			expect(store.getState().module.legendActive).toBe(true);
+			expect(store.getState().ea.legendActive).toBe(true);
 
 			element.shadowRoot.querySelector('button').click();
 
-			expect(store.getState().module.legendActive).toBe(false);
+			expect(store.getState().ea.legendActive).toBe(false);
 		});
 
 	});

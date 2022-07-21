@@ -1,9 +1,8 @@
 
 import { LegendContent } from '../../../../../../src/ea/modules/legend/components/content/LegendContent';
-import { activateLegend, setLegendItems } from '../../../../../../src/ea/store/module/module.action';
-import { moduleReducer } from '../../../../../../src/ea/store/module/module.reducer';
+import { activateLegend, setLegendItems, setMapResolution } from '../../../../../../src/ea/store/module/ea.action';
+import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../src/injection';
-import { changeZoom } from '../../../../../../src/store/position/position.action';
 import { positionReducer } from '../../../../../../src/store/position/position.reducer';
 import { TestUtils } from '../../../../../test-utils';
 
@@ -11,26 +10,16 @@ window.customElements.define(LegendContent.tag, LegendContent);
 
 describe('LegendContent', () => {
 
-	const mapServiceMock = {
-		calcResolution: () => {
-			return 50;
-		},
-		getMaxZoomLevel: () => 100,
-		getMinZoomLevel: () => 0
-	};
-
-	let store;
-
 	const setup = async (state = {}) => {
 
-		store = TestUtils.setupStoreAndDi(state, {
-			module: moduleReducer,
+		TestUtils.setupStoreAndDi(state, {
+			ea: eaReducer,
 			position: positionReducer
 		});
 		$injector
-			.registerSingleton('TranslationService', { translate: (key) => key })
-			.registerSingleton('MapService', mapServiceMock);
+			.registerSingleton('TranslationService', { translate: (key) => key });
 
+		setMapResolution(50);
 		return await TestUtils.render(LegendContent.tag);
 	};
 
@@ -95,22 +84,25 @@ describe('LegendContent', () => {
 		it('filters layers by current resolution on zoomLevel change', async () => {
 			const element = await setup();
 			activateLegend();
-			changeZoom(1);
-
-			const center = store.getState().position.center;
-			spyOn(mapServiceMock, 'calcResolution')
-				.withArgs(1, center).and.returnValue(50)
-				.withArgs(2, center).and.returnValue(20)
-				.withArgs(3, center).and.returnValue(10);
 
 			setLegendItems([layerItem1, layerItem2, layerItem3]);
 
+			setMapResolution(50);
 			expect(element.shadowRoot.querySelectorAll('img').length).toBe(3);
 
-			changeZoom(2);
+			setMapResolution(20);
 			expect(element.shadowRoot.querySelectorAll('img').length).toBe(2);
 
-			changeZoom(3);
+			setMapResolution(10);
+			expect(element.shadowRoot.querySelectorAll('img').length).toBe(1);
+		});
+
+		it('removes duplicate legend items', async () => {
+			const element = await setup();
+			activateLegend();
+
+			setLegendItems([layerItem1, layerItem1]);
+
 			expect(element.shadowRoot.querySelectorAll('img').length).toBe(1);
 		});
 	});

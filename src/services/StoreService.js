@@ -3,7 +3,7 @@ import { contributionReducer } from '../ea/store/contribution/contribution.reduc
 import { fnModuleCommReducer } from '../ea/store/fnModuleComm/fnModuleComm.reducer';
 import { geofeatureReducer } from '../ea/store/geofeature/geofeature.reducer';
 import { mapclickReducer } from '../ea/store/mapclick/mapclick.reducer';
-import { moduleReducer } from '../ea/store/module/module.reducer';
+import { eaReducer } from '../ea/store/module/ea.reducer';
 import { $injector } from '../injection';
 import { drawReducer } from '../store/draw/draw.reducer';
 import { featureInfoReducer } from '../store/featureInfo/featureInfo.reducer';
@@ -67,7 +67,7 @@ export class StoreService {
 			geofeature: geofeatureReducer,
 			contribution: contributionReducer,
 			fnModuleComm: fnModuleCommReducer,
-			module: moduleReducer,
+			ea: eaReducer,
 			import: importReducer
 		});
 
@@ -91,6 +91,7 @@ export class StoreService {
 				ManageModulesPlugin: manageModulesPlugin,
 				FnModulePlugin: fnModulePlugin,
 				LegendPlugin: legendPlugin,
+				LayerVisibilityNotificationPlugin: layerVisibilityNotificationPlugin,
 				SearchPlugin: searchPlugin,
 				HistoryStatePlugin: HistoryStatePlugin
 			}
@@ -110,6 +111,7 @@ export class StoreService {
 					'ManageModulesPlugin',
 					'FnModulePlugin',
 					'LegendPlugin',
+					'LayerVisibilityNotificationPlugin',
 					'SearchPlugin',
 					'HistoryStatePlugin'
 				);
@@ -131,6 +133,7 @@ export class StoreService {
 				await manageModulesPlugin.register(this._store);
 				await fnModulePlugin.register(this._store);
 				await legendPlugin.register(this._store);
+				await layerVisibilityNotificationPlugin.register(this._store);
 				await searchPlugin.register(this._store);
 				await HistoryStatePlugin.register(this._store); // should be registered as last plugin
 			});

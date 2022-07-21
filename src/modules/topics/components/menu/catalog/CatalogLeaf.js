@@ -1,5 +1,5 @@
 import { html, nothing } from 'lit-html';
-import { clearPreviewGeoresourceId, setPreviewGeoresourceId } from '../../../../../ea/store/module/module.action';
+import { clearPreviewGeoresourceId, setPreviewGeoresourceId } from '../../../../../ea/store/module/ea.action';
 import { $injector } from '../../../../../injection';
 import { addLayer, removeLayer } from '../../../../../store/layers/layers.action';
 import { openModal } from '../../../../../store/modal/modal.action';
@@ -20,12 +20,18 @@ export class CatalogLeaf extends AbstractContentPanel {
 
 		const {
 			GeoResourceService: geoResourceService,
-			TranslationService: translationService
+			TranslationService: translationService,
+			MapService: mapService,
+			WmsCapabilitiesService: wmsCapabilitiesService
 		}
-			= $injector.inject('GeoResourceService', 'TranslationService');
+			= $injector.inject('GeoResourceService', 'TranslationService', 'MapService', 'WmsCapabilitiesService');
 
 		this._geoResourceService = geoResourceService;
 		this._translationService = translationService;
+		this._mapService = mapService;
+		this._wmsCapabilitiesService = wmsCapabilitiesService;
+
+		this._wmsLayers = [];
 	}
 
 	set data(catalogPart) {
@@ -67,12 +73,29 @@ export class CatalogLeaf extends AbstractContentPanel {
 				clearPreviewGeoresourceId();
 			};
 
+
+			let validResolution = true;
+			if (this._wmsLayers.length > 0) {
+				const resolution = state.mapResolution;
+				validResolution = this._wmsLayers
+					.some(l => resolution > l.maxResolution && resolution < l.minResolution);
+			}
+			else {
+				setTimeout(async () => {
+					this._wmsLayers = await this._wmsCapabilitiesService.getWmsLayers(geoResourceId);
+					this.updateState();
+				});
+			}
+			const createTitle = (text, validResolution) =>
+				validResolution ? text : 'Georesource ' + translate('ea_notification_layer_not_visible');
+
+
 			return html`
 			<style>
 			${css}		
 			</style>
 			<span class="ba-list-item" @mouseenter=${onMouseEnter} @mouseleave=${onMouseLeave}>		
-					<ba-checkbox class="ba-list-item__text" @toggle=${onToggle}  .disabled=${!geoR} .checked=${checked} tabindex='0' .title=${title}><span>${label}</span></ba-checkbox>						
+					<ba-checkbox class="ba-list-item__text" @toggle=${onToggle}  .disabled=${!geoR || (!validResolution && !checked)} .checked=${checked} tabindex='0' .title=${createTitle(title, validResolution)}><span>${label}</span></ba-checkbox>						
 					<div class="ba-icon-button ba-list-item__after vertical-center separator">									                                                                                          
 						<ba-icon id='info' data-test-id .icon='${infoSvg}' .color=${'var(--primary-color)'} .color_hover=${'var(--text3)'} .size=${2} .title=${translate('layerManager_move_up')} @click=${openGeoResourceInfoPanel}></ba-icon>                    							 
 					</div>
@@ -84,12 +107,15 @@ export class CatalogLeaf extends AbstractContentPanel {
 
 	extractState(globalState) {
 		//our local state contains values derived form the global state and local data (_catalogPart)
-		const { layers: { active: activeLayers, ready: layersStoreReady } } = globalState;
+		const {
+			layers: { active: activeLayers, ready: layersStoreReady },
+			ea: { mapResolution }
+		} = globalState;
 
 		const geoResourceId = this._catalogPart ? this._catalogPart.geoResourceId : null;
 		const checked = geoResourceId ? activeLayers.map(geoResource => geoResource.id).includes(geoResourceId) : false;
 
-		return { layersStoreReady, geoResourceId, checked };
+		return { layersStoreReady, geoResourceId, checked, mapResolution };
 	}
 
 

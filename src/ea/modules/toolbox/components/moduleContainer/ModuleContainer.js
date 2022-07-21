@@ -3,7 +3,7 @@ import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import { open } from '../../../../../store/mainMenu/mainMenu.action';
-import { setCurrentModule } from '../../../../store/module/module.action';
+import { setCurrentModule } from '../../../../store/module/ea.action';
 import { Analyse3DModuleContent } from '../analyse3d/Analyse3DModuleContent';
 import { EAContribution } from '../contribution/EAContribution';
 import { GeothermModuleContent } from '../geotherm/GeothermModuleContent';
@@ -53,7 +53,7 @@ export class ModuleContainer extends MvuElement {
 	 */
 	onInitialize() {
 		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
-		this.observe(state => state.module.current, current => this.signal(Update_ModuleId, current));
+		this.observe(state => state.ea.currentModule, current => this.signal(Update_ModuleId, current));
 	}
 
 	/**
