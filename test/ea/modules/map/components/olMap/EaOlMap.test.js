@@ -6,7 +6,7 @@ import { mapclickReducer } from '../../../../../../src/ea/store/mapclick/mapclic
 import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { getDefaultLayerOptions } from '../../../../../../src/modules/olMap/handler/OlLayerHandler';
-import { WmsGeoResource } from '../../../../../../src/services/domain/geoResources';
+import { WmsGeoResource } from '../../../../../../src/domain/geoResources';
 import { addLayer, removeLayer } from '../../../../../../src/store/layers/layers.action';
 import { layersReducer } from '../../../../../../src/store/layers/layers.reducer';
 import { mapReducer } from '../../../../../../src/store/map/map.reducer';

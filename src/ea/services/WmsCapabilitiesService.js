@@ -1,5 +1,5 @@
 import { $injector } from '../../injection';
-import { SourceType, SourceTypeName } from '../../services/domain/sourceType';
+import { SourceType, SourceTypeName } from '../../domain/sourceType';
 import { bvvCapabilitiesProvider } from '../../services/provider/wmsCapabilities.provider';
 import { sleep } from '../../utils/sleep';
 
