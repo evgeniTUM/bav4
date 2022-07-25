@@ -160,13 +160,20 @@ describe('MapService', () => {
 	describe('getScaleLineContainer', () => {
 
 		it('returns an HTMLElement when available', () => {
+			const mockPageContainer = {
+				shadowRoot: {
+					querySelector() { }
+				}
+			};
+
 			const mockFooter = {
 				shadowRoot: {
 					querySelector() { }
 				}
 			};
 			const mockHTMElement = {};
-			spyOn(document, 'querySelector').withArgs('ba-footer').and.returnValue(mockFooter);
+			spyOn(document, 'querySelector').withArgs('ea-page-container').and.returnValue(mockPageContainer);
+			spyOn(mockPageContainer.shadowRoot, 'querySelector').withArgs('ba-footer').and.returnValue(mockFooter);
 			spyOn(mockFooter.shadowRoot, 'querySelector').withArgs('.scale').and.returnValue(mockHTMElement);
 			const instanceUnderTest = setup();
 
@@ -178,7 +185,7 @@ describe('MapService', () => {
 		});
 
 		it('returns null when element is not available', () => {
-			spyOn(document, 'querySelector').withArgs('ba-footer');
+			spyOn(document, 'querySelector').withArgs('ea-page-container');
 			const instanceUnderTest = setup();
 
 			const element = instanceUnderTest.getScaleLineContainer();
