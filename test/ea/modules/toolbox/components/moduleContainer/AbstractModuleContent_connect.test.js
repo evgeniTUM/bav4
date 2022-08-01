@@ -50,16 +50,10 @@ describe('ModuleContent, when loaded', () => {
 		return TestUtils.render(ConcreteModuleContent.tag);
 	};
 
-	const setTimeoutUnmocked = setTimeout;
-
 	let element;
 	beforeAll(async () => {
-
-		jasmine.clock().install();
 		element = await setup();
 	});
-
-	afterAll(() => jasmine.clock().uninstall());
 
 	it('stores the iframe-window in a global variable', async () => {
 		const frameId = element.getConfig().frame_id;
@@ -70,9 +64,7 @@ describe('ModuleContent, when loaded', () => {
 	});
 
 	it('opens fnCommModule when element renders', async () => {
-		await new Promise(r => setTimeoutUnmocked(r, 200));
-		jasmine.clock().tick(1010);
-		await new Promise(r => setTimeoutUnmocked(r, 200));
+		await TestUtils.timeout(1010);
 
 		const lastAction = storeActions.pop();
 		expect(lastAction.type).toEqual(OPEN_MODULE_REQUESTED);
