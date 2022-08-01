@@ -188,7 +188,7 @@ describe('CatalogLeaf', () => {
 
 					const checkbox = element.shadowRoot.querySelector('ba-checkbox');
 					expect(checkbox.disabled).toBeTrue();
-					expect(checkbox.title).toBe('Georesource ea_notification_layer_not_visible');
+					expect(checkbox.title).toBe('ea_mainmenu_layer_not_visible');
 				});
 			});
 
