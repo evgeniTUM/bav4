@@ -7,7 +7,7 @@ import { layersReducer } from '../../../src/store/layers/layers.reducer.js';
 import { TestUtils } from '../../test-utils.js';
 
 
-describe('ManageModulesPlugin', () => {
+describe('LegendPlugin', () => {
 
 	const wmsCapabilitiesServiceMock = { getWmsLayers: () => ([]) };
 
