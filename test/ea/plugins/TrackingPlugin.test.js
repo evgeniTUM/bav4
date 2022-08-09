@@ -31,22 +31,27 @@ describe('TrackingPlugin', () => {
 		return store;
 	};
 
-	it('when active, adds a script element to document and inits matomo', async () => {
-		await setup();
+	describe('initialization', () => {
 
-		const scriptElements = document.getElementsByTagName('script');
+		it('when active, adds a script element to document and inits matomo', async () => {
+			await setup();
 
-		const elements = [...scriptElements].map(n => n.outerHTML);
-		expect(elements).toContain('<script async="" src="MATOMO_URL/matomo.js"></script>');
+			const scriptElements = document.getElementsByTagName('script');
 
-		expect(window._paq).toEqual([
-			['trackPageView'],
-			['enableLinkTracking'],
-			['setTrackerUrl',
-				'MATOMO_URL/matomo.php'],
-			['setSiteId', 'MATOMO_ID']
-		]);
+			const elements = [...scriptElements].map(n => n.outerHTML);
+			expect(elements).toContain('<script async="" src="MATOMO_URL/matomo.js"></script>');
+
+			expect(window._paq).toEqual([
+				['trackPageView'],
+				['enableLinkTracking'],
+				['setTrackerUrl',
+					'MATOMO_URL/matomo.php'],
+				['setSiteId', 'MATOMO_ID']
+			]);
+		});
+
 	});
+
 
 
 });
