@@ -93,6 +93,7 @@ export class StoreService {
 				ManageModulesPlugin: manageModulesPlugin,
 				FnModulePlugin: fnModulePlugin,
 				LegendPlugin: legendPlugin,
+				TrackingPlugin: trackingPlugin,
 				LayerVisibilityNotificationPlugin: layerVisibilityNotificationPlugin,
 				SearchPlugin: searchPlugin,
 				ExportMfpPlugin: exportMfpPlugin,
@@ -114,6 +115,7 @@ export class StoreService {
 					'ManageModulesPlugin',
 					'FnModulePlugin',
 					'LegendPlugin',
+					'TrackingPlugin',
 					'LayerVisibilityNotificationPlugin',
 					'SearchPlugin',
 					'ExportMfpPlugin',
@@ -137,6 +139,7 @@ export class StoreService {
 				await manageModulesPlugin.register(this._store);
 				await fnModulePlugin.register(this._store);
 				await legendPlugin.register(this._store);
+				await trackingPlugin.register(this._store);
 				await layerVisibilityNotificationPlugin.register(this._store);
 				await searchPlugin.register(this._store);
 				await exportMfpPlugin.register(this._store);

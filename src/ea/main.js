@@ -5,5 +5,4 @@ import './modules/topics';
 import './modules/map';
 import './modules/pageContainer';
 import './modules/legend';
-import './modules/tracking';
 import './i18n';
