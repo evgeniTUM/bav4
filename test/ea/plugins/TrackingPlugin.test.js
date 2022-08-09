@@ -37,32 +37,45 @@ describe('TrackingPlugin', () => {
 		return store;
 	};
 
+	describe('activation/deactivation', () => {
 
-	it('adds/removes matomo script element to document when enabled/disabled', async () => {
-		await setup();
+		it('adds/removes matomo script element to document when enabled/disabled', async () => {
+			await setup();
 
-		activateTracking();
+			activateTracking();
 
-		let scriptElement = document.getElementById('matomo-script');
-		expect(scriptElement.outerHTML).toContain(
-			'<script async="" src="MATOMO_URL/matomo.js" id="matomo-script"></script>'
-		);
+			let scriptElement = document.getElementById('matomo-script');
+			expect(scriptElement.outerHTML).toContain(
+				'<script async="" src="MATOMO_URL/matomo.js" id="matomo-script"></script>'
+			);
 
-		expect(window._paq).toEqual([
-			['trackPageView'],
-			['enableLinkTracking'],
-			['setTrackerUrl',
-				'MATOMO_URL/matomo.php'],
-			['setSiteId', 'MATOMO_ID']
-		]);
+			expect(window._paq).toEqual([
+				['trackPageView'],
+				['enableLinkTracking'],
+				['setTrackerUrl',
+					'MATOMO_URL/matomo.php'],
+				['setSiteId', 'MATOMO_ID']
+			]);
 
-		deactivateTracking();
+			deactivateTracking();
 
-		scriptElement = document.getElementById('matomo-script');
-		expect(scriptElement).toBeNull();
-		expect(window._paq).toEqual([]);
+			scriptElement = document.getElementById('matomo-script');
+			expect(scriptElement).toBeNull();
+			expect(window._paq).toEqual([]);
+		});
+
+
+		it('does not track events when disabled', async () => {
+			await setup();
+
+			activateTracking();
+			deactivateTracking();
+
+			setCurrentTool(ToolId.DRAWING);
+
+			expect(window._paq).toEqual([]);
+		});
 	});
-
 
 	describe('tracks user actions', () => {
 
@@ -94,5 +107,7 @@ describe('TrackingPlugin', () => {
 
 			expect(window._paq).toContain(['trackEvent', 'Module', 'activate', MixerModuleContent.tag]);
 		});
+
+
 	});
 });

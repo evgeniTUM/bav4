@@ -11,7 +11,6 @@ export class TrackingPlugin extends BaPlugin {
 	async register(store) {
 		const { ConfigService: configService } = $injector.inject('ConfigService');
 
-
 		const activateMatomo = () => {
 			const matomoUrl = configService.getValue('MATOMO_URL') + '/';
 			const matomoId = configService.getValue('MATOMO_ID');
@@ -43,7 +42,6 @@ export class TrackingPlugin extends BaPlugin {
 
 		let activeLayerIdsState = [];
 		const trackLayerChange = (activeLayers) => {
-
 			const activeLayerIds = activeLayers.map(l => l.id);
 			const newIds = activeLayerIds.filter(id => !activeLayerIdsState.includes(id));
 
@@ -58,11 +56,22 @@ export class TrackingPlugin extends BaPlugin {
 			window._paq.push(['trackEvent', 'Module', 'activate', moduleId]);
 		};
 
+		let unsubscribes = [];
+		const onActiveStateChange = (active) => {
+			if (active) {
+				activateMatomo();
+				unsubscribes = [
+					observe(store, state => state.tools.current, trackToolChange),
+					observe(store, state => state.layers.active, trackLayerChange),
+					observe(store, state => state.ea.currentModule, trackModuleChange)
+				];
+			}
+			else {
+				deactivateMatomo();
+				unsubscribes.forEach(unsubscribe => unsubscribe());
+			}
+		};
 
-		observe(store, state => state.ea.trackingActive, active => active ? activateMatomo() : deactivateMatomo());
-
-		observe(store, state => state.tools.current, trackToolChange);
-		observe(store, state => state.layers.active, trackLayerChange);
-		observe(store, state => state.ea.currentModule, trackModuleChange);
+		observe(store, state => state.ea.trackingActive, onActiveStateChange);
 	}
 }
