@@ -88,24 +88,35 @@ describe('TrackingPlugin', () => {
 			deactivateTracking();
 		});
 
+		beforeEach(() => {
+
+			window._paq = [];
+		});
+
 		it('tool selection', async () => {
 			setCurrentTool(ToolId.DRAWING);
 
-			expect(window._paq).toContain(['trackEvent', 'Tool', 'select', ToolId.DRAWING]);
+			const trackEvents = window._paq.filter(i => i[0] === 'trackEvent');
+			expect(trackEvents.length).toEqual(1);
+			expect(trackEvents[0]).toEqual(['trackEvent', 'Tool', 'select', ToolId.DRAWING]);
 		});
 
 		it('layer activation', async () => {
 			addLayer('id1');
 			addLayer('id2');
 
-			expect(window._paq).toContain(['trackEvent', 'Layer', 'activate', 'id1']);
-			expect(window._paq).toContain(['trackEvent', 'Layer', 'activate', 'id2']);
+			const trackEvents = window._paq.filter(i => i[0] === 'trackEvent');
+			expect(trackEvents.length).toEqual(2);
+			expect(trackEvents[0]).toEqual(['trackEvent', 'Layer', 'activate', 'id1']);
+			expect(trackEvents[1]).toEqual(['trackEvent', 'Layer', 'activate', 'id2']);
 		});
 
 		it('module selection', async () => {
 			setCurrentModule(MixerModuleContent.tag);
 
-			expect(window._paq).toContain(['trackEvent', 'Module', 'activate', MixerModuleContent.tag]);
+			const trackEvents = window._paq.filter(i => i[0] === 'trackEvent');
+			expect(trackEvents.length).toEqual(1);
+			expect(trackEvents[0]).toEqual(['trackEvent', 'Module', 'activate', MixerModuleContent.tag]);
 		});
 
 
