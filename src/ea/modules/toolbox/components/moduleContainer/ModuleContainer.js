@@ -16,7 +16,7 @@ import css from './moduleContainer.css';
 const Update_IsPortrait_HasMinWidth = 'update_isPortrait_hasMinWidth';
 const Update_ModuleId = 'update_moduleId';
 
-export const Modules = [
+export const EaModules = [
 	MixerModuleContent,
 	RedesignModuleContent,
 	EAContribution,
@@ -72,7 +72,7 @@ export class ModuleContainer extends MvuElement {
 		const { moduleId, isPortrait, hasMinWidth } = model;
 
 		const getContentPanel = (moduleId) => {
-			const module = Modules.find(m => m.tag === moduleId);
+			const module = EaModules.find(m => m.tag === moduleId);
 			if (!module) {
 				return nothing;
 			}
