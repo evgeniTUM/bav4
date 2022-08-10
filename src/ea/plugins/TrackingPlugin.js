@@ -2,6 +2,7 @@ import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { observe } from '../../utils/storeUtils';
 import { EaModules } from '../modules/toolbox/components/moduleContainer/ModuleContainer';
+import { activateTracking } from '../store/module/ea.action';
 
 export class TrackingPlugin extends BaPlugin {
 
@@ -48,9 +49,11 @@ export class TrackingPlugin extends BaPlugin {
 			const labels = layers.map(l => l.label);
 			const newLabels = labels.filter(l => !activeLayerLabelsState.includes(l));
 
-			newLabels.forEach(l =>
-				window._paq.push(['trackEvent', 'Kartenauswahl', 'clickEvent', l])
-			);
+			newLabels
+				.filter(l => l)
+				.forEach(l =>
+					window._paq.push(['trackEvent', 'Kartenauswahl', 'clickEvent', l])
+				);
 
 			activeLayerLabelsState = labels;
 		};
