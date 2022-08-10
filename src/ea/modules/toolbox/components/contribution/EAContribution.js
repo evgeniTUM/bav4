@@ -104,6 +104,10 @@ export class EAContribution extends MvuElement {
 		return this._environmentService.isEmbedded();
 	}
 
+	static get name() {
+		return 'analyse3d';
+	}
+
 	static get tag() {
 		return 'ea-feature-contribution';
 	}

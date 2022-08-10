@@ -16,13 +16,16 @@ export class MixerModuleContent extends AbstractModuleContent {
 
 		return {
 			iframe: 'myMixerIFrame',
-			module: 'mixer',
+			module: MixerModuleContent.name,
 			frame_id: 'mixer_iframe',
 			header_title: translate('toolbox_mixer_header')
 
 		};
 	}
 
+	static get name() {
+		return 'mixer';
+	}
 
 	static get tag() {
 		return 'ea-module-mixer-content';

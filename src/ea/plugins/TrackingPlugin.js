@@ -1,6 +1,8 @@
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { observe } from '../../utils/storeUtils';
+import { EaModules } from '../modules/toolbox/components/moduleContainer/ModuleContainer';
+import { activateTracking } from '../store/module/ea.action';
 
 export class TrackingPlugin extends BaPlugin {
 
@@ -36,24 +38,31 @@ export class TrackingPlugin extends BaPlugin {
 
 
 		const trackToolChange = (toolId) => {
-			window._paq.push(['trackEvent', 'Tool', 'select', toolId]);
+			if (toolId) {
+				window._paq.push(['trackEvent', 'Kartenwerkzeug', 'clickEvent', toolId]);
+			}
 		};
 
 
-		let activeLayerIdsState = [];
-		const trackLayerChange = (activeLayers) => {
-			const activeLayerIds = activeLayers.map(l => l.id);
-			const newIds = activeLayerIds.filter(id => !activeLayerIdsState.includes(id));
+		let activeLayerLabelsState = [];
+		const trackLayerChange = (layers) => {
+			const labels = layers.map(l => l.label);
+			const newLabels = labels.filter(l => !activeLayerLabelsState.includes(l));
 
-			newIds.forEach(id =>
-				window._paq.push(['trackEvent', 'Layer', 'activate', id])
-			);
+			newLabels
+				.filter(l => l)
+				.forEach(l =>
+					window._paq.push(['trackEvent', 'Kartenauswahl', 'clickEvent', l])
+				);
 
-			activeLayerIdsState = activeLayerIds;
+			activeLayerLabelsState = labels;
 		};
 
 		const trackModuleChange = (moduleId) => {
-			window._paq.push(['trackEvent', 'Module', 'activate', moduleId]);
+			if (moduleId) {
+				const module = EaModules.find(m => m.tag === moduleId);
+				window._paq.push(['trackEvent', 'Zusatzmodul', 'clickEvent', module.name]);
+			}
 		};
 
 		let unsubscribes = [];

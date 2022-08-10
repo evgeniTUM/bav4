@@ -1,9 +1,9 @@
-import { MixerModuleContent } from '../../../src/ea/modules/toolbox/components/mixer/MixerModuleContent.js';
+import { EaModules } from '../../../src/ea/modules/toolbox/components/moduleContainer/ModuleContainer.js';
 import { TrackingPlugin } from '../../../src/ea/plugins/TrackingPlugin.js';
 import { activateTracking, deactivateTracking, setCurrentModule } from '../../../src/ea/store/module/ea.action.js';
 import { eaReducer } from '../../../src/ea/store/module/ea.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
-import { addLayer } from '../../../src/store/layers/layers.action.js';
+import { addLayer, removeLayer } from '../../../src/store/layers/layers.action.js';
 import { layersReducer } from '../../../src/store/layers/layers.reducer.js';
 import { setCurrentTool, ToolId } from '../../../src/store/tools/tools.action.js';
 import { toolsReducer } from '../../../src/store/tools/tools.reducer.js';
@@ -88,24 +88,44 @@ describe('TrackingPlugin', () => {
 			deactivateTracking();
 		});
 
+		beforeEach(() => {
+
+			window._paq = [];
+		});
+
 		it('tool selection', async () => {
 			setCurrentTool(ToolId.DRAWING);
+			setCurrentTool(null);
 
-			expect(window._paq).toContain(['trackEvent', 'Tool', 'select', ToolId.DRAWING]);
+			const trackEvents = window._paq.filter(i => i[0] === 'trackEvent');
+			expect(trackEvents.length).toEqual(1);
+			expect(trackEvents[0]).toEqual(['trackEvent', 'Kartenwerkzeug', 'clickEvent', ToolId.DRAWING]);
 		});
 
 		it('layer activation', async () => {
-			addLayer('id1');
-			addLayer('id2');
+			addLayer('id1', { label: 'id1-label' });
+			addLayer('id2', { label: 'id2-label' });
+			removeLayer('id1');
+			removeLayer('id2');
 
-			expect(window._paq).toContain(['trackEvent', 'Layer', 'activate', 'id1']);
-			expect(window._paq).toContain(['trackEvent', 'Layer', 'activate', 'id2']);
+			const trackEvents = window._paq.filter(i => i[0] === 'trackEvent');
+			expect(trackEvents.length).toEqual(2);
+			expect(trackEvents[0]).toEqual(['trackEvent', 'Kartenauswahl', 'clickEvent', 'id1-label']);
+			expect(trackEvents[1]).toEqual(['trackEvent', 'Kartenauswahl', 'clickEvent', 'id2-label']);
 		});
 
 		it('module selection', async () => {
-			setCurrentModule(MixerModuleContent.tag);
+			EaModules.forEach(m => {
+				setCurrentModule(m.tag);
+				setCurrentModule(null);
+			});
 
-			expect(window._paq).toContain(['trackEvent', 'Module', 'activate', MixerModuleContent.tag]);
+			const trackEvents = window._paq.filter(i => i[0] === 'trackEvent');
+			expect(trackEvents.length).toEqual(EaModules.length);
+
+			EaModules.forEach((m, i) =>
+				expect(trackEvents[i]).toEqual(['trackEvent', 'Zusatzmodul', 'clickEvent', m.name])
+			);
 		});
 
 

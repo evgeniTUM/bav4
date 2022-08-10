@@ -11,13 +11,16 @@ export class ResearchModuleContent extends AbstractModuleContent {
 
 		return {
 			iframe: 'myResearchIFrame',
-			module: 'recherche',
+			module: ResearchModuleContent.name,
 			frame_id: 'research_iframe',
 			header_title: translate('toolbox_recherche_header')
 
 		};
 	}
 
+	static get name() {
+		return 'recherche';
+	}
 
 	static get tag() {
 		return 'ea-module-research-content';
