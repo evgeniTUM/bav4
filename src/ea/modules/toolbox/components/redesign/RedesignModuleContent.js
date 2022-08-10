@@ -11,13 +11,16 @@ export class RedesignModuleContent extends AbstractModuleContent {
 
 		return {
 			iframe: 'myRedesignIFrame',
-			module: 'redesign',
+			module: RedesignModuleContent.name,
 			frame_id: 'redesign_iframe',
 			header_title: translate('toolbox_redesign_header')
 
 		};
 	}
 
+	static get name() {
+		return 'redesign';
+	}
 
 	static get tag() {
 		return 'ea-module-redesign-content';

@@ -1,6 +1,7 @@
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { observe } from '../../utils/storeUtils';
+import { Modules } from '../modules/toolbox/components/moduleContainer/ModuleContainer';
 
 export class TrackingPlugin extends BaPlugin {
 
@@ -36,7 +37,7 @@ export class TrackingPlugin extends BaPlugin {
 
 
 		const trackToolChange = (toolId) => {
-			window._paq.push(['trackEvent', 'Tool', 'select', toolId]);
+			window._paq.push(['trackEvent', 'Kartenwerkzeug', 'clickEvent', toolId]);
 		};
 
 
@@ -46,14 +47,17 @@ export class TrackingPlugin extends BaPlugin {
 			const newIds = activeLayerIds.filter(id => !activeLayerIdsState.includes(id));
 
 			newIds.forEach(id =>
-				window._paq.push(['trackEvent', 'Layer', 'activate', id])
+				window._paq.push(['trackEvent', 'Kartenauswahl', 'clickEvent', id])
 			);
 
 			activeLayerIdsState = activeLayerIds;
 		};
 
 		const trackModuleChange = (moduleId) => {
-			window._paq.push(['trackEvent', 'Module', 'activate', moduleId]);
+			if (moduleId !== null) {
+				const module = Modules.find(m => m.tag === moduleId);
+				window._paq.push(['trackEvent', 'Zusatzmodul', 'clickEvent', module.name]);
+			}
 		};
 
 		let unsubscribes = [];

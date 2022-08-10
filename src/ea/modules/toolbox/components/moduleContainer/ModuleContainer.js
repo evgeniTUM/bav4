@@ -16,6 +16,15 @@ import css from './moduleContainer.css';
 const Update_IsPortrait_HasMinWidth = 'update_isPortrait_hasMinWidth';
 const Update_ModuleId = 'update_moduleId';
 
+export const Modules = [
+	MixerModuleContent,
+	RedesignModuleContent,
+	EAContribution,
+	ResearchModuleContent,
+	Analyse3DModuleContent,
+	GeothermModuleContent
+];
+
 /**
  * @class
  * @author kunze_ge
@@ -63,22 +72,12 @@ export class ModuleContainer extends MvuElement {
 		const { moduleId, isPortrait, hasMinWidth } = model;
 
 		const getContentPanel = (moduleId) => {
-			switch (moduleId) {
-				case MixerModuleContent.tag:
-					return html`${unsafeHTML(`<${MixerModuleContent.tag}/>`)}`;
-				case RedesignModuleContent.tag:
-					return html`${unsafeHTML(`<${RedesignModuleContent.tag}/>`)}`;
-				case EAContribution.tag:
-					return html`${unsafeHTML(`<${EAContribution.tag}/>`)}`;
-				case ResearchModuleContent.tag:
-					return html`${unsafeHTML(`<${ResearchModuleContent.tag}/>`)}`;
-				case Analyse3DModuleContent.tag:
-					return html`${unsafeHTML(`<${Analyse3DModuleContent.tag}/>`)}`;
-				case GeothermModuleContent.tag:
-					return html`${unsafeHTML(`<${GeothermModuleContent.tag}/>`)}`;
-				default:
-					return nothing;
+			const module = Modules.find(m => m.tag === moduleId);
+			if (!module) {
+				return nothing;
 			}
+
+			return html`${unsafeHTML(`<${module.tag}/>`)}`;
 		};
 
 

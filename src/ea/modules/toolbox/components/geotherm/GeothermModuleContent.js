@@ -11,13 +11,16 @@ export class GeothermModuleContent extends AbstractModuleContent {
 
 		return {
 			iframe: 'myGeothermIFrame',
-			module: 'geotherm',
+			module: GeothermModuleContent.name,
 			frame_id: 'geotherm_iframe',
 			header_title: translate('toolbox_geotherm')
 
 		};
 	}
 
+	static get name() {
+		return 'geotherm';
+	}
 
 	static get tag() {
 		return 'ea-module-geotherm-content';

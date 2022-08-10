@@ -1,4 +1,7 @@
 import { MixerModuleContent } from '../../../src/ea/modules/toolbox/components/mixer/MixerModuleContent.js';
+import { Modules } from '../../../src/ea/modules/toolbox/components/moduleContainer/ModuleContainer.js';
+import { ResearchModuleContent } from '../../../src/ea/modules/toolbox/components/research/ResearchModuleContent.js';
+import { ManageModulesPlugin } from '../../../src/ea/plugins/ManageModulesPlugin.js';
 import { TrackingPlugin } from '../../../src/ea/plugins/TrackingPlugin.js';
 import { activateTracking, deactivateTracking, setCurrentModule } from '../../../src/ea/store/module/ea.action.js';
 import { eaReducer } from '../../../src/ea/store/module/ea.reducer.js';
@@ -98,7 +101,7 @@ describe('TrackingPlugin', () => {
 
 			const trackEvents = window._paq.filter(i => i[0] === 'trackEvent');
 			expect(trackEvents.length).toEqual(1);
-			expect(trackEvents[0]).toEqual(['trackEvent', 'Tool', 'select', ToolId.DRAWING]);
+			expect(trackEvents[0]).toEqual(['trackEvent', 'Kartenwerkzeug', 'clickEvent', ToolId.DRAWING]);
 		});
 
 		it('layer activation', async () => {
@@ -107,16 +110,22 @@ describe('TrackingPlugin', () => {
 
 			const trackEvents = window._paq.filter(i => i[0] === 'trackEvent');
 			expect(trackEvents.length).toEqual(2);
-			expect(trackEvents[0]).toEqual(['trackEvent', 'Layer', 'activate', 'id1']);
-			expect(trackEvents[1]).toEqual(['trackEvent', 'Layer', 'activate', 'id2']);
+			expect(trackEvents[0]).toEqual(['trackEvent', 'Kartenauswahl', 'clickEvent', 'id1']);
+			expect(trackEvents[1]).toEqual(['trackEvent', 'Kartenauswahl', 'clickEvent', 'id2']);
 		});
 
 		it('module selection', async () => {
-			setCurrentModule(MixerModuleContent.tag);
+			Modules.forEach(m => {
+				setCurrentModule(m.tag);
+				setCurrentModule(null);
+			});
 
 			const trackEvents = window._paq.filter(i => i[0] === 'trackEvent');
-			expect(trackEvents.length).toEqual(1);
-			expect(trackEvents[0]).toEqual(['trackEvent', 'Module', 'activate', MixerModuleContent.tag]);
+			expect(trackEvents.length).toEqual(Modules.length);
+
+			Modules.forEach((m, i) =>
+				expect(trackEvents[i]).toEqual(['trackEvent', 'Zusatzmodul', 'clickEvent', m.name])
+			);
 		});
 
 
