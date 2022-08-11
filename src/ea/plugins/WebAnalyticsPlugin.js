@@ -31,7 +31,9 @@ export class WebAnalyticsPlugin extends BaPlugin {
 
 		const deactivateMatomo = () => {
 			const element = document.getElementById('matomo-script');
-			element.parentNode.removeChild(element);
+			if (element) {
+				element.parentNode.removeChild(element);
+			}
 			window._paq = [];
 		};
 
@@ -80,6 +82,6 @@ export class WebAnalyticsPlugin extends BaPlugin {
 			}
 		};
 
-		observe(store, state => state.ea.webAnalyticsActive, onActiveStateChange);
+		observe(store, state => state.ea.webAnalyticsActive, onActiveStateChange, false);
 	}
 }

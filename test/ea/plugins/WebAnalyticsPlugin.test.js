@@ -39,6 +39,8 @@ describe('WebAnalyticsPlugin', () => {
 
 	describe('activation/deactivation', () => {
 
+		afterEach(() => deactivateWebAnalytics());
+
 		it('adds/removes matomo script element to document when enabled/disabled', async () => {
 			await setup();
 
@@ -74,6 +76,15 @@ describe('WebAnalyticsPlugin', () => {
 			setCurrentTool(ToolId.DRAWING);
 
 			expect(window._paq).toEqual([]);
+		});
+
+		it('is activated on init when ea.webAnalyticsActive is true', async () => {
+			await setup({ ea: { webAnalyticsActive: true } });
+
+			const scriptElement = document.getElementById('matomo-script');
+			expect(scriptElement.outerHTML).toContain(
+				'<script async="" src="MATOMO_URL/matomo.js" id="matomo-script"></script>'
+			);
 		});
 	});
 
