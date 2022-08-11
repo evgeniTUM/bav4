@@ -3,7 +3,7 @@ import { BaPlugin } from '../../plugins/BaPlugin';
 import { observe } from '../../utils/storeUtils';
 import { EaModules } from '../modules/toolbox/components/moduleContainer/ModuleContainer';
 
-export class TrackingPlugin extends BaPlugin {
+export class WebAnalyticsPlugin extends BaPlugin {
 
 	/**
 	 * @override
@@ -80,6 +80,6 @@ export class TrackingPlugin extends BaPlugin {
 			}
 		};
 
-		observe(store, state => state.ea.trackingActive, onActiveStateChange);
+		observe(store, state => state.ea.webAnalyticsActive, onActiveStateChange);
 	}
 }

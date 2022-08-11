@@ -72,7 +72,7 @@ describe('StoreService', () => {
 			register() {}
 		};
 
-		const trackingPluginMock = {
+		const WebAnalyticsPluginMock = {
 			register() {}
 		};
 
@@ -96,7 +96,7 @@ describe('StoreService', () => {
 				.registerSingleton('FnModulePlugin', fnModulePluginMock)
 				.registerSingleton('ManageModulesPlugin', manageModulesPluginMock)
 				.registerSingleton('LegendPlugin', legendPluginMock)
-				.registerSingleton('TrackingPlugin', trackingPluginMock)
+				.registerSingleton('WebAnalyticsPlugin', WebAnalyticsPluginMock)
 				.registerSingleton('LayerVisibilityNotificationPlugin', layerVisibilityNotificationPluginMock)
 				.registerSingleton('SearchPlugin', searchPluginMock)
 				.registerSingleton('ExportMfpPlugin', exportMfpPluginMock)
@@ -160,7 +160,7 @@ describe('StoreService', () => {
 			const fnModulePluginSpy = spyOn(fnModulePluginMock, 'register');
 			const manageModulesPlugingSpy = spyOn(manageModulesPluginMock, 'register');
 			const legendPluginSpy = spyOn(legendPluginMock, 'register');
-			const trackingPluginSpy = spyOn(trackingPluginMock, 'register');
+			const WebAnalyticsPluginSpy = spyOn(WebAnalyticsPluginMock, 'register');
 			const layerVisibilityNotificationPluginSpy = spyOn(layerVisibilityNotificationPluginMock, 'register');
 			const searchPluginSpy = spyOn(searchPluginMock, 'register');
 			const exportMfpPluginSpy = spyOn(exportMfpPluginMock, 'register');
@@ -189,7 +189,7 @@ describe('StoreService', () => {
 			expect(fnModulePluginSpy).toHaveBeenCalledWith(store);
 			expect(manageModulesPlugingSpy).toHaveBeenCalledWith(store);
 			expect(legendPluginSpy).toHaveBeenCalledWith(store);
-			expect(trackingPluginSpy).toHaveBeenCalledWith(store);
+			expect(WebAnalyticsPluginSpy).toHaveBeenCalledWith(store);
 			expect(layerVisibilityNotificationPluginSpy).toHaveBeenCalledWith(store);
 			expect(searchPluginSpy).toHaveBeenCalledWith(store);
 			expect(exportMfpPluginSpy).toHaveBeenCalledWith(store);

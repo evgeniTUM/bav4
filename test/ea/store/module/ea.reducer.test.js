@@ -1,4 +1,4 @@
-import { activateGeoResource, activateLegend, activateTracking, clearPreviewGeoresourceId, deactivateAllGeoResources, deactivateGeoResource, deactivateLegend, deactivateTracking, setCurrentModule, setLegendItems, setMapResolution, setPreviewGeoresourceId } from '../../../../src/ea/store/module/ea.action';
+import { activateGeoResource, activateLegend, activateWebAnalytics, clearPreviewGeoresourceId, deactivateAllGeoResources, deactivateGeoResource, deactivateLegend, deactivateWebAnalytics, setCurrentModule, setLegendItems, setMapResolution, setPreviewGeoresourceId } from '../../../../src/ea/store/module/ea.action';
 import { eaReducer } from '../../../../src/ea/store/module/ea.reducer';
 import { TestUtils } from '../../../test-utils';
 
@@ -19,7 +19,7 @@ describe('ea.reducer', () => {
 		expect(store.getState().ea.legendGeoresourceId).toBeNull();
 		expect(store.getState().ea.legendItems).toEqual([]);
 		expect(store.getState().ea.mapResolution).toEqual(0.0);
-		expect(store.getState().ea.trackingActive).toEqual(false);
+		expect(store.getState().ea.webAnalyticsActive).toEqual(false);
 	});
 
 	it('sets the module id', () => {
@@ -107,15 +107,15 @@ describe('ea.reducer', () => {
 		expect(store.getState().ea.mapResolution).toEqual(42.24);
 	});
 
-	it('activates/deactivates the tracking', () => {
+	it('activates/deactivates the web analytics', () => {
 		const store = setup();
 
-		activateTracking();
+		activateWebAnalytics();
 
-		expect(store.getState().ea.trackingActive).toEqual(true);
+		expect(store.getState().ea.webAnalyticsActive).toEqual(true);
 
-		deactivateTracking();
+		deactivateWebAnalytics();
 
-		expect(store.getState().ea.trackingActive).toEqual(false);
+		expect(store.getState().ea.webAnalyticsActive).toEqual(false);
 	});
 });
