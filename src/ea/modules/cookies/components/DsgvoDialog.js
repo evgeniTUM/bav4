@@ -12,9 +12,9 @@ export class DsgvoDialog extends MvuElement {
 	constructor() {
 		super();
 
-		const { StoreService, TranslationService } = $injector
-			.inject('StoreService', 'TranslationService');
-		this._storeService = StoreService;
+		const { TranslationService } = $injector
+			.inject('TranslationService');
+
 		this._translationService = TranslationService;
 	}
 
@@ -40,21 +40,24 @@ export class DsgvoDialog extends MvuElement {
 			return {};
 		};
 
-		const eabSettings = parseEabCookies();
+		const loadedSettings = parseEabCookies();
 
-		if (eabSettings.base && eabSettings.webanalyse) {
+		if (loadedSettings.base && loadedSettings.webanalyse) {
 			activateWebAnalytics();
 		}
 		else {
 			deactivateWebAnalytics();
 		}
 
-		if (eabSettings.base) {
+		let settings;
+		if (loadedSettings.base) {
+			settings = loadedSettings;
 			return nothing;
 		}
+		else {
+			settings = { base: true, webanalyse: true };
+		}
 
-		const settings = eabSettings;
-		settings.base = true;
 
 		const saveSettings = () => {
 			document.cookie = serialize('eab', JSON.stringify(settings));
@@ -75,12 +78,20 @@ export class DsgvoDialog extends MvuElement {
 
 
 		const openSettings = () => {
+			const onToggle = (event) => {
+				settings.webanalyse = event.detail.checked;
+			};
+
 			openModal('Cookie Einstellungen', html`
 			<div class='ea-cookie-settings>
 				<div class='row'>
-					<ba-button id='rejectAll' .label=${'Alle Cookies ablehnen'} .type=${'secondary'} @click=${rejectAll}></ba-button>
-					<ba-button id='acceptAll' .label=${'Alle Cookies annehmen'} .type=${'secondary'} @click=${acceptAll}></ba-button>
-					<ba-button id='save' .label=${'Speichern'} .type=${'primary'} @click=${saveSettings}></ba-button>
+					<div>Base<ba-toggle id='toggle' .checked=${true} .disabled=${true} .title=${'Base'}></ba-toggle></div>
+					<div>Webanalyse<ba-toggle id='toggle' .checked=${settings.webanalyse} .title=${'Webanalyse'} @toggle=${onToggle}></ba-toggle></div>
+					<div>
+						<ba-button id='rejectAll' .label=${'Alle Cookies ablehnen'} .type=${'secondary'} @click=${rejectAll}></ba-button>
+						<ba-button id='acceptAll' .label=${'Alle Cookies annehmen'} .type=${'secondary'} @click=${acceptAll}></ba-button>
+						<ba-button id='save' .label=${'Speichern'} .type=${'primary'} @click=${saveSettings}></ba-button>
+					</div>
 				</div>
 			</div>
 			`);
