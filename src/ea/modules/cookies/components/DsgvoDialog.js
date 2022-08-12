@@ -25,6 +25,9 @@ export class DsgvoDialog extends MvuElement {
 	}
 
 	createView() {
+
+		const translate = (key) => this._translationService.translate(key);
+
 		const parseEabCookies = () => {
 			const cookies = parse(document.cookie);
 
@@ -85,22 +88,36 @@ export class DsgvoDialog extends MvuElement {
 				settings.webanalyse = event.detail.checked;
 			};
 
-			openModal('Cookie Einstellungen', html`
+			openModal(translate('ea_dsgvo_cookie_settings'), html`
         	<style>${css}</style>
 			<div>
 				<div>
-					<div class='row setting'> 
-						<div>Base</div>
-						<ba-toggle .checked=${true} .disabled=${true} .title=${'Base'}></ba-toggle>
+					<div class='setting'>
+						<div class='setting-description'> 
+							<div class='setting-title'>${translate('ea_dsgvo_basic_cookies_title')}</div>
+							<div>
+								${translate('ea_dsgvo_basic_cookies_text')}
+							</div>
+						</div>
+						<ba-toggle .checked=${true} .disabled=${true} .title=${translate('ea_dsgvo_basic_cookies_title')}>
+							<span style="margin-right: 0.5em">${translate('ea_dsgvo_always_on')}</span>
+						</ba-toggle>
 					</div>
-					<div class='row setting'> 
-						<div>Webanalyse</div> 
-						<ba-toggle id='toggle-webanalyse' .checked=${settings.webanalyse} .title=${'Webanalyse'} @toggle=${onToggle}></ba-toggle>
+					<div class='setting'> 
+						<div class='setting-description'> 
+							<div class='setting-title'>${translate('ea_dsgvo_webanalytics_cookies_title')}</div>
+							<div>
+								${translate('ea_dsgvo_webanalytics_cookies_text')}
+							</div>
+						</div>
+						<ba-toggle id='toggle-webanalyse' .checked=${settings.webanalyse} .title=${translate('ea_dsgvo_webanalytics_cookies_title')} @toggle=${onToggle}></ba-toggle>
 					</div>
-					<div class='row'>
-						<ba-button id='rejectAll' .label=${'Alle Cookies ablehnen'} .type=${'secondary'} @click=${rejectAll}></ba-button>
-						<ba-button id='acceptAll' .label=${'Alle Cookies annehmen'} .type=${'secondary'} @click=${acceptAll}></ba-button>
-						<ba-button id='save' .label=${'Speichern'} .type=${'primary'} @click=${saveSettings}></ba-button>
+					<div class='row settings-button-container'>
+						<div class='row'>
+							<ba-button id='rejectAll' .label=${translate('ea_dsgvo_reject_all')} .type=${'secondary'} @click=${rejectAll}></ba-button>
+							<ba-button id='acceptAll' .label=${translate('ea_dsgvo_accept_all')} .type=${'secondary'} @click=${acceptAll}></ba-button>
+						</div>
+						<ba-button id='save' .label=${translate('ea_dsgvo_save')} .type=${'primary'} @click=${saveSettings}></ba-button>
 					</div>
 				</div>
 			</div>
@@ -112,13 +129,15 @@ export class DsgvoDialog extends MvuElement {
 		<div class='popup'>
 			<div class='row'>									
 				<div class='row popup-text'>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-					<ba-button id='' .label=${'Datenschutzerklärung'} .type=${'secondary'}></ba-button>
-					<ba-button id='cookie-settings' .label=${'Cookie Einstellungen'} .type=${'secondary'} @click=${openSettings}></ba-button>
+					${translate('ea_dsgvo_text')}
+					<a id='privacy-policy-link' href='https://prod.energieatlas.bayern.de/datenschutz' target='_blank'>
+						<ba-button .label=${translate('ea_dsgvo_privacy_policy')} .type=${'secondary'}></ba-button>
+					</a>
+					<ba-button id='cookie-settings' .label=${translate('ea_dsgvo_cookie_settings')} .type=${'secondary'} @click=${openSettings}></ba-button>
 				</div>
 				<div class='row'>
-					<ba-button id='reject-all' .label=${'Alle Cookies ablehnen'} .type=${'primary'} @click=${rejectAll}></ba-button>
-					<ba-button id='accept-all' .label=${'Alle Cookies annehmen'} .type=${'primary'} @click=${acceptAll}></ba-button>
+					<ba-button id='reject-all' .label=${translate('ea_dsgvo_reject_all')} .type=${'primary'} @click=${rejectAll}></ba-button>
+					<ba-button id='accept-all' .label=${translate('ea_dsgvo_accept_all')} .type=${'primary'} @click=${acceptAll}></ba-button>
 				</div>
 			</div>	
 		</div>

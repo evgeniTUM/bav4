@@ -2,7 +2,6 @@ import { parse, serialize } from 'cookie';
 import { DsgvoDialog } from '../../../../../src/ea/modules/cookies/components/DsgvoDialog';
 import { eaReducer } from '../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../src/injection';
-import { Modal } from '../../../../../src/modules/modal/components/Modal';
 import { modalReducer } from '../../../../../src/store/modal/modal.reducer';
 import { TestUtils } from '../../../../test-utils';
 
@@ -90,6 +89,17 @@ describe('DsgvoDialog', () => {
 			expect(store.getState().ea.webAnalyticsActive).toBeFalse();
 		});
 
+		it('has a link to the privacy policy', async () => {
+			document.cookie = serialize('eab', {}, { maxAge: 0 });
+
+			const element = await setup();
+
+			const link = element.shadowRoot.getElementById('privacy-policy-link');
+
+			expect(link.href).toEqual('https://prod.energieatlas.bayern.de/datenschutz');
+			expect(link.target).toEqual('_blank');
+		});
+
 		it('save cookies and reload on "accept all" button click', async () => {
 			document.cookie = serialize('eab', {}, { maxAge: 0 });
 
@@ -121,7 +131,7 @@ describe('DsgvoDialog', () => {
 			const element = await setup();
 
 			element.shadowRoot.getElementById('cookie-settings').click();
-			expect(store.getState().modal.data.title).toEqual('Cookie Einstellungen');
+			expect(store.getState().modal.data.title).toEqual('ea_dsgvo_cookie_settings');
 		});
 
 		it('closes modal dialog on "accept all" button click', async () => {
