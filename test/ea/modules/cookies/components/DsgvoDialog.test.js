@@ -1,5 +1,6 @@
 import { parse, serialize } from 'cookie';
 import { DsgvoDialog } from '../../../../../src/ea/modules/cookies/components/DsgvoDialog';
+import { activateWebAnalytics } from '../../../../../src/ea/store/module/ea.action';
 import { eaReducer } from '../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../src/injection';
 import { modalReducer } from '../../../../../src/store/modal/modal.reducer';
@@ -84,6 +85,7 @@ describe('DsgvoDialog', () => {
 		it('deactivates web analytics if cookie eab.webanalyse is false', async () => {
 			document.cookie = serialize('eab', JSON.stringify({ base: true, webanalyse: false }));
 
+			activateWebAnalytics();
 			await setup();
 
 			expect(store.getState().ea.webAnalyticsActive).toBeFalse();
@@ -100,7 +102,7 @@ describe('DsgvoDialog', () => {
 			expect(link.target).toEqual('_blank');
 		});
 
-		it('save cookies and reload on "accept all" button click', async () => {
+		it('saves cookies and reload on "accept all" button click', async () => {
 			document.cookie = serialize('eab', {}, { maxAge: 0 });
 
 			const element = await setup();
@@ -111,7 +113,7 @@ describe('DsgvoDialog', () => {
 			expect(element.shadowRoot.children.length).toBe(0);
 		});
 
-		it('save cookies and reload on "reject all" button click', async () => {
+		it('saves cookies and reload on "reject all" button click', async () => {
 			document.cookie = serialize('eab', {}, { maxAge: 0 });
 
 			const element = await setup();

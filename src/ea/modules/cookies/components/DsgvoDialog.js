@@ -92,6 +92,7 @@ export class DsgvoDialog extends MvuElement {
         	<style>${css}</style>
 			<div>
 				<div>
+
 					<div class='setting'>
 						<div class='setting-description'> 
 							<div class='setting-title'>${translate('ea_dsgvo_basic_cookies_title')}</div>
@@ -103,6 +104,7 @@ export class DsgvoDialog extends MvuElement {
 							<span style="margin-right: 0.5em">${translate('ea_dsgvo_always_on')}</span>
 						</ba-toggle>
 					</div>
+
 					<div class='setting'> 
 						<div class='setting-description'> 
 							<div class='setting-title'>${translate('ea_dsgvo_webanalytics_cookies_title')}</div>
@@ -112,6 +114,7 @@ export class DsgvoDialog extends MvuElement {
 						</div>
 						<ba-toggle id='toggle-webanalyse' .checked=${settings.webanalyse} .title=${translate('ea_dsgvo_webanalytics_cookies_title')} @toggle=${onToggle}></ba-toggle>
 					</div>
+
 					<div class='row settings-button-container'>
 						<div class='row'>
 							<ba-button id='rejectAll' .label=${translate('ea_dsgvo_reject_all')} .type=${'secondary'} @click=${rejectAll}></ba-button>
@@ -119,6 +122,7 @@ export class DsgvoDialog extends MvuElement {
 						</div>
 						<ba-button id='save' .label=${translate('ea_dsgvo_save')} .type=${'primary'} @click=${saveSettings}></ba-button>
 					</div>
+					
 				</div>
 			</div>
 			`);
@@ -127,7 +131,7 @@ export class DsgvoDialog extends MvuElement {
 		return html`
         <style>${css}</style>
 		<div class='popup'>
-			<div class='row'>									
+			<div class='row'>
 				<div class='row popup-text'>
 					${translate('ea_dsgvo_text')}
 					<a id='privacy-policy-link' href='https://prod.energieatlas.bayern.de/datenschutz' target='_blank'>
