@@ -122,7 +122,7 @@ export class DsgvoDialog extends MvuElement {
 						</div>
 						<ba-button id='save' .label=${translate('ea_dsgvo_save')} .type=${'primary'} @click=${saveSettings}></ba-button>
 					</div>
-					
+
 				</div>
 			</div>
 			`);
