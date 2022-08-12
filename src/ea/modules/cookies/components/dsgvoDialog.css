@@ -1,4 +1,4 @@
-.ea-dsgvo-popup {
+.popup {
 	position: absolute;
 	bottom: 0;
 	width: 100%;
@@ -7,11 +7,21 @@
 	background: var(--tertiary-bg-color);
 }
 
-.ea-cookie-settings {
+.popup-text {
+	max-width: 50em;
 }
 
 .row {
 	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.setting {
+	padding: 1em;
+	box-shadow: 0px 0px 4px rgb(0 0 0 / 50%);
+	background: var(--tertiary-bg-color);
+	margin: 1em;
 }
 
 .row>* {

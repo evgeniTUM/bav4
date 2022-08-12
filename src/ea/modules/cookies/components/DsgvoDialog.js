@@ -49,18 +49,21 @@ export class DsgvoDialog extends MvuElement {
 			deactivateWebAnalytics();
 		}
 
-		let settings;
 		if (loadedSettings.base) {
-			settings = loadedSettings;
 			return nothing;
 		}
-		else {
-			settings = { base: true, webanalyse: true };
-		}
 
+		const settings = { base: true, webanalyse: true };
 
 		const saveSettings = () => {
-			document.cookie = serialize('eab', JSON.stringify(settings));
+			const expirationDate = new Date();
+			expirationDate.setDate(expirationDate.getDate() + 120);
+			const options = {
+				expires: expirationDate,
+				sameSite: 'lax'
+			};
+
+			document.cookie = serialize('eab', JSON.stringify(settings), options);
 
 			closeModal();
 			this.onModelChanged();
@@ -83,11 +86,18 @@ export class DsgvoDialog extends MvuElement {
 			};
 
 			openModal('Cookie Einstellungen', html`
-			<div class='ea-cookie-settings>
-				<div class='row'>
-					<div>Base<ba-toggle id='toggle' .checked=${true} .disabled=${true} .title=${'Base'}></ba-toggle></div>
-					<div>Webanalyse<ba-toggle id='toggle' .checked=${settings.webanalyse} .title=${'Webanalyse'} @toggle=${onToggle}></ba-toggle></div>
-					<div>
+        	<style>${css}</style>
+			<div>
+				<div>
+					<div class='row setting'> 
+						<div>Base</div>
+						<ba-toggle .checked=${true} .disabled=${true} .title=${'Base'}></ba-toggle>
+					</div>
+					<div class='row setting'> 
+						<div>Webanalyse</div> 
+						<ba-toggle id='toggle-webanalyse' .checked=${settings.webanalyse} .title=${'Webanalyse'} @toggle=${onToggle}></ba-toggle>
+					</div>
+					<div class='row'>
 						<ba-button id='rejectAll' .label=${'Alle Cookies ablehnen'} .type=${'secondary'} @click=${rejectAll}></ba-button>
 						<ba-button id='acceptAll' .label=${'Alle Cookies annehmen'} .type=${'secondary'} @click=${acceptAll}></ba-button>
 						<ba-button id='save' .label=${'Speichern'} .type=${'primary'} @click=${saveSettings}></ba-button>
@@ -99,16 +109,16 @@ export class DsgvoDialog extends MvuElement {
 
 		return html`
         <style>${css}</style>
-		<div class='ea-dsgvo-popup'>
+		<div class='popup'>
 			<div class='row'>									
-				<div style='min-width: 5em'>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-				<ba-button id='cookie-settings' .label=${'Cookie Einstellungen'} .type=${'secondary'} @click=${openSettings}></ba-button>
-				<ba-button id='cookie-settings' .label=${'Datenschutzerklärung'} .type=${'secondary'}></ba-button>
+				<div class='row popup-text'>
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					<ba-button id='' .label=${'Datenschutzerklärung'} .type=${'secondary'}></ba-button>
+					<ba-button id='cookie-settings' .label=${'Cookie Einstellungen'} .type=${'secondary'} @click=${openSettings}></ba-button>
 				</div>
 				<div class='row'>
-					<ba-button id='rejectAll' .label=${'Alle Cookies ablehnen'} .type=${'primary'} @click=${rejectAll}></ba-button>
-					<ba-button id='acceptAll' .label=${'Alle Cookies annehmen'} .type=${'primary'} @click=${acceptAll}></ba-button>
+					<ba-button id='reject-all' .label=${'Alle Cookies ablehnen'} .type=${'primary'} @click=${rejectAll}></ba-button>
+					<ba-button id='accept-all' .label=${'Alle Cookies annehmen'} .type=${'primary'} @click=${acceptAll}></ba-button>
 				</div>
 			</div>	
 		</div>
