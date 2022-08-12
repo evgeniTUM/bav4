@@ -8,8 +8,8 @@ export const SET_LEGEND_ITEMS = 'ea/legend/set';
 export const SET_PREVIEW_GEORESOURCE_ID = 'ea/legend/preview/add';
 export const CLEAR_PREVIEW_GEORESOURCE_ID = 'ea/legend/preview/clear';
 export const SET_MAP_RESOLUTION = 'ea/mapResolution/set';
-export const DEACTIVATE_TRACKING = 'ea/tracking/deactivate';
-export const ACTIVATE_TRACKING = 'ea/tracking/activate';
+export const DEACTIVATE_WEBANALYTICS = 'ea/webanalytics/deactivate';
+export const ACTIVATE_WEBANALYTICS = 'ea/webanalytics/activate';
 
 
 export const initialState = {
@@ -47,7 +47,7 @@ export const initialState = {
 	/**
 	 * @property {boolean}
 	 */
-	trackingActive: false
+	webAnalyticsActive: false
 
 };
 
@@ -122,16 +122,16 @@ export const eaReducer = (state = initialState, action) => {
 				mapResolution: payload
 			};
 		}
-		case ACTIVATE_TRACKING: {
+		case ACTIVATE_WEBANALYTICS: {
 			return {
 				...state,
-				trackingActive: true
+				webAnalyticsActive: true
 			};
 		}
-		case DEACTIVATE_TRACKING: {
+		case DEACTIVATE_WEBANALYTICS: {
 			return {
 				...state,
-				trackingActive: false
+				webAnalyticsActive: false
 			};
 		}
 	}

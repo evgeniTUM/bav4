@@ -5,7 +5,7 @@ import { GeothermModuleContent } from '../../modules/toolbox/components/geotherm
 import { MixerModuleContent } from '../../modules/toolbox/components/mixer/MixerModuleContent';
 import { RedesignModuleContent } from '../../modules/toolbox/components/redesign/RedesignModuleContent';
 import { ResearchModuleContent } from '../../modules/toolbox/components/research/ResearchModuleContent';
-import { ACTIVATE_GEORESOURCE, ACTIVATE_LEGEND, ACTIVATE_TRACKING, CLEAR_PREVIEW_GEORESOURCE_ID, DEACTIVATE_ALL_GEORESOURCES, DEACTIVATE_GEORESOURCE, DEACTIVATE_LEGEND, DEACTIVATE_TRACKING, SET_CURRENT_MODULE, SET_LEGEND_ITEMS, SET_MAP_RESOLUTION, SET_PREVIEW_GEORESOURCE_ID } from './ea.reducer';
+import { ACTIVATE_GEORESOURCE, ACTIVATE_LEGEND, ACTIVATE_WEBANALYTICS, CLEAR_PREVIEW_GEORESOURCE_ID, DEACTIVATE_ALL_GEORESOURCES, DEACTIVATE_GEORESOURCE, DEACTIVATE_LEGEND, DEACTIVATE_WEBANALYTICS, SET_CURRENT_MODULE, SET_LEGEND_ITEMS, SET_MAP_RESOLUTION, SET_PREVIEW_GEORESOURCE_ID } from './ea.reducer';
 
 /**
  * Available modules.
@@ -134,9 +134,9 @@ export const setMapResolution = (resolution) => {
 /**
  * Activates the legend.
  */
-export const activateTracking = () => {
+export const activateWebAnalytics = () => {
 	getStore().dispatch({
-		type: ACTIVATE_TRACKING,
+		type: ACTIVATE_WEBANALYTICS,
 		payload: null
 	});
 };
@@ -144,9 +144,9 @@ export const activateTracking = () => {
 /**
  * Deactivates the legend.
  */
-export const deactivateTracking = () => {
+export const deactivateWebAnalytics = () => {
 	getStore().dispatch({
-		type: DEACTIVATE_TRACKING,
+		type: DEACTIVATE_WEBANALYTICS,
 		payload: null
 	});
 };

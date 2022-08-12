@@ -3,7 +3,7 @@ import { BaPlugin } from '../../plugins/BaPlugin';
 import { observe } from '../../utils/storeUtils';
 import { EaModules } from '../modules/toolbox/components/moduleContainer/ModuleContainer';
 
-export class TrackingPlugin extends BaPlugin {
+export class WebAnalyticsPlugin extends BaPlugin {
 
 	/**
 	 * @override
@@ -31,7 +31,9 @@ export class TrackingPlugin extends BaPlugin {
 
 		const deactivateMatomo = () => {
 			const element = document.getElementById('matomo-script');
-			element.parentNode.removeChild(element);
+			if (element) {
+				element.parentNode.removeChild(element);
+			}
 			window._paq = [];
 		};
 
@@ -80,6 +82,6 @@ export class TrackingPlugin extends BaPlugin {
 			}
 		};
 
-		observe(store, state => state.ea.trackingActive, onActiveStateChange);
+		observe(store, state => state.ea.webAnalyticsActive, onActiveStateChange, false);
 	}
 }

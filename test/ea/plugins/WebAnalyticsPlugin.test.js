@@ -1,6 +1,6 @@
 import { EaModules } from '../../../src/ea/modules/toolbox/components/moduleContainer/ModuleContainer.js';
-import { TrackingPlugin } from '../../../src/ea/plugins/TrackingPlugin.js';
-import { activateTracking, deactivateTracking, setCurrentModule } from '../../../src/ea/store/module/ea.action.js';
+import { WebAnalyticsPlugin } from '../../../src/ea/plugins/WebAnalyticsPlugin.js';
+import { activateWebAnalytics, deactivateWebAnalytics, setCurrentModule } from '../../../src/ea/store/module/ea.action.js';
 import { eaReducer } from '../../../src/ea/store/module/ea.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
 import { addLayer, removeLayer } from '../../../src/store/layers/layers.action.js';
@@ -10,7 +10,7 @@ import { toolsReducer } from '../../../src/store/tools/tools.reducer.js';
 import { TestUtils } from '../../test-utils.js';
 
 
-describe('TrackingPlugin', () => {
+describe('WebAnalyticsPlugin', () => {
 
 	const storeActions = [];
 
@@ -31,7 +31,7 @@ describe('TrackingPlugin', () => {
 		$injector
 			.registerSingleton('ConfigService', configServiceMock);
 
-		const instanceUnderTest = new TrackingPlugin();
+		const instanceUnderTest = new WebAnalyticsPlugin();
 		await instanceUnderTest.register(store);
 
 		return store;
@@ -39,10 +39,12 @@ describe('TrackingPlugin', () => {
 
 	describe('activation/deactivation', () => {
 
+		afterEach(() => deactivateWebAnalytics());
+
 		it('adds/removes matomo script element to document when enabled/disabled', async () => {
 			await setup();
 
-			activateTracking();
+			activateWebAnalytics();
 
 			let scriptElement = document.getElementById('matomo-script');
 			expect(scriptElement.outerHTML).toContain(
@@ -57,7 +59,7 @@ describe('TrackingPlugin', () => {
 				['setSiteId', 'MATOMO_ID']
 			]);
 
-			deactivateTracking();
+			deactivateWebAnalytics();
 
 			scriptElement = document.getElementById('matomo-script');
 			expect(scriptElement).toBeNull();
@@ -68,12 +70,21 @@ describe('TrackingPlugin', () => {
 		it('does not track events when disabled', async () => {
 			await setup();
 
-			activateTracking();
-			deactivateTracking();
+			activateWebAnalytics();
+			deactivateWebAnalytics();
 
 			setCurrentTool(ToolId.DRAWING);
 
 			expect(window._paq).toEqual([]);
+		});
+
+		it('is activated on init when ea.webAnalyticsActive is true', async () => {
+			await setup({ ea: { webAnalyticsActive: true } });
+
+			const scriptElement = document.getElementById('matomo-script');
+			expect(scriptElement.outerHTML).toContain(
+				'<script async="" src="MATOMO_URL/matomo.js" id="matomo-script"></script>'
+			);
 		});
 	});
 
@@ -81,11 +92,11 @@ describe('TrackingPlugin', () => {
 
 		beforeAll(async () => {
 			await setup();
-			activateTracking();
+			activateWebAnalytics();
 		});
 
 		afterAll(async () => {
-			deactivateTracking();
+			deactivateWebAnalytics();
 		});
 
 		beforeEach(() => {
