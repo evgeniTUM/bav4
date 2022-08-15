@@ -27,6 +27,7 @@ export class WebAnalyticsPlugin extends BaPlugin {
 			const d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
 			g.async = true; g.src = matomoUrl + libraryName + '.js'; s.parentNode.insertBefore(g, s);
 			g.setAttribute('id', 'matomo-script');
+			g.setAttribute('type', 'text/javascript');
 		};
 
 		const deactivateMatomo = () => {
