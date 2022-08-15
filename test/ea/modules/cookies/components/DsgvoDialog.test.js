@@ -50,7 +50,7 @@ describe('DsgvoDialog', () => {
 		});
 	});
 
-	it('creates eab cookie property with 120 days expiration SameSite=Lax', async () => {
+	it('creates eab cookie property with 120 days expiration, SameSite=Lax and Path=/', async () => {
 		document.cookie = serialize('eab', {}, { maxAge: 0 });
 
 		let actualCookie;
@@ -66,10 +66,12 @@ describe('DsgvoDialog', () => {
 		const expectedDate = new Date();
 		expectedDate.setDate(expectedDate.getDate() + 120);
 
-		const actualDate = new Date(actualCookie.match(/Expires=(.*);/)[1]);
+		const actualDate = new Date(actualCookie.match(/Expires=(.*?);/)[1]);
+		const actualPath = actualCookie.match(/Path=(.*?);/)[1];
 		const actualSameSite = actualCookie.match(/SameSite=(.*)/)[1];
 
 		expect(actualDate.toString()).toEqual(expectedDate.toString());
+		expect(actualPath).toEqual('/');
 		expect(actualSameSite).toEqual('Lax');
 	});
 

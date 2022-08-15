@@ -63,7 +63,8 @@ export class DsgvoDialog extends MvuElement {
 			expirationDate.setDate(expirationDate.getDate() + 120);
 			const options = {
 				expires: expirationDate,
-				sameSite: 'lax'
+				sameSite: 'lax',
+				path: '/'
 			};
 
 			document.cookie = serialize('eab', JSON.stringify(settings), options);
