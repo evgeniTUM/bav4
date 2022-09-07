@@ -1,9 +1,9 @@
 import { html } from 'lit-html';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
-import { MvuElement } from '../../MvuElement';
 import { $injector } from '../../../injection';
-import { GeoResourceInfoResult } from '../services/GeoResourceInfoService';
 import { emitNotification, LevelTypes } from '../../../store/notifications/notifications.action';
+import { AbstractMvuContentPanel } from '../../menu/components/mainMenu/content/AbstractMvuContentPanel';
+import { GeoResourceInfoResult } from '../services/GeoResourceInfoService';
 import css from './geoResourceInfoPanel.css';
 
 const Update_IsPortrait = 'update_isPortrait_hasMinWidth';
@@ -15,7 +15,7 @@ const UPDATE_GEORESOURCEINFO = 'UPDATE_GEORESOURCEINFO';
  * @author costa_gi
  * @author alsturm
  */
-export class GeoResourceInfoPanel extends MvuElement {
+export class GeoResourceInfoPanel extends AbstractMvuContentPanel {
 
 	constructor() {
 		super({ geoResourceInfo: null });
@@ -45,11 +45,78 @@ export class GeoResourceInfoPanel extends MvuElement {
 			return isPortrait ? 'is-portrait' : 'is-landscape';
 		};
 
+
+		const augmentHeadline = (headlineElement, headlineTag) => {
+			const section = document.createElement('div');
+			const container = document.createElement('div');
+
+			container.classList.add('container');
+			container.classList.add('collapse-content');
+			container.classList.add('iscollapse');
+
+			section.classList.add('ba-section');
+			section.classList.add('divider');
+
+			const icon = document.createElement('button');
+			icon.classList.add('icon');
+			icon.classList.add('chevron');
+			icon.classList.add('icon-rotate-90');
+			icon.style.marginLeft = '0.5em';
+
+			headlineElement.appendChild(icon);
+
+			const elements = [];
+			let next = headlineElement.nextElementSibling;
+			while (next) {
+				if (next.tagName === headlineTag) {
+					break;
+				}
+
+				elements.push(next);
+				next = next.nextElementSibling;
+			}
+
+			headlineElement.insertAdjacentElement('afterend', section);
+			elements.forEach(e => container.appendChild(e));
+
+			headlineElement.onclick = () => {
+				const collapsed = container.classList.contains('iscollapse');
+
+				if (collapsed) {
+					container.classList.remove('iscollapse');
+					icon.classList.add('iconexpand');
+				}
+				else {
+					container.classList.add('iscollapse');
+					icon.classList.remove('iconexpand');
+				}
+			};
+
+			section.appendChild(headlineElement);
+			section.appendChild(container);
+		};
+
+		const augmentDetailInfo = () => {
+			const content = this.shadowRoot.getElementById('content');
+			if (content) {
+				const chapters = content.getElementsByClassName('chapter');
+				Array.from(chapters).forEach(e => {
+					const headers = e.getElementsByTagName('h2');
+					console.log(headers);
+					Array.from(headers).forEach(h => augmentHeadline(h, 'H2'));
+					// const headers2 = e.getElementsByTagName('H2');
+					// Array.from(headers2).forEach(h => augmentHeadline(h, 'H2'));
+				});
+			}
+		};
+
 		if (geoResourceInfo) {
+			setTimeout(augmentDetailInfo, 50);
+
 			return html`
 			<style>${css}</style>
 			<div>${geoResourceInfo.title}</div>
-			<div class='${getOrientationClass()}'>${unsafeHTML(`${geoResourceInfo.content}`)}</div>
+			<div id='content' class='${getOrientationClass()}'>${unsafeHTML(`${geoResourceInfo.content}`)}</div>
 			`;
 		}
 		return html`<ba-spinner></ba-spinner>`;

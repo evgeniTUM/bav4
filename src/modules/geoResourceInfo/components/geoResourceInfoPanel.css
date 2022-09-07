@@ -94,3 +94,20 @@ img[src=""] {
 	display: flex;
 	flex-direction: column;    
 }
+
+.iscollapse {
+	display: none;
+}
+
+.collapse-content > * {
+	border-right: 1px dotted var(--header-background-color);
+	padding-left: 1.5em;
+}
+.collapse-content > *:first-child {
+	border-right: 0;
+	margin-right: .5em;
+}
+.collapse-content > *:last-child {
+	padding-right: 1em;
+	border-right: 0;
+}
