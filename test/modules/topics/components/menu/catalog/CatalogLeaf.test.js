@@ -164,7 +164,7 @@ describe('CatalogLeaf', () => {
 
 			describe('resolution handling', () => {
 
-				it('disables entry when resolution changes and wms is not shown', async () => {
+				it('when inactive, disables entry when resolution invalid', async () => {
 					spyOn(geoResourceServiceMock, 'byId')
 						.withArgs(layer.id)
 						.and.returnValue(new WMTSGeoResource(layer.id, 'label', 'someUrl'));
@@ -179,6 +179,33 @@ describe('CatalogLeaf', () => {
 					//load leaf data
 					const leaf = (await loadExampleCatalog('foo')).pop();
 					const element = await setup('foo', []);
+
+					//assign data
+					element.data = leaf;
+					await TestUtils.timeout();
+
+					setMapResolution(10);
+
+					const checkbox = element.shadowRoot.querySelector('ba-checkbox');
+					expect(checkbox.disabled).toBeTrue();
+					expect(checkbox.title).toBe('ea_mainmenu_layer_not_visible');
+				});
+
+				it('when active, disables entry when resolution invalid', async () => {
+					spyOn(geoResourceServiceMock, 'byId')
+						.withArgs(layer.id)
+						.and.returnValue(new WMTSGeoResource(layer.id, 'label', 'someUrl'));
+
+					spyOn(wmsCapabilitiesServiceMock, 'getWmsLayers')
+						.withArgs(layer.id)
+						.and.returnValue([{
+							minResolution: 20,
+							maxResolution: 80
+						}]);
+
+					//load leaf data
+					const leaf = (await loadExampleCatalog('foo')).pop();
+					const element = await setup('foo');
 
 					//assign data
 					element.data = leaf;
