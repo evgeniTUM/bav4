@@ -39,8 +39,8 @@ export class EaOlMap extends OlMap {
 		});
 
 		setMapResolution(this._view.getResolution());
-		this.observeModel(['zoom'], () => {
-			setMapResolution(this._view.getResolution());
+		this._view.on('change:resolution', (evt) => {
+			setMapResolution(evt.target.targetResolution_);
 		});
 	}
 

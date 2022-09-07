@@ -164,6 +164,33 @@ describe('CatalogLeaf', () => {
 
 			describe('resolution handling', () => {
 
+				it('on init, entry is disabled when resolution invalid', async () => {
+					spyOn(geoResourceServiceMock, 'byId')
+						.withArgs(layer.id)
+						.and.returnValue(new WMTSGeoResource(layer.id, 'label', 'someUrl'));
+
+					spyOn(wmsCapabilitiesServiceMock, 'getWmsLayers')
+						.withArgs(layer.id)
+						.and.returnValue([{
+							minResolution: 20,
+							maxResolution: 80
+						}]);
+
+					const element = await setup('foo');
+					setMapResolution(10);
+
+					//load leaf data
+					const leaf = (await loadExampleCatalog('foo')).pop();
+
+					//assign data
+					element.data = leaf;
+					await TestUtils.timeout();
+
+					const checkbox = element.shadowRoot.querySelector('ba-checkbox');
+					expect(checkbox.disabled).toBeTrue();
+					expect(checkbox.title).toBe('ea_mainmenu_layer_not_visible');
+				});
+
 				it('when inactive, disables entry when resolution invalid', async () => {
 					spyOn(geoResourceServiceMock, 'byId')
 						.withArgs(layer.id)
@@ -178,7 +205,7 @@ describe('CatalogLeaf', () => {
 
 					//load leaf data
 					const leaf = (await loadExampleCatalog('foo')).pop();
-					const element = await setup('foo', []);
+					const element = await setup('foo');
 
 					//assign data
 					element.data = leaf;
