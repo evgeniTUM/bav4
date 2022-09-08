@@ -25,14 +25,6 @@ describe('CatalogLeaf', () => {
 		byId() { }
 	};
 
-	const mapServiceMock = {
-		calcResolution: () => {
-			return 50;
-		},
-		getMaxZoomLevel: () => 100,
-		getMinZoomLevel: () => 0
-	};
-
 	const wmsCapabilitiesServiceMock = { getWmsLayers: () => ([]) };
 
 	let store;
@@ -61,7 +53,6 @@ describe('CatalogLeaf', () => {
 		$injector
 			.registerSingleton('GeoResourceService', geoResourceServiceMock)
 			.registerSingleton('TranslationService', { translate: (key) => key })
-			.registerSingleton('MapService', mapServiceMock)
 			.registerSingleton('WmsCapabilitiesService', wmsCapabilitiesServiceMock);
 
 		return TestUtils.render(CatalogLeaf.tag);
@@ -172,8 +163,8 @@ describe('CatalogLeaf', () => {
 					spyOn(wmsCapabilitiesServiceMock, 'getWmsLayers')
 						.withArgs(layer.id)
 						.and.returnValue([{
-							minResolution: 20,
-							maxResolution: 80
+							minResolution: 80,
+							maxResolution: 20
 						}]);
 
 					const element = await setup('foo');
@@ -199,8 +190,8 @@ describe('CatalogLeaf', () => {
 					spyOn(wmsCapabilitiesServiceMock, 'getWmsLayers')
 						.withArgs(layer.id)
 						.and.returnValue([{
-							minResolution: 20,
-							maxResolution: 80
+							minResolution: 80,
+							maxResolution: 20
 						}]);
 
 					//load leaf data
@@ -226,8 +217,8 @@ describe('CatalogLeaf', () => {
 					spyOn(wmsCapabilitiesServiceMock, 'getWmsLayers')
 						.withArgs(layer.id)
 						.and.returnValue([{
-							minResolution: 20,
-							maxResolution: 80
+							minResolution: 80,
+							maxResolution: 20
 						}]);
 
 					//load leaf data
