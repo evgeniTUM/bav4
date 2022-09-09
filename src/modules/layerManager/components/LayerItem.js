@@ -15,10 +15,12 @@ import { createUniqueId } from '../../../utils/numberUtils';
 import { fitLayer } from '../../../store/position/position.action';
 import { VectorGeoResource } from '../../../domain/geoResources';
 import { MenuTypes } from '../../commons/components/overflowMenu/OverflowMenu';
+import { checkIfResolutionValid } from '../../../ea/utils/eaUtils';
 
 
 const Update_Layer = 'update_layer';
 const Update_Layer_Collapsed = 'update_layer_collapsed';
+const Update_MapResolution = 'update_map_resolution';
 
 /**
  * Child element of the LayerManager. Represents one layer and its state.
@@ -41,10 +43,13 @@ export class LayerItem extends AbstractMvuContentPanel {
 		super({
 			layer: null
 		});
-		const { TranslationService, GeoResourceService } = $injector.inject('TranslationService', 'GeoResourceService');
+		const { TranslationService, GeoResourceService, WmsCapabilitiesService }
+			= $injector.inject('TranslationService', 'GeoResourceService', 'WmsCapabilitiesService');
 		this._translationService = TranslationService;
 		this._geoResourceService = GeoResourceService;
+		this._wmsCapabilitiesService = WmsCapabilitiesService;
 
+		this._wmsLayers = null;
 
 		this._onCollapse = () => { };
 	}
@@ -54,6 +59,12 @@ export class LayerItem extends AbstractMvuContentPanel {
 	 */
 	update(type, data, model) {
 		switch (type) {
+
+			case Update_MapResolution:
+				return {
+					...model,
+					mapResolution: data
+				};
 
 			case Update_Layer:
 				return {
@@ -202,12 +213,19 @@ export class LayerItem extends AbstractMvuContentPanel {
 			];
 		};
 
+		const validResolution = checkIfResolutionValid(layer.id, this, model.mapResolution);
+		this.observe(state => state.ea.mapResolution, res => this.signal(Update_MapResolution, res));
+
+		const createTitle = (validResolution) =>
+			validResolution ? getVisibilityTitle() : translate('ea_mainmenu_layer_not_visible');
+
+
 		return html`
         <style>${css}</style>
         <div class='ba-section divider'>
             <div class='ba-list-item'>          
 
-                    <ba-checkbox .title='${getVisibilityTitle()}'  class='ba-list-item__text' tabindex='0' .checked=${layer.visible} @toggle=${toggleVisibility}>${currentLabel}</ba-checkbox>                                                   
+                    <ba-checkbox .title='${createTitle(validResolution)}' .disabled='${!validResolution}'  class='ba-list-item__text' tabindex='0' .checked=${layer.visible} @toggle=${toggleVisibility}>${currentLabel}</ba-checkbox>                                                   
                                        
                 <button id='button-detail' data-test-id class='ba-list-item__after' title="${getCollapseTitle()}" @click="${toggleCollapse}">
                     <i class='icon chevron icon-rotate-90 ${classMap(iconCollapseClass)}'></i>

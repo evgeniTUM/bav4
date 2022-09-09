@@ -10,6 +10,8 @@ import { TEST_ID_ATTRIBUTE_NAME } from '../../../../src/utils/markup';
 import { EventLike } from '../../../../src/utils/storeUtils';
 import { positionReducer } from '../../../../src/store/position/position.reducer';
 import { VectorGeoResource, VectorSourceType, WmsGeoResource } from '../../../../src/domain/geoResources';
+import { eaReducer } from '../../../../src/ea/store/module/ea.reducer';
+import { setMapResolution } from '../../../../src/ea/store/module/ea.action';
 
 
 window.customElements.define(LayerItem.tag, LayerItem);
@@ -19,6 +21,9 @@ window.customElements.define(Icon.tag, Icon);
 
 
 describe('LayerItem', () => {
+
+	const wmsCapabilitiesService = { getWmsLayers: () => ([]) };
+
 	const createNewDataTransfer = () => {
 		let data = {};
 		return {
@@ -49,9 +54,13 @@ describe('LayerItem', () => {
 		const geoResourceService = { byId: () => { } };
 
 		const setup = async (layer) => {
-			TestUtils.setupStoreAndDi({}, { layers: layersReducer });
+			TestUtils.setupStoreAndDi({}, {
+				layers: layersReducer,
+				ea: eaReducer
+			});
 			$injector.registerSingleton('TranslationService', { translate: (key) => key });
 			$injector.registerSingleton('GeoResourceService', geoResourceService);
+			$injector.registerSingleton('WmsCapabilitiesService', wmsCapabilitiesService);
 			const element = await TestUtils.render(LayerItem.tag);
 			element.layer = layer;
 			return element;
@@ -77,6 +86,25 @@ describe('LayerItem', () => {
 			const label = element.shadowRoot.querySelector('.ba-list-item__text');
 
 			expect(label.innerText).toBe('id0');
+		});
+
+		it('entry is disabled when resolution is invalid', async () => {
+			spyOn(wmsCapabilitiesService, 'getWmsLayers')
+				.withArgs('id0')
+				.and.returnValue([{
+					minResolution: 80,
+					maxResolution: 20
+				}]);
+
+			const layer = { ...createDefaultLayerProperties(), id: 'id0', label: 'label0', visible: true, zIndex: 0, opacity: 1, collapsed: true };
+			const element = await setup(layer);
+			setMapResolution(10);
+			await TestUtils.timeout();
+
+			const toggle = element.shadowRoot.querySelector('ba-checkbox');
+
+			expect(toggle.disabled).toBeTrue();
+			expect(toggle.title).toBe('ea_mainmenu_layer_not_visible');
 		});
 
 		it('use layer.label property in checkbox-title ', async () => {
@@ -269,9 +297,15 @@ describe('LayerItem', () => {
 					fitRequest: new EventLike(null)
 				}
 			};
-			const store = TestUtils.setupStoreAndDi(state, { layers: layersReducer, modal: modalReducer, position: positionReducer });
+			const store = TestUtils.setupStoreAndDi(state, {
+				layers: layersReducer,
+				modal: modalReducer,
+				position: positionReducer,
+				ea: eaReducer
+			});
 			$injector.registerSingleton('TranslationService', { translate: (key) => key });
 			$injector.registerSingleton('GeoResourceService', { byId: () => { } });
+			$injector.registerSingleton('WmsCapabilitiesService', wmsCapabilitiesService);
 			return store;
 		};
 
@@ -375,9 +409,13 @@ describe('LayerItem', () => {
 
 		let store;
 		const setup = (state) => {
-			store = TestUtils.setupStoreAndDi(state, { layers: layersReducer });
+			store = TestUtils.setupStoreAndDi(state, {
+				layers: layersReducer,
+				ea: eaReducer
+			});
 			$injector.registerSingleton('TranslationService', { translate: (key) => key });
 			$injector.registerSingleton('GeoResourceService', { byId: () => { } });
+			$injector.registerSingleton('WmsCapabilitiesService', wmsCapabilitiesService);
 			return store;
 		};
 
@@ -553,9 +591,14 @@ describe('LayerItem', () => {
 
 		const setup = () => {
 
-			const store = TestUtils.setupStoreAndDi({}, { layers: layersReducer, modal: modalReducer });
+			const store = TestUtils.setupStoreAndDi({}, {
+				layers: layersReducer,
+				modal: modalReducer,
+				ea: eaReducer
+			});
 			$injector.registerSingleton('TranslationService', { translate: (key) => key });
 			$injector.registerSingleton('GeoResourceService', { byId: () => { } });
+			$injector.registerSingleton('WmsCapabilitiesService', wmsCapabilitiesService);
 			return store;
 		};
 		describe('on collapse', () => {
