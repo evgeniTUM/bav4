@@ -41,7 +41,7 @@ import { SearchPlugin } from '../plugins/SearchPlugin';
 import { HistoryStatePlugin } from '../plugins/HistoryStatePlugin';
 import { MfpService } from '../services/MfpService';
 import { ExportMfpPlugin } from '../plugins/ExportMfpPlugin';
-
+import { eaConfig } from '../ea/injection/eaConfig';
 
 $injector
 	.register('HttpService', NetworkStateSyncHttpService)
@@ -87,8 +87,8 @@ $injector
 	.registerSingleton('HistoryStatePlugin', new HistoryStatePlugin())
 	.registerModule(mapModule)
 	.registerModule(topicsModule);
-//Import Energieatlas Plugins für Erweiterung muss nach der registrierung der services erfolgen
-import '../ea/injection/eaConfig';
+
+eaConfig();
 
 $injector.ready();
 
