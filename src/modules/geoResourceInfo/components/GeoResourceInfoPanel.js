@@ -46,16 +46,14 @@ export class GeoResourceInfoPanel extends AbstractMvuContentPanel {
 		};
 
 
-		const augmentHeadline = (headlineElement, headlineTag) => {
-			const section = document.createElement('div');
-			const container = document.createElement('div');
+		const augmentChapter = (chapter, headlineTag) => {
+			chapter.classList.add('ba-section');
+			chapter.classList.add('divider');
 
+			const container = document.createElement('div');
 			container.classList.add('container');
 			container.classList.add('collapse-content');
 			container.classList.add('iscollapse');
-
-			section.classList.add('ba-section');
-			section.classList.add('divider');
 
 			const icon = document.createElement('button');
 			icon.classList.add('icon');
@@ -63,23 +61,13 @@ export class GeoResourceInfoPanel extends AbstractMvuContentPanel {
 			icon.classList.add('icon-rotate-90');
 			icon.style.marginLeft = '0.5em';
 
-			headlineElement.appendChild(icon);
+			const headline = chapter.getElementsByTagName(headlineTag)[0];
+			headline.appendChild(icon);
 
-			const elements = [];
-			let next = headlineElement.nextElementSibling;
-			while (next) {
-				if (next.tagName === headlineTag) {
-					break;
-				}
+			const elements = chapter.children;
+			Array.from(elements).forEach(e => container.appendChild(e));
 
-				elements.push(next);
-				next = next.nextElementSibling;
-			}
-
-			headlineElement.insertAdjacentElement('afterend', section);
-			elements.forEach(e => container.appendChild(e));
-
-			headlineElement.onclick = () => {
+			headline.onclick = () => {
 				const collapsed = container.classList.contains('iscollapse');
 
 				if (collapsed) {
@@ -92,21 +80,15 @@ export class GeoResourceInfoPanel extends AbstractMvuContentPanel {
 				}
 			};
 
-			section.appendChild(headlineElement);
-			section.appendChild(container);
+			chapter.appendChild(headline);
+			chapter.appendChild(container);
 		};
 
 		const augmentDetailInfo = () => {
 			const content = this.shadowRoot.getElementById('content');
 			if (content) {
 				const chapters = content.getElementsByClassName('chapter');
-				Array.from(chapters).forEach(e => {
-					const headers = e.getElementsByTagName('h2');
-					console.log(headers);
-					Array.from(headers).forEach(h => augmentHeadline(h, 'H2'));
-					// const headers2 = e.getElementsByTagName('H2');
-					// Array.from(headers2).forEach(h => augmentHeadline(h, 'H2'));
-				});
+				Array.from(chapters).forEach(e => augmentChapter(e, 'H5'));
 			}
 		};
 
