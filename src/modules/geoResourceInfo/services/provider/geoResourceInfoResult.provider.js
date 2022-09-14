@@ -16,7 +16,7 @@ export const loadBvvGeoResourceInfo = async (geoResourceId) => {
 
 	const loadInternal = async (geoResource) => {
 		const url = `${configService.getValueAsPath('BACKEND_URL')}georesource/info/${geoResource.id}`;
-		return httpService.get(url);
+		return httpService.get(url, { timeout: 3000 });
 	};
 
 	const loadExternal = async (geoResource) => {
