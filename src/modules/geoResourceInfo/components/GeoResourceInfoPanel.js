@@ -89,6 +89,7 @@ export class GeoResourceInfoPanel extends AbstractMvuContentPanel {
 			if (content) {
 				const chapters = content.getElementsByClassName('chapter');
 				Array.from(chapters).forEach(e => augmentChapter(e, 'H5'));
+				content.style.display = 'block';
 			}
 		};
 
@@ -98,7 +99,7 @@ export class GeoResourceInfoPanel extends AbstractMvuContentPanel {
 			return html`
 			<style>${css}</style>
 			<div>${geoResourceInfo.title}</div>
-			<div id='content' class='${getOrientationClass()}'>${unsafeHTML(`${geoResourceInfo.content}`)}</div>
+			<div id='content' style='display: none' class='${getOrientationClass()}'>${unsafeHTML(`${geoResourceInfo.content}`)}</div>
 			`;
 		}
 		return html`<ba-spinner></ba-spinner>`;
