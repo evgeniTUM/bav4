@@ -7,8 +7,8 @@ describe('i18n for map module', () => {
 
 		const map = provide('de');
 
-		expect(map.map_zoomButtons_in).toBe('aus Zoomstufe ${zoom} hineinzoomen');
-		expect(map.map_zoomButtons_out).toBe('aus Zoomstufe ${zoom} herauszoomen');
+		expect(map.map_zoomButtons_in).toBe('aus Zoomstufe {zoom} hineinzoomen');
+		expect(map.map_zoomButtons_out).toBe('aus Zoomstufe {zoom} herauszoomen');
 		expect(map.map_zoomButtons_extent).toBe('Ganz Bayern anzeigen');
 	});
 

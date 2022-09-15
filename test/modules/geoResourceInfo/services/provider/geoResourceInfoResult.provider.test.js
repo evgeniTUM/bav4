@@ -37,7 +37,7 @@ describe('GeoResourceInfo provider', () => {
 		const backendUrl = 'https://backend.url/';
 		const expectedArgs0 = backendUrl + 'georesource/info/' + geoResourceId;
 		const configServiceSpy = spyOn(configService, 'getValueAsPath').withArgs('BACKEND_URL').and.returnValue(backendUrl);
-		const httpServiceSpy = spyOn(httpService, 'get').withArgs(expectedArgs0).and.returnValue(Promise.resolve(
+		const httpServiceSpy = spyOn(httpService, 'get').withArgs(expectedArgs0, { timeout: 3000 }).and.returnValue(Promise.resolve(
 			new Response('<b>hello</b>', { status: 200 })
 		));
 
@@ -113,7 +113,7 @@ describe('GeoResourceInfo provider', () => {
 		const backendUrl = 'https://backend.url/';
 		const expectedArgs0 = backendUrl + 'georesource/info/' + geoResourceId;
 		const configServiceSpy = spyOn(configService, 'getValueAsPath').withArgs('BACKEND_URL').and.returnValue(backendUrl);
-		const httpServiceSpy = spyOn(httpService, 'get').withArgs(expectedArgs0).and.returnValue(Promise.resolve(
+		const httpServiceSpy = spyOn(httpService, 'get').withArgs(expectedArgs0, { timeout: 3000 }).and.returnValue(Promise.resolve(
 			new Response(JSON.stringify(), { status: 204 })
 		));
 
@@ -131,7 +131,7 @@ describe('GeoResourceInfo provider', () => {
 		const backendUrl = 'https://backend.url/';
 		const expectedArgs0 = backendUrl + 'georesource/info/' + geoResourceId;
 		const configServiceSpy = spyOn(configService, 'getValueAsPath').withArgs('BACKEND_URL').and.returnValue(backendUrl);
-		const httpServiceSpy = spyOn(httpService, 'get').withArgs(expectedArgs0).and.returnValue(Promise.resolve(
+		const httpServiceSpy = spyOn(httpService, 'get').withArgs(expectedArgs0, { timeout: 3000 }).and.returnValue(Promise.resolve(
 			new Response(null, { status: 500 })
 		));
 

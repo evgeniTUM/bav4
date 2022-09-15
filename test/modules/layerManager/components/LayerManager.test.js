@@ -18,12 +18,16 @@ describe('LayerManager', () => {
 	const environmentServiceMock = {
 		isTouch: () => false
 	};
+
+	const wmsCapabilitiesServiceMock = { getWmsLayers: () => ([]) };
+
 	const setup = async (state) => {
 
 		store = TestUtils.setupStoreAndDi(state, { layers: layersReducer });
 		$injector.registerSingleton('TranslationService', { translate: (key) => key });
 		$injector.registerSingleton('EnvironmentService', environmentServiceMock);
 		$injector.registerSingleton('GeoResourceService', { byId: () => { } });
+		$injector.registerSingleton('WmsCapabilitiesService', wmsCapabilitiesServiceMock);
 		return TestUtils.render(LayerManager.tag);
 	};
 
