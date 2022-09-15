@@ -6,7 +6,6 @@ import { notificationReducer } from '../../../../src/store/notifications/notific
 import { LevelTypes } from '../../../../src/store/notifications/notifications.action';
 import { Spinner } from '../../../../src/modules/commons/components/spinner/Spinner';
 import { createNoInitialStateMediaReducer } from '../../../../src/store/media/media.reducer';
-import { html } from 'lit-html';
 
 window.customElements.define(GeoResourceInfoPanel.tag, GeoResourceInfoPanel);
 

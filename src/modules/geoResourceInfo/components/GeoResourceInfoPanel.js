@@ -59,7 +59,6 @@ export class GeoResourceInfoPanel extends AbstractMvuContentPanel {
 			icon.classList.add('icon');
 			icon.classList.add('chevron');
 			icon.classList.add('icon-rotate-90');
-			icon.style.marginLeft = '0.5em';
 
 			const headline = chapter.getElementsByTagName(headlineTag)[0];
 			headline.appendChild(icon);

@@ -5,6 +5,7 @@ h4 {
 h5 {
 	padding-left: 0.5em;
 	padding-bottom: 0.5em;
+	cursor: pointer;
 }
 
 h6 {
@@ -115,4 +116,9 @@ img[src=""] {
 .collapse-content > *:last-child {
 	padding-right: 1em;
 	border-right: 0;
+}
+
+.icon {
+	margin-left: 0.5em;
+	vertical-align: middle;
 }
