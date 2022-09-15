@@ -48,7 +48,7 @@ describe('WebAnalyticsPlugin', () => {
 
 			let scriptElement = document.getElementById('matomo-script');
 			expect(scriptElement.outerHTML).toContain(
-				'<script async="" src="MATOMO_URL/matomo.js" id="matomo-script"></script>'
+				'<script async="" src="MATOMO_URL/matomo.js" id="matomo-script" type="text/javascript"></script>'
 			);
 
 			expect(window._paq).toEqual([
@@ -83,7 +83,7 @@ describe('WebAnalyticsPlugin', () => {
 
 			const scriptElement = document.getElementById('matomo-script');
 			expect(scriptElement.outerHTML).toContain(
-				'<script async="" src="MATOMO_URL/matomo.js" id="matomo-script"></script>'
+				'<script async="" src="MATOMO_URL/matomo.js" id="matomo-script" type="text/javascript"></script>'
 			);
 		});
 	});

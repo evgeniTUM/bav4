@@ -64,7 +64,7 @@ describe('ModuleContent, when loaded', () => {
 	});
 
 	it('opens fnCommModule when element renders', async () => {
-		await TestUtils.timeout(1010);
+		await TestUtils.timeout(1500);
 
 		const lastAction = storeActions.pop();
 		expect(lastAction.type).toEqual(OPEN_MODULE_REQUESTED);
