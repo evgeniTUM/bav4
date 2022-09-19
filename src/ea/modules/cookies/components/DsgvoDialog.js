@@ -56,7 +56,7 @@ export class DsgvoDialog extends MvuElement {
 			return nothing;
 		}
 
-		const settings = { base: true, webanalyse: true };
+		const settings = { base: true, webanalyse: false };
 
 		const saveSettings = () => {
 			const expirationDate = new Date();
