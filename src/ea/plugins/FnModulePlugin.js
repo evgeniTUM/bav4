@@ -120,9 +120,6 @@ export class FnModulePlugin extends BaPlugin {
 				polygon.scale(1.2);
 				fit(polygon.getExtent());
 
-				abortOrReset();
-				close();
-
 				break;
 			}
 			case ZOOM_N_CENTER_TO_FEATURE:

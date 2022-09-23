@@ -466,44 +466,6 @@ describe('FnModulePlugin', () => {
 			expect(action.payload._payload.extent).toEqual([2.25, 2.25, 5.25, 5.25]);
 		});
 
-		it('clears FeatureInfo and closes main menu on \'zoom2Extent\' message', async () => {
-			await setupOpen();
-
-			windowMock.listenerFunction({
-				data: {
-					code: 'zoom2Extent',
-					module: domain,
-					message: {
-						geojson: {
-							features: [
-								{
-									geometry: {
-										crs: {
-											type: 'name',
-											properties: { name: 'EPSG:4326' }
-										},
-										coordinates: [[[2.5, 2.5], [2.5, 2.5], [3, 3], [4, 4], [5, 5]]],
-										type: 'Polygon'
-									},
-									id: '530497279',
-									type: 'Feature'
-								}
-							],
-							type: 'FeatureCollection'
-						}
-					}
-				},
-				event: { origin: module }
-			});
-
-			const abortFeatureInfoAction = storeActions.find(a => a.type === FEATURE_INFO_REQUEST_ABORT);
-			expect(abortFeatureInfoAction).toBeDefined();
-
-			const openCloseAction = storeActions.find(a => a.type === OPEN_CLOSED_CHANGED);
-			expect(openCloseAction).toBeDefined();
-			expect(openCloseAction.payload).toEqual(false);
-		});
-
 		it('clicks inside map on \'clickInMap\' message', async () => {
 			await setupOpen();
 
