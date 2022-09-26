@@ -23,7 +23,7 @@ import { TestUtils } from '../../../../../test-utils';
 window.customElements.define(EaOlMap.tag, EaOlMap);
 
 
-describe('OlMap', () => {
+describe('EaOlMap', () => {
 
 	const minZoomLevel = 5;
 	const maxZoomLevel = 21;
@@ -138,6 +138,16 @@ describe('OlMap', () => {
 		}
 	};
 
+	const mfpHandlerMock = {
+		activate() { },
+		deactivate() { },
+		get id() {
+			return 'mfpLayerHandlerMockId';
+		},
+		get options() {
+			return getDefaultLayerOptions();
+		}
+	};
 	const vectorLayerServiceMock = {};
 
 	let store;
@@ -185,6 +195,7 @@ describe('OlMap', () => {
 			.registerSingleton('VectorLayerService', vectorLayerServiceMock)
 			.registerSingleton('LayerService', layerServiceMock)
 			.registerSingleton('OlContributionHandler', contributionLayerHandlerMock)
+			.registerSingleton('OlMfpHandler', mfpHandlerMock)
 			.registerSingleton('OlGeoFeatureLayerHandler', geoFeatureLayerHandlerMock);
 
 		return TestUtils.render(EaOlMap.tag);

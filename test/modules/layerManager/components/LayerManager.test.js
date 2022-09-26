@@ -6,6 +6,7 @@ import { $injector } from '../../../../src/injection';
 import { LayerItem } from '../../../../src/modules/layerManager/components/LayerItem';
 import { modifyLayer } from '../../../../src/store/layers/layers.action';
 import { TEST_ID_ATTRIBUTE_NAME } from '../../../../src/utils/markup';
+import { eaReducer } from '../../../../src/ea/store/module/ea.reducer';
 
 window.customElements.define(Checkbox.tag, Checkbox);
 window.customElements.define(LayerItem.tag, LayerItem);
@@ -23,7 +24,10 @@ describe('LayerManager', () => {
 
 	const setup = async (state) => {
 
-		store = TestUtils.setupStoreAndDi(state, { layers: layersReducer });
+		store = TestUtils.setupStoreAndDi(state, {
+			layers: layersReducer,
+			ea: eaReducer
+		});
 		$injector.registerSingleton('TranslationService', { translate: (key) => key });
 		$injector.registerSingleton('EnvironmentService', environmentServiceMock);
 		$injector.registerSingleton('GeoResourceService', { byId: () => { } });

@@ -134,7 +134,7 @@ describe('GeoResourceInfoPanel', () => {
 			expect(actualHeadline.tagName).toBe('H5');
 			expect(actualHeadline.children.length).toBe(1);
 			expect(actualHeadline.children[0].outerHTML)
-				.toBe('<button class="icon chevron icon-rotate-90" style="margin-left: 0.5em;"></button>');
+				.toBe('<button class="icon chevron icon-rotate-90"></button>');
 
 			const actualContainer = actual.children[1];
 			expect(actualContainer.outerHTML)
