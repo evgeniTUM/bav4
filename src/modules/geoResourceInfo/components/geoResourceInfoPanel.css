@@ -4,7 +4,6 @@ h4 {
 
 h5 {
 	padding-left: 0.5em;
-	padding-bottom: 0.5em;
 	cursor: pointer;
 }
 
@@ -112,11 +111,33 @@ img[src=""] {
 .collapse-content > *:first-child {
 	border-right: 0;
 	margin-right: .5em;
+	margin-top: 0.7em;
 }
 .collapse-content > *:last-child {
 	padding-right: 1em;
 	border-right: 0;
 }
+
+.detailinfo p {
+	margin-left: 1em;
+	margin-bottom: 0.7em;
+}
+
+.detailinfo ul,
+.detailinfo ol {
+	margin-left: 2em;
+}
+
+.detailinfo h1,
+.detailinfo h2,
+.detailinfo h3,
+.detailinfo h4,
+.detailinfo h5,
+.detailinfo h6 {
+	margin-top: 1.4em;
+	margin-bottom: 0.7em;
+}
+
 
 .icon {
 	margin-left: 0.5em;
