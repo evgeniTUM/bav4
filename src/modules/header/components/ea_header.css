@@ -54,3 +54,7 @@
 	mask: url('assets/background-icons-eab_inverted-sw.svg');
 	-webkit-mask-image: url('assets/background-icons-eab_inverted-sw.svg');
 }
+
+#extension_button.is-tablet {
+	display: none;
+}
