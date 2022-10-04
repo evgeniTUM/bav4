@@ -100,8 +100,8 @@ export class Header extends MvuElement {
 		return this._environmentService.isEmbedded();
 	}
 
-	//TODO FittingProvider einführen
-	getViewAttrProvider(model) {
+	createView(model) {
+
 		const { isOpen, tabIndex, isFetching, layers, isPortrait, hasMinWidth, searchTerm } = model;
 
 		const showModalInfo = () => {
@@ -182,6 +182,12 @@ export class Header extends MvuElement {
 			openMainMenu();
 		};
 
+
+		const openExtendedTab = () => {
+			setTab(TabId.EXTENSION);
+			openMainMenu();
+		};
+
 		const clearSearchInput = () => {
 			const input = this.shadowRoot.getElementById('input');
 			input.value = '';
@@ -189,82 +195,68 @@ export class Header extends MvuElement {
 			input.dispatchEvent(new Event('input'));
 		};
 
-		return {
-			isOpen, tabIndex, isFetching, layers, isPortrait, hasMinWidth, searchTerm, showModalInfo,
-			getOrientationClass,
-			getMinWidthClass,
-			getOverlayClass,
-			getAnimatedBorderClass,
-			getActiveClass,
-			getIsClearClass,
-			layerCount,
-			onInputFocus,
-			onInput,
-			onInputBlur,
-			openTopicsTab,
-			openMapLayerTab,
-			openMiscTab,
-			clearSearchInput
-		};
-	}
-
-	createView(model) {
-
-		const helper = this.getViewAttrProvider(model);
-
 		const translate = (key) => this._translationService.translate(key);
 		return html`
 			<style>${css}</style>
 			<div class="preload">
-				<div class="${helper.getOrientationClass()} ${helper.getMinWidthClass()}">
+				<div class="${getOrientationClass()} ${getMinWidthClass()}">
+					<a  title=${translate('header_action_button_title')} class="header_action_link" target="_blank" href="https://www.energieatlas.bayern.de/">
 					<div class='header__logo'>				
 						<div class="action-button">
-							<div class="action-button__border animated-action-button__border ${helper.getAnimatedBorderClass()}">
+								<div class="action-button__border animated-action-button__border ${getAnimatedBorderClass()}">
 							</div>
 							<div class="action-button__icon">
 								<div class="ba">
 								</div>
 							</div>
 						</div>
-						<div id='header__text' class='${helper.getOverlayClass()} header__text'>
+							<div id='header__text' class='${getOverlayClass()} header__text'>
 						</div>
 						<div class='header__logo-badge'>										
 							${translate('header_logo_badge')}
 						</div>	
 					</div>		
-					<div id='headerMobile' class='${helper.getOverlayClass()} header__text-mobile'>	
+						<div id='headerMobile' class='${getOverlayClass()} header__text-mobile'>	
 					</div>
-					<div class='header__emblem'>
-					</div>
-					<div class="header ${helper.getOverlayClass()}" ?data-register-for-viewport-calc=${helper.isPortrait}>  
+					</a>
+					<span class='header__emblem_label' >Bayerische Staatsregierung</span>
+					<a  title=${translate('header_emblem_action_title')} class="header_action_link" target="_blank" href="https://www.bayern.de/">
+						<div class='header__emblem'></div>
+					</a>
+					<div class="header ${getOverlayClass()}" ?data-register-for-viewport-calc=${isPortrait}>  
 						<button id='header_toggle' class="close-menu" title=${translate('header_close_button_title')}  @click="${toggle}"">
 							<i class="resize-icon "></i>
 						</button> 
 						<div class="header__background">
 						</div>
 						<div class='header__search-container'>
-							<input id='input' data-test-id placeholder='${translate('header_search_placeholder')}' value="${helper.searchTerm}" @focus="${helper.onInputFocus}" @blur="${helper.onInputBlur}" @input="${helper.onInput}" class='header__search' type="search" placeholder="" />          
-							<span class="header__search-clear ${helper.getIsClearClass()}" @click="${helper.clearSearchInput}">        							
+							<input id='input' data-test-id placeholder='${translate('header_search_placeholder')}' value="${searchTerm}" @focus="${onInputFocus}" @blur="${onInputBlur}" @input="${onInput}" class='header__search' type="search" placeholder="" />          
+							<span class="header__search-clear ${getIsClearClass()}" @click="${clearSearchInput}">        							
 							</span>       
-							<button @click="${helper.showModalInfo}" class="header__modal-button hide" title="modal">
+							<button @click="${showModalInfo}" class="header__modal-button hide" title="modal">
 							&nbsp;
 							</button>
 						</div>
 						<div  class="header__button-container">
-							<button id="topics_button" data-test-id class="${helper.getActiveClass(TabId.TOPICS)}" title=${translate('header_tab_topics_title')} @click="${helper.openTopicsTab}">
+							<button id="topics_button" data-test-id class="${getActiveClass(TabId.TOPICS)}" title=${translate('ea_header_tab_topics_title')} @click="${openTopicsTab}">
 								<span>
-									${translate('header_tab_topics_button')}
+									${translate('ea_header_tab_topics_button')}
 								</span>
 							</button>
-							<button id="maps_button" data-test-id class="${helper.getActiveClass(TabId.MAPS)}" title=${translate('header_tab_maps_title')}  @click="${helper.openMapLayerTab}">
+							<button id="extension_button" data-test-id class="${getActiveClass(TabId.EXTENSION)} ${getMinWidthClass()}" title=${translate('ea_header_tab_additional_title')}  @click="${openExtendedTab}">
 								<span>
-									${translate('header_tab_maps_button')}
+									${translate('ea_header_tab_additional_button')}
+								</span>
+							</button>
+							<button id="maps_button" data-test-id class="${getActiveClass(TabId.MAPS)}" title=${translate('ea_header_tab_maps_title')}  @click="${openMapLayerTab}">
+								<span>
+									${translate('ea_header_tab_maps_button')}
 								</span>
 								<div class="badges">
-									${helper.layerCount}
+									${layerCount}
 								</div>
 							</button>
-							<button id="misc_button" data-test-id class="${helper.getActiveClass(TabId.MISC)}" title=${translate('header_tab_misc_title')}  @click="${helper.openMiscTab}">
+							<button id="misc_button" data-test-id class="${getActiveClass(TabId.MORE)}" title=${translate('ea_header_tab_more_title')}  @click="${openMiscTab}">
 								<span>
 									${translate('header_tab_misc_button')}
 								</span>

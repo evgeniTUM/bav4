@@ -13,7 +13,6 @@ export class EaTopicsContentPanel extends TopicsContentPanel {
 		const { TopicsService: topicsService }
 			= $injector.inject('TopicsService');
 		this._topicsService = topicsService;
-		//		this._translationService = translationService;
 	}
 
 	/**
@@ -46,7 +45,6 @@ export class EaTopicsContentPanel extends TopicsContentPanel {
 		const viewHelper = super.createViewHelper(state) ;
 
 		const renderTopicStyle = (topic) => {
-			window.console.log('EaTopicsContentPanel.renderTopicStyle');
 			const hue = topic.style.hue || 0;
 			const sat = topic.style.sat;
 			const light = topic.style.light || 40;
@@ -65,49 +63,6 @@ export class EaTopicsContentPanel extends TopicsContentPanel {
 		};
 	}
 
-	/**
-	 * @override
-         * erst aktivieren wenn die Frage mit dem Tooltip entschieden ist, zentraler Punkt ist hier der Wegfall der zweiten Zeile und die klasse vertical-center
-	 */
-	//	createView(state) {
-	//            const { currentTopicId, topicsReady, contentIndex } = state;
-	//		if (topicsReady) {
-	//                        let viewHelper = this.createViewHelper(state);
-	//
-	//			return html`
-	//        	<style>${css}</style>
-	//			<div class="topics-content-panel ${viewHelper.getVisibilityClass()}">
-	//				<div class="col">
-	//				${viewHelper.topics.map(topic => html`
-	//					<style>
-	//					${viewHelper.renderTopicStyle(topic)}
-	//					</style>
-	//					<button tabindex='${viewHelper.getTabIndex()}' class="topic topic-${topic.id} ba-list-item  ${viewHelper.getActiveClass(topic.id)}" @click=${() => viewHelper.changeTopic(topic)}>
-	//						<span class="ba-list-item__pre">
-	//							<span class="ba-list-item__icon icon-${topic.id}">
-	//							${viewHelper.renderTopicIcon(topic)}
-	//							</span>
-	//						</span>
-	//						</span>
-	//						<span class="ba-list-item__text vertical-center">
-	//							<span class="ba-list-item__primary-text">${topic.label}</span>
-	//						</span>
-	//						<span class="ba-list-item__after vertical-center">
-	//							<span class="arrow arrow-right"></span>
-	//						</span>
-	//					</button>
-	//				`)}
-	//				</div>
-	//				<div class="col">
-	//					${viewHelper.topics.map(topic => html`
-	//						<ba-catalog-content-panel .data=${topic.id}></ba-catalog-content-panel>
-	//					`)}
-	//				</div>
-	//			</div>
-	//			`;
-	//		}
-	//		return nothing;
-	//	}
 	/**
 	 * @override
 	 */
