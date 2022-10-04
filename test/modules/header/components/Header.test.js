@@ -182,14 +182,17 @@ describe('Header', () => {
 			expect(element.shadowRoot.querySelector('.header__button-container')).toBeTruthy();
 			expect(element.shadowRoot.querySelector('.header__button-container').children.length).toBe(4);
 			expect(element.shadowRoot.querySelector('.header__button-container').children[0].classList.contains('is-active')).toBeTrue();
-			expect(element.shadowRoot.querySelector('.header__button-container').children[0].innerText).toBe('header_tab_topics_button');
+			expect(element.shadowRoot.querySelector('.header__button-container').children[0].innerText).toBe('ea_header_tab_topics_button');
 
-			expect(element.shadowRoot.querySelector('.header__button-container').children[1].children[0].innerText).toBe('header_tab_maps_button');
-			expect(element.shadowRoot.querySelector('.header__button-container').children[1].children[1].innerText).toBe('1');
+			expect(element.shadowRoot.querySelector('.header__button-container').children[1].children[0].innerText).toBe('ea_header_tab_additional_button');
 			expect(element.shadowRoot.querySelector('.header__button-container').children[1].classList.contains('is-active')).toBeFalse();
 
-			expect(element.shadowRoot.querySelector('.header__button-container').children[2].innerText).toBe('header_tab_misc_button');
+			expect(element.shadowRoot.querySelector('.header__button-container').children[2].children[0].innerText).toBe('ea_header_tab_maps_button');
+			expect(element.shadowRoot.querySelector('.header__button-container').children[2].children[1].innerText).toBe('1');
 			expect(element.shadowRoot.querySelector('.header__button-container').children[2].classList.contains('is-active')).toBeFalse();
+
+			expect(element.shadowRoot.querySelector('.header__button-container').children[3].innerText).toBe('header_tab_misc_button');
+			expect(element.shadowRoot.querySelector('.header__button-container').children[3].classList.contains('is-active')).toBeFalse();
 
 			expect(element.shadowRoot.querySelector('.header__search').getAttribute('placeholder')).toBe('header_search_placeholder');
 		});
@@ -217,7 +220,7 @@ describe('Header', () => {
 			};
 			const element = await setup(state);
 
-			expect(element.shadowRoot.querySelector('.header__button-container').children[1].children[1].innerText).toBe('2');
+			expect(element.shadowRoot.querySelector('.header__button-container').children[2].children[1].innerText).toBe('2');
 		});
 
 		it('adopts the states query term', async () => {
@@ -236,7 +239,7 @@ describe('Header', () => {
 		it('contains test-id attributes', async () => {
 			const element = await setup();
 
-			expect(element.shadowRoot.querySelectorAll(`[${TEST_ID_ATTRIBUTE_NAME}]`)).toHaveSize(4);
+			expect(element.shadowRoot.querySelectorAll(`[${TEST_ID_ATTRIBUTE_NAME}]`)).toHaveSize(5);
 			expect(element.shadowRoot.querySelector('#topics_button').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 			expect(element.shadowRoot.querySelector('#maps_button').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 			expect(element.shadowRoot.querySelector('#misc_button').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
