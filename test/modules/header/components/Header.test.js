@@ -180,7 +180,7 @@ describe('Header', () => {
 			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__modal-button')).display).toBe('none');
 
 			expect(element.shadowRoot.querySelector('.header__button-container')).toBeTruthy();
-			expect(element.shadowRoot.querySelector('.header__button-container').children.length).toBe(3);
+			expect(element.shadowRoot.querySelector('.header__button-container').children.length).toBe(4);
 			expect(element.shadowRoot.querySelector('.header__button-container').children[0].classList.contains('is-active')).toBeTrue();
 			expect(element.shadowRoot.querySelector('.header__button-container').children[0].innerText).toBe('header_tab_topics_button');
 
@@ -377,8 +377,10 @@ describe('Header', () => {
 			expect(element.shadowRoot.querySelector('.header__button-container').children[0].click());
 			expect(store.getState().mainMenu.tab).toBe(TabId.TOPICS);
 			expect(element.shadowRoot.querySelector('.header__button-container').children[1].click());
-			expect(store.getState().mainMenu.tab).toBe(TabId.MAPS);
+			expect(store.getState().mainMenu.tab).toBe(TabId.EXTENSION);
 			expect(element.shadowRoot.querySelector('.header__button-container').children[2].click());
+			expect(store.getState().mainMenu.tab).toBe(TabId.MAPS);
+			expect(element.shadowRoot.querySelector('.header__button-container').children[3].click());
 			expect(store.getState().mainMenu.tab).toBe(TabId.MISC);
 		});
 
