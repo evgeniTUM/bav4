@@ -117,7 +117,7 @@ export class EaMiscContentPanel extends AbstractMvuContentPanel {
 				${header(SECTIONS.legal, 'ea_menu_misc_content_panel_legal')}
 				<div id="${SECTIONS.legal}-content" class="collapse-content ${collapseClassMap(SECTIONS.legal)}">
 					${link('https://www.energieatlas.bayern.de/service/datenschutz.html', 'ea_menu_misc_content_panel_privacy_policy', 'ea_menu_misc_content_panel_privacy_policy_tooltip', 'lock')}
-					${link('https://www.energieatlas.bayern.de/service/nutzungsbedingungen-karten.html', 'ea_menu_misc_content_panel_terms_of_use', 'ea_menu_misc_content_panel_terms_of_use_tooltip', 'checklist')}
+					${link('https://www.energieatlas.bayern.de/hilfe/karten/HilfeTech/HilfeNutzung', 'ea_menu_misc_content_panel_terms_of_use', 'ea_menu_misc_content_panel_terms_of_use_tooltip', 'checklist')}
 				</div>
 			</div>
 
@@ -130,7 +130,7 @@ export class EaMiscContentPanel extends AbstractMvuContentPanel {
 							<ba-theme-toggle></ba-theme-toggle>
 						</span>
 					</div>
-					${link('https://www.energieatlas.bayern.de/service/infos_schriftgroesse.html', 'ea_menu_misc_content_panel_change_font', 'ea_menu_misc_content_panel_change_font_tooltip', 'link')}
+					${link('https://www.energieatlas.bayern.de/infos_schriftgroesse', 'ea_menu_misc_content_panel_change_font', 'ea_menu_misc_content_panel_change_font_tooltip', 'link')}
 				</div>
 			</div>
 
