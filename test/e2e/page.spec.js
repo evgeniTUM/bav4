@@ -72,7 +72,7 @@ test.describe('page', () => {
 		});
 
 		test('should contain a <ba-header> component', async ({ page }) => {
-			expect(await page.locator('ea-header').count()).toBe(1);
+			expect(await page.locator('ba-header').count()).toBe(1);
 		});
 
 		test('should contain a <ba-main-menu> component', async ({ page }) => {
