@@ -1,6 +1,6 @@
 import { $injector } from '../../../injection';
 import { Analyse3DModuleContent } from '../../modules/toolbox/components/analyse3d/Analyse3DModuleContent';
-import { EAContribution } from '../../modules/toolbox/components/contribution/EAContribution';
+import { EnergyMarketModuleContent } from '../../modules/toolbox/components/contribution/EnergyMarketModuleContent';
 import { GeothermModuleContent } from '../../modules/toolbox/components/geotherm/GeothermModuleContent';
 import { MixerModuleContent } from '../../modules/toolbox/components/mixer/MixerModuleContent';
 import { RedesignModuleContent } from '../../modules/toolbox/components/redesign/RedesignModuleContent';
@@ -14,7 +14,7 @@ import { ACTIVATE_GEORESOURCE, ACTIVATE_LEGEND, ACTIVATE_WEBANALYTICS, CLEAR_PRE
 export const EaModules = Object.freeze([
 	MixerModuleContent,
 	RedesignModuleContent,
-	EAContribution,
+	EnergyMarketModuleContent,
 	ResearchModuleContent,
 	Analyse3DModuleContent,
 	GeothermModuleContent
@@ -27,7 +27,7 @@ export const EaModules = Object.freeze([
 export const EaModulesQueryParameters = Object.freeze([
 	{ name: MixerModuleContent.name, parameter: 'mischpult' },
 	{ name: RedesignModuleContent.name, parameter: 'mischpult-redesign' },
-	{ name: EAContribution.name, parameter: 'melden' },
+	{ name: EnergyMarketModuleContent.name, parameter: 'melden' },
 	{ name: ResearchModuleContent.name, parameter: 'recherche' },
 	{ name: Analyse3DModuleContent.name, parameter: '3d-analyse' },
 	{ name: Analyse3DModuleContent.name, parameter: 'windanalyse' },

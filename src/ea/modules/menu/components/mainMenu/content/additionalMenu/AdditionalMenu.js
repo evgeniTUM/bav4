@@ -4,7 +4,7 @@ import { MvuElement } from '../../../../../../../modules/MvuElement';
 import { toggleTaggingMode } from '../../../../../../store/contribution/contribution.action';
 import { setCurrentModule } from '../../../../../../store/module/ea.action';
 import { Analyse3DModuleContent } from '../../../../../toolbox/components/analyse3d/Analyse3DModuleContent';
-import { EAContribution } from '../../../../../toolbox/components/contribution/EAContribution';
+import { EnergyMarketModuleContent } from '../../../../../toolbox/components/contribution/EnergyMarketModuleContent';
 import { GeothermModuleContent } from '../../../../../toolbox/components/geotherm/GeothermModuleContent';
 import { MixerModuleContent } from '../../../../../toolbox/components/mixer/MixerModuleContent';
 import { RedesignModuleContent } from '../../../../../toolbox/components/redesign/RedesignModuleContent';
@@ -66,16 +66,16 @@ export class AdditionalMenu extends MvuElement {
 			};
 		};
 
-		const toggleContributionModule = () => {
+		const toggleEnergyMarketModule = () => {
 			toggleTaggingMode();
-			toggleModuleFn(EAContribution.name)();
+			toggleModuleFn(EnergyMarketModuleContent.name)();
 		};
 
 		const translate = (key) => this._translationService.translate(key);
 
 		return html`
 		<style>${css}</style>		
-		<li id="contribution" class="ba-list-item" @click="${toggleContributionModule}">
+		<li id="energy-market" class="ba-list-item" @click="${toggleEnergyMarketModule}">
 			<span class="ba-list-item__pre">
 				<span class="ba-list-item__icon icon-mitmachboerse">
 				</span>

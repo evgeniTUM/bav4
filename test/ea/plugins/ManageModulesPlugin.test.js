@@ -2,7 +2,7 @@ import { QueryParameters } from '../../../src/domain/queryParameters.js';
 import { CONTRIBUTION_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/contribution/OlContributionHandler.js';
 import { GEO_FEATURE_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler.js';
 import { Analyse3DModuleContent } from '../../../src/ea/modules/toolbox/components/analyse3d/Analyse3DModuleContent.js';
-import { EAContribution } from '../../../src/ea/modules/toolbox/components/contribution/EAContribution.js';
+import { EnergyMarketModuleContent } from '../../../src/ea/modules/toolbox/components/contribution/EnergyMarketModuleContent.js';
 import { GeothermModuleContent } from '../../../src/ea/modules/toolbox/components/geotherm/GeothermModuleContent.js';
 import { MixerModuleContent } from '../../../src/ea/modules/toolbox/components/mixer/MixerModuleContent.js';
 import { RedesignModuleContent } from '../../../src/ea/modules/toolbox/components/redesign/RedesignModuleContent.js';
@@ -60,7 +60,7 @@ describe('ManageModulesPlugin', () => {
 
 		expect(store.getState().layers.active.length).toBe(0);
 
-		setCurrentModule(EAContribution.name);
+		setCurrentModule(EnergyMarketModuleContent.name);
 
 		expect(store.getState().layers.active.length).toBe(1);
 		expect(store.getState().layers.active[0].id).toBe(CONTRIBUTION_LAYER_ID);
