@@ -213,11 +213,11 @@
 .ba {
 	height: 5.4em;
 	width: 5.4em;
-	margin: .3em .6em;
+	margin: 0;
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: 5.4em 5.4em;
-	background-image: url('assets/ba.svg');
+	background-image: url('assets/eab.svg');
 }
 
 .animated-action-button__border {
