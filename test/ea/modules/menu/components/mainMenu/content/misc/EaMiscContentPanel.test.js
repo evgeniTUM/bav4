@@ -79,13 +79,13 @@ describe('EaMiscContentPanel', () => {
 			expect(links[5].title).toEqual('ea_menu_misc_content_panel_privacy_policy_tooltip');
 			expect(links[5].querySelector('.ba-list-item__text').innerText).toEqual('ea_menu_misc_content_panel_privacy_policy');
 
-			expect(links[6].href).toEqual('https://www.energieatlas.bayern.de/service/nutzungsbedingungen-karten.html');
+			expect(links[6].href).toEqual('https://www.energieatlas.bayern.de/hilfe/karten/HilfeTech/HilfeNutzung');
 			expect(links[6].target).toEqual('_blank');
 			expect(links[6].title).toEqual('ea_menu_misc_content_panel_terms_of_use_tooltip');
 			expect(links[6].querySelector('.ba-list-item__text').innerText).toEqual('ea_menu_misc_content_panel_terms_of_use');
 
 
-			expect(links[7].href).toEqual('https://www.energieatlas.bayern.de/service/infos_schriftgroesse.html');
+			expect(links[7].href).toEqual('https://www.energieatlas.bayern.de/infos_schriftgroesse');
 			expect(links[7].target).toEqual('_blank');
 			expect(links[7].title).toEqual('ea_menu_misc_content_panel_change_font_tooltip');
 			expect(links[7].querySelector('.ba-list-item__text').innerText).toEqual('ea_menu_misc_content_panel_change_font');
