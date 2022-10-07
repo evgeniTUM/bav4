@@ -22,6 +22,11 @@ export class ManageModulesPlugin extends BaPlugin {
 	constructor() {
 		super();
 
+		const { EnvironmentService: environmentService } = $injector.inject('EnvironmentService');
+		const { GeoResourceService: geoResourceService } = $injector.inject('GeoResourceService');
+		this._geoResourceService = geoResourceService;
+		this._environmentService = environmentService;
+
 		this._lastModule = '';
 		this._activeGeoResources = new Set();
 	}
@@ -31,6 +36,23 @@ export class ManageModulesPlugin extends BaPlugin {
 	 * @param {Store} store
 	 */
 	async register(store) {
+
+		const processEaModuleQueryParameter = () => {
+			const queryParams = new URLSearchParams(this._environmentService.getWindow().location.search);
+			const moduleParameter = queryParams.get(QueryParameters.EA_MODULE);
+
+			if (moduleParameter) {
+				const entry = EaModulesQueryParameters.find(e => e.parameter === moduleParameter);
+				if (entry) {
+					setTimeout(() => setCurrentModule(entry.name), 100);
+				}
+				else {
+					emitNotification('Zusatzmodul ' + moduleParameter + ' unbekannt. (Query Parameter COMP)', LevelTypes.ERROR);
+				}
+			}
+		};
+
+		processEaModuleQueryParameter();
 
 		const handleMainMenu = (currentModule, lastModule) => {
 			if (EaModules.map(m => m.name).includes(lastModule)) {
@@ -86,7 +108,6 @@ export class ManageModulesPlugin extends BaPlugin {
 
 		};
 
-		const { GeoResourceService: geoResourceService } = $injector.inject('GeoResourceService');
 		const onActiveGeoResourcesChanged = (ids) => {
 			const idsToAdd = ids.filter(id => !this._activeGeoResources.has(id));
 			const idsToRemove = Array.from(this._activeGeoResources).filter(id => !new Set(ids).has(id));
@@ -94,7 +115,7 @@ export class ManageModulesPlugin extends BaPlugin {
 			const layerId = (resId) => `module-georesource-${resId}`;
 
 			idsToAdd.forEach(id => {
-				const wmsResource = geoResourceService.byId(id);
+				const wmsResource = this._geoResourceService.byId(id);
 
 				addLayer(layerId(id), { geoResourceId: id, label: wmsResource.label });
 				this._activeGeoResources.add(id);
@@ -108,19 +129,7 @@ export class ManageModulesPlugin extends BaPlugin {
 		};
 
 
-		const { EnvironmentService: environmentService } = $injector.inject('EnvironmentService');
-		const queryParams = new URLSearchParams(environmentService.getWindow().location.search);
-		const moduleParameter = queryParams.get(QueryParameters.EA_MODULE);
 
-		if (moduleParameter) {
-			const entry = EaModulesQueryParameters.find(e => e.parameter === moduleParameter);
-			if (entry) {
-				setTimeout(() => setCurrentModule(entry.name), 100);
-			}
-			else {
-				emitNotification('Zusatzmodul ' + moduleParameter + ' unbekannt. (Query Parameter COMP)', LevelTypes.ERROR);
-			}
-		}
 
 		observe(store, state => state.ea.currentModule, onModuleChange);
 		observe(store, state => state.ea.activeGeoResources, onActiveGeoResourcesChanged);
