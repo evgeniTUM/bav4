@@ -9,6 +9,7 @@ import { QueryParameters } from '../../src/domain/queryParameters';
 import { ShareService } from '../../src/services/ShareService';
 import { TestUtils } from '../test-utils';
 import { round } from '../../src/utils/numberUtils';
+import { eaReducer } from '../../src/ea/store/module/ea.reducer';
 
 describe('ShareService', () => {
 
@@ -34,7 +35,8 @@ describe('ShareService', () => {
 		const store = TestUtils.setupStoreAndDi(state, {
 			layers: layersReducer,
 			position: positionReducer,
-			topics: topicsReducer
+			topics: topicsReducer,
+			ea: eaReducer
 		});
 		$injector
 			.registerSingleton('CoordinateService', coordinateService)

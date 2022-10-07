@@ -126,7 +126,7 @@ describe('WebAnalyticsPlugin', () => {
 
 		it('module selection', async () => {
 			EaModules.forEach(m => {
-				setCurrentModule(m.tag);
+				setCurrentModule(m.name);
 				setCurrentModule(null);
 			});
 

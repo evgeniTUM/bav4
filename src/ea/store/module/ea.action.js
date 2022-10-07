@@ -11,28 +11,28 @@ import { ACTIVATE_GEORESOURCE, ACTIVATE_LEGEND, ACTIVATE_WEBANALYTICS, CLEAR_PRE
  * Available modules.
  * @enum
  */
-export const EaModules = [
+export const EaModules = Object.freeze([
 	MixerModuleContent,
 	RedesignModuleContent,
 	EAContribution,
 	ResearchModuleContent,
 	Analyse3DModuleContent,
 	GeothermModuleContent
-];
+]);
 
 /**
  * Mappings for query parameter "COMP".
  * @enum
  */
-export const EaModulesQueryParameters = [
+export const EaModulesQueryParameters = Object.freeze([
 	{ name: MixerModuleContent.name, parameter: 'mischpult' },
 	{ name: RedesignModuleContent.name, parameter: 'mischpult-redesign' },
 	{ name: EAContribution.name, parameter: 'melden' },
 	{ name: ResearchModuleContent.name, parameter: 'recherche' },
-	{ name: Analyse3DModuleContent.name, parameter: 'windanalyse' },
 	{ name: Analyse3DModuleContent.name, parameter: '3d-analyse' },
+	{ name: Analyse3DModuleContent.name, parameter: 'windanalyse' },
 	{ name: GeothermModuleContent.name, parameter: 'standort' }
-];
+]);
 
 
 const getStore = () => {

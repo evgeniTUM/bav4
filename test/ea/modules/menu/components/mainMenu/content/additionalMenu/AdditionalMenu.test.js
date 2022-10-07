@@ -85,7 +85,7 @@ describe('AdditionalMenu', () => {
 
 			let setModuleActions = storeActions.filter(e => e.type === SET_CURRENT_MODULE);
 			expect(setModuleActions.length).toBe(1);
-			expect(setModuleActions[0].payload).toBe(EAContribution.tag);
+			expect(setModuleActions[0].payload).toBe(EAContribution.name);
 
 			storeActions.length = 0;
 			element.shadowRoot.getElementById('contribution').click();
@@ -102,11 +102,11 @@ describe('AdditionalMenu', () => {
 			const element = await setup();
 
 			const modules = [
-				{ id: 'mixer', tag: MixerModuleContent.tag },
-				{ id: 'redesign', tag: RedesignModuleContent.tag },
-				{ id: 'research', tag: ResearchModuleContent.tag },
-				{ id: 'analyse3d', tag: Analyse3DModuleContent.tag },
-				{ id: 'geotherm', tag: GeothermModuleContent.tag }
+				{ id: 'mixer', name: MixerModuleContent.name },
+				{ id: 'redesign', name: RedesignModuleContent.name },
+				{ id: 'research', name: ResearchModuleContent.name },
+				{ id: 'analyse3d', name: Analyse3DModuleContent.name },
+				{ id: 'geotherm', name: GeothermModuleContent.name }
 			];
 
 			modules.forEach((module) => {
@@ -115,7 +115,7 @@ describe('AdditionalMenu', () => {
 
 				let setModuleActions = storeActions.filter(e => e.type === SET_CURRENT_MODULE);
 				expect(setModuleActions.length).toBe(1);
-				expect(setModuleActions[0].payload).toBe(module.tag);
+				expect(setModuleActions[0].payload).toBe(module.name);
 
 				storeActions.length = 0;
 				element.shadowRoot.getElementById(module.id).click();

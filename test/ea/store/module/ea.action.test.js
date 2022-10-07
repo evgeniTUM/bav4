@@ -4,20 +4,35 @@ import { GeothermModuleContent } from '../../../../src/ea/modules/toolbox/compon
 import { MixerModuleContent } from '../../../../src/ea/modules/toolbox/components/mixer/MixerModuleContent';
 import { RedesignModuleContent } from '../../../../src/ea/modules/toolbox/components/redesign/RedesignModuleContent';
 import { ResearchModuleContent } from '../../../../src/ea/modules/toolbox/components/research/ResearchModuleContent';
-import { ModuleId } from '../../../../src/ea/store/module/ea.action';
+import { EaModules, EaModulesQueryParameters } from '../../../../src/ea/store/module/ea.action';
 
 describe('toolAction', () => {
 
-	it('exports a ModuleId enum', () => {
-		expect(Object.keys(ModuleId).length).toBe(6);
-		expect(Object.isFrozen(ModuleId)).toBeTrue();
-		expect(ModuleId).toEqual([
-			MixerModuleContent.tag,
-			ResearchModuleContent.tag,
-			RedesignModuleContent.tag,
-			EAContribution.tag,
-			Analyse3DModuleContent.tag,
-			GeothermModuleContent.tag
+	it('exports a EaModules enum', () => {
+		expect(Object.keys(EaModules).length).toBe(6);
+		expect(Object.isFrozen(EaModules)).toBeTrue();
+		expect(EaModules).toEqual([
+			MixerModuleContent,
+			RedesignModuleContent,
+			EAContribution,
+			ResearchModuleContent,
+			Analyse3DModuleContent,
+			GeothermModuleContent
+		]);
+
+	});
+
+	it('exports a EaModulesQueryParameters enum', () => {
+		expect(Object.keys(EaModulesQueryParameters).length).toBe(7);
+		expect(Object.isFrozen(EaModulesQueryParameters)).toBeTrue();
+		expect(EaModulesQueryParameters).toEqual([
+			{ name: MixerModuleContent.name, parameter: 'mischpult' },
+			{ name: RedesignModuleContent.name, parameter: 'mischpult-redesign' },
+			{ name: EAContribution.name, parameter: 'melden' },
+			{ name: ResearchModuleContent.name, parameter: 'recherche' },
+			{ name: Analyse3DModuleContent.name, parameter: '3d-analyse' },
+			{ name: Analyse3DModuleContent.name, parameter: 'windanalyse' },
+			{ name: GeothermModuleContent.name, parameter: 'standort' }
 		]);
 
 	});

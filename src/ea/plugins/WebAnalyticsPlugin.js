@@ -62,7 +62,7 @@ export class WebAnalyticsPlugin extends BaPlugin {
 
 		const trackModuleChange = (moduleId) => {
 			if (moduleId) {
-				window._paq.push(['trackEvent', 'Zusatzmodul', 'clickEvent', module.moduleId]);
+				window._paq.push(['trackEvent', 'Zusatzmodul', 'clickEvent', moduleId]);
 			}
 		};
 
