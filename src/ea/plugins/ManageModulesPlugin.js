@@ -1,9 +1,11 @@
+import { QueryParameters } from '../../domain/queryParameters';
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { abortOrReset } from '../../store/featureInfo/featureInfo.action';
 import { clearHighlightFeatures } from '../../store/highlight/highlight.action';
 import { addLayer, removeLayer } from '../../store/layers/layers.action';
 import { close, open } from '../../store/mainMenu/mainMenu.action';
+import { emitNotification, LevelTypes } from '../../store/notifications/notifications.action';
 import { observe } from '../../utils/storeUtils';
 import { CONTRIBUTION_LAYER_ID } from '../modules/map/components/olMap/handler/contribution/OlContributionHandler';
 import { GEO_FEATURE_LAYER_ID } from '../modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler';
@@ -14,11 +16,16 @@ import { MixerModuleContent } from '../modules/toolbox/components/mixer/MixerMod
 import { RedesignModuleContent } from '../modules/toolbox/components/redesign/RedesignModuleContent';
 import { ResearchModuleContent } from '../modules/toolbox/components/research/ResearchModuleContent';
 import { clearMap } from '../store/geofeature/geofeature.action';
-import { deactivateAllGeoResources, ModuleId } from '../store/module/ea.action';
+import { deactivateAllGeoResources, EaModulesQueryParameters, EaModules, setCurrentModule } from '../store/module/ea.action';
 
 export class ManageModulesPlugin extends BaPlugin {
 	constructor() {
 		super();
+
+		const { EnvironmentService: environmentService } = $injector.inject('EnvironmentService');
+		const { GeoResourceService: geoResourceService } = $injector.inject('GeoResourceService');
+		this._geoResourceService = geoResourceService;
+		this._environmentService = environmentService;
 
 		this._lastModule = '';
 		this._activeGeoResources = new Set();
@@ -30,8 +37,25 @@ export class ManageModulesPlugin extends BaPlugin {
 	 */
 	async register(store) {
 
+		const processEaModuleQueryParameter = () => {
+			const queryParams = new URLSearchParams(this._environmentService.getWindow().location.search);
+			const moduleParameter = queryParams.get(QueryParameters.EA_MODULE);
+
+			if (moduleParameter) {
+				const entry = EaModulesQueryParameters.find(e => e.parameter === moduleParameter);
+				if (entry) {
+					setTimeout(() => setCurrentModule(entry.name), 100);
+				}
+				else {
+					emitNotification(`No module: "${moduleParameter}".`, LevelTypes.ERROR);
+				}
+			}
+		};
+
+		processEaModuleQueryParameter();
+
 		const handleMainMenu = (currentModule, lastModule) => {
-			if (ModuleId.includes(lastModule)) {
+			if (EaModules.map(m => m.name).includes(lastModule)) {
 				clearMap();
 				abortOrReset();
 				clearHighlightFeatures();
@@ -39,7 +63,7 @@ export class ManageModulesPlugin extends BaPlugin {
 				open();
 			}
 
-			if (ModuleId.includes(currentModule)) {
+			if (EaModules.map(m => m.name).includes(currentModule)) {
 				close();
 			}
 		};
@@ -47,29 +71,29 @@ export class ManageModulesPlugin extends BaPlugin {
 		const handleLayers = (currentModule, lastModule) => {
 		// remove layers for last module
 			switch (lastModule) {
-				case EAContribution.tag:
+				case EAContribution.name:
 					removeLayer(CONTRIBUTION_LAYER_ID);
 					break;
-				case MixerModuleContent.tag:
-				case RedesignModuleContent.tag:
-				case ResearchModuleContent.tag:
-				case Analyse3DModuleContent.tag:
-				case GeothermModuleContent.tag:
+				case MixerModuleContent.name:
+				case RedesignModuleContent.name:
+				case ResearchModuleContent.name:
+				case Analyse3DModuleContent.name:
+				case GeothermModuleContent.name:
 					removeLayer(GEO_FEATURE_LAYER_ID);
 					break;
 			}
 
 			// enable layers for new module
 			switch (currentModule) {
-				case EAContribution.tag:
+				case EAContribution.name:
 					addLayer(CONTRIBUTION_LAYER_ID, { label: 'contribution_layer', constraints: { hidden: true, alwaysTop: false } });
 					break;
 
-				case MixerModuleContent.tag:
-				case RedesignModuleContent.tag:
-				case ResearchModuleContent.tag:
-				case Analyse3DModuleContent.tag:
-				case GeothermModuleContent.tag:
+				case MixerModuleContent.name:
+				case RedesignModuleContent.name:
+				case ResearchModuleContent.name:
+				case Analyse3DModuleContent.name:
+				case GeothermModuleContent.name:
 					addLayer(GEO_FEATURE_LAYER_ID, { label: 'Verwaltungseinheiten', constraints: { hidden: true, alwaysTop: true } });
 					break;
 			}
@@ -84,7 +108,6 @@ export class ManageModulesPlugin extends BaPlugin {
 
 		};
 
-		const { GeoResourceService: geoResourceService } = $injector.inject('GeoResourceService');
 		const onActiveGeoResourcesChanged = (ids) => {
 			const idsToAdd = ids.filter(id => !this._activeGeoResources.has(id));
 			const idsToRemove = Array.from(this._activeGeoResources).filter(id => !new Set(ids).has(id));
@@ -92,7 +115,7 @@ export class ManageModulesPlugin extends BaPlugin {
 			const layerId = (resId) => `module-georesource-${resId}`;
 
 			idsToAdd.forEach(id => {
-				const wmsResource = geoResourceService.byId(id);
+				const wmsResource = this._geoResourceService.byId(id);
 
 				addLayer(layerId(id), { geoResourceId: id, label: wmsResource.label });
 				this._activeGeoResources.add(id);
@@ -104,6 +127,9 @@ export class ManageModulesPlugin extends BaPlugin {
 			});
 
 		};
+
+
+
 
 		observe(store, state => state.ea.currentModule, onModuleChange);
 		observe(store, state => state.ea.activeGeoResources, onActiveGeoResourcesChanged);

@@ -1,6 +1,5 @@
-import { EaModules } from '../../../src/ea/modules/toolbox/components/moduleContainer/ModuleContainer.js';
 import { WebAnalyticsPlugin } from '../../../src/ea/plugins/WebAnalyticsPlugin.js';
-import { activateWebAnalytics, deactivateWebAnalytics, setCurrentModule } from '../../../src/ea/store/module/ea.action.js';
+import { activateWebAnalytics, deactivateWebAnalytics, EaModules, setCurrentModule } from '../../../src/ea/store/module/ea.action.js';
 import { eaReducer } from '../../../src/ea/store/module/ea.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
 import { addLayer, removeLayer } from '../../../src/store/layers/layers.action.js';
@@ -127,7 +126,7 @@ describe('WebAnalyticsPlugin', () => {
 
 		it('module selection', async () => {
 			EaModules.forEach(m => {
-				setCurrentModule(m.tag);
+				setCurrentModule(m.name);
 				setCurrentModule(null);
 			});
 

@@ -25,8 +25,8 @@ describe('ea.reducer', () => {
 	it('sets the module id', () => {
 		const store = setup();
 
-		setCurrentModule('test-tag');
-		expect(store.getState().ea.currentModule).toBe('test-tag');
+		setCurrentModule('test');
+		expect(store.getState().ea.currentModule).toBe('test');
 	});
 
 	it('adds a georesourceId', () => {

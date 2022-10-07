@@ -1,6 +1,7 @@
 import { $injector } from '../injection';
 import { round } from '../utils/numberUtils';
 import { QueryParameters } from '../domain/queryParameters';
+import { EaModulesQueryParameters } from '../ea/store/module/ea.action';
 
 export class ShareService {
 
@@ -52,7 +53,8 @@ export class ShareService {
 			{
 				...this._extractPosition(),
 				...this._extractLayers(),
-				...this._extractTopic()
+				...this._extractTopic(),
+				...this._extractEaModule()
 			},
 			extraParams
 		);
@@ -143,6 +145,7 @@ export class ShareService {
 		if (layer_opacity) {
 			extractedState[QueryParameters.LAYER_OPACITY] = layer_opacity;
 		}
+
 		return extractedState;
 	}
 
@@ -162,6 +165,27 @@ export class ShareService {
 		const { topics: { current } } = state;
 
 		extractedState[QueryParameters.TOPIC] = current;
+		return extractedState;
+	}
+
+	/**
+	 * @private
+	 * @returns {object} extractedState
+	 */
+	_extractEaModule() {
+		const {
+			StoreService: storeService
+		} = $injector.inject('StoreService');
+
+		const state = storeService.getStore().getState();
+		const extractedState = {};
+
+		const module = state.ea.currentModule;
+		if (module) {
+			const value = EaModulesQueryParameters.find(e => e.name === module).parameter;
+			extractedState[QueryParameters.EA_MODULE] = value;
+		}
+
 		return extractedState;
 	}
 

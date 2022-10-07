@@ -1,11 +1,5 @@
-import { Analyse3DModuleContent } from '../../../../../../src/ea/modules/toolbox/components/analyse3d/Analyse3DModuleContent';
-import { EAContribution } from '../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
-import { GeothermModuleContent } from '../../../../../../src/ea/modules/toolbox/components/geotherm/GeothermModuleContent';
-import { MixerModuleContent } from '../../../../../../src/ea/modules/toolbox/components/mixer/MixerModuleContent';
 import { ModuleContainer } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/ModuleContainer';
-import { RedesignModuleContent } from '../../../../../../src/ea/modules/toolbox/components/redesign/RedesignModuleContent';
-import { ResearchModuleContent } from '../../../../../../src/ea/modules/toolbox/components/research/ResearchModuleContent';
-import { setCurrentModule } from '../../../../../../src/ea/store/module/ea.action';
+import { EaModules, setCurrentModule } from '../../../../../../src/ea/store/module/ea.action';
 import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { createMediaReducer } from '../../../../../../src/store/media/media.reducer';
@@ -14,15 +8,6 @@ import { TestUtils } from '../../../../../test-utils';
 
 
 window.customElements.define(ModuleContainer.tag, ModuleContainer);
-
-const modules = [
-	MixerModuleContent.tag,
-	ResearchModuleContent.tag,
-	RedesignModuleContent.tag,
-	EAContribution.tag,
-	Analyse3DModuleContent.tag,
-	GeothermModuleContent.tag
-];
 
 
 describe('ModuleContainer', () => {
@@ -41,8 +26,8 @@ describe('ModuleContainer', () => {
 	it('renders only when moduleId is tag name of a module', async () => {
 		const element = await setup();
 
-		modules.forEach((activeModule) => {
-			setCurrentModule(activeModule);
+		EaModules.forEach((activeModule) => {
+			setCurrentModule(activeModule.name);
 
 			expect(element.shadowRoot.children.length).not.toEqual(0);
 		});
@@ -54,17 +39,17 @@ describe('ModuleContainer', () => {
 	it('renders correct module depending on current moduleId', async () => {
 		const element = await setup();
 
-		modules.forEach((activeTag) => {
-			setCurrentModule(activeTag);
+		EaModules.forEach((activeModule) => {
+			setCurrentModule(activeModule.name);
 
-			expect(element.shadowRoot.querySelector(activeTag))
-				.withContext(`module: ${activeTag} - is not active`)
+			expect(element.shadowRoot.querySelector(activeModule.tag))
+				.withContext(`module: ${activeModule} - is not active`)
 				.not.toBeNull();
 
-			modules.forEach((inactiveTag) => {
-				if (activeTag !== inactiveTag) {
-					expect(element.querySelector(inactiveTag))
-						.withContext(`module: ${activeTag} - expected ${inactiveTag} to be inactive`)
+			EaModules.forEach((inactiveModule) => {
+				if (activeModule !== inactiveModule) {
+					expect(element.querySelector(inactiveModule.tag))
+						.withContext(`module: ${activeModule} - expected ${inactiveModule} to be inactive`)
 						.toBeNull();
 				}
 			});

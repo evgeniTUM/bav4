@@ -1,7 +1,6 @@
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { observe } from '../../utils/storeUtils';
-import { EaModules } from '../modules/toolbox/components/moduleContainer/ModuleContainer';
 
 export class WebAnalyticsPlugin extends BaPlugin {
 
@@ -62,8 +61,7 @@ export class WebAnalyticsPlugin extends BaPlugin {
 
 		const trackModuleChange = (moduleId) => {
 			if (moduleId) {
-				const module = EaModules.find(m => m.tag === moduleId);
-				window._paq.push(['trackEvent', 'Zusatzmodul', 'clickEvent', module.name]);
+				window._paq.push(['trackEvent', 'Zusatzmodul', 'clickEvent', moduleId]);
 			}
 		};
 

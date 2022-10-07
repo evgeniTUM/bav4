@@ -33,7 +33,7 @@
 	/* others */
 	--error-color: hsla(341, 60%, 52%, 1);
 	--warning-color: hsla(18, 89%, 48%, 1);
-	--info-color:rgb(19, 158, 227, 1);
+	--info-color: rgb(19, 158, 227, 1);
 	--sucess-color: hsla(161, 100%, 32%, 1);
 }
 
