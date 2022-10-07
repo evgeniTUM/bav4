@@ -53,7 +53,8 @@ export class ShareService {
 			{
 				...this._extractPosition(),
 				...this._extractLayers(),
-				...this._extractTopic()
+				...this._extractTopic(),
+				...this._extractEaModule()
 			},
 			extraParams
 		);
@@ -145,12 +146,6 @@ export class ShareService {
 			extractedState[QueryParameters.LAYER_OPACITY] = layer_opacity;
 		}
 
-		const module = state.ea.currentModule;
-		if (module) {
-			const value = EaModulesQueryParameters.find(e => e.name === module).parameter;
-			extractedState[QueryParameters.EA_MODULE] = value;
-		}
-
 		return extractedState;
 	}
 
@@ -170,6 +165,27 @@ export class ShareService {
 		const { topics: { current } } = state;
 
 		extractedState[QueryParameters.TOPIC] = current;
+		return extractedState;
+	}
+
+	/**
+	 * @private
+	 * @returns {object} extractedState
+	 */
+	_extractEaModule() {
+		const {
+			StoreService: storeService
+		} = $injector.inject('StoreService');
+
+		const state = storeService.getStore().getState();
+		const extractedState = {};
+
+		const module = state.ea.currentModule;
+		if (module) {
+			const value = EaModulesQueryParameters.find(e => e.name === module).parameter;
+			extractedState[QueryParameters.EA_MODULE] = value;
+		}
+
 		return extractedState;
 	}
 

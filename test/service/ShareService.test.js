@@ -10,6 +10,8 @@ import { ShareService } from '../../src/services/ShareService';
 import { TestUtils } from '../test-utils';
 import { round } from '../../src/utils/numberUtils';
 import { eaReducer } from '../../src/ea/store/module/ea.reducer';
+import { EaModules, EaModulesQueryParameters, setCurrentModule } from '../../src/ea/store/module/ea.action';
+import { MixerModuleContent } from '../../src/ea/modules/toolbox/components/mixer/MixerModuleContent';
 
 describe('ShareService', () => {
 
@@ -211,6 +213,33 @@ describe('ShareService', () => {
 			});
 		});
 
+		describe('_extractEaModule', () => {
+			it('extracts the current ea module state', () => {
+				setup();
+				const instanceUnderTest = new ShareService();
+
+				EaModules.forEach(module => {
+					setCurrentModule(module.name);
+
+					const extract = instanceUnderTest._extractEaModule();
+
+					const expectedValue = EaModulesQueryParameters
+						.find(e => e.name === module.name)
+						.parameter;
+					expect(extract[QueryParameters.EA_MODULE]).toBe(expectedValue);
+				});
+			});
+
+			it('does not extracts ea module when not set', () => {
+				setup();
+				const instanceUnderTest = new ShareService();
+
+				const extract = instanceUnderTest._extractEaModule();
+
+				expect(extract).toEqual({});
+			});
+		});
+
 		describe('_mergeExtraParams', () => {
 
 			it('merges an array when key already present', () => {
@@ -261,6 +290,7 @@ describe('ShareService', () => {
 				spyOn(instanceUnderTest, '_extractPosition').and.returnValue({ z: 5, c: ['44.123', '88.123'] });
 				spyOn(instanceUnderTest, '_extractLayers').and.returnValue({ l: ['someLayer', 'anotherLayer'] });
 				spyOn(instanceUnderTest, '_extractTopic').and.returnValue({ t: 'someTopic' });
+				spyOn(instanceUnderTest, '_extractEaModule').and.returnValue({ comp: 'test42' });
 				const _mergeExtraParamsSpy = spyOn(instanceUnderTest, '_mergeExtraParams').withArgs(jasmine.anything(), {}).and.callThrough();
 
 				const encoded = instanceUnderTest.encodeState();
@@ -271,6 +301,7 @@ describe('ShareService', () => {
 				expect(queryParams.get(QueryParameters.ZOOM)).toBe('5');
 				expect(queryParams.get(QueryParameters.CENTER)).toBe('44.123,88.123');
 				expect(queryParams.get(QueryParameters.TOPIC)).toBe('someTopic');
+				expect(queryParams.get(QueryParameters.EA_MODULE)).toBe('test42');
 				expect(_mergeExtraParamsSpy).toHaveBeenCalled();
 			});
 
