@@ -1,7 +1,7 @@
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { observe } from '../../utils/storeUtils';
-import { EaModules } from '../modules/toolbox/components/moduleContainer/ModuleContainer';
+import { EaModules } from '../store/module/ea.action';
 
 export class WebAnalyticsPlugin extends BaPlugin {
 

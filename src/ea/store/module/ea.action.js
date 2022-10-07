@@ -11,14 +11,14 @@ import { ACTIVATE_GEORESOURCE, ACTIVATE_LEGEND, ACTIVATE_WEBANALYTICS, CLEAR_PRE
  * Available modules.
  * @enum
  */
-export const ModuleId = Object.freeze([
-	MixerModuleContent.tag,
-	ResearchModuleContent.tag,
-	RedesignModuleContent.tag,
-	EAContribution.tag,
-	Analyse3DModuleContent.tag,
-	GeothermModuleContent.tag
-]);
+export const EaModules = [
+	MixerModuleContent,
+	RedesignModuleContent,
+	EAContribution,
+	ResearchModuleContent,
+	Analyse3DModuleContent,
+	GeothermModuleContent
+];
 
 
 const getStore = () => {

@@ -14,7 +14,7 @@ import { MixerModuleContent } from '../modules/toolbox/components/mixer/MixerMod
 import { RedesignModuleContent } from '../modules/toolbox/components/redesign/RedesignModuleContent';
 import { ResearchModuleContent } from '../modules/toolbox/components/research/ResearchModuleContent';
 import { clearMap } from '../store/geofeature/geofeature.action';
-import { deactivateAllGeoResources, ModuleId } from '../store/module/ea.action';
+import { deactivateAllGeoResources, EaModules } from '../store/module/ea.action';
 
 export class ManageModulesPlugin extends BaPlugin {
 	constructor() {
