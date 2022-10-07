@@ -47,7 +47,7 @@ export class ManageModulesPlugin extends BaPlugin {
 					setTimeout(() => setCurrentModule(entry.name), 100);
 				}
 				else {
-					emitNotification('Zusatzmodul ' + moduleParameter + ' unbekannt. (Query Parameter COMP)', LevelTypes.ERROR);
+					emitNotification(`No module: "${moduleParameter}".`, LevelTypes.ERROR);
 				}
 			}
 		};

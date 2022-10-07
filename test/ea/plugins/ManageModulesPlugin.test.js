@@ -1,3 +1,4 @@
+import { QueryParameters } from '../../../src/domain/queryParameters.js';
 import { CONTRIBUTION_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/contribution/OlContributionHandler.js';
 import { GEO_FEATURE_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler.js';
 import { Analyse3DModuleContent } from '../../../src/ea/modules/toolbox/components/analyse3d/Analyse3DModuleContent.js';
@@ -8,20 +9,29 @@ import { RedesignModuleContent } from '../../../src/ea/modules/toolbox/component
 import { ResearchModuleContent } from '../../../src/ea/modules/toolbox/components/research/ResearchModuleContent.js';
 import { ManageModulesPlugin } from '../../../src/ea/plugins/ManageModulesPlugin.js';
 import { CLEAR_MAP } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
-import { activateGeoResource, deactivateGeoResource, setCurrentModule } from '../../../src/ea/store/module/ea.action.js';
-import { DEACTIVATE_ALL_GEORESOURCES, eaReducer } from '../../../src/ea/store/module/ea.reducer.js';
+import { activateGeoResource, deactivateGeoResource, EaModulesQueryParameters, setCurrentModule } from '../../../src/ea/store/module/ea.action.js';
+import { DEACTIVATE_ALL_GEORESOURCES, eaReducer, SET_CURRENT_MODULE } from '../../../src/ea/store/module/ea.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
 import { FEATURE_INFO_REQUEST_ABORT } from '../../../src/store/featureInfo/featureInfo.reducer.js';
 import { CLEAR_FEATURES } from '../../../src/store/highlight/highlight.reducer.js';
 import { layersReducer, LAYER_ADDED, LAYER_REMOVED } from '../../../src/store/layers/layers.reducer.js';
 import { createMainMenuReducer } from '../../../src/store/mainMenu/mainMenu.reducer.js';
+import { LevelTypes } from '../../../src/store/notifications/notifications.action.js';
+import { NOTIFICATION_ADDED } from '../../../src/store/notifications/notifications.reducer.js';
 import { TestUtils } from '../../test-utils.js';
 
 
 describe('ManageModulesPlugin', () => {
+	const windowMock = {
+		location: {
+			get search() {
+				return null;
+			}
+		}
+	};
 
 	const geoResourceServiceMock = { byId: () => ({ label: 'label' }) };
-	const environmentServiceMock = { getWindow: () => ({ location: { search: 'test' } }) };
+	const environmentServiceMock = { getWindow: () => windowMock };
 
 	const storeActions = [];
 
@@ -227,5 +237,49 @@ describe('ManageModulesPlugin', () => {
 		expect(actions).toHaveSize(1);
 		expect(actions[0].payload).toEqual('module-georesource-42');
 	});
+
+	describe('processing of query parameter comp, ', () => {
+
+		it('opens ea module', async () => {
+			jasmine.clock().install();
+
+			const testCase = EaModulesQueryParameters[0];
+
+			const store = setup();
+
+			const queryParam = QueryParameters.EA_MODULE + '=' + testCase.parameter;
+			spyOnProperty(windowMock.location, 'search').and.returnValue(queryParam);
+
+			const instanceUnderTest = new ManageModulesPlugin();
+			await instanceUnderTest.register(store);
+
+			jasmine.clock().tick(101);
+
+			const actions = storeActions.filter(a =>
+				a.type === SET_CURRENT_MODULE);
+			expect(actions).toHaveSize(1);
+			expect(actions[0].payload).toEqual(testCase.name);
+
+			jasmine.clock().uninstall();
+		});
+
+		it('emits error when "comp" value is invalid', async () => {
+			const store = setup();
+
+			const queryParam = QueryParameters.EA_MODULE + '=invalid' ;
+			spyOnProperty(windowMock.location, 'search').and.returnValue(queryParam);
+
+			const instanceUnderTest = new ManageModulesPlugin();
+			await instanceUnderTest.register(store);
+
+			const actions = storeActions.filter(a =>
+				a.type === NOTIFICATION_ADDED);
+			expect(actions).toHaveSize(1);
+			expect(actions[0].payload._payload.content).toEqual('No module: "invalid".');
+			expect(actions[0].payload._payload.level).toEqual(LevelTypes.ERROR);
+
+		});
+	});
+
 
 });

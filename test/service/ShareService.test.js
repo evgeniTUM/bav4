@@ -1,17 +1,16 @@
+import { QueryParameters } from '../../src/domain/queryParameters';
+import { EaModules, EaModulesQueryParameters, setCurrentModule } from '../../src/ea/store/module/ea.action';
+import { eaReducer } from '../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../src/injection';
+import { ShareService } from '../../src/services/ShareService';
 import { addLayer } from '../../src/store/layers/layers.action';
 import { layersReducer } from '../../src/store/layers/layers.reducer';
 import { changeRotation, changeZoomAndCenter } from '../../src/store/position/position.action';
 import { positionReducer } from '../../src/store/position/position.reducer';
 import { setCurrent } from '../../src/store/topics/topics.action';
 import { topicsReducer } from '../../src/store/topics/topics.reducer';
-import { QueryParameters } from '../../src/domain/queryParameters';
-import { ShareService } from '../../src/services/ShareService';
-import { TestUtils } from '../test-utils';
 import { round } from '../../src/utils/numberUtils';
-import { eaReducer } from '../../src/ea/store/module/ea.reducer';
-import { EaModules, EaModulesQueryParameters, setCurrentModule } from '../../src/ea/store/module/ea.action';
-import { MixerModuleContent } from '../../src/ea/modules/toolbox/components/mixer/MixerModuleContent';
+import { TestUtils } from '../test-utils';
 
 describe('ShareService', () => {
 
