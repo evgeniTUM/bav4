@@ -8,7 +8,6 @@ import { ACTIVATE_GEORESOURCE, DEACTIVATE_ALL_GEORESOURCES } from '../../../src/
 import { $injector } from '../../../src/injection/index.js';
 import { FEATURE_INFO_REQUEST_ABORT } from '../../../src/store/featureInfo/featureInfo.reducer.js';
 import { CLEAR_FEATURES } from '../../../src/store/highlight/highlight.reducer.js';
-import { OPEN_CLOSED_CHANGED } from '../../../src/store/mainMenu/mainMenu.reducer.js';
 import { CLICK_CHANGED, pointerReducer } from '../../../src/store/pointer/pointer.reducer';
 import { FIT_REQUESTED, ZOOM_CENTER_CHANGED } from '../../../src/store/position/position.reducer.js';
 import { TestUtils } from '../../test-utils.js';

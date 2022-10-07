@@ -147,10 +147,8 @@ export class ShareService {
 
 		const module = state.ea.currentModule;
 		if (module) {
-			console.log(module);
 			const value = EaModulesQueryParameters.find(e => e.name === module).parameter;
 			extractedState[QueryParameters.EA_MODULE] = value;
-			console.log(extractedState);
 		}
 
 		return extractedState;

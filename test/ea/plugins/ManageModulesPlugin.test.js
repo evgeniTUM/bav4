@@ -8,7 +8,7 @@ import { RedesignModuleContent } from '../../../src/ea/modules/toolbox/component
 import { ResearchModuleContent } from '../../../src/ea/modules/toolbox/components/research/ResearchModuleContent.js';
 import { ManageModulesPlugin } from '../../../src/ea/plugins/ManageModulesPlugin.js';
 import { CLEAR_MAP } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
-import { activateGeoResource, deactivateGeoResource, EaModules, setCurrentModule } from '../../../src/ea/store/module/ea.action.js';
+import { activateGeoResource, deactivateGeoResource, setCurrentModule } from '../../../src/ea/store/module/ea.action.js';
 import { DEACTIVATE_ALL_GEORESOURCES, eaReducer } from '../../../src/ea/store/module/ea.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
 import { FEATURE_INFO_REQUEST_ABORT } from '../../../src/store/featureInfo/featureInfo.reducer.js';
