@@ -105,7 +105,7 @@ export class EAContribution extends MvuElement {
 	}
 
 	static get name() {
-		return 'analyse3d';
+		return 'contribution';
 	}
 
 	static get tag() {

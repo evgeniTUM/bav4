@@ -20,6 +20,20 @@ export const EaModules = [
 	GeothermModuleContent
 ];
 
+/**
+ * Mappings for query parameter "COMP".
+ * @enum
+ */
+export const EaModulesQueryParameters = [
+	{ name: MixerModuleContent.name, parameter: 'mischpult' },
+	{ name: RedesignModuleContent.name, parameter: 'mischpult-redesign' },
+	{ name: EAContribution.name, parameter: 'melden' },
+	{ name: ResearchModuleContent.name, parameter: 'recherche' },
+	{ name: Analyse3DModuleContent.name, parameter: 'windanalyse' },
+	{ name: Analyse3DModuleContent.name, parameter: '3d-analyse' },
+	{ name: GeothermModuleContent.name, parameter: 'standort' }
+];
+
 
 const getStore = () => {
 	const { StoreService: storeService } = $injector.inject('StoreService');

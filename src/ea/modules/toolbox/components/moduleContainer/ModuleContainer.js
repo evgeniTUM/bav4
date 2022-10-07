@@ -58,7 +58,7 @@ export class ModuleContainer extends MvuElement {
 		const { moduleId, isPortrait, hasMinWidth } = model;
 
 		const getContentPanel = (moduleId) => {
-			const module = EaModules.find(m => m.tag === moduleId);
+			const module = EaModules.find(m => m.name === moduleId);
 			if (!module) {
 				return nothing;
 			}

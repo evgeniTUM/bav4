@@ -1,6 +1,7 @@
 import { $injector } from '../injection';
 import { round } from '../utils/numberUtils';
 import { QueryParameters } from '../domain/queryParameters';
+import { EaModulesQueryParameters } from '../ea/store/module/ea.action';
 
 export class ShareService {
 
@@ -143,6 +144,15 @@ export class ShareService {
 		if (layer_opacity) {
 			extractedState[QueryParameters.LAYER_OPACITY] = layer_opacity;
 		}
+
+		const module = state.ea.currentModule;
+		if (module) {
+			console.log(module);
+			const value = EaModulesQueryParameters.find(e => e.name === module).parameter;
+			extractedState[QueryParameters.EA_MODULE] = value;
+			console.log(extractedState);
+		}
+
 		return extractedState;
 	}
 

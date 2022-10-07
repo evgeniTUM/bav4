@@ -61,14 +61,14 @@ export class AdditionalMenu extends MvuElement {
 
 		const toggleModuleFn = (id) => {
 			return () => {
-				const moduleTag = this._moduleId === id ? null : id;
-				setCurrentModule(moduleTag);
+				const moduleId = this._moduleId === id ? null : id;
+				setCurrentModule(moduleId);
 			};
 		};
 
 		const toggleContributionModule = () => {
 			toggleTaggingMode();
-			toggleModuleFn(EAContribution.tag)();
+			toggleModuleFn(EAContribution.name)();
 		};
 
 		const translate = (key) => this._translationService.translate(key);
@@ -89,7 +89,7 @@ export class AdditionalMenu extends MvuElement {
 				</span>
 			</span>
 		</li>
-		<li id="research" class="ba-list-item" @click="${toggleModuleFn(ResearchModuleContent.tag)}">
+		<li id="research" class="ba-list-item" @click="${toggleModuleFn(ResearchModuleContent.name)}">
 			<span class="ba-list-item__pre">
 				<span class="ba-list-item__icon icon-recherche">
 				</span>
@@ -103,7 +103,7 @@ export class AdditionalMenu extends MvuElement {
 				</span>
 			</span>
 		</li>
-		<li id="mixer" class="ba-list-item" @click="${toggleModuleFn(MixerModuleContent.tag)}">
+		<li id="mixer" class="ba-list-item" @click="${toggleModuleFn(MixerModuleContent.name)}">
 				<span class="ba-list-item__pre">
 					<span class="ba-list-item__icon icon-mischpult">
 					</span>
@@ -117,7 +117,7 @@ export class AdditionalMenu extends MvuElement {
 					</span>
 				</span>
 		</li>
-		<li id="redesign" class="ba-list-item" @click="${toggleModuleFn(RedesignModuleContent.tag)}">
+		<li id="redesign" class="ba-list-item" @click="${toggleModuleFn(RedesignModuleContent.name)}">
 				<span class="ba-list-item__pre">
 					<span class="ba-list-item__icon icon-mischpult">
 					</span>
@@ -131,7 +131,7 @@ export class AdditionalMenu extends MvuElement {
 					</span>
 				</span>
 		</li>
-		<li id="analyse3d" class="ba-list-item" @click="${toggleModuleFn(Analyse3DModuleContent.tag)}">
+		<li id="analyse3d" class="ba-list-item" @click="${toggleModuleFn(Analyse3DModuleContent.name)}">
 			<span class="ba-list-item__pre">
 				<span class="ba-list-item__icon icon-3d_wind">
 				</span>
@@ -145,7 +145,7 @@ export class AdditionalMenu extends MvuElement {
 				</span>
 			</span>
 		</li>
-		<li id="geotherm" class="ba-list-item" @click="${toggleModuleFn(GeothermModuleContent.tag)}">
+		<li id="geotherm" class="ba-list-item" @click="${toggleModuleFn(GeothermModuleContent.name)}">
 			<span class="ba-list-item__pre">
 				<span class="ba-list-item__icon icon-standortcheck">
 				</span>
