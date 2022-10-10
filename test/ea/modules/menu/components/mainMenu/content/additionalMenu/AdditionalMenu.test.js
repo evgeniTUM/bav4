@@ -2,7 +2,7 @@
 
 import { AdditionalMenu } from '../../../../../../../../src/ea/modules/menu/components/mainMenu/content/additionalMenu/AdditionalMenu';
 import { Analyse3DModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/analyse3d/Analyse3DModuleContent';
-import { EAContribution } from '../../../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
+import { EnergyMarketModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/contribution/EnergyMarketModuleContent';
 import { GeothermModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/geotherm/GeothermModuleContent';
 import { MixerModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/mixer/MixerModuleContent';
 import { RedesignModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/redesign/RedesignModuleContent';
@@ -78,17 +78,17 @@ describe('AdditionalMenu', () => {
 		it('toggles contribution module', async () => {
 			const element = await setup();
 
-			element.shadowRoot.getElementById('contribution').click();
+			element.shadowRoot.getElementById('energy-market').click();
 
 			let setStateActions = storeActions.filter(e => e.type === SET_STATE);
 			expect(setStateActions.length).toBe(1);
 
 			let setModuleActions = storeActions.filter(e => e.type === SET_CURRENT_MODULE);
 			expect(setModuleActions.length).toBe(1);
-			expect(setModuleActions[0].payload).toBe(EAContribution.name);
+			expect(setModuleActions[0].payload).toBe(EnergyMarketModuleContent.name);
 
 			storeActions.length = 0;
-			element.shadowRoot.getElementById('contribution').click();
+			element.shadowRoot.getElementById('energy-market').click();
 
 			setStateActions = storeActions.filter(e => e.type === SET_STATE);
 			expect(setStateActions.length).toBe(1);

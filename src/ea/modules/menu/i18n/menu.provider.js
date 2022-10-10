@@ -26,8 +26,8 @@ export const provide = (lang) => {
 		case 'de':
 			return {
 				//the first part of the snake_case key should be the name of the related module
-				ea_menu_report: 'Mitmachen und Börsen',
-				ea_menu_report_tooltip: 'Korrekturen und neue Objekte melden',
+				ea_menu_boerse: 'Börsen (Abwärme/Solarflächen)',
+				ea_menu_boerse_tooltip: 'Abwärmequellen-/senken oder Flächen zur PV-Nutzung melden',
 				ea_menu_analyse3d: '3D-Analyse Windenergieanlagen',
 				ea_menu_analyse3d_tooltip: 'Realitätsnahe Darstellungen von Windenergieanlagen in der Landschaft erstellen',
 				ea_menu_recherche: 'Daten-Recherche und Download',

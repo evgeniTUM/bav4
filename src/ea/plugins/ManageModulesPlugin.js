@@ -10,7 +10,7 @@ import { observe } from '../../utils/storeUtils';
 import { CONTRIBUTION_LAYER_ID } from '../modules/map/components/olMap/handler/contribution/OlContributionHandler';
 import { GEO_FEATURE_LAYER_ID } from '../modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler';
 import { Analyse3DModuleContent } from '../modules/toolbox/components/analyse3d/Analyse3DModuleContent';
-import { EAContribution } from '../modules/toolbox/components/contribution/EAContribution';
+import { EnergyMarketModuleContent } from '../modules/toolbox/components/contribution/EnergyMarketModuleContent';
 import { GeothermModuleContent } from '../modules/toolbox/components/geotherm/GeothermModuleContent';
 import { MixerModuleContent } from '../modules/toolbox/components/mixer/MixerModuleContent';
 import { RedesignModuleContent } from '../modules/toolbox/components/redesign/RedesignModuleContent';
@@ -71,7 +71,7 @@ export class ManageModulesPlugin extends BaPlugin {
 		const handleLayers = (currentModule, lastModule) => {
 		// remove layers for last module
 			switch (lastModule) {
-				case EAContribution.name:
+				case EnergyMarketModuleContent.name:
 					removeLayer(CONTRIBUTION_LAYER_ID);
 					break;
 				case MixerModuleContent.name:
@@ -85,7 +85,7 @@ export class ManageModulesPlugin extends BaPlugin {
 
 			// enable layers for new module
 			switch (currentModule) {
-				case EAContribution.name:
+				case EnergyMarketModuleContent.name:
 					addLayer(CONTRIBUTION_LAYER_ID, { label: 'contribution_layer', constraints: { hidden: true, alwaysTop: false } });
 					break;
 

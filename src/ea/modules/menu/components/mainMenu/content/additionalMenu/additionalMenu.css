@@ -463,7 +463,7 @@
 	border-bottom: 1px solid var(--header-background-color);
 }
 
-.icon-mitmachboerse::before {
+.icon-boerse::before {
 	content: url("./assets/mitmachen_icon.svg");
 }
 

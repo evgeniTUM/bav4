@@ -1,5 +1,5 @@
 import { Analyse3DModuleContent } from '../../../../src/ea/modules/toolbox/components/analyse3d/Analyse3DModuleContent';
-import { EAContribution } from '../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
+import { EnergyMarketModuleContent } from '../../../../src/ea/modules/toolbox/components/contribution/EnergyMarketModuleContent';
 import { GeothermModuleContent } from '../../../../src/ea/modules/toolbox/components/geotherm/GeothermModuleContent';
 import { MixerModuleContent } from '../../../../src/ea/modules/toolbox/components/mixer/MixerModuleContent';
 import { RedesignModuleContent } from '../../../../src/ea/modules/toolbox/components/redesign/RedesignModuleContent';
@@ -14,7 +14,7 @@ describe('toolAction', () => {
 		expect(EaModules).toEqual([
 			MixerModuleContent,
 			RedesignModuleContent,
-			EAContribution,
+			EnergyMarketModuleContent,
 			ResearchModuleContent,
 			Analyse3DModuleContent,
 			GeothermModuleContent
@@ -28,7 +28,7 @@ describe('toolAction', () => {
 		expect(EaModulesQueryParameters).toEqual([
 			{ name: MixerModuleContent.name, parameter: 'mischpult' },
 			{ name: RedesignModuleContent.name, parameter: 'mischpult-redesign' },
-			{ name: EAContribution.name, parameter: 'melden' },
+			{ name: EnergyMarketModuleContent.name, parameter: 'melden' },
 			{ name: ResearchModuleContent.name, parameter: 'recherche' },
 			{ name: Analyse3DModuleContent.name, parameter: '3d-analyse' },
 			{ name: Analyse3DModuleContent.name, parameter: 'windanalyse' },
