@@ -77,15 +77,15 @@ export class AdditionalMenu extends MvuElement {
 		<style>${css}</style>		
 		<li id="energy-market" class="ba-list-item" @click="${toggleEnergyMarketModule}">
 			<span class="ba-list-item__pre">
-				<span class="ba-list-item__icon icon-mitmachboerse">
+				<span class="ba-list-item__icon icon-boerse">
 				</span>
 			</span>
 			<span class="ba-list-item__text vertical-center">
 				<span class="ba-list-item__primary-text">
-					${translate('ea_menu_report')}
+					${translate('ea_menu_boerse')}
 				</span>
 				<span class="ba-list-item__secondary-text">
-					${translate('ea_menu_report_tooltip')}
+					${translate('ea_menu_boerse_tooltip')}
 				</span>
 			</span>
 		</li>

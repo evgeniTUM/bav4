@@ -1,6 +1,7 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
+import css from './energyMarket.css';
 
 const Update = 'update';
 
@@ -48,7 +49,13 @@ export class EnergyMarketModuleContent extends MvuElement {
 	 * @override
 	 */
 	createView() {
-		return html`<ea-feature-contribution mode='market'></ea-feature-contribution>`;
+		const translate = (key) => this._translationService.translate(key);
+		return html`
+			<style>${css}</style>		
+			<div class="title"> 
+				${translate('ea_menu_boerse')}
+			</div>
+			<ea-feature-contribution mode='market'></ea-feature-contribution>`;
 	}
 
 	isRenderingSkipped() {
