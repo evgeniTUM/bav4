@@ -5,19 +5,20 @@
 .ba-list-item:hover {
 	background: transparent;
 }
+
 .iscollapse {
 	display: none;
 }
 
-.collapse-content > * {
-	border-right: 1px dotted var(--header-background-color);
-}
-.collapse-content > *:first-child {
-	border-right: 0;
-	margin-right: .5em;
-}
-.collapse-content > *:last-child {
+.content {
+	padding-left: 2em;
 	padding-right: 1em;
-	border-right: 0;
 }
 
+
+.disabled {
+	opacity: 0.7;
+	cursor: not-allowed;
+	color: var(--text1);
+	background: var(--secondary-bg-color)
+}

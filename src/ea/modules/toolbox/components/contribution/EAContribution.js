@@ -141,7 +141,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 				<div class='header'>Abwärmeinformations- und Solarflächenbörse</div>
 				<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>
 
-				<collapsable-content .label=${'1. Melden oder Suchen'} .open=${true}>
+				<collapsable-content .title=${'1. Melden oder Suchen'} .open=${true}>
 					<ba-button id="tag" 
 						class="button" 
 						.label=${translate(model.tagging ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag')}
@@ -157,7 +157,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</div>
 				</collapsable-content>
 
-				<collapsable-content .label=${ '2. Melden: Auswahl der Kategorie'} .open=${true}>
+				<collapsable-content .title=${ '2. Melden: Auswahl der Kategorie'} .open=${true}>
 					<div class='' >
 					<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}">
 						${SAMPLE_DATA.boerse.map(e => html`
@@ -168,7 +168,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			</div>
 				</collapsable-content>
 
-				<collapsable-content .label=${'3. Melden: Angaben zu neuem Eintrag/zu bestehendem Eintrag'} .open=${true}>
+				<collapsable-content .title=${'3. Melden: Angaben zu neuem Eintrag/zu bestehendem Eintrag'} .open=${true}>
 					${entries}
 					<div class="" title="${translate('ea_contribution_desc')}">
 						<label for="description">${translate('ea_contribution_desc')}</label>	
@@ -176,7 +176,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</div>
 				</collapsable-content>
 
-				<collapsable-content .label=${'4. Melden: Ihre E-Mail-Adresse'} .open=${true}>
+				<collapsable-content .title=${'4. Melden: Ihre E-Mail-Adresse'} .open=${true}>
 				</collapsable-content>
 				<ba-button id="select" class="button" 
 					.label=${translate('ea_contribution_button_finish')}

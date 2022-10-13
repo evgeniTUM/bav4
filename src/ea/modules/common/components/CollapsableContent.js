@@ -7,7 +7,7 @@ import { AbstractMvuContentPanel } from '../../../../modules/menu/components/mai
 
 const Update_Disabled = 'update_disabled';
 const Update_Open = 'update_open';
-const Update_Label = 'update_label';
+const Update_Title = 'update_title';
 
 export class CollapsableContent extends AbstractMvuContentPanel {
 
@@ -30,8 +30,8 @@ export class CollapsableContent extends AbstractMvuContentPanel {
 				return { ...model, disabled: data };
 			case Update_Open:
 				return { ...model, open: data };
-			case Update_Label:
-				return { ...model, label: data };
+			case Update_Title:
+				return { ...model, title: data };
 		}
 	}
 
@@ -39,18 +39,18 @@ export class CollapsableContent extends AbstractMvuContentPanel {
 	 * @override
 	 */
 	createView(model) {
-		const { disabled, label, open } = model;
+		const { disabled, title, open } = model;
 
 		const onClick = () => {
 			this.signal(Update_Open, !open);
 		};
 
 		return html`
-		 <style>${css}</style> 
-		 <div class='ba-section divider ${classMap({ disabled: disabled })}'>
+		<style>${css}</style> 
+        <div class='ba-section divider ${classMap({ disabled: disabled })}'>
             <div class='header ba-list-item' @click=${onClick}>
-                <span .title='visible-title'  class='ba-list-item__text ba-list-item__primary-text' tabindex='0' .checked='true' >${label}</span>
-                <button id='button-detail' data-test-id class='ba-list-item__after' title="collapse-title" >
+                <span .title='visible-title'  class='ba-list-item__text ba-list-item__primary-text' tabindex='0' .checked='true' >${title}</span>
+                <button data-test-id class='ba-list-item__after' title="collapse-title"  ?disabled=${disabled}>
                     <i class='icon chevron icon-rotate-90 ${classMap({ iconexpand: open })}'></i>
                 </button>   
             </div>
@@ -73,12 +73,12 @@ export class CollapsableContent extends AbstractMvuContentPanel {
 		return this.getModel().disabled;
 	}
 
-	set label(value) {
-		this.signal(Update_Label, value);
+	set title(value) {
+		this.signal(Update_Title, value);
 	}
 
-	get label() {
-		return this.getModel().label;
+	get title() {
+		return this.getModel().title;
 	}
 
 	set open(value) {
