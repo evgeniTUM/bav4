@@ -50,3 +50,7 @@
 	padding-right: 1em;
 	border-right: 0;
 }
+
+input.required:not([value=""]):not(:focus):invalid {
+	background-color: rgba(200, 0, 0, 0.2);
+}

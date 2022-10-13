@@ -1,10 +1,11 @@
 import { html, nothing } from 'lit-html';
+import { classMap } from 'lit-html/directives/class-map.js';
 import { $injector } from '../../../../../injection';
-import { setTaggingMode, setDescription } from '../../../../store/contribution/contribution.action';
-import css from './eaContribution.css';
+import { AbstractMvuContentPanel } from '../../../../../modules/menu/components/mainMenu/content/AbstractMvuContentPanel';
+import { setDescription, setTaggingMode } from '../../../../store/contribution/contribution.action';
 import { setCurrentModule } from '../../../../store/module/ea.action';
 import { ResearchModuleContent } from '../research/ResearchModuleContent';
-import { AbstractMvuContentPanel } from '../../../../../modules/menu/components/mainMenu/content/AbstractMvuContentPanel';
+import css from './eaContribution.css';
 
 const Update = 'update';
 
@@ -116,8 +117,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 			const label = optional ? name : name + '*';
 
 			return html`
-				<div class="fieldset" title="${translate('toolbox_drawTool_style_text')}"">								
-					<input required="${optional ? '' : 'required'}"  type="text" id="style_text" name="${name}" .value="" @change=${onChangeTextField} >
+				<div class="fieldset invalid" title="${translate('toolbox_drawTool_style_text')}"">								
+					<input class='${classMap({ required: !optional })}' required="${optional ? '' : 'required'}"  type="text" id="style_text" name="${name}" .value="" @change=${onChangeTextField} >
 					<label for="style_text" class="${clazz} control-label">${label}</label><i class="bar"></i>
 				</div>
 			`;
@@ -173,7 +174,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 				</collapsable-content>
 
 				<collapsable-content .title=${'4. Melden: Ihre E-Mail-Adresse'} .open=${true}>
-					${createField('email', 'Ihre Email Addresse', false)}
+					${createField('Ihre Email Addresse', false)}
 				</collapsable-content>
 
 				<ba-button id="select" class="button" 
