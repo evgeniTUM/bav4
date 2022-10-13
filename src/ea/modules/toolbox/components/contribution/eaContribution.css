@@ -3,6 +3,17 @@
 	overflow: auto;
 }
 
+.coordinates {
+	border-style: solid;
+	padding-left: 1em;
+	padding-right: 1em;
+}
+
+.coordinates-container {
+	display: flex;
+	justify-content: space-between;
+}
+
 .control-label.required {
 	font-weight: bold;
 }

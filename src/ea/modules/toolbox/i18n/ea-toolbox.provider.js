@@ -11,7 +11,7 @@ export const provide = (lang) => {
 				module_prevent_switching_tool: 'Please close the current tool first',
 				toolbox_redesign_header: 'Mischpult "Redesign"',
 
-				ea_contribution_desc: 'Description',
+				ea_contribution_additional_input: 'Additional text',
 				ea_contribution_button_tag: 'Tag location',
 				ea_contribution_button_tag_cancel: 'Cancel',
 				ea_contribution_button_finish: 'Finish',
@@ -29,7 +29,7 @@ export const provide = (lang) => {
 				module_prevent_switching_tool: 'Module Bitte zuerst das aktuelle Werkzeug schließen/beenden',
 				toolbox_redesign_header: 'Mischpult "Redesign"',
 
-				ea_contribution_desc: 'Beschreibung',
+				ea_contribution_additional_input: 'Zusätzlicher Text',
 				ea_contribution_button_tag: 'Standort markieren',
 				ea_contribution_button_tag_cancel: 'Abbrechen',
 				ea_contribution_button_finish: 'Beenden',

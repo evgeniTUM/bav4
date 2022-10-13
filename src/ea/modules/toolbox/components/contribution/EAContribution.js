@@ -151,33 +151,31 @@ export class EAContribution extends AbstractMvuContentPanel {
 						.label=${translate('ea_contribution_button_find')}
 						@click=${onClickResearchButton}></ba-button>
 
-					<div class="" title="${translate('ea_contribution_coordinates_text')}">
+					<div class="coordinates-container" title="${translate('ea_contribution_coordinates_text')}">
 						<label for="coordinates">${translate('ea_contribution_coordinates_text')}</label>	
-						<div id='coordinates'>${getCoordinatesString()}</div>
+						<div name='coordiantes' class="coordinates">${getCoordinatesString()}</div>
 					</div>
 				</collapsable-content>
 
 				<collapsable-content .title=${ '2. Melden: Auswahl der Kategorie'} .open=${true}>
-					<div class='' >
 					<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}">
-						${SAMPLE_DATA.boerse.map(e => html`
-						<option value="${e['ee-name']}">${e['ee-name']}</option>
-						`)}
+						${SAMPLE_DATA.boerse.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
+						<label for="category">Category</label>
 					</select>
-				<label for="category">Category</label>
-			</div>
 				</collapsable-content>
 
 				<collapsable-content .title=${'3. Melden: Angaben zu neuem Eintrag/zu bestehendem Eintrag'} .open=${true}>
 					${entries}
-					<div class="" title="${translate('ea_contribution_desc')}">
-						<label for="description">${translate('ea_contribution_desc')}</label>	
-						<textarea id="description" name="${translate('ea_contribution_desc')}" .value=${model.description} @input=${onChangeDescription}></textarea>
-					</div>
+					<div  class="fieldset">						
+						<textarea  required="required"  id="textarea-foo" name='additionalInfo' @change=${onChangeTextField}></textarea>
+						<label for="textarea-foo" class="control-label">${translate('ea_contribution_additional_input')}</label><i class="bar"></i>
+					</div>	
 				</collapsable-content>
 
 				<collapsable-content .title=${'4. Melden: Ihre E-Mail-Adresse'} .open=${true}>
+					${createField('email', 'Ihre Email Addresse', false)}
 				</collapsable-content>
+
 				<ba-button id="select" class="button" 
 					.label=${translate('ea_contribution_button_finish')}
 					@click=${onClickFinish}></ba-button>

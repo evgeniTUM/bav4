@@ -15,6 +15,9 @@
 	padding-right: 1em;
 }
 
+.content:last-child {
+	margin-bottom: 2em;
+}
 
 .disabled {
 	opacity: 0.7;

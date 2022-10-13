@@ -103,7 +103,7 @@ describe('EAContributon', () => {
 			expect(store.getState().contribution.description).toBe(newText);
 		});
 
-		it('toggles tagging mode when "tag" button is clicked', async () => {
+		it('toggles tagging mode when "search" button is clicked', async () => {
 			const element = await setup();
 			const tagButton = element.shadowRoot.querySelector('#search');
 
@@ -112,7 +112,7 @@ describe('EAContributon', () => {
 			expect(store.getState().ea.currentModule).toEqual('recherche');
 		});
 
-		it('opens research module when "search" button is clicked', async () => {
+		it('opens research module when "tag" button is clicked', async () => {
 			const element = await setup();
 			const tagButton = element.shadowRoot.querySelector('#tag');
 
