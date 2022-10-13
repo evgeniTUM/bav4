@@ -1,3 +1,4 @@
+import './modules/common/components';
 import './modules/menu';
 import './modules/toolbox';
 import './modules/topics';

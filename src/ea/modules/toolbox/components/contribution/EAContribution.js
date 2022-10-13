@@ -80,6 +80,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 	createView(model) {
 		const translate = (key) => this._translationService.translate(key);
 
+
 		const onChangeDescription = (e) => {
 			setDescription(e.target.value);
 		};
@@ -122,68 +123,17 @@ export class EAContribution extends AbstractMvuContentPanel {
 			`;
 		};
 
-
 		const onSelectionChanged = (e) => {
 			this.currentCategory = e.target.value;
 			this.render();
 		};
-
-		const selectField = html`
-            <div class='' >
-				<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}">
-					${SAMPLE_DATA.boerse.map(e => html`
-					<option value="${e['ee-name']}">${e['ee-name']}</option>
-					`)}
-				</select>
-				<label for="category">Category</label>
-			</div>`;
-
 
 		const categorySpecs = SAMPLE_DATA.boerse.find(e => e['ee-name'] === this.currentCategory);
 		let entries = html``;
 		if (categorySpecs) {
 			entries = categorySpecs['ee-angaben'].map(e => createField(e.name, e.optional));
 		}
-		const step3 = html`
-			${entries}
-			<div class="" title="${translate('ea_contribution_desc')}">
-				<label for="description">${translate('ea_contribution_desc')}</label>	
-				<textarea id="description" name="${translate('ea_contribution_desc')}" .value=${model.description} @input=${onChangeDescription}></textarea>
-			</div>` ;
 
-		const section = (id, title, content) => {
-			return html`
-				<div id=${id} class='section'>
-					<div class='section-header'>${title}</div>
-					<div class='section-content'>
-						${content}
-					</div>
-				</div>
-			`;
-		};
-
-		const step1 = html`
-				<ba-button id="tag" 
-					class="button" 
-					.label=${translate(model.tagging ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag')}
-					@click=${onClickTagButton}></ba-button>
-				<ba-button id="search" 
-					class="button" 
-					.label=${translate('ea_contribution_button_find')}
-					@click=${onClickResearchButton}></ba-button>
-
-				<div class="" title="${translate('ea_contribution_coordinates_text')}">
-					<label for="coordinates">${translate('ea_contribution_coordinates_text')}</label>	
-					<div id='coordinates'>${getCoordinatesString()}</div>
-				</div>
-		`;
-
-		const step4 = html`
-			<ba-button id="select" 
-				class="button" 
-				.label=${translate('ea_contribution_button_finish')}
-				@click=${onClickFinish}></ba-button>
-		`;
 
 		return html`
 			<style>${css}</style>
@@ -191,10 +141,46 @@ export class EAContribution extends AbstractMvuContentPanel {
 				<div class='header'>Abwärmeinformations- und Solarflächenbörse</div>
 				<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>
 
-				${section('step1', '1. Melden oder Suchen', step1)}
-				${section('step2', '2. Melden: Auswahl der Kategorie', selectField)}
-				${section('step3', '3. Melden: Angaben zu neuem Eintrag/zu bestehendem Eintrag', step3)}
-				${section('step4', '4. Melden: Ihre E-Mail-Adresse', step4)}
+				<collapsable-content .label=${'1. Melden oder Suchen'} .open=${true}>
+					<ba-button id="tag" 
+						class="button" 
+						.label=${translate(model.tagging ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag')}
+						@click=${onClickTagButton}></ba-button>
+					<ba-button id="search" 
+						class="button" 
+						.label=${translate('ea_contribution_button_find')}
+						@click=${onClickResearchButton}></ba-button>
+
+					<div class="" title="${translate('ea_contribution_coordinates_text')}">
+						<label for="coordinates">${translate('ea_contribution_coordinates_text')}</label>	
+						<div id='coordinates'>${getCoordinatesString()}</div>
+					</div>
+				</collapsable-content>
+
+				<collapsable-content .label=${ '2. Melden: Auswahl der Kategorie'} .open=${true}>
+					<div class='' >
+					<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}">
+						${SAMPLE_DATA.boerse.map(e => html`
+						<option value="${e['ee-name']}">${e['ee-name']}</option>
+						`)}
+					</select>
+				<label for="category">Category</label>
+			</div>
+				</collapsable-content>
+
+				<collapsable-content .label=${'3. Melden: Angaben zu neuem Eintrag/zu bestehendem Eintrag'} .open=${true}>
+					${entries}
+					<div class="" title="${translate('ea_contribution_desc')}">
+						<label for="description">${translate('ea_contribution_desc')}</label>	
+						<textarea id="description" name="${translate('ea_contribution_desc')}" .value=${model.description} @input=${onChangeDescription}></textarea>
+					</div>
+				</collapsable-content>
+
+				<collapsable-content .label=${'4. Melden: Ihre E-Mail-Adresse'} .open=${true}>
+				</collapsable-content>
+				<ba-button id="select" class="button" 
+					.label=${translate('ea_contribution_button_finish')}
+					@click=${onClickFinish}></ba-button>
 				
 			</div>
 		`;
