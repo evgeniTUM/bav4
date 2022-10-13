@@ -1,8 +1,9 @@
-import { $injector } from '../../../../../../src/injection';
 import { EAContribution } from '../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
-import { MvuElement } from '../../../../../../src/modules/MvuElement';
 import { setTaggingMode } from '../../../../../../src/ea/store/contribution/contribution.action';
 import { contributionReducer, initialState } from '../../../../../../src/ea/store/contribution/contribution.reducer';
+import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
+import { $injector } from '../../../../../../src/injection';
+import { AbstractMvuContentPanel } from '../../../../../../src/modules/menu/components/mainMenu/content/AbstractMvuContentPanel';
 import { modalReducer } from '../../../../../../src/store/modal/modal.reducer';
 import { toolsReducer } from '../../../../../../src/store/tools/tools.reducer';
 import { TestUtils } from '../../../../../test-utils';
@@ -31,7 +32,12 @@ describe('EAContributon', () => {
 
 		const { embed = false, isTouch = false } = config;
 
-		store = TestUtils.setupStoreAndDi(state, { contribution: contributionReducer, modal: modalReducer, tools: toolsReducer });
+		store = TestUtils.setupStoreAndDi(state, {
+			contribution: contributionReducer,
+			modal: modalReducer,
+			tools: toolsReducer,
+			ea: eaReducer
+		});
 		$injector
 			.registerSingleton('EnvironmentService', {
 				isEmbedded: () => embed,
@@ -44,11 +50,11 @@ describe('EAContributon', () => {
 
 	describe('class', () => {
 
-		it('inherits from MvuElement', async () => {
+		it('inherits from Ab', async () => {
 
 			const element = await setup();
 
-			expect(element instanceof MvuElement).toBeTrue();
+			expect(element instanceof AbstractMvuContentPanel).toBeTrue();
 		});
 
 	});
@@ -97,7 +103,16 @@ describe('EAContributon', () => {
 			expect(store.getState().contribution.description).toBe(newText);
 		});
 
-		it('toggles tagging mode when tag button is clicked', async () => {
+		it('toggles tagging mode when "tag" button is clicked', async () => {
+			const element = await setup();
+			const tagButton = element.shadowRoot.querySelector('#search');
+
+			tagButton.click();
+
+			expect(store.getState().ea.currentModule).toEqual('recherche');
+		});
+
+		it('opens research module when "search" button is clicked', async () => {
 			const element = await setup();
 			const tagButton = element.shadowRoot.querySelector('#tag');
 
@@ -111,6 +126,7 @@ describe('EAContributon', () => {
 
 			expect(store.getState().contribution.tagging).toBe(false);
 		});
+
 
 		it('changes button tittle when tagging mode is active', async () => {
 			const element = await setup();

@@ -15,6 +15,7 @@ export const provide = (lang) => {
 				ea_contribution_button_tag: 'Tag location',
 				ea_contribution_button_tag_cancel: 'Cancel',
 				ea_contribution_button_finish: 'Finish',
+				ea_contribution_button_find: 'Find',
 				ea_contribution_coordinates_text: 'Facility coordinates'
 			};
 
@@ -32,6 +33,7 @@ export const provide = (lang) => {
 				ea_contribution_button_tag: 'Standort markieren',
 				ea_contribution_button_tag_cancel: 'Abbrechen',
 				ea_contribution_button_finish: 'Beenden',
+				ea_contribution_button_find: 'Finden',
 				ea_contribution_coordinates_text: 'Koordinaten der Anlage'
 			};
 

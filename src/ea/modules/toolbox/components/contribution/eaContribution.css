@@ -1,28 +1,12 @@
-.tool-container__text-item {
-	display: flex;
-	align-items: flex-end;
-	margin: 0 0 1em 0;
+.container {
+	margin: 1em;
 }
-.copy {
-	width: 3em;
+
+.control-label.required {
+	font-weight: bold;
 }
-.prime-text-value {
-	font-size: 2.2em;
-	flex-grow: 1;
-	text-align: right;
-	margin-right: .5em;
-	line-height: .9;
-}
-.prime-text-unit {
-	font-size: 2.2em;
-	text-align: left;
-	width: 2.1em;
-	line-height: .9;
-}
-.area {
-	opacity: 0;
-}
-.is-area {
-	opacity: 1;
-	transition: all .4s ease-in-out; 
+
+.search-icon {
+	background-repeat: no-repeat;
+	background-image: url('assets/search.svg') !important;
 }

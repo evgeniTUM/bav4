@@ -28,7 +28,7 @@ describe('toolAction', () => {
 		expect(EaModulesQueryParameters).toEqual([
 			{ name: MixerModuleContent.name, parameter: 'mischpult' },
 			{ name: RedesignModuleContent.name, parameter: 'mischpult-redesign' },
-			{ name: EnergyMarketModuleContent.name, parameter: 'melden' },
+			{ name: EnergyMarketModuleContent.name, parameter: 'boerse' },
 			{ name: ResearchModuleContent.name, parameter: 'recherche' },
 			{ name: Analyse3DModuleContent.name, parameter: '3d-analyse' },
 			{ name: Analyse3DModuleContent.name, parameter: 'windanalyse' },
