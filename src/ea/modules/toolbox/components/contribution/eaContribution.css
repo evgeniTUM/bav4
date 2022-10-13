@@ -1,5 +1,6 @@
 .container {
 	margin: 1em;
+	overflow: auto;
 }
 
 .control-label.required {
@@ -9,4 +10,32 @@
 .search-icon {
 	background-repeat: no-repeat;
 	background-image: url('assets/search.svg') !important;
+}
+
+.header {
+	font-weight: bold;
+	font-size: large;
+}
+
+.section-header {
+	font-weight: bold;
+	font-size: larger;
+}
+
+.iscollapse {
+	display: none;
+}
+
+.collapse-content > * {
+	border-right: 1px dotted var(--header-background-color);
+	padding-left: 1.5em;
+}
+.collapse-content > *:first-child {
+	border-right: 0;
+	margin-right: .5em;
+	margin-top: 0.7em;
+}
+.collapse-content > *:last-child {
+	padding-right: 1em;
+	border-right: 0;
 }
