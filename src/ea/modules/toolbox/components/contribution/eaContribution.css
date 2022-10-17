@@ -7,11 +7,13 @@
 	border-style: solid;
 	padding-left: 1em;
 	padding-right: 1em;
+	width: 11.5em;
 }
 
-.coordinates-container {
+.flex-container {
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-around;
+	margin-bottom: 1em;
 }
 
 .control-label.required {
@@ -53,4 +55,35 @@
 
 input.required:not([value=""]):not(:focus):invalid {
 	background-color: rgba(200, 0, 0, 0.2);
+}
+
+
+.button-container {
+	display: flex
+}
+.button-container button {
+	padding: .5em 0.9em;
+	background: var(--primary-color);
+	color: var(--text3);
+	border-color: var(--primary-color);
+	border-width: 1px;
+	border-style: solid;
+	border-radius: var(--border-radius-button);
+	cursor: pointer;
+	transition: all var(--animation-duration-medium-open) var(--animation-easing-linea); 
+	font-weight: bold;
+	position: relative;
+	z-index: 1;
+	min-width: 6.5em;
+}
+.button-container span {
+	color: var(--text3);
+	opacity: .8;
+}
+.button-container button:hover span {
+	opacity: 1;
+}
+.button-container button:focus {
+	z-index: 0;
+	box-shadow: 0 0 0 .2em var(--primary-color-lighter);
 }

@@ -99,7 +99,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 		};
 
 
-		const onClickFinish = () => {
+		const onClickSend = () => {
 			alert(JSON.stringify(this.result));
 			setTaggingMode(false);
 		};
@@ -135,51 +135,53 @@ export class EAContribution extends AbstractMvuContentPanel {
 			entries = categorySpecs['ee-angaben'].map(e => createField(e.name, e.optional));
 		}
 
+		const tagButtonTitle = translate(model.tagging ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag');
 
 		return html`
 			<style>${css}</style>
 			<div class="container">
+				
 				<div class='header'>Abwärmeinformations- und Solarflächenbörse</div>
 				<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>
 
-				<collapsable-content .title=${'1. Melden oder Suchen'} .open=${true}>
-					<ba-button id="tag" 
-						class="button" 
-						.label=${translate(model.tagging ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag')}
-						@click=${onClickTagButton}></ba-button>
-					<ba-button id="search" 
-						class="button" 
-						.label=${translate('ea_contribution_button_find')}
-						@click=${onClickResearchButton}></ba-button>
+				<collapsable-content id='step1' .title=${'1. Melden oder Suchen'} .open=${true}>
+					<div class="button-container flex-container">
+						<button id="tag" @click=${onClickTagButton} title=${tagButtonTitle}>
+							${tagButtonTitle}
+						</button>
+						<button id="search" @click=${onClickResearchButton} title=${translate('ea_contribution_button_find')}>
+							${translate('ea_contribution_button_find')}
+						</button>
+					</div>
 
-					<div class="coordinates-container" title="${translate('ea_contribution_coordinates_text')}">
+					<div class="flex-container" title="${translate('ea_contribution_coordinates_text')}">
 						<label for="coordinates">${translate('ea_contribution_coordinates_text')}</label>	
-						<div name='coordiantes' class="coordinates">${getCoordinatesString()}</div>
+						<input disbled=true name='coordiantes' class="coordinates" value=${getCoordinatesString()}></input>
 					</div>
 				</collapsable-content>
 
-				<collapsable-content .title=${ '2. Melden: Auswahl der Kategorie'} .open=${true}>
+				<collapsable-content id='step2' .title=${ '2. Melden: Auswahl der Kategorie'} .open=${true}>
 					<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}">
 						${SAMPLE_DATA.boerse.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
 						<label for="category">Category</label>
 					</select>
 				</collapsable-content>
 
-				<collapsable-content .title=${'3. Melden: Angaben zu neuem Eintrag/zu bestehendem Eintrag'} .open=${true}>
+				<collapsable-content id='step3' .title=${'3. Melden: Angaben zu neuem Eintrag/zu bestehendem Eintrag'} .open=${true}>
 					${entries}
 					<div  class="fieldset">						
-						<textarea  required="required"  id="textarea-foo" name='additionalInfo' @change=${onChangeTextField}></textarea>
+						<textarea  required="required"  id="textarea" name='additionalInfo' value=${model.description} @change=${onChangeDescription}></textarea>
 						<label for="textarea-foo" class="control-label">${translate('ea_contribution_additional_input')}</label><i class="bar"></i>
 					</div>	
 				</collapsable-content>
 
-				<collapsable-content .title=${'4. Melden: Ihre E-Mail-Adresse'} .open=${true}>
+				<collapsable-content id='step4' .title=${'4. Melden: Ihre E-Mail-Adresse'} .open=${true}>
 					${createField('Ihre Email Addresse', false)}
 				</collapsable-content>
 
 				<ba-button id="select" class="button" 
-					.label=${translate('ea_contribution_button_finish')}
-					@click=${onClickFinish}></ba-button>
+					.label=${translate('ea_contribution_button_send')}
+					@click=${onClickSend}></ba-button>
 				
 			</div>
 		`;

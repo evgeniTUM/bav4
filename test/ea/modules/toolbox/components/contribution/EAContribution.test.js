@@ -61,20 +61,27 @@ describe('EAContributon', () => {
 
 	describe('when initialized and shown', () => {
 
-		it('all fields are shown', async () => {
+		it('all sections are shown expanded', async () => {
 			const element = await setup();
 
-			expect(element.shadowRoot.querySelector('#description')).toBeTruthy();
-			expect(element.shadowRoot.querySelector('#coordinates')).toBeTruthy();
-			expect(element.shadowRoot.querySelector('#tag')).toBeTruthy();
-			expect(element.shadowRoot.querySelector('#select')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#step1')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#step1').open).toBeTruthy();
+
+			expect(element.shadowRoot.querySelector('#step2')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#step2').open).toBeTruthy();
+
+			expect(element.shadowRoot.querySelector('#step3')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#step3').open).toBeTruthy();
+
+			expect(element.shadowRoot.querySelector('#step4')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#step4').open).toBeTruthy();
 
 		});
 
 		it('shows no tag location when not present', async () => {
 			const element = await setup();
 
-			expect(element.shadowRoot.querySelector('#coordinates').textContent).toEqual('');
+			expect(element.shadowRoot.querySelector('.coordinates').value).toEqual('');
 		});
 
 		it('shows tag location when present', async () => {
@@ -86,7 +93,7 @@ describe('EAContributon', () => {
 			const element = await setup({ contribution: { position: expectedCoordinates } });
 
 			expect(toLonLatSpy).toHaveBeenCalledWith(expectedCoordinates);
-			expect(element.shadowRoot.querySelector('#coordinates').textContent).toEqual(expectedCoordString);
+			expect(element.shadowRoot.querySelector('.coordinates').value).toEqual(expectedCoordString);
 		});
 
 		it('sets the description, after changes in textarea', async () => {
@@ -133,10 +140,12 @@ describe('EAContributon', () => {
 			const tagButton = element.shadowRoot.querySelector('#tag');
 
 			setTaggingMode(false);
-			expect(tagButton.label).toBe('ea_contribution_button_tag');
+			expect(tagButton.title).toBe('ea_contribution_button_tag');
+			expect(tagButton.innerText).toBe('ea_contribution_button_tag');
 
 			setTaggingMode(true);
-			expect(tagButton.label).toBe('ea_contribution_button_tag_cancel');
+			// expect(tagButton.title).toBe('ea_contribution_button_tag_cancel');
+			expect(tagButton.innerText).toBe('ea_contribution_button_tag_cancel');
 		});
 
 	});
