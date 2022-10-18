@@ -8,6 +8,8 @@ import { ResearchModuleContent } from '../research/ResearchModuleContent';
 import css from './eaContribution.css';
 
 const Update = 'update';
+const Update_Category = 'update_category';
+const Update_UserInput = 'update_user_input';
 
 const SAMPLE_DATA = { 'boerse': [
 	{
@@ -36,7 +38,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 			description: '',
 			isPortrait: false,
 			hasMinWidth: false,
-			active: false
+			currentCategory: nothing,
+			result: {}
 		});
 
 		const {
@@ -50,7 +53,6 @@ export class EAContribution extends AbstractMvuContentPanel {
 		this._translationService = translationService;
 		this._coordinateService = coordinateService;
 
-		this.currentCategory = nothing;
 		this.result = {};
 	}
 
@@ -65,6 +67,22 @@ export class EAContribution extends AbstractMvuContentPanel {
 					...model,
 					...data
 				};
+
+			case Update_Category:
+				return {
+					...model,
+					currentCategory: data
+				};
+
+			case Update_UserInput: {
+				const result = model.result;
+				result[data.name] = data.value;
+
+				return {
+					...model,
+					result
+				};
+			}
 		}
 	}
 
@@ -73,6 +91,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 	 */
 	onInitialize() {
 		this.observe(state => state.contribution, data => this.signal(Update, data));
+		this.signal(Update_Category, SAMPLE_DATA.boerse[0]['ee-name']);
 	}
 
 	/**
@@ -100,7 +119,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 
 		const onClickSend = () => {
-			alert(JSON.stringify(this.result));
+			alert(JSON.stringify(model.result));
 			setTaggingMode(false);
 		};
 
@@ -109,7 +128,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 		};
 
 		const onChangeTextField = (event) => {
-			this.result[event.target.name] = event.target.value;
+			this.signal(Update_UserInput, { name: event.target.name, value: event.target.value });
 		};
 
 		const createField = (name, optional) => {
@@ -125,11 +144,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 		};
 
 		const onSelectionChanged = (e) => {
-			this.currentCategory = e.target.value;
-			this.render();
+			this.signal(Update_Category, e.target.value);
 		};
 
-		const categorySpecs = SAMPLE_DATA.boerse.find(e => e['ee-name'] === this.currentCategory);
+		const categorySpecs = SAMPLE_DATA.boerse.find(e => e['ee-name'] === model.currentCategory);
 		let entries = html``;
 		if (categorySpecs) {
 			entries = categorySpecs['ee-angaben'].map(e => createField(e.name, e.optional));
