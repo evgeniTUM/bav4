@@ -10,6 +10,7 @@ import css from './eaContribution.css';
 const Update = 'update';
 const Update_Category = 'update_category';
 const Update_UserInput = 'update_user_input';
+const Reset_UserInput = 'reset_user_input';
 
 const SAMPLE_DATA = { 'boerse': [
 	{
@@ -39,7 +40,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			isPortrait: false,
 			hasMinWidth: false,
 			currentCategory: nothing,
-			result: {}
+			result: { }
 		});
 
 		const {
@@ -83,6 +84,12 @@ export class EAContribution extends AbstractMvuContentPanel {
 					result
 				};
 			}
+
+			case Reset_UserInput:
+				return {
+					...model,
+					result: {}
+				};
 		}
 	}
 
@@ -136,7 +143,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			const label = optional ? name : name + '*';
 
 			return html`
-				<div class="fieldset invalid" title="${translate('toolbox_drawTool_style_text')}"">								
+				<div id=${name} class="fieldset invalid" title="${translate('toolbox_drawTool_style_text')}"">								
 					<input class='${classMap({ required: !optional })}' required="${optional ? '' : 'required'}"  type="text" id="style_text" name="${name}" .value="" @change=${onChangeTextField} >
 					<label for="style_text" class="${clazz} control-label">${label}</label><i class="bar"></i>
 				</div>
@@ -144,14 +151,15 @@ export class EAContribution extends AbstractMvuContentPanel {
 		};
 
 		const onSelectionChanged = (e) => {
+			this.shadowRoot.getElementById('category-fields').reset();
+			this.signal(Reset_UserInput);
 			this.signal(Update_Category, e.target.value);
 		};
 
-		const categorySpecs = SAMPLE_DATA.boerse.find(e => e['ee-name'] === model.currentCategory);
-		let entries = html``;
-		if (categorySpecs) {
-			entries = categorySpecs['ee-angaben'].map(e => createField(e.name, e.optional));
-		}
+		const categoryFields = {};
+		SAMPLE_DATA.boerse.forEach(e => {
+			categoryFields[e['ee-name']] = e['ee-angaben'].map(e => createField(e.name, e.optional));
+		});
 
 		const tagButtonTitle = translate(model.tagging ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag');
 
@@ -186,7 +194,9 @@ export class EAContribution extends AbstractMvuContentPanel {
 				</collapsable-content>
 
 				<collapsable-content id='step3' .title=${'3. Melden: Angaben zu neuem Eintrag/zu bestehendem Eintrag'} .open=${true}>
-					${entries}
+					<form id='category-fields'>
+						${categoryFields[model.currentCategory]}
+					</form>
 					<div  class="fieldset">						
 						<textarea  required="required"  id="textarea" name='additionalInfo' value=${model.description} @change=${onChangeDescription}></textarea>
 						<label for="textarea-foo" class="control-label">${translate('ea_contribution_additional_input')}</label><i class="bar"></i>
