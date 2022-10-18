@@ -3,8 +3,6 @@ import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import css from './energyMarket.css';
 
-const Update = 'update';
-
 export class EnergyMarketModuleContent extends MvuElement {
 
 	constructor() {
@@ -28,34 +26,20 @@ export class EnergyMarketModuleContent extends MvuElement {
 	/**
 	 * @override
 	 */
-	update(type, data, model) {
-		switch (type) {
-			case Update:
-				return {
-					...model,
-					...data
-				};
-		}
-	}
-
-	/**
-	 * @override
-	 */
-	onInitialize() {
-		this.observe(state => state.contribution, data => this.signal(Update, data));
-	}
-
-	/**
-	 * @override
-	 */
 	createView() {
 		const translate = (key) => this._translationService.translate(key);
 		return html`
-			<style>${css}</style>		
-			<div class="title"> 
-				${translate('ea_menu_boerse')}
+			<style>${css}</style>
+			<div class='container'>
+				<div class='header'> 
+					${translate('ea_menu_boerse')}
+				</div>
+				<div class='content'>
+					<ea-feature-contribution mode='market'></ea-feature-contribution>
+				</div>
 			</div>
-			<ea-feature-contribution mode='market'></ea-feature-contribution>`;
+			`;
+
 	}
 
 	isRenderingSkipped() {
