@@ -11,7 +11,7 @@
 
 .flex-container {
 	display: flex;
-	justify-content: space-around;
+	justify-content: space-between;
 	margin-bottom: 1em;
 }
 
@@ -20,9 +20,23 @@
 }
 
 .search-icon {
+	height: 2em;
+	width: 100%;
+	filter: invert(100%);
+	background-position: center;
 	background-repeat: no-repeat;
-	background-image: url('assets/search.svg') !important;
+	background-image: url('assets/search.svg');
 }
+
+.tag-icon {
+	height: 2em;
+	width: 100%;
+	background-position: center;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-image: url('assets/marker.svg');
+}
+
 
 .header {
 	font-weight: bold;
@@ -61,13 +75,14 @@ input.required:not([value=""]):not(:focus):invalid {
 	display: flex
 }
 .button-container button {
+	width: 15em;
 	padding: .5em 0.9em;
 	background: var(--primary-color);
 	color: var(--text3);
 	border-color: var(--primary-color);
 	border-width: 1px;
 	border-style: solid;
-	border-radius: var(--border-radius-button);
+	border-radius: 10px;
 	cursor: pointer;
 	transition: all var(--animation-duration-medium-open) var(--animation-easing-linea); 
 	font-weight: bold;

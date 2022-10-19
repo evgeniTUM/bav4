@@ -98,7 +98,6 @@ export class EAContribution extends AbstractMvuContentPanel {
 	 */
 	onInitialize() {
 		this.observe(state => state.contribution, data => this.signal(Update, data));
-		this.signal(Update_Category, SAMPLE_DATA.boerse[0]['ee-name']);
 	}
 
 	/**
@@ -111,7 +110,6 @@ export class EAContribution extends AbstractMvuContentPanel {
 		const onChangeDescription = (e) => {
 			setDescription(e.target.value);
 		};
-
 
 		const onClickTagButton = () => {
 
@@ -126,7 +124,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 
 		const onClickSend = () => {
-			alert(JSON.stringify(model.result));
+			alert(JSON.stringify(model.result, null, 1));
 			setTaggingMode(false);
 		};
 
@@ -161,7 +159,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			categoryFields[e['ee-name']] = e['ee-angaben'].map(e => createField(e.name, e.optional));
 		});
 
-		const tagButtonTitle = translate(model.tagging ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag');
+		const tagButtonTitle = translate(model.tagging ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag_title');
 
 		return html`
 			<style>${css}</style>
@@ -174,9 +172,13 @@ export class EAContribution extends AbstractMvuContentPanel {
 					<div class="button-container flex-container">
 						<button id="tag" @click=${onClickTagButton} title=${tagButtonTitle}>
 							${tagButtonTitle}
+							<div class='tag-icon'></div>
+							${translate('ea_contribution_button_tag_text')}
 						</button>
 						<button id="search" @click=${onClickResearchButton} title=${translate('ea_contribution_button_find')}>
-							${translate('ea_contribution_button_find')}
+							${translate('ea_contribution_button_find_title')}
+							<div class='search-icon'></div>
+							${translate('ea_contribution_button_find_text')}
 						</button>
 					</div>
 
@@ -188,6 +190,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 				<collapsable-content id='step2' .title=${ '2. Melden: Auswahl der Kategorie'} .open=${true}>
 					<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}">
+						<option selected disabled>Bitte wählen ... </option>
 						${SAMPLE_DATA.boerse.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
 						<label for="category">Category</label>
 					</select>
@@ -197,20 +200,22 @@ export class EAContribution extends AbstractMvuContentPanel {
 					<form id='category-fields'>
 						${categoryFields[model.currentCategory]}
 					</form>
-					<div  class="fieldset">						
-						<textarea  required="required"  id="textarea" name='additionalInfo' value=${model.description} @change=${onChangeDescription}></textarea>
-						<label for="textarea-foo" class="control-label">${translate('ea_contribution_additional_input')}</label><i class="bar"></i>
-					</div>	
+				
 				</collapsable-content>
 
 				<collapsable-content id='step4' .title=${'4. Melden: Ihre E-Mail-Adresse'} .open=${true}>
 					${createField('Ihre Email Addresse', false)}
+					<div  class="fieldset">						
+						<textarea  required="required"  id="textarea" name='additionalInfo' value=${model.description} @change=${onChangeDescription}></textarea>
+						<label for="textarea-foo" class="control-label">${translate('ea_contribution_additional_input')}</label><i class="bar"></i>
+					</div>	
+					<ba-button id="select" class="button" 
+						.label=${translate('ea_contribution_button_send')}
+						@click=${onClickSend}></ba-button>
+				
 				</collapsable-content>
 
-				<ba-button id="select" class="button" 
-					.label=${translate('ea_contribution_button_send')}
-					@click=${onClickSend}></ba-button>
-				
+			
 			</div>
 		`;
 
