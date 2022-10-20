@@ -137,8 +137,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			setTaggingMode(false);
 
 			this.shadowRoot.querySelector('input:invalid').focus();
-			this.shadowRoot.querySelector('input:invalid').classList.push('popup');
-
+			this.shadowRoot.querySelector('input:invalid').classList.add('validation-popup');
 		};
 
 		const getCoordinatesString = () => {
@@ -149,14 +148,12 @@ export class EAContribution extends AbstractMvuContentPanel {
 			this.signal(Update_UserInput, { name: event.target.name, value: event.target.value });
 		};
 
-		const createField = (name, optional) => {
-			const clazz = optional ? 'optional' : 'required';
+		const createField = (name, optional, type = 'text') => {
 			const label = optional ? name : name + '*';
 
 			return html`
-				<div id=${name} class="fieldset invalid" title="${translate('toolbox_drawTool_style_text')}"">								
-					<input ?required=${!optional}  type="text" id="style_text" name="${name}" .value="" @change=${onChangeTextField} >
-					<label for="style_text" class="${clazz} control-label">${label}</label><i class="bar"></i>
+				<div id=${name} class="invalid" title=${name}>								
+					<input placeholder=${label}  ?required=${!optional}  type=${type} name="${name}" .value="" @change=${onChangeTextField} >
 				</div>
 			`;
 		};
@@ -228,15 +225,12 @@ export class EAContribution extends AbstractMvuContentPanel {
 						${categoryFields[model.currentCategory]}
 					</form >
 
-					<div  class="fieldset">						
-						<textarea id="textarea" name='additionalInfo' value=${model.description} @change=${onChangeDescription}></textarea>
-						<label for="textarea-foo" class="control-label">${translate('ea_contribution_additional_input')}</label><i class="bar"></i>
-					</div>	
+					<textarea placeholder="Zusätzlicher Text" id="textarea" name='additionalInfo' value=${model.description} @change=${onChangeDescription}></textarea>
 
 				</collapsable-content>
 
 				<collapsable-content id='step4' .title=${'4. Melden: Ihre E-Mail-Adresse'} .open=${true}>
-					${createField('Ihre Email Addresse', false)}
+					${createField('Ihre Email Addresse', false, 'email')}
 					
 					<p>
 						<br/>

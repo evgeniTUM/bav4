@@ -17,6 +17,18 @@ p {
 	font-weight: bold;
 }
 
+input {
+	margin-bottom: 0.5em;
+}
+
+::placeholder {
+	opacity: 0.6;
+}
+
+input:required::placeholder {
+    font-weight: bold;
+}
+
 .search-icon {
 	height: 2em;
 	width: 100%;
