@@ -6,11 +6,13 @@ import { setDescription, setTaggingMode } from '../../../../store/contribution/c
 import { setCurrentModule } from '../../../../store/module/ea.action';
 import { ResearchModuleContent } from '../research/ResearchModuleContent';
 import css from './eaContribution.css';
+import validationCss from './validation.css';
 
 const Update = 'update';
 const Update_Category = 'update_category';
 const Update_UserInput = 'update_user_input';
 const Reset_UserInput = 'reset_user_input';
+const Update_Validation = 'update_validation';
 
 const SAMPLE_DATA = { 'boerse': [
 	{
@@ -40,6 +42,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			isPortrait: false,
 			hasMinWidth: false,
 			currentCategory: nothing,
+			validate: false,
 			result: { }
 		});
 
@@ -90,6 +93,12 @@ export class EAContribution extends AbstractMvuContentPanel {
 					...model,
 					result: {}
 				};
+
+			case Update_Validation:
+				return {
+					...model,
+					validation: data
+				};
 		}
 	}
 
@@ -112,7 +121,6 @@ export class EAContribution extends AbstractMvuContentPanel {
 		};
 
 		const onClickTagButton = () => {
-
 			const taggingActive = !model.tagging;
 			setTaggingMode(taggingActive);
 		};
@@ -124,8 +132,13 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 
 		const onClickSend = () => {
+			this.signal(Update_Validation, true);
 			alert(JSON.stringify(model.result, null, 1));
 			setTaggingMode(false);
+
+			this.shadowRoot.querySelector('input:invalid').focus();
+			this.shadowRoot.querySelector('input:invalid').classList.push('popup');
+
 		};
 
 		const getCoordinatesString = () => {
@@ -142,7 +155,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 			return html`
 				<div id=${name} class="fieldset invalid" title="${translate('toolbox_drawTool_style_text')}"">								
-					<input class='${classMap({ required: !optional })}' required="${optional ? '' : 'required'}"  type="text" id="style_text" name="${name}" .value="" @change=${onChangeTextField} >
+					<input ?required=${!optional}  type="text" id="style_text" name="${name}" .value="" @change=${onChangeTextField} >
 					<label for="style_text" class="${clazz} control-label">${label}</label><i class="bar"></i>
 				</div>
 			`;
@@ -163,8 +176,9 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 		return html`
 			<style>${css}</style>
+			<style>${model.validation ? validationCss : nothing}</style>
 			<div class="container">
-				
+
 				<div class='header'>Abwärmeinformations- und Solarflächenbörse</div>
 				<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>
 
@@ -186,7 +200,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 						<div style='width: 50%;'>
 							<div class='button-header'>Bestehende Einträge durchsuchen</div>
 							<div class='arrow-down'></div>
-							<button id="search" @click=${onClickResearchButton} title=${translate('ea_contribution_button_find')}>
+							<button id="search" @click=${onClickResearchButton} title=${translate('ea_contribution_button_find_title')}>
 								${translate('ea_contribution_button_find_title')}
 								<div class='search-icon'></div>
 								${translate('ea_contribution_button_find_text')}
@@ -212,10 +226,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 					<p>Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</p>
 					<form id='category-fields'>
 						${categoryFields[model.currentCategory]}
-					</form>
+					</form >
 
 					<div  class="fieldset">						
-						<textarea  required="required"  id="textarea" name='additionalInfo' value=${model.description} @change=${onChangeDescription}></textarea>
+						<textarea id="textarea" name='additionalInfo' value=${model.description} @change=${onChangeDescription}></textarea>
 						<label for="textarea-foo" class="control-label">${translate('ea_contribution_additional_input')}</label><i class="bar"></i>
 					</div>	
 
@@ -230,12 +244,11 @@ export class EAContribution extends AbstractMvuContentPanel {
 						<a href="https://www.energieatlas.bayern.de/datenschutz" target='_blank'>Datenschutzes</a>.
 					</p>
 
-					<ba-button id="select" class="button" 
+					<ba-button id="select" class="button"
 						.label=${translate('ea_contribution_button_send')}
 						@click=${onClickSend}></ba-button>
 
 				</collapsable-content>
-
 			
 			</div>
 		`;

@@ -46,9 +46,6 @@ p {
 	font-size: larger;
 }
 
-input.required:not([value=""]):not(:focus):invalid {
-	background-color: rgba(200, 0, 0, 0.2);
-}
 
 .button-container {
 	display: flex
