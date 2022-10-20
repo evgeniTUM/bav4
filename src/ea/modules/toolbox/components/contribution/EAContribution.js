@@ -169,22 +169,34 @@ export class EAContribution extends AbstractMvuContentPanel {
 				<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>
 
 				<collapsable-content id='step1' .title=${'1. Melden oder Suchen'} .open=${true}>
-					<div class="button-container flex-container">
-						<button id="tag" @click=${onClickTagButton} title=${tagButtonTitle}>
-							${tagButtonTitle}
-							<div class='tag-icon'></div>
-							${translate('ea_contribution_button_tag_text')}
-						</button>
-						<button id="search" @click=${onClickResearchButton} title=${translate('ea_contribution_button_find')}>
-							${translate('ea_contribution_button_find_title')}
-							<div class='search-icon'></div>
-							${translate('ea_contribution_button_find_text')}
-						</button>
+					<div class="button-headers flex-container">
+						<div class='button-space'></div>
+					</div>
+					<div class="button-container">
+						<div style='width: 50%;'>
+							<div class='button-header'>Meldung neuer Einträge/ Korrektur bestehender Einträge</div>
+							<div class='arrow-down'></div>
+							<button id="tag" @click=${onClickTagButton} title=${tagButtonTitle}>
+								${tagButtonTitle}
+								<div class='tag-icon'></div>
+								${translate('ea_contribution_button_tag_text')}
+							</button>
+						</div>
+						<div class='button-space'></div>
+						<div style='width: 50%;'>
+							<div class='button-header'>Bestehende Einträge durchsuchen</div>
+							<div class='arrow-down'></div>
+							<button id="search" @click=${onClickResearchButton} title=${translate('ea_contribution_button_find')}>
+								${translate('ea_contribution_button_find_title')}
+								<div class='search-icon'></div>
+								${translate('ea_contribution_button_find_text')}
+							</button>
+						</div>
 					</div>
 
-					<div class="flex-container" title="${translate('ea_contribution_coordinates_text')}">
+					<div class="" title="${translate('ea_contribution_coordinates_text')}">
 						<label for="coordinates">${translate('ea_contribution_coordinates_text')}</label>	
-						<input disbled=true name='coordiantes' class="coordinates" value=${getCoordinatesString()}></input>
+						<input name='coordiantes' class="coordinates" value=${getCoordinatesString()} readonly></input>
 					</div>
 				</collapsable-content>
 
@@ -197,22 +209,31 @@ export class EAContribution extends AbstractMvuContentPanel {
 				</collapsable-content>
 
 				<collapsable-content id='step3' .title=${'3. Melden: Angaben zu neuem Eintrag/zu bestehendem Eintrag'} .open=${true}>
+					<p>Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</p>
 					<form id='category-fields'>
 						${categoryFields[model.currentCategory]}
 					</form>
-				
-				</collapsable-content>
 
-				<collapsable-content id='step4' .title=${'4. Melden: Ihre E-Mail-Adresse'} .open=${true}>
-					${createField('Ihre Email Addresse', false)}
 					<div  class="fieldset">						
 						<textarea  required="required"  id="textarea" name='additionalInfo' value=${model.description} @change=${onChangeDescription}></textarea>
 						<label for="textarea-foo" class="control-label">${translate('ea_contribution_additional_input')}</label><i class="bar"></i>
 					</div>	
+
+				</collapsable-content>
+
+				<collapsable-content id='step4' .title=${'4. Melden: Ihre E-Mail-Adresse'} .open=${true}>
+					${createField('Ihre Email Addresse', false)}
+					
+					<p>
+						<br/>
+						Wir behalten uns vor, Meldungen nicht zu übernehmen. Wir beachten die Vorschriften des 
+						<a href="https://www.energieatlas.bayern.de/datenschutz" target='_blank'>Datenschutzes</a>.
+					</p>
+
 					<ba-button id="select" class="button" 
 						.label=${translate('ea_contribution_button_send')}
 						@click=${onClickSend}></ba-button>
-				
+
 				</collapsable-content>
 
 			

@@ -18,7 +18,7 @@ export const provide = (lang) => {
 				ea_contribution_button_send: 'Send',
 				ea_contribution_button_find_title: 'Find',
 				ea_contribution_button_find_text: 'Go to research tab',
-				ea_contribution_coordinates_text: 'Facility coordinates'
+				ea_contribution_coordinates_text: 'Location coordinates'
 			};
 
 		case 'de':
@@ -38,7 +38,7 @@ export const provide = (lang) => {
 				ea_contribution_button_send: 'Senden',
 				ea_contribution_button_find_title: 'Suchen',
 				ea_contribution_button_find_text: 'Wechsel in Daten-Recherche',
-				ea_contribution_coordinates_text: 'Koordinaten der Anlage'
+				ea_contribution_coordinates_text: 'Koordinaten des Standorts'
 			};
 
 		default:

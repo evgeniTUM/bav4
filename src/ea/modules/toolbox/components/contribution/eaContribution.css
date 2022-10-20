@@ -1,3 +1,7 @@
+p {
+	margin-bottom: 1em;
+}
+
 .container {
 	padding: 1em;
 }
@@ -6,13 +10,7 @@
 	border-style: solid;
 	padding-left: 1em;
 	padding-right: 1em;
-	width: 11.5em;
-}
-
-.flex-container {
-	display: flex;
-	justify-content: space-between;
-	margin-bottom: 1em;
+	/* width: 11.5em; */
 }
 
 .control-label.required {
@@ -48,34 +46,23 @@
 	font-size: larger;
 }
 
-.iscollapse {
-	display: none;
-}
-
-.collapse-content > * {
-	border-right: 1px dotted var(--header-background-color);
-	padding-left: 1.5em;
-}
-.collapse-content > *:first-child {
-	border-right: 0;
-	margin-right: .5em;
-	margin-top: 0.7em;
-}
-.collapse-content > *:last-child {
-	padding-right: 1em;
-	border-right: 0;
-}
-
 input.required:not([value=""]):not(:focus):invalid {
 	background-color: rgba(200, 0, 0, 0.2);
 }
 
-
 .button-container {
 	display: flex
 }
+
+.button-space {
+	width: 2em;
+}
+
+.button-header {
+	text-align: center;
+}
+
 .button-container button {
-	width: 15em;
 	padding: .5em 0.9em;
 	background: var(--primary-color);
 	color: var(--text3);
@@ -88,7 +75,8 @@ input.required:not([value=""]):not(:focus):invalid {
 	font-weight: bold;
 	position: relative;
 	z-index: 1;
-	min-width: 6.5em;
+	/* min-width: 6.5em; */
+	margin: 0 auto;
 }
 .button-container span {
 	color: var(--text3);
@@ -100,4 +88,14 @@ input.required:not([value=""]):not(:focus):invalid {
 .button-container button:focus {
 	z-index: 0;
 	box-shadow: 0 0 0 .2em var(--primary-color-lighter);
+}
+
+.arrow-down {
+	width: 2em;
+	height: 4em;
+	background-position: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-image: url('assets/arrow-down-short.svg');
+	margin: 0 auto;
 }
