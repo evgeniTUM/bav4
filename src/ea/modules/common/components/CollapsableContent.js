@@ -39,11 +39,14 @@ export class CollapsableContent extends AbstractMvuContentPanel {
 	 * @override
 	 */
 	createView(model) {
-		const { disabled, title, open } = model;
+		const { disabled, open } = model;
 
 		const onClick = () => {
 			this.signal(Update_Open, !open);
 		};
+
+		const titleAttribute = this.getAttribute('title');
+		const title = titleAttribute ? titleAttribute : model.title;
 
 		return html`
 		<style>${css}</style> 

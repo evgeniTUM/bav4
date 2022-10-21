@@ -178,7 +178,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 				<form id='boerse' action="#" @submit="${onSubmit}">
 
-				<collapsable-content id='step1' .title=${'1. Melden oder Suchen'} .open=${true}>
+				<collapsable-content id='step1' title='1. Melden oder Suchen' .open=${true}>
 					<div class="button-headers flex-container">
 						<div class='button-space'></div>
 					</div>
@@ -212,7 +212,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</div>
 				</collapsable-content>
 
-				<collapsable-content id='step2' .title=${ '2. Melden: Auswahl der Kategorie'} .open=${true}>
+				<collapsable-content id='step2' title='2. Melden: Auswahl der Kategorie' .open=${true}>
 					<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}">
 						<option selected disabled>Bitte wählen ... </option>
 						${SAMPLE_DATA.boerse.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
@@ -230,7 +230,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 				</collapsable-content>
 
-				<collapsable-content id='step4' .title=${'4. Melden: Ihre E-Mail-Adresse'} .open=${true}>
+				<collapsable-content id='step4' title='4. Melden: Ihre E-Mail-Adresse' .open=${true}>
 					${createField('Ihre Email Addresse', false, 'email')}
 					
 					<p>

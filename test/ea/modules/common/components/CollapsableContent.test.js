@@ -42,6 +42,14 @@ describe('CollapsableContent', () => {
 		it('automatically appends the "data-test-id" attribute', async () => {
 			expect((await TestUtils.render(CollapsableContent.tag)).getAttribute(TEST_ID_ATTRIBUTE_NAME)).toBe('');
 		});
+
+		it('uses attributes \'title\'', async () => {
+			const element = await TestUtils.render(CollapsableContent.tag, { title: 'title42' });
+			const header = element.shadowRoot.querySelector('.header');
+
+			expect(header.innerText).toBe('title42');
+
+		});
 	});
 
 	describe('when property\'disabled\' changes', () => {

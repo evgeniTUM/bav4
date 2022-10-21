@@ -96,20 +96,6 @@ describe('EAContributon', () => {
 			expect(element.shadowRoot.querySelector('.coordinates').value).toEqual(expectedCoordString);
 		});
 
-		it('sets the description, after changes in textarea', async () => {
-			const newText = 'bar';
-			const element = await setup({ contribution: { description: 'Foo' } });
-
-			const descriptionTextArea = element.shadowRoot.querySelector('textarea');
-			expect(descriptionTextArea).toBeTruthy();
-			expect(descriptionTextArea.value).toBe('Foo');
-
-			descriptionTextArea.value = newText;
-			descriptionTextArea.dispatchEvent(new Event('input'));
-
-			expect(store.getState().contribution.description).toBe(newText);
-		});
-
 		it('toggles tagging mode when "search" button is clicked', async () => {
 			const element = await setup();
 			const tagButton = element.shadowRoot.querySelector('#search');
@@ -140,12 +126,19 @@ describe('EAContributon', () => {
 			const tagButton = element.shadowRoot.querySelector('#tag');
 
 			setTaggingMode(false);
-			expect(tagButton.title).toBe('ea_contribution_button_tag');
-			expect(tagButton.innerText).toBe('ea_contribution_button_tag');
+			expect(tagButton.title).toBe('ea_contribution_button_tag_title');
+			expect(tagButton.innerText).toBe('ea_contribution_button_tag_title\nea_contribution_button_tag_text');
 
 			setTaggingMode(true);
-			// expect(tagButton.title).toBe('ea_contribution_button_tag_cancel');
-			expect(tagButton.innerText).toBe('ea_contribution_button_tag_cancel');
+			expect(tagButton.title).toBe('ea_contribution_button_tag_cancel');
+			expect(tagButton.innerText).toBe('ea_contribution_button_tag_cancel\nea_contribution_button_tag_text');
+		});
+
+		it('changes category fields on category change', async () => {
+			const element = await setup();
+			element.shadowRoot.querySelector('#tag');
+
+
 		});
 
 	});
