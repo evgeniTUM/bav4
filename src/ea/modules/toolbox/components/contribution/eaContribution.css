@@ -72,6 +72,21 @@ input:required::placeholder {
 	display: flex;
 }
 
+button {
+	padding: .5em 0.9em;
+	background: var(--primary-color);
+	color: var(--text3);
+	border-color: var(--primary-color);
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: all var(--animation-duration-medium-open) var(--animation-easing-linea); 
+	font-weight: bold;
+	position: relative;
+	z-index: 1;
+}
+
 .button-container button {
 	padding: .5em 0.9em;
 	background: var(--primary-color);
@@ -90,21 +105,6 @@ input:required::placeholder {
 .form-buttons {
 	justify-content: center;
 	display: flex;
-}
-
-button {
-	padding: .5em 0.9em;
-	background: var(--primary-color);
-	color: var(--text3);
-	border-color: var(--primary-color);
-	border-width: 1px;
-	border-style: solid;
-	border-radius: 5px;
-	cursor: pointer;
-	transition: all var(--animation-duration-medium-open) var(--animation-easing-linea); 
-	font-weight: bold;
-	position: relative;
-	z-index: 1;
 }
 
 .button-container span {
