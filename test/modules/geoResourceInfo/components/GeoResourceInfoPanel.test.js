@@ -99,49 +99,6 @@ describe('GeoResourceInfoPanel', () => {
 		});
 	});
 
-	describe('eab specific behaviour', () => {
-
-		it('converts chapters to collapsable areas', async () => {
-			const htmlContent = `
-			<div class='chapter'>
-				<h5>headline 1</h5>
-				<div>content for 1</div>
-				<div>more content for 1</div>
-			</div>
-			<div class='chapter'>
-				<h5>headline 2</h5>
-				<div>content for 2</div>
-				<div>more content for 2</div>
-			</div>
-			`;
-			const geoResourceInfo = new GeoResourceInfoResult(htmlContent);
-			spyOn(geoResourceInfoServiceMock, 'byId').withArgs('914c9263-5312-453e-b3eb-5104db1bf788').and.returnValue(geoResourceInfo);
-
-			const element = await setup();
-
-			element.geoResourceId = '914c9263-5312-453e-b3eb-5104db1bf788';
-			await TestUtils.timeout(100);
-
-			const nodes = element.shadowRoot.querySelectorAll('.chapter');
-			expect(nodes.length).toBe(2);
-			const actual = nodes[0];
-
-			expect(actual.classList).toContain('ba-section');
-			expect(actual.classList).toContain('divider');
-			expect(actual.children.length).toBe(2);
-
-			const actualHeadline = actual.children[0];
-			expect(actualHeadline.tagName).toBe('H5');
-			expect(actualHeadline.children.length).toBe(1);
-			expect(actualHeadline.children[0].outerHTML)
-				.toBe('<button class="icon chevron icon-rotate-90"></button>');
-
-			const actualContainer = actual.children[1];
-			expect(actualContainer.outerHTML)
-				.toBe('<div class="container collapse-content iscollapse"><div>content for 1</div><div>more content for 1</div></div>');
-		});
-	});
-
 	describe('responsive layout ', () => {
 
 		it('layouts for landscape', async () => {
