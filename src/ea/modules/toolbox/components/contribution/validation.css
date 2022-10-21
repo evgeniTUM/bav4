@@ -1,7 +1,3 @@
 input:invalid {
 	background-color: rgba(200, 0, 0, 0.2);
 }
-
-.validation-message {
-	background-color: green;
-}

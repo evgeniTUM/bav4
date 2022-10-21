@@ -87,6 +87,27 @@ input:required::placeholder {
 	/* min-width: 6.5em; */
 	margin: 0 auto;
 }
+
+.form-buttons {
+	justify-content: center;
+	display: flex;
+}
+
+button {
+	padding: .5em 0.9em;
+	background: var(--primary-color);
+	color: var(--text3);
+	border-color: var(--primary-color);
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: all var(--animation-duration-medium-open) var(--animation-easing-linea); 
+	font-weight: bold;
+	position: relative;
+	z-index: 1;
+}
+
 .button-container span {
 	color: var(--text3);
 	opacity: .8;

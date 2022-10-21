@@ -1,5 +1,4 @@
 import { html, nothing } from 'lit-html';
-import { classMap } from 'lit-html/directives/class-map.js';
 import { $injector } from '../../../../../injection';
 import { AbstractMvuContentPanel } from '../../../../../modules/menu/components/mainMenu/content/AbstractMvuContentPanel';
 import { setDescription, setTaggingMode } from '../../../../store/contribution/contribution.action';
@@ -42,7 +41,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			isPortrait: false,
 			hasMinWidth: false,
 			currentCategory: nothing,
-			validate: false,
+			validation: false,
 			result: { }
 		});
 
@@ -123,6 +122,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 		const onClickTagButton = () => {
 			const taggingActive = !model.tagging;
 			setTaggingMode(taggingActive);
+			this.shadowRoot.getElementById('coordinates').setCustomValidity('');
 		};
 
 
@@ -131,13 +131,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 		};
 
 
-		const onClickSend = () => {
-			this.signal(Update_Validation, true);
+		const onSubmit = (event) => {
 			alert(JSON.stringify(model.result, null, 1));
 			setTaggingMode(false);
-
-			this.shadowRoot.querySelector('input:invalid').focus();
-			this.shadowRoot.querySelector('input:invalid').classList.add('validation-popup');
+			event.preventDefault();
 		};
 
 		const getCoordinatesString = () => {
@@ -159,7 +156,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 		};
 
 		const onSelectionChanged = (e) => {
-			this.shadowRoot.getElementById('category-fields').reset();
+			// this.shadowRoot.getElementById('category-fields').reset();
 			this.signal(Reset_UserInput);
 			this.signal(Update_Category, e.target.value);
 		};
@@ -179,6 +176,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 				<div class='header'>Abwärmeinformations- und Solarflächenbörse</div>
 				<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>
 
+				<form id='boerse' action="#" @submit="${onSubmit}">
+
 				<collapsable-content id='step1' .title=${'1. Melden oder Suchen'} .open=${true}>
 					<div class="button-headers flex-container">
 						<div class='button-space'></div>
@@ -187,7 +186,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 						<div style='width: 50%;'>
 							<div class='button-header'>Meldung neuer Einträge/ Korrektur bestehender Einträge</div>
 							<div class='arrow-down'></div>
-							<button id="tag" @click=${onClickTagButton} title=${tagButtonTitle}>
+							<button id="tag" type='button' @click=${onClickTagButton} title=${tagButtonTitle}>
 								${tagButtonTitle}
 								<div class='tag-icon'></div>
 								${translate('ea_contribution_button_tag_text')}
@@ -197,7 +196,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 						<div style='width: 50%;'>
 							<div class='button-header'>Bestehende Einträge durchsuchen</div>
 							<div class='arrow-down'></div>
-							<button id="search" @click=${onClickResearchButton} title=${translate('ea_contribution_button_find_title')}>
+							<button id="search" type='button' @click=${onClickResearchButton} title=${translate('ea_contribution_button_find_title')}>
 								${translate('ea_contribution_button_find_title')}
 								<div class='search-icon'></div>
 								${translate('ea_contribution_button_find_text')}
@@ -207,7 +206,9 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 					<div class="" title="${translate('ea_contribution_coordinates_text')}">
 						<label for="coordinates">${translate('ea_contribution_coordinates_text')}</label>	
-						<input name='coordiantes' class="coordinates" value=${getCoordinatesString()} readonly></input>
+						<input id='coordinates' name='coordiantes' class="coordinates" 
+							oninvalid="this.setCustomValidity('Bitte Standort markieren')"
+							value=${getCoordinatesString()} required></input>
 					</div>
 				</collapsable-content>
 
@@ -221,9 +222,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 				<collapsable-content id='step3' .title=${'3. Melden: Angaben zu neuem Eintrag/zu bestehendem Eintrag'} .open=${true}>
 					<p>Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</p>
-					<form id='category-fields'>
-						${categoryFields[model.currentCategory]}
-					</form >
+					${categoryFields[model.currentCategory]}
 
 					<textarea placeholder="Zusätzlicher Text" id="textarea" name='additionalInfo' value=${model.description} @change=${onChangeDescription}></textarea>
 
@@ -237,12 +236,16 @@ export class EAContribution extends AbstractMvuContentPanel {
 						Wir behalten uns vor, Meldungen nicht zu übernehmen. Wir beachten die Vorschriften des 
 						<a href="https://www.energieatlas.bayern.de/datenschutz" target='_blank'>Datenschutzes</a>.
 					</p>
-
-					<ba-button id="select" class="button"
-						.label=${translate('ea_contribution_button_send')}
-						@click=${onClickSend}></ba-button>
+					<div class='form-buttons'>
+						<button id="select" class="button" type='submit'
+							.label=${translate('ea_contribution_button_send')}
+							@click=${() => this.signal(Update_Validation, true)}>
+							Send
+						</button>
+					</div>
 
 				</collapsable-content>
+				</form>
 			
 			</div>
 		`;
