@@ -6,11 +6,22 @@ p {
 	padding: 1em;
 }
 
+.mode-selection-column {
+	width: 50%;
+	padding: 0.1em;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+}
+
 .coordinates {
 	border-style: solid;
 	padding-left: 1em;
 	padding-right: 1em;
-	/* width: 11.5em; */
+
+	pointer-events: none;
+	background: var(--secondary-bg-color);
 }
 
 .control-label.required {
@@ -60,16 +71,9 @@ input:required::placeholder {
 
 
 .button-container {
-	display: flex
+	display: flex;
 }
 
-.button-space {
-	width: 2em;
-}
-
-.button-header {
-	text-align: center;
-}
 
 .button-container button {
 	padding: .5em 0.9em;
@@ -82,10 +86,8 @@ input:required::placeholder {
 	cursor: pointer;
 	transition: all var(--animation-duration-medium-open) var(--animation-easing-linea); 
 	font-weight: bold;
-	position: relative;
 	z-index: 1;
-	/* min-width: 6.5em; */
-	margin: 0 auto;
+	width: 17em;
 }
 
 .form-buttons {

@@ -156,9 +156,9 @@ export class EAContribution extends AbstractMvuContentPanel {
 		};
 
 		const onSelectionChanged = (e) => {
-			// this.shadowRoot.getElementById('category-fields').reset();
 			this.signal(Reset_UserInput);
 			this.signal(Update_Category, e.target.value);
+			this.shadowRoot.querySelectorAll('.category-fields input').forEach(i => i.value = '');
 		};
 
 		const categoryFields = {};
@@ -183,7 +183,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 						<div class='button-space'></div>
 					</div>
 					<div class="button-container">
-						<div style='width: 50%;'>
+						<div class='mode-selection-column'>
 							<div class='button-header'>Meldung neuer Einträge/ Korrektur bestehender Einträge</div>
 							<div class='arrow-down'></div>
 							<button id="tag" type='button' @click=${onClickTagButton} title=${tagButtonTitle}>
@@ -192,8 +192,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 								${translate('ea_contribution_button_tag_text')}
 							</button>
 						</div>
-						<div class='button-space'></div>
-						<div style='width: 50%;'>
+						<div class='mode-selection-column'>
 							<div class='button-header'>Bestehende Einträge durchsuchen</div>
 							<div class='arrow-down'></div>
 							<button id="search" type='button' @click=${onClickResearchButton} title=${translate('ea_contribution_button_find_title')}>
@@ -204,6 +203,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 						</div>
 					</div>
 
+					<br/>
 					<div class="" title="${translate('ea_contribution_coordinates_text')}">
 						<label for="coordinates">${translate('ea_contribution_coordinates_text')}</label>	
 						<input id='coordinates' name='coordiantes' class="coordinates" 
@@ -222,7 +222,9 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 				<collapsable-content id='step3' .title=${'3. Melden: Angaben zu neuem Eintrag/zu bestehendem Eintrag'} .open=${true}>
 					<p>Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</p>
-					${categoryFields[model.currentCategory]}
+					<div class='category-fields'>
+						${categoryFields[model.currentCategory]}
+					</div>
 
 					<textarea placeholder="Zusätzlicher Text" id="textarea" name='additionalInfo' value=${model.description} @change=${onChangeDescription}></textarea>
 
