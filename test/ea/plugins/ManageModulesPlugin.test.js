@@ -1,5 +1,5 @@
 import { QueryParameters } from '../../../src/domain/queryParameters.js';
-import { CONTRIBUTION_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/contribution/OlContributionHandler.js';
+import { SELECT_LOCATION_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/selection/OlSelectLocationHandler.js';
 import { GEO_FEATURE_LAYER_ID } from '../../../src/ea/modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler.js';
 import { Analyse3DModuleContent } from '../../../src/ea/modules/toolbox/components/analyse3d/Analyse3DModuleContent.js';
 import { EnergyMarketModuleContent } from '../../../src/ea/modules/toolbox/components/contribution/EnergyMarketModuleContent.js';
@@ -52,7 +52,7 @@ describe('ManageModulesPlugin', () => {
 		return store;
 	};
 
-	it('toggles contribution layer when tool ID equals name of contribution component', async () => {
+	it('toggles select location layer when tool ID equals name of contribution component', async () => {
 		const store = setup();
 
 		const instanceUnderTest = new ManageModulesPlugin();
@@ -63,7 +63,7 @@ describe('ManageModulesPlugin', () => {
 		setCurrentModule(EnergyMarketModuleContent.name);
 
 		expect(store.getState().layers.active.length).toBe(1);
-		expect(store.getState().layers.active[0].id).toBe(CONTRIBUTION_LAYER_ID);
+		expect(store.getState().layers.active[0].id).toBe(SELECT_LOCATION_LAYER_ID);
 
 		setCurrentModule('something');
 

@@ -2,7 +2,7 @@ import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { fromLonLat } from 'ol/proj';
 import { OSM, TileDebug } from 'ol/source';
-import { CONTRIBUTION_LAYER_ID, OlContributionHandler } from '../../../../../../../../src/ea/modules/map/components/olMap/handler/contribution/OlContributionHandler';
+import { SELECT_LOCATION_LAYER_ID, OlSelectLocationHandler } from '../../../../../../../../src/ea/modules/map/components/olMap/handler/selection/OlSelectLocationHandler';
 import { contributionReducer, initialState } from '../../../../../../../../src/ea/store/contribution/contribution.reducer';
 import { $injector } from '../../../../../../../../src/injection';
 import { TestUtils } from '../../../../../../../test-utils.js';
@@ -10,7 +10,7 @@ import { TestUtils } from '../../../../../../../test-utils.js';
 
 
 
-describe('OlContributionHandler', () => {
+describe('OlSelectLocationHandler', () => {
 
 	const translationServiceMock = { translate: (key) => key };
 	const defaultState = {
@@ -24,11 +24,11 @@ describe('OlContributionHandler', () => {
 
 	it('instantiates handler', () => {
 		setup();
-		const handler = new OlContributionHandler();
+		const handler = new OlSelectLocationHandler();
 		expect(handler).toBeTruthy();
 		expect(handler.activate).toBeTruthy();
 		expect(handler.deactivate).toBeTruthy();
-		expect(handler.id).toBe(CONTRIBUTION_LAYER_ID);
+		expect(handler.id).toBe(SELECT_LOCATION_LAYER_ID);
 		expect(handler.options).toEqual({ preventDefaultClickHandling: true, preventDefaultContextClickHandling: true });
 	});
 
@@ -57,7 +57,7 @@ describe('OlContributionHandler', () => {
 			const map = setupMap();
 			setup();
 
-			const classUnderTest = new OlContributionHandler();
+			const classUnderTest = new OlSelectLocationHandler();
 			const layer = classUnderTest.activate(map);
 
 			expect(layer).toBeTruthy();

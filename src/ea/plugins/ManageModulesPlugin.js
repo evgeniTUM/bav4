@@ -7,7 +7,7 @@ import { addLayer, removeLayer } from '../../store/layers/layers.action';
 import { close, open } from '../../store/mainMenu/mainMenu.action';
 import { emitNotification, LevelTypes } from '../../store/notifications/notifications.action';
 import { observe } from '../../utils/storeUtils';
-import { CONTRIBUTION_LAYER_ID } from '../modules/map/components/olMap/handler/contribution/OlContributionHandler';
+import { SELECT_LOCATION_LAYER_ID } from '../modules/map/components/olMap/handler/selection/OlSelectLocationHandler';
 import { GEO_FEATURE_LAYER_ID } from '../modules/map/components/olMap/handler/geofeature/OlGeoFeatureLayerHandler';
 import { Analyse3DModuleContent } from '../modules/toolbox/components/analyse3d/Analyse3DModuleContent';
 import { EnergyMarketModuleContent } from '../modules/toolbox/components/contribution/EnergyMarketModuleContent';
@@ -72,7 +72,7 @@ export class ManageModulesPlugin extends BaPlugin {
 		// remove layers for last module
 			switch (lastModule) {
 				case EnergyMarketModuleContent.name:
-					removeLayer(CONTRIBUTION_LAYER_ID);
+					removeLayer(SELECT_LOCATION_LAYER_ID);
 					break;
 				case MixerModuleContent.name:
 				case RedesignModuleContent.name:
@@ -86,7 +86,7 @@ export class ManageModulesPlugin extends BaPlugin {
 			// enable layers for new module
 			switch (currentModule) {
 				case EnergyMarketModuleContent.name:
-					addLayer(CONTRIBUTION_LAYER_ID, { label: 'contribution_layer', constraints: { hidden: true, alwaysTop: false } });
+					addLayer(SELECT_LOCATION_LAYER_ID, { label: 'Standortselektion', constraints: { hidden: true, alwaysTop: false } });
 					break;
 
 				case MixerModuleContent.name:

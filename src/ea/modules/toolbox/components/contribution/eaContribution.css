@@ -37,7 +37,7 @@ input {
 }
 
 input:required::placeholder {
-    font-weight: bold;
+	font-weight: bold;
 }
 
 .search-icon {
@@ -58,7 +58,6 @@ input:required::placeholder {
 	background-image: url('assets/marker.svg');
 }
 
-
 .header {
 	font-weight: bold;
 	font-size: large;
@@ -69,11 +68,9 @@ input:required::placeholder {
 	font-size: larger;
 }
 
-
 .button-container {
 	display: flex;
 }
-
 
 .button-container button {
 	padding: .5em 0.9em;

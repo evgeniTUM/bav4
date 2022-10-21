@@ -127,11 +127,11 @@ describe('EaOlMap', () => {
 		}
 	};
 
-	const contributionLayerHandlerMock = {
+	const selectLocationLayerHandlerMock = {
 		activate() { },
 		deactivate() { },
 		get id() {
-			return 'contributionLayerHandlerMockId';
+			return 'selectLocationLayerHandlerMockId';
 		},
 		get options() {
 			return getDefaultLayerOptions();
@@ -194,7 +194,7 @@ describe('EaOlMap', () => {
 			.registerSingleton('OlFeatureInfoHandler', featureInfoHandlerMock)
 			.registerSingleton('VectorLayerService', vectorLayerServiceMock)
 			.registerSingleton('LayerService', layerServiceMock)
-			.registerSingleton('OlContributionHandler', contributionLayerHandlerMock)
+			.registerSingleton('OlSelectLocationHandler', selectLocationLayerHandlerMock)
 			.registerSingleton('OlMfpHandler', mfpHandlerMock)
 			.registerSingleton('OlGeoFeatureLayerHandler', geoFeatureLayerHandlerMock);
 
@@ -203,27 +203,27 @@ describe('EaOlMap', () => {
 
 	describe('when initialized', () => {
 
-		describe('contribution handler', () => {
+		describe('select_location handler', () => {
 			it('registers the handler', async () => {
 				const element = await setup();
 
-				expect(element._layerHandler.get('contributionLayerHandlerMockId')).toEqual(contributionLayerHandlerMock);
+				expect(element._layerHandler.get('selectLocationLayerHandlerMockId')).toEqual(selectLocationLayerHandlerMock);
 			});
 
 			it('activates and deactivates the handler', async () => {
 				const olLayer = new VectorLayer({});
-				const activateSpy = spyOn(contributionLayerHandlerMock, 'activate').and.returnValue(olLayer);
-				const deactivateSpy = spyOn(contributionLayerHandlerMock, 'deactivate').and.returnValue(olLayer);
+				const activateSpy = spyOn(selectLocationLayerHandlerMock, 'activate').and.returnValue(olLayer);
+				const deactivateSpy = spyOn(selectLocationLayerHandlerMock, 'deactivate').and.returnValue(olLayer);
 				const element = await setup();
 				const map = element._map;
 
-				addLayer(contributionLayerHandlerMock.id);
+				addLayer(selectLocationLayerHandlerMock.id);
 
 				expect(activateSpy).toHaveBeenCalledWith(map);
 				activateSpy.calls.reset();
 				expect(deactivateSpy).not.toHaveBeenCalledWith(map);
 
-				removeLayer(contributionLayerHandlerMock.id);
+				removeLayer(selectLocationLayerHandlerMock.id);
 				expect(activateSpy).not.toHaveBeenCalledWith(map);
 				expect(deactivateSpy).toHaveBeenCalledWith(map);
 			});
