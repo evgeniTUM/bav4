@@ -101,22 +101,13 @@ export class EAContribution extends AbstractMvuContentPanel {
 	createView(model) {
 		const translate = (key) => this._translationService.translate(key);
 
-		const onChangeAdditionalInfo = (e) => {
-			this.signal(Update, { additionalInfo: e.target.value });
-		};
-
-		const onChangeEmail = (e) => {
-			this.signal(Update, { email: e.target.value });
-		};
-
-
 		const onClickTagButton = () => {
 			const taggingActive = !model.tagging;
 			setTaggingMode(taggingActive);
 			this.shadowRoot.getElementById('coordinates').setCustomValidity('');
 		};
 
-		const onClickResearchButton = () => {
+		const onClickFindButton = () => {
 			setCurrentModule(ResearchModuleContent.name);
 		};
 
@@ -131,19 +122,15 @@ export class EAContribution extends AbstractMvuContentPanel {
 			return model.position ? this._coordinateService.stringify(this._coordinateService.toLonLat(model.position), 4326, { digits: 5 }) : '';
 		};
 
-
 		const createField = (name, optional, type = 'text') => {
 			const label = optional ? name : name + '*';
 
 			return html`
 				<div id=${name} title=${name}>								
-					<input placeholder=${label}  ?required=${!optional}  type=${type} name="${name}" .value="" @change=${onChangeField} >
+					<input placeholder=${label}  ?required=${!optional}  type=${type} name="${name}" .value="" 
+						@change=${(e) => this.signal(Update_Field, { name: e.target.name, value: e.target.value })} >
 				</div>
 			`;
-		};
-
-		const onChangeField = (event) => {
-			this.signal(Update_Field, { name: event.target.name, value: event.target.value });
 		};
 
 		const onSelectionChanged = (e) => {
@@ -186,7 +173,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 						<div class='mode-selection-column'>
 							<div class='button-header'>Bestehende Einträge durchsuchen</div>
 							<div class='arrow-down'></div>
-							<button id="search" type='button' @click=${onClickResearchButton} title=${translate('ea_contribution_button_find_title')}>
+							<button id="search" type='button' @click=${onClickFindButton} title=${translate('ea_contribution_button_find_title')}>
 								${translate('ea_contribution_button_find_title')}
 								<div class='search-icon'></div>
 								${translate('ea_contribution_button_find_text')}
@@ -217,12 +204,14 @@ export class EAContribution extends AbstractMvuContentPanel {
 						${categoryFields[model.currentCategory]}
 					</div>
 
-					<textarea placeholder="Zusätzlicher Text" id="textarea" name='additionalInfo' value=${model.description} @change=${onChangeAdditionalInfo}></textarea>
+					<textarea placeholder="Zusätzlicher Text" id="textarea" name='additionalInfo' value=${model.description}
+						@change=${(e) => this.signal(Update, { additionalInfo: e.target.value })}></textarea>
 
 				</collapsable-content>
 
 				<collapsable-content id='step4' title='4. Melden: Ihre E-Mail-Adresse' .open=${true}>
-					<input placeholder='Ihre Email Adresse' required  type='email' name="email" @change=${onChangeEmail} >
+					<input placeholder='Ihre Email Adresse' required  type='email' name="email" 
+						@change=${(e) => this.signal(Update, { email: e.target.value })}>
 					
 					<p>
 						<br/>
