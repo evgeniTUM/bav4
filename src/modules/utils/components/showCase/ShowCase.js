@@ -258,6 +258,7 @@ export class ShowCase extends BaElement {
 			<ba-button id='button1' .label=${'secondary style'} @click=${onClick1}></ba-button>
 			<ba-button id='button2' .label=${'disabled'} .type=${'primary'} .disabled=${true} ></ba-button>
 			<ba-button id='button3' .label=${'disabled'} .disabled=${true}></ba-button>
+			<ba-button id='button3' .label=${'loading style'} .type=${'loading'}></ba-button>
 			</div>
 
 			<h3>ba-icons</h3>
@@ -343,6 +344,11 @@ export class ShowCase extends BaElement {
 			<div class='example row'>
 			<ba-button id='button0' .label=${'Authenticate by password'} .type=${'primary'} @click=${onClickAuthenticate}></ba-button>
 			<div>Hint: Demo Credentials are foo/bar</div>
+			</div>
+
+			<h3>Profile</h3>
+			<div class='example row'>
+			<ba-profile></ba-profile>
 			</div>
 				
 			</div>	

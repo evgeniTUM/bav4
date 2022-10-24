@@ -35,6 +35,7 @@ import './modules/geoResourceInfo';
 import './modules/help';
 import './modules/dndImport';
 import './modules/auth';
+import './modules/profile';
 
 //Import der Erweiterung für Energieatlas
 import './ea/main';

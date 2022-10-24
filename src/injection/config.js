@@ -39,11 +39,15 @@ import { ImportWmsService } from '../services/ImportWmsService';
 import { BaaCredentialService } from '../services/BaaCredentialService';
 import { SearchPlugin } from '../plugins/SearchPlugin';
 import { HistoryStatePlugin } from '../plugins/HistoryStatePlugin';
-import { MfpService } from '../services/MfpService';
+import { BvvMfpService } from '../services/MfpService';
 import { ExportMfpPlugin } from '../plugins/ExportMfpPlugin';
+import { Proj4JsService } from '../services/Proj4JsService';
+import { BvvMfp3Encoder } from '../modules/olMap/services/Mfp3Encoder';
+
 import { eaConfig } from '../ea/injection/eaConfig';
 
 $injector
+	.registerSingleton('Proj4JsService', new Proj4JsService())
 	.register('HttpService', NetworkStateSyncHttpService)
 	.registerSingleton('ConfigService', new EaProcessEnvConfigService())
 	.registerSingleton('TranslationService', new TranslationService)
@@ -66,9 +70,10 @@ $injector
 	.register('ImportVectorDataService', ImportVectorDataService)
 	.register('ImportWmsService', ImportWmsService)
 	.register('SourceTypeService', SourceTypeService)
+	.register('Mfp3Encoder', BvvMfp3Encoder)
 	.registerSingleton('SecurityService', new SecurityService())
 	.registerSingleton('BaaCredentialService', new BaaCredentialService())
-	.registerSingleton('MfpService', new MfpService())
+	.registerSingleton('MfpService', new BvvMfpService())
 
 	.registerSingleton('DrawPlugin', new DrawPlugin())
 	.registerSingleton('TopicsPlugin', new TopicsPlugin())

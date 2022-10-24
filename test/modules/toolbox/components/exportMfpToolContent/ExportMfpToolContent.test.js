@@ -2,6 +2,7 @@ import { $injector } from '../../../../../src/injection';
 import { ExportMfpToolContent } from '../../../../../src/modules/toolbox/components/exportMfpToolContent/ExportMfpToolContent';
 import { AbstractToolContent } from '../../../../../src/modules/toolbox/components/toolContainer/AbstractToolContent';
 import { createNoInitialStateMediaReducer } from '../../../../../src/store/media/media.reducer';
+import { startJob } from '../../../../../src/store/mfp/mfp.action';
 import { mfpReducer } from '../../../../../src/store/mfp/mfp.reducer';
 import { EventLike } from '../../../../../src/utils/storeUtils';
 import { TestUtils } from '../../../../test-utils';
@@ -17,9 +18,9 @@ describe('ExportMfpToolContent', () => {
 
 	const mfpServiceMock = {
 		getCapabilities() {
-			return [];
+			return null;
 		},
-		getCapabilitiesById() {
+		getLayoutById() {
 			return { scales: [42, 21, 1] };
 		}
 	};
@@ -78,7 +79,7 @@ describe('ExportMfpToolContent', () => {
 
 	const scales = [42, 21, 1];
 	const dpis = [125, 200];
-	const capabilities = [{ id: 'foo', scales: scales, dpis: dpis, mapSize: { width: 42, height: 21 } }, { id: 'bar', scales: scales, dpis: dpis, mapSize: { width: 420, height: 210 } }];
+	const capabilities = { grSubstitutions: {}, layouts: [{ id: 'foo', scales: scales, dpis: dpis, mapSize: { width: 42, height: 21 } }, { id: 'bar', scales: scales, dpis: dpis, mapSize: { width: 420, height: 210 } }] };
 
 	describe('when initialized', () => {
 
@@ -234,18 +235,15 @@ describe('ExportMfpToolContent', () => {
 
 			const submitButton = element.shadowRoot.querySelector('#btn_submit');
 			submitButton.click();
-			const cancelButton = element.shadowRoot.querySelector('#btn_cancel');
-			cancelButton.click();
 
 			expect(store.getState().mfp.jobRequest).toEqual(jasmine.any(EventLike));
 		});
 
 		it('it displays the cancel-button', async () => {
-			spyOn(mfpServiceMock, 'getCapabilities').and.resolveTo(capabilities);
+			spyOn(mfpServiceMock, 'getCapabilities').and.returnValue(capabilities);
 			const element = await setup({ ...mfpDefaultState, current: initialCurrent });
 
-			const submitButton = element.shadowRoot.querySelector('#btn_submit');
-			submitButton.click();
+			startJob({});
 
 			expect(element.shadowRoot.querySelectorAll('#btn_cancel')).toHaveSize(1);
 			expect(element.shadowRoot.querySelectorAll('#btn_submit')).toHaveSize(0);
@@ -255,14 +253,10 @@ describe('ExportMfpToolContent', () => {
 	describe('when the user clicks the cancel-button', () => {
 
 		it('changes store', async () => {
-			spyOn(mfpServiceMock, 'getCapabilities').and.resolveTo(capabilities);
+			spyOn(mfpServiceMock, 'getCapabilities').and.returnValue(capabilities);
 			const element = await setup({ ...mfpDefaultState, current: initialCurrent });
 
-			const submitButton = element.shadowRoot.querySelector('#btn_submit');
-			submitButton.click();
-
-			expect(store.getState().mfp.jobSpec.payload).toEqual(jasmine.any(Object));
-
+			startJob({});
 			const cancelButton = element.shadowRoot.querySelector('#btn_cancel');
 			cancelButton.click();
 
@@ -270,11 +264,11 @@ describe('ExportMfpToolContent', () => {
 		});
 
 		it('it displays the submit-button again', async () => {
-			spyOn(mfpServiceMock, 'getCapabilities').and.resolveTo(capabilities);
+			spyOn(mfpServiceMock, 'getCapabilities').and.returnValue(capabilities);
 			const element = await setup({ ...mfpDefaultState, current: initialCurrent });
 
-			const submitButton = element.shadowRoot.querySelector('#btn_submit');
-			submitButton.click();
+			startJob({});
+
 			const cancelButton = element.shadowRoot.querySelector('#btn_cancel');
 			cancelButton.click();
 

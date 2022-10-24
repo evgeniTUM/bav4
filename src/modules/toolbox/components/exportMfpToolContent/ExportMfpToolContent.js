@@ -1,7 +1,7 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../injection';
 import { AbstractToolContent } from '../toolContainer/AbstractToolContent';
-import { cancelJob, requestJob, setId, setScale, startJob } from '../../../../store/mfp/mfp.action';
+import { cancelJob, requestJob, setId, setScale } from '../../../../store/mfp/mfp.action';
 
 const Update = 'update';
 const Update_Scale = 'update_scale';
@@ -47,26 +47,19 @@ export class ExportMfpToolContent extends AbstractToolContent {
 		const { id, scale, isJobStarted } = model;
 		const translate = (key) => this._translationService.translate(key);
 		const capabilities = this._mfpService.getCapabilities();
-		const capabilitiesAvailable = capabilities.length > 0;
 
-		const onClickAction = isJobStarted ? () => cancelJob() : () => {
-			requestJob();
-
-			// FIXME: FOR DEMO ONLY
-			// REMOVE after implemented and connected actions in OlMfpHandler
-			startJob({});
-		};
+		const onClickAction = isJobStarted ? () => cancelJob() : () => 	requestJob();
 		const btnLabel = isJobStarted ? translate('toolbox_exportMfp_cancel') : translate('toolbox_exportMfp_submit');
 		const btnId = isJobStarted ? 'btn_cancel' : 'btn_submit';
 
-		const areSettingsComplete = (capabilitiesAvailable && scale && id);
+		const areSettingsComplete = (capabilities && scale && id);
 		return html`
         <div class="ba-tool-container">
 			<div class="ba-tool-container__title">
 				${translate('toolbox_exportMfp_header')}
 			</div>
 			<div class='ba-tool-container__content'>
-				${areSettingsComplete ? this._getContent(id, scale, capabilities) : this._getSpinner()}				
+				${areSettingsComplete ? this._getContent(id, scale, capabilities.layouts) : this._getSpinner()}				
 			</div>
 			<div class="ba-tool-container__actions"> 
 				<ba-button id='${btnId}' class="tool-container__button" .label=${btnLabel} @click=${onClickAction} .disabled=${!areSettingsComplete}></ba-button>
@@ -78,14 +71,14 @@ export class ExportMfpToolContent extends AbstractToolContent {
 		return html`<ba-spinner></ba-spinner>`;
 	}
 
-	_getContent(id, scale, capabilities) {
+	_getContent(id, scale, layouts) {
 		const translate = (key) => this._translationService.translate(key);
 
-		const layoutItems = capabilities.map(capability => {
+		const layoutItems = layouts.map(capability => {
 			return { name: translate(`toolbox_exportMfp_id_${capability.id}`), id: capability.id };
 		});
 
-		const scales = this._mfpService.getCapabilitiesById(id)?.scales;
+		const scales = this._mfpService.getLayoutById(id)?.scales;
 
 		const onChangeId = (e) => {
 			const id = e.target.value;

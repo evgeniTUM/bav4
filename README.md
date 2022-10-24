@@ -30,8 +30,10 @@ Next-generation web-map viewer based on web standards.
 - Map state decoupled from map implementation
 - Tools
   - [OpenLayers](https://openlayers.org/): Mapping API
+  - [MapLibre OpenLayers layer](https://github.com/geoblocks/ol-maplibre-layer/): Vector Tiles rendering
   - [lit-html](https://lit-html.polymer-project.org/): Template rendering 
   - [redux](https://redux.js.org/): Application state container 
+  - [Chart.js](https://www.chartjs.org/): JavaScript charting
   - [vanilla-swipe](https://github.com/maxmarinich/vanilla-swipe/): Swipe direction detection
   - [DOMPurify](https://github.com/cure53/DOMPurify/): XSS sanitizer for HTML
   - [webpack](https://webpack.js.org): Bundler
@@ -207,7 +209,7 @@ For example, they could be responsible for setting an initial state or reacting 
 - Redux query-param sync: https://github.com/Treora/redux-query-sync
 ### Webpack
 - Webpack Intro: https://ui.dev/webpack/ 
-### Common
+### Other
 - Why I don't miss React: a story about using the platform: https://www.jackfranklin.co.uk/blog/working-with-react-and-the-web-platform/
 
 *USE THE PLATFORM*

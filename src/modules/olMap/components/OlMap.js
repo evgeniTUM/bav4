@@ -102,7 +102,7 @@ export class OlMap extends MvuElement {
 			minZoom: this._mapService.getMinZoomLevel(),
 			maxZoom: this._mapService.getMaxZoomLevel(),
 			constrainRotation: false,
-			constrainResolution: true
+			constrainResolution: !this._environmentService.isTouch()
 		});
 
 		this._view.on('change:rotation', (evt) => {
@@ -335,7 +335,7 @@ export class OlMap extends MvuElement {
 			this._viewSyncBlocked = false;
 			this._syncStore();
 		};
-		const extent = eventLike.payload.id ? getLayerById(this._map, eventLike.payload.id)?.getSource?.().getExtent?.() : eventLike.payload.extent;
+		const extent = getLayerById(this._map, eventLike.payload.id)?.getSource?.()?.getExtent?.() ?? eventLike.payload.extent;
 
 		if (extent) {
 			this._viewSyncBlocked = true;
@@ -352,8 +352,10 @@ export class OlMap extends MvuElement {
 	/**
 	 * @override
 	 */
-	onAfterRender() {
-		this._map.setTarget(this.shadowRoot.getElementById('ol-map'));
+	onAfterRender(firstTime) {
+		if (firstTime) {
+			this._map.setTarget(this.shadowRoot.getElementById('ol-map'));
+		}
 	}
 
 	/**
