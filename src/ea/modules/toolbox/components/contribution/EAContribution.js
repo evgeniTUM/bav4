@@ -11,26 +11,6 @@ const Update = 'update';
 const Update_Field = 'update_field';
 const Reset_Fields = 'reset_fields';
 
-const SAMPLE_DATA = { 'boerse': [
-	{
-		'ee-name': 'Test1',
-		'ee-angaben': [{ 'name': 'name1', optional: true }]
-	},
-	{ 'ee-name': 'Solarflächenbörse:Dachflächen',
-		'ee-angaben': [
-			{ 'name': 'Ansprechpartner', 'optional': false },
-			{ 'name': 'Ansprechpartner E-Mail', 'optional': false },
-			{ 'name': 'Ansprechpartner Telefon', 'optional': false },
-			{ 'name': 'Nutzbare Dachfläche', 'optional': false },
-			{ 'name': 'Dachneigung (°)', 'optional': false },
-			{ 'name': 'Dachausrichtung (Süd/West/...)', 'optional': false },
-			{ 'name': 'Bezeichnung der Fläche', 'optional': true },
-			{ 'name': 'Gebäudeeigentümer', 'optional': true },
-			{ 'name': 'Aktuelle Nutzung', 'optional': true },
-			{ 'name': 'Jahr der Errichtung bzw. letzten ...', 'optional': true },
-			{ 'name': 'Dachmaterial', 'optional': true },
-			{ 'name': 'Stand', 'optional': true }] }] };
-
 export class EAContribution extends AbstractMvuContentPanel {
 
 	constructor() {
@@ -54,6 +34,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 		this._environmentService = environmentService;
 		this._translationService = translationService;
 		this._coordinateService = coordinateService;
+
+		this._categories = {};
 	}
 
 
@@ -140,7 +122,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 		};
 
 		const categoryFields = {};
-		SAMPLE_DATA.boerse.forEach(e => {
+		this._categories.forEach(e => {
 			categoryFields[e['ee-name']] = e['ee-angaben'].map(e => createField(e.name, e.optional));
 		});
 
@@ -193,7 +175,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 				<collapsable-content id='step2' title='2. Melden: Auswahl der Kategorie' .open=${true}>
 					<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}" required>
 						<option value="" selected disabled>Bitte wählen ... </option>
-						${SAMPLE_DATA.boerse.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
+						${this._categories.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
 						<label for="category">Category</label>
 					</select>
 				</collapsable-content>
@@ -236,6 +218,14 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 	isRenderingSkipped() {
 		return this._environmentService.isEmbedded();
+	}
+
+	get categories() {
+		return this._categories;
+	}
+
+	set categories(cat) {
+		this._categories = cat;
 	}
 
 	static get name() {
