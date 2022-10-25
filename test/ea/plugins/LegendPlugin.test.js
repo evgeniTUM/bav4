@@ -1,5 +1,5 @@
 import { LegendPlugin } from '../../../src/ea/plugins/LegendPlugin.js';
-import { activateLegend, deactivateLegend, setPreviewGeoresourceId } from '../../../src/ea/store/module/ea.action.js';
+import { activateLegend, clearPreviewGeoresourceId, deactivateLegend, setPreviewGeoresourceId } from '../../../src/ea/store/module/ea.action.js';
 import { eaReducer } from '../../../src/ea/store/module/ea.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
 import { addLayer, modifyLayer, removeLayer } from '../../../src/store/layers/layers.action';
@@ -110,7 +110,7 @@ describe('LegendPlugin', () => {
 		});
 
 
-		it('ignores preview layer if it is already active', async () => {
+		it('show preview layer only once if already active', async () => {
 			const store = await setup();
 			activateLegend();
 
@@ -130,6 +130,19 @@ describe('LegendPlugin', () => {
 
 			await TestUtils.timeout();
 			expect(store.getState().ea.legendItems).toEqual([layerItem1]);
+		});
+
+		it('always show preview layer first', async () => {
+			const store = await setup();
+			activateLegend();
+
+			addLayer('id1');
+			addLayer('id2');
+			addLayer('id3');
+			setPreviewGeoresourceId('id2');
+
+			await TestUtils.timeout();
+			expect(store.getState().ea.legendItems).toEqual([layerItem2, layerItem1, layerItem3]);
 		});
 
 		it('handles several incoming preview events correctly', async () => {
