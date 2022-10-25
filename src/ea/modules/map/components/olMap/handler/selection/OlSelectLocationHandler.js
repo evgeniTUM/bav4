@@ -8,12 +8,9 @@ import { $injector } from '../../../../../../../injection';
 import { setLocation } from '../../../../../../store/contribution/contribution.action';
 import { observe } from '../../../../../../../utils/storeUtils';
 import { HelpTooltip } from '../../../../../../../modules/olMap/tooltip/HelpTooltip';
-import { markerStyleFunction } from '../../../../../../../modules/olMap/utils/olStyleUtils';
 import { highlightCoordinateFeatureStyleFunction } from '../../../../../../../modules/olMap/handler/highlight/styleUtils';
 import { OlLayerHandler } from '../../../../../../../modules/olMap/handler/OlLayerHandler';
-
-
-
+import { setMapCursorStyle } from '../../../../../../store/mapclick/mapclick.action';
 
 
 export const SELECT_LOCATION_LAYER_ID = 'select_location_layer_id';
@@ -26,7 +23,6 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 		this._helpTooltip = new HelpTooltip();
 		this._storeService = StoreService;
 		this._positionFeature = new Feature();
-		this._taggingFeature = new Feature();
 		this._layer = null;
 		this._map = null;
 
@@ -40,7 +36,7 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 	 */
 	onActivate(olMap) {
 		if (this._layer === null) {
-			const source = new VectorSource({ wrapX: false, features: [this._positionFeature, this._taggingFeature] });
+			const source = new VectorSource({ wrapX: false, features: [this._positionFeature] });
 			this._layer = new VectorLayer({
 				source: source
 			});
@@ -87,7 +83,6 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 			if (!(tagging && position)) {
 				return;
 			}
-			this._taggingFeature.setGeometry(new Point(position));
 		};
 
 		this._listeners.push(this._map.on(MapBrowserEventType.CLICK, onClick));
@@ -95,12 +90,12 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 
 		const onTaggingChanged = (taggingMode) => {
 			if (taggingMode) {
-				this._taggingFeature.setStyle(markerStyleFunction);
+				setMapCursorStyle('crosshair');
 				this._helpTooltip.activate(this._map);
 				tagging = true;
 			}
 			else {
-				this._taggingFeature.setStyle(() => { });
+				setMapCursorStyle('auto');
 				this._helpTooltip.deactivate();
 				tagging = false;
 			}
