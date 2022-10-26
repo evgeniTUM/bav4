@@ -27,13 +27,15 @@ export class EAContribution extends AbstractMvuContentPanel {
 		const {
 			EnvironmentService: environmentService,
 			TranslationService: translationService,
-			CoordinateService: coordinateService
+			CoordinateService: coordinateService,
+			ConfigService: configService
 		}
-			= $injector.inject('EnvironmentService', 'TranslationService', 'CoordinateService');
+			= $injector.inject('EnvironmentService', 'TranslationService', 'CoordinateService', 'ConfigService');
 
 		this._environmentService = environmentService;
 		this._translationService = translationService;
 		this._coordinateService = coordinateService;
+		this._configService = configService;
 
 		this._categories = {};
 	}
@@ -93,15 +95,38 @@ export class EAContribution extends AbstractMvuContentPanel {
 			setCurrentModule(ResearchModuleContent.name);
 		};
 
+		const getCoordinatesString = () => {
+			return model.position ? this._coordinateService.stringify(this._coordinateService.toLonLat(model.position), 4326, { digits: 5 }) : '';
+		};
 
-		const onSubmit = (event) => {
+		const onSubmit = async (event) => {
 			alert(JSON.stringify(model, null, 1));
 			setTaggingMode(false);
 			event.preventDefault();
-		};
 
-		const getCoordinatesString = () => {
-			return model.position ? this._coordinateService.stringify(this._coordinateService.toLonLat(model.position), 4326, { digits: 5 }) : '';
+			const url = this._configService.getValueAsPath('BACKEND_URL') + 'report/message';
+
+
+
+			const json = {
+				reportType: 'Börse',
+				coordinates: getCoordinatesString(),
+				additionalInfo: model.additionalInfo,
+				email: model.email,
+				category: model.currentCategory,
+				categoryData: JSON.stringify(model.categoryFields, null, 1)
+			};
+
+			const request = await fetch(url, {
+				method: 'POST',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(json)
+			});
+			const response = await request.text();
+			alert(response);
 		};
 
 		const createField = (name, optional, type = 'text') => {

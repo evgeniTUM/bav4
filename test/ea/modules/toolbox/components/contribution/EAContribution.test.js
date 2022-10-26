@@ -11,6 +11,8 @@ import { TestUtils } from '../../../../../test-utils';
 window.customElements.define(EAContribution.tag, EAContribution);
 
 
+
+
 describe('EAContributon', () => {
 	let store;
 
@@ -142,6 +144,10 @@ describe('EAContributon', () => {
 			const element = await setup();
 			element.shadowRoot.querySelector('#tag');
 
+
+		});
+
+		it('sends POST request on submit', async () => {
 
 		});
 
