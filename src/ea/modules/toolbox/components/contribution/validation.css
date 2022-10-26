@@ -1,3 +1,8 @@
 input:invalid {
 	background-color: rgba(200, 0, 0, 0.2);
 }
+
+
+select:invalid {
+	background-color: rgba(200, 0, 0, 0.2);
+}

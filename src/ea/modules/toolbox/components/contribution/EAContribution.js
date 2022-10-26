@@ -1,48 +1,27 @@
 import { html, nothing } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { AbstractMvuContentPanel } from '../../../../../modules/menu/components/mainMenu/content/AbstractMvuContentPanel';
-import { setDescription, setTaggingMode } from '../../../../store/contribution/contribution.action';
+import { setTaggingMode } from '../../../../store/contribution/contribution.action';
 import { setCurrentModule } from '../../../../store/module/ea.action';
 import { ResearchModuleContent } from '../research/ResearchModuleContent';
 import css from './eaContribution.css';
 import validationCss from './validation.css';
 
 const Update = 'update';
-const Update_Category = 'update_category';
-const Update_UserInput = 'update_user_input';
-const Reset_UserInput = 'reset_user_input';
-const Update_Validation = 'update_validation';
-
-const SAMPLE_DATA = { 'boerse': [
-	{
-		'ee-name': 'Test1',
-		'ee-angaben': [{ 'name': 'name1', optional: true }]
-	},
-	{ 'ee-name': 'Solarflächenbörse:Dachflächen',
-		'ee-angaben': [
-			{ 'name': 'Ansprechpartner', 'optional': false },
-			{ 'name': 'Ansprechpartner E-Mail', 'optional': false },
-			{ 'name': 'Ansprechpartner Telefon', 'optional': false },
-			{ 'name': 'Nutzbare Dachfläche', 'optional': false },
-			{ 'name': 'Dachneigung (°)', 'optional': false },
-			{ 'name': 'Dachausrichtung (Süd/West/...)', 'optional': false },
-			{ 'name': 'Bezeichnung der Fläche', 'optional': true },
-			{ 'name': 'Gebäudeeigentümer', 'optional': true },
-			{ 'name': 'Aktuelle Nutzung', 'optional': true },
-			{ 'name': 'Jahr der Errichtung bzw. letzten ...', 'optional': true },
-			{ 'name': 'Dachmaterial', 'optional': true },
-			{ 'name': 'Stand', 'optional': true }] }] };
+const Update_Field = 'update_field';
+const Reset_Fields = 'reset_fields';
 
 export class EAContribution extends AbstractMvuContentPanel {
 
 	constructor() {
 		super({
-			description: '',
 			isPortrait: false,
 			hasMinWidth: false,
-			currentCategory: nothing,
 			validation: false,
-			result: { }
+			currentCategory: nothing,
+			categoryFields: { },
+			additionalInfo: '',
+			email: ''
 		});
 
 		const {
@@ -56,7 +35,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 		this._translationService = translationService;
 		this._coordinateService = coordinateService;
 
-		this.result = {};
+		this._categories = {};
 	}
 
 
@@ -65,39 +44,29 @@ export class EAContribution extends AbstractMvuContentPanel {
 	 */
 	update(type, data, model) {
 		switch (type) {
-			case Update:
+			case Update: {
 				return {
 					...model,
 					...data
 				};
+			}
 
-			case Update_Category:
-				return {
-					...model,
-					currentCategory: data
-				};
-
-			case Update_UserInput: {
-				const result = model.result;
-				result[data.name] = data.value;
+			case Update_Field: {
+				const categoryFields = model.categoryFields;
+				categoryFields[data.name] = data.value;
 
 				return {
 					...model,
-					result
+					categoryFields
 				};
 			}
 
-			case Reset_UserInput:
+			case Reset_Fields:
 				return {
 					...model,
-					result: {}
+					categoryFields: {}
 				};
 
-			case Update_Validation:
-				return {
-					...model,
-					validation: data
-				};
 		}
 	}
 
@@ -114,25 +83,19 @@ export class EAContribution extends AbstractMvuContentPanel {
 	createView(model) {
 		const translate = (key) => this._translationService.translate(key);
 
-
-		const onChangeDescription = (e) => {
-			setDescription(e.target.value);
-		};
-
 		const onClickTagButton = () => {
 			const taggingActive = !model.tagging;
 			setTaggingMode(taggingActive);
 			this.shadowRoot.getElementById('coordinates').setCustomValidity('');
 		};
 
-
-		const onClickResearchButton = () => {
+		const onClickFindButton = () => {
 			setCurrentModule(ResearchModuleContent.name);
 		};
 
 
 		const onSubmit = (event) => {
-			alert(JSON.stringify(model.result, null, 1));
+			alert(JSON.stringify(model, null, 1));
 			setTaggingMode(false);
 			event.preventDefault();
 		};
@@ -141,28 +104,25 @@ export class EAContribution extends AbstractMvuContentPanel {
 			return model.position ? this._coordinateService.stringify(this._coordinateService.toLonLat(model.position), 4326, { digits: 5 }) : '';
 		};
 
-		const onChangeTextField = (event) => {
-			this.signal(Update_UserInput, { name: event.target.name, value: event.target.value });
-		};
-
 		const createField = (name, optional, type = 'text') => {
 			const label = optional ? name : name + '*';
 
 			return html`
-				<div id=${name} class="invalid" title=${name}>								
-					<input placeholder=${label}  ?required=${!optional}  type=${type} name="${name}" .value="" @change=${onChangeTextField} >
+				<div id=${name} title=${name}>								
+					<input placeholder=${label}  ?required=${!optional}  type=${type} name="${name}" .value="" 
+						@change=${(e) => this.signal(Update_Field, { name: e.target.name, value: e.target.value })} >
 				</div>
 			`;
 		};
 
 		const onSelectionChanged = (e) => {
-			this.signal(Reset_UserInput);
-			this.signal(Update_Category, e.target.value);
+			this.signal(Update, { currentCategory: e.target.value });
+			model.categoryFields = {};
 			this.shadowRoot.querySelectorAll('.category-fields input').forEach(i => i.value = '');
 		};
 
 		const categoryFields = {};
-		SAMPLE_DATA.boerse.forEach(e => {
+		this._categories.forEach(e => {
 			categoryFields[e['ee-name']] = e['ee-angaben'].map(e => createField(e.name, e.optional));
 		});
 
@@ -195,7 +155,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 						<div class='mode-selection-column'>
 							<div class='button-header'>Bestehende Einträge durchsuchen</div>
 							<div class='arrow-down'></div>
-							<button id="search" type='button' @click=${onClickResearchButton} title=${translate('ea_contribution_button_find_title')}>
+							<button id="search" type='button' @click=${onClickFindButton} title=${translate('ea_contribution_button_find_title')}>
 								${translate('ea_contribution_button_find_title')}
 								<div class='search-icon'></div>
 								${translate('ea_contribution_button_find_text')}
@@ -213,9 +173,9 @@ export class EAContribution extends AbstractMvuContentPanel {
 				</collapsable-content>
 
 				<collapsable-content id='step2' title='2. Melden: Auswahl der Kategorie' .open=${true}>
-					<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}">
-						<option selected disabled>Bitte wählen ... </option>
-						${SAMPLE_DATA.boerse.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
+					<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}" required>
+						<option value="" selected disabled>Bitte wählen ... </option>
+						${this._categories.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
 						<label for="category">Category</label>
 					</select>
 				</collapsable-content>
@@ -226,12 +186,14 @@ export class EAContribution extends AbstractMvuContentPanel {
 						${categoryFields[model.currentCategory]}
 					</div>
 
-					<textarea placeholder="Zusätzlicher Text" id="textarea" name='additionalInfo' value=${model.description} @change=${onChangeDescription}></textarea>
+					<textarea placeholder="Zusätzlicher Text" id="textarea" name='additionalInfo' value=${model.description}
+						@change=${(e) => this.signal(Update, { additionalInfo: e.target.value })}></textarea>
 
 				</collapsable-content>
 
 				<collapsable-content id='step4' title='4. Melden: Ihre E-Mail-Adresse' .open=${true}>
-					${createField('Ihre Email Addresse', false, 'email')}
+					<input placeholder='Ihre Email Adresse' required  type='email' name="email" 
+						@change=${(e) => this.signal(Update, { email: e.target.value })}>
 					
 					<p>
 						<br/>
@@ -241,7 +203,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 					<div class='form-buttons'>
 						<button id="select" class="button" type='submit'
 							.label=${translate('ea_contribution_button_send')}
-							@click=${() => this.signal(Update_Validation, true)}>
+							@click=${() => this.signal(Update, { validation: true })}>
 							Send
 						</button>
 					</div>
@@ -256,6 +218,14 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 	isRenderingSkipped() {
 		return this._environmentService.isEmbedded();
+	}
+
+	get categories() {
+		return this._categories;
+	}
+
+	set categories(cat) {
+		this._categories = cat;
 	}
 
 	static get name() {

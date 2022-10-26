@@ -85,7 +85,7 @@ export class CollapsableContent extends AbstractMvuContentPanel {
 	}
 
 	set open(value) {
-		this.signal(Update_Open, open);
+		this.signal(Update_Open, value);
 	}
 
 	get open() {
