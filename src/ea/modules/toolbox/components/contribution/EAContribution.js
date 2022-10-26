@@ -37,7 +37,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 		this._coordinateService = coordinateService;
 		this._configService = configService;
 
-		this._categories = {};
+		this._categories = [];
 	}
 
 
@@ -105,7 +105,6 @@ export class EAContribution extends AbstractMvuContentPanel {
 			event.preventDefault();
 
 			const url = this._configService.getValueAsPath('BACKEND_URL') + 'report/message';
-
 
 
 			const json = {

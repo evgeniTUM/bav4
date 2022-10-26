@@ -10,7 +10,27 @@ import { TestUtils } from '../../../../../test-utils';
 
 window.customElements.define(EAContribution.tag, EAContribution);
 
-
+const SAMPLE_JSON_SPEC = [
+	{
+		'ee-name': 'Test1',
+		'ee-angaben': [
+			{
+				'name': 'required', 'optional': false
+			},
+			{
+				'name': 'optional', 'optional': true
+			}
+		]
+	},
+	{
+		'ee-name': 'Test2',
+		'ee-angaben': [
+			{
+				'name': 'other', 'optional': true
+			}
+		]
+	}
+];
 
 
 describe('EAContributon', () => {
@@ -22,8 +42,12 @@ describe('EAContributon', () => {
 	};
 
 	const coordinateServiceMock = {
-		toLonLat() { },
-		stringify() { }
+		toLonLat: (a) => a,
+		stringify: (a) => a
+	};
+
+	const configServiceMock = {
+		getValueAsPath: (v) => v
 	};
 
 	const setup = async (customState, config = {}) => {
@@ -46,7 +70,8 @@ describe('EAContributon', () => {
 				isTouch: () => isTouch
 			})
 			.registerSingleton('TranslationService', { translate: (key) => key })
-			.registerSingleton('CoordinateService', coordinateServiceMock);
+			.registerSingleton('CoordinateService', coordinateServiceMock)
+			.registerSingleton('ConfigService', configServiceMock);
 		return TestUtils.render(EAContribution.tag);
 	};
 
@@ -148,6 +173,8 @@ describe('EAContributon', () => {
 		});
 
 		it('sends POST request on submit', async () => {
+			const element = await setup({ contribution: { position: [4, 2] } });
+
 
 		});
 
