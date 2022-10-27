@@ -22,7 +22,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 			categoryFields: { },
 			additionalInfo: '',
 			email: '',
-			categoriesSpecification: []
+			categoriesSpecification: [],
+			statusMessage: nothing
 		});
 
 		const {
@@ -32,7 +33,13 @@ export class EAContribution extends AbstractMvuContentPanel {
 			ConfigService: configService,
 			HttpService: httpService
 		}
-			= $injector.inject('EnvironmentService', 'TranslationService', 'CoordinateService', 'ConfigService', 'HttpService');
+			= $injector.inject(
+				'EnvironmentService',
+				'TranslationService',
+				'CoordinateService',
+				'ConfigService',
+				'HttpService'
+			);
 
 		this._environmentService = environmentService;
 		this._translationService = translationService;
@@ -89,6 +96,21 @@ export class EAContribution extends AbstractMvuContentPanel {
 			return model.position ? this._coordinateService.stringify(this._coordinateService.toLonLat(model.position), 4326, { digits: 5 }) : '';
 		};
 
+		const completionMessage = html`
+		<div id='completion-message'>
+			<h2>Vielen Dank!</h2>
+			<p>Ihre Meldung wurde erfolgreich versendet. Damit leisten Sie einen wertvollen Beitrag, die Datenbasis in unserem Portal fortlaufend zu verbessern.</p>
+			<p>Nach Prüfung der Angaben werden wir das gemeldete Objekt oder die Korrektur übernehmen. Bei Rückfragen kommen wir auf Sie zu.</p>
+			<p>Ihr Energie-Atlas Bayern-Team</p>
+		</div>`;
+
+		const failureMessage = html`
+		<div id='failure-message'>
+			<h2 class='error'>Bei der Verarbeitung ist ein Fehler aufgetreten</h2>
+			<p>Bitte versuchen sie es zu einem späteren Zeitpunkt noch einmal</p>
+		</div>`;
+
+
 		const onSubmit = async (event) => {
 			setTaggingMode(false);
 			event.preventDefault();
@@ -106,21 +128,18 @@ export class EAContribution extends AbstractMvuContentPanel {
 			};
 
 			const dataBody = JSON.stringify(json);
+			const response = await this._httpService.post(url, dataBody, 'application/json');
 
-			const request = await this._httpService.post(url, dataBody, 'application/json');
-			const response = await request.text();
-
+			const statusMessage = response.status === 200 ? completionMessage : failureMessage;
+			this.signal(Update, { statusMessage });
 		};
 
 		const createField = (name, optional, type = 'text') => {
-			const label = optional ? name : name + '*';
-
 			return html`
 				<div id=${name} title=${name}>								
-					<input placeholder=${label}  ?required=${!optional}  type=${type} name="${name}" .value="" 
+					<input placeholder=${name + (optional ? '' : '*')}  ?required=${!optional}  type=${type} name="${name}" .value="" 
 						@input=${(e) => this.signal(Update_Field, { name: e.target.name, value: e.target.value })} >
-				</div>
-			`;
+				</div> `;
 		};
 
 		const onSelectionChanged = (e) => {
@@ -134,18 +153,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 			categoryFields[e['ee-name']] = e['ee-angaben'].map(e => createField(e.name, e.optional));
 		});
 
-
 		const tagButtonTitle = translate(model.tagging ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag_title');
 
-		return html`
-			<style>${css}</style>
-			<style>${model.showInvalidFields ? validationCss : nothing}</style>
-			<div class="container">
-
-				<div class='header'>Abwärmeinformations- und Solarflächenbörse</div>
-				<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>
-
-				<form id='report' action="#" @submit="${onSubmit}">
+		const form = html`
+			<form id='report' action="#" @submit="${onSubmit}">
 
 				<collapsable-content id='step1' title='1. Melden oder Suchen' .open=${true}>
 					<div class="button-headers flex-container">
@@ -218,7 +229,17 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</div>
 
 				</collapsable-content>
-				</form>
+			</form>`;
+
+		return html`
+			<style>${css}</style>
+			<style>${model.showInvalidFields ? validationCss : nothing}</style>
+			<div class="container">
+
+				<div class='header'>Abwärmeinformations- und Solarflächenbörse</div>
+				<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>
+
+				${model.statusMessage !== nothing ? model.statusMessage : form}
 			
 			</div>
 		`;

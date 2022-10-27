@@ -233,13 +233,13 @@ describe('EAContributon', () => {
 			expect(element.getModel().showInvalidFields).toBeTrue();
 		});
 
-		it('on submit, sends POST request closes module and shows completion message', async () => {
+		it('on submit, sends POST request and shows completion message', async () => {
 			const expectedEmail = 'testicus@domainicus.com';
 			const expectedCoordinates = [4, 2];
 			const expectedInfo = 'additionalIfno';
 			const expectedCategory = 'Test1';
 
-			const postSpy = spyOn(httpServiceMock, 'post').and.returnValue({ text: async () => 'text' });
+			const postSpy = spyOn(httpServiceMock, 'post').and.returnValue({ status: 200 });
 
 			const element = await setup({ contribution: { position: expectedCoordinates } });
 
@@ -275,8 +275,34 @@ describe('EAContributon', () => {
 				'application/json'
 			);
 
-			expect(store.getState().ea.currentModule).toBeNull();
+			await TestUtils.timeout();
 
+			expect(element.shadowRoot.querySelectorAll('collapsable-content').length).toBe(0);
+			expect(element.shadowRoot.querySelector('#completion-message')).not.toBeNull();
+		});
+
+
+		it('shows failure message when reponse code is not 200', async () => {
+			spyOn(httpServiceMock, 'post').and.returnValue({ status: 201 });
+
+			const element = await setup({ contribution: { position: [42, 0] } });
+
+			element.categories = SAMPLE_JSON_SPEC;
+
+			const query = (query) => element.shadowRoot.querySelector(query);
+
+			query('#category').value = 'Test2';
+			query('#category').dispatchEvent(new Event('change'));
+
+			query('#email').value = 'test@mail.com';
+			query('#email').dispatchEvent(new Event('input'));
+
+			query('#send').click();
+
+			await TestUtils.timeout();
+
+			expect(element.shadowRoot.querySelectorAll('collapsable-content').length).toBe(0);
+			expect(element.shadowRoot.querySelector('#failure-message')).not.toBeNull();
 		});
 
 	});
