@@ -14,20 +14,14 @@ const SAMPLE_JSON_SPEC = [
 	{
 		'ee-name': 'Test1',
 		'ee-angaben': [
-			{
-				'name': 'field1', 'optional': false
-			},
-			{
-				'name': 'field2', 'optional': true
-			}
+			{ 'name': 'field1', 'optional': false },
+			{ 'name': 'field2', 'optional': true }
 		]
 	},
 	{
 		'ee-name': 'Test2',
 		'ee-angaben': [
-			{
-				'name': 'field3', 'optional': true
-			}
+			{ 'name': 'field3', 'optional': true }
 		]
 	}
 ];
@@ -80,117 +74,136 @@ describe('EAContributon', () => {
 		return TestUtils.render(EAContribution.tag);
 	};
 
-	// describe('class', () => {
+	describe('class', () => {
 
-	// 	it('inherits from AbstractMvuContentPanel', async () => {
+		it('inherits from AbstractMvuContentPanel', async () => {
 
-	// 		const element = await setup();
+			const element = await setup();
 
-	// 		expect(element instanceof AbstractMvuContentPanel).toBeTrue();
-	// 	});
+			expect(element instanceof AbstractMvuContentPanel).toBeTrue();
+		});
 
-	// });
+	});
 
-	// describe('when initialized', () => {
+	describe('when initialized', () => {
+		it('all sections are shown expanded', async () => {
+			const element = await setup();
 
-	// 	it('all sections are shown expanded', async () => {
-	// 		const element = await setup();
+			expect(element.shadowRoot.querySelector('#step1')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#step1').open).toBeTruthy();
 
-	// 		expect(element.shadowRoot.querySelector('#step1')).toBeTruthy();
-	// 		expect(element.shadowRoot.querySelector('#step1').open).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#step2')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#step2').open).toBeTruthy();
 
-	// 		expect(element.shadowRoot.querySelector('#step2')).toBeTruthy();
-	// 		expect(element.shadowRoot.querySelector('#step2').open).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#step3')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#step3').open).toBeTruthy();
 
-	// 		expect(element.shadowRoot.querySelector('#step3')).toBeTruthy();
-	// 		expect(element.shadowRoot.querySelector('#step3').open).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#step4')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#step4').open).toBeTruthy();
 
-	// 		expect(element.shadowRoot.querySelector('#step4')).toBeTruthy();
-	// 		expect(element.shadowRoot.querySelector('#step4').open).toBeTruthy();
+		});
+	});
 
-	// 	});
-	// });
+	describe('location handling', () => {
+		it('shows no tag location when not present', async () => {
+			const element = await setup();
 
-	// describe('location handling', () => {
+			expect(element.shadowRoot.querySelector('.coordinates').value).toEqual('');
+		});
 
-	// 	it('shows no tag location when not present', async () => {
-	// 		const element = await setup();
+		it('shows tag location when present', async () => {
+			const expectedCoordinates = [42.0, 24.0];
+			const expectedCoordString = 'expected';
+			const toLonLatSpy = spyOn(coordinateServiceMock, 'toLonLat').and.returnValue({});
+			spyOn(coordinateServiceMock, 'stringify').and.returnValue(expectedCoordString);
 
-	// 		expect(element.shadowRoot.querySelector('.coordinates').value).toEqual('');
-	// 	});
+			const element = await setup({ contribution: { position: expectedCoordinates } });
 
-	// 	it('shows tag location when present', async () => {
-	// 		const expectedCoordinates = [42.0, 24.0];
-	// 		const expectedCoordString = 'expected';
-	// 		const toLonLatSpy = spyOn(coordinateServiceMock, 'toLonLat').and.returnValue({});
-	// 		spyOn(coordinateServiceMock, 'stringify').and.returnValue(expectedCoordString);
+			expect(toLonLatSpy).toHaveBeenCalledWith(expectedCoordinates);
+			expect(element.shadowRoot.querySelector('.coordinates').value).toEqual(expectedCoordString);
+		});
 
-	// 		const element = await setup({ contribution: { position: expectedCoordinates } });
+		it('toggles tagging mode inside the map when "tag" button is clicked', async () => {
+			const element = await setup();
+			const tagButton = element.shadowRoot.querySelector('#tag');
 
-	// 		expect(toLonLatSpy).toHaveBeenCalledWith(expectedCoordinates);
-	// 		expect(element.shadowRoot.querySelector('.coordinates').value).toEqual(expectedCoordString);
-	// 	});
+			expect(store.getState().contribution.tagging).toBe(false);
 
-	// 	it('toggles tagging mode inside the map when "tag" button is clicked', async () => {
-	// 		const element = await setup();
-	// 		const tagButton = element.shadowRoot.querySelector('#tag');
+			tagButton.click();
 
-	// 		expect(store.getState().contribution.tagging).toBe(false);
+			expect(store.getState().contribution.tagging).toBe(true);
 
-	// 		tagButton.click();
+			tagButton.click();
 
-	// 		expect(store.getState().contribution.tagging).toBe(true);
-
-	// 		tagButton.click();
-
-	// 		expect(store.getState().contribution.tagging).toBe(false);
-	// 	});
+			expect(store.getState().contribution.tagging).toBe(false);
+		});
 
 
-	// 	it('changes button tittle when tagging mode is active', async () => {
-	// 		const element = await setup();
-	// 		const tagButton = element.shadowRoot.querySelector('#tag');
+		it('changes button tittle when tagging mode is active', async () => {
+			const element = await setup();
+			const tagButton = element.shadowRoot.querySelector('#tag');
 
-	// 		setTaggingMode(false);
-	// 		expect(tagButton.title).toBe('ea_contribution_button_tag_title');
-	// 		expect(tagButton.innerText).toBe('ea_contribution_button_tag_title\nea_contribution_button_tag_text');
+			setTaggingMode(false);
+			expect(tagButton.title).toBe('ea_contribution_button_tag_title');
+			expect(tagButton.innerText).toBe('ea_contribution_button_tag_title\nea_contribution_button_tag_text');
 
-	// 		setTaggingMode(true);
-	// 		expect(tagButton.title).toBe('ea_contribution_button_tag_cancel');
-	// 		expect(tagButton.innerText).toBe('ea_contribution_button_tag_cancel\nea_contribution_button_tag_text');
-	// 	});
+			setTaggingMode(true);
+			expect(tagButton.title).toBe('ea_contribution_button_tag_cancel');
+			expect(tagButton.innerText).toBe('ea_contribution_button_tag_cancel\nea_contribution_button_tag_text');
+		});
 
-	// });
+	});
 
-	// it('opens the research module when "find" button is clicked', async () => {
-	// 	const element = await setup();
-	// 	const tagButton = element.shadowRoot.querySelector('#search');
+	it('opens the research module when "find" button is clicked', async () => {
+		const element = await setup();
+		const tagButton = element.shadowRoot.querySelector('#search');
 
-	// 	tagButton.click();
+		tagButton.click();
 
-	// 	expect(store.getState().ea.currentModule).toEqual('recherche');
-	// });
+		expect(store.getState().ea.currentModule).toEqual('recherche');
+	});
 
 
-	// describe('selection handling', () => {
-	// 	it('changes category fields on category change', async () => {
-	// 		const element = await setup();
-	// 		element.shadowRoot.querySelector('#tag');
+	describe('selection handling', () => {
+		it('shows corresponding input fiels for each category', async () => {
+			const element = await setup();
+			element.categories = SAMPLE_JSON_SPEC;
 
-	// 		element.shadowRoot.querySelector('#category').value = 'Test1';
-	// 		element.shadowRoot.querySelector('#category').dispatchEvent(new Event('change'));
+			const query = (query) => element.shadowRoot.querySelector(query);
 
-	// 		await TestUtils.timeout(100);
+			expect(query('#step3').querySelectorAll('input').length).toBe(0);
 
-	// 		const inputs = element.shadowRoot.querySelector('#step3');
-	// 		console.log(inputs);
 
-	// 	});
-	// });
+			query('#category').value = 'Test1';
+			query('#category').dispatchEvent(new Event('change'));
+
+			expect(query('#step3').querySelectorAll('input').length).toBe(2);
+
+			const field1 = query('[name="field1"]');
+			expect(field1.placeholder).toBe('field1*');
+			expect(field1.required).toBeTrue();
+			expect(field1.type).toBe('text');
+
+			const field2 = query('[name="field2"]');
+			expect(field2.placeholder).toBe('field2');
+			expect(field2.required).toBeFalse();
+			expect(field2.type).toBe('text');
+
+
+			query('#category').value = 'Test2';
+			query('#category').dispatchEvent(new Event('change'));
+
+			expect(query('#step3').querySelectorAll('input').length).toBe(1);
+
+			const field3 = query('[name="field3"]');
+			expect(field3.placeholder).toBe('field3');
+			expect(field3.required).toBeFalse();
+			expect(field3.type).toBe('text');
+		});
+	});
 
 
 	describe('submit handling', () => {
-
 		it('sends POST request on submit', async () => {
 			const expectedEmail = 'testicus@domainicus.com';
 			const expectedCoordinates = [4, 2];
