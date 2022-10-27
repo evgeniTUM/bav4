@@ -100,7 +100,16 @@ describe('EAContributon', () => {
 
 			expect(element.shadowRoot.querySelector('#step4')).toBeTruthy();
 			expect(element.shadowRoot.querySelector('#step4').open).toBeTruthy();
+		});
 
+		it('email, category and position are required inputs', async () => {
+			const element = await setup();
+
+			expect(element.shadowRoot.querySelector('#coordinates').required).toBeTrue();
+			expect(element.shadowRoot.querySelector('#category').required).toBeTrue();
+			expect(element.shadowRoot.querySelector('#email').required).toBeTrue();
+
+			expect(element.shadowRoot.querySelector('#additional-info').required).toBeFalse();
 		});
 	});
 
@@ -204,7 +213,27 @@ describe('EAContributon', () => {
 
 
 	describe('submit handling', () => {
-		it('sends POST request on submit', async () => {
+		it('does not sumbit on validation errors', async () => {
+			const element = await setup();
+			const postSpy = spyOn(httpServiceMock, 'post').and.returnValue({ text: async () => 'text' });
+
+			expect(element.shadowRoot.querySelector('#report').checkValidity()).toBeFalse();
+			element.shadowRoot.querySelector('#send').click();
+
+			expect(postSpy).not.toHaveBeenCalled();
+		});
+
+		it('shows validation CSS after first submit click', async () => {
+			const element = await setup();
+
+			expect(element.getModel().showInvalidFields).toBeFalse();
+
+			element.shadowRoot.querySelector('#send').click();
+
+			expect(element.getModel().showInvalidFields).toBeTrue();
+		});
+
+		it('on submit, sends POST request closes module and shows completion message', async () => {
 			const expectedEmail = 'testicus@domainicus.com';
 			const expectedCoordinates = [4, 2];
 			const expectedInfo = 'additionalIfno';
@@ -233,20 +262,21 @@ describe('EAContributon', () => {
 
 			query('#send').click();
 
-
 			expect(postSpy).toHaveBeenCalledWith(
 				'BACKEND_URLreport/message',
-				JSON.stringify(
-					{
-						reportType: 'Börse',
-						coordinates: expectedCoordinates,
-						additionalInfo: expectedInfo,
-						email: expectedEmail,
-						category: expectedCategory,
-						categoryData: 'field1: text1\nfield2: text2'
-					}),
+				JSON.stringify({
+					reportType: 'Börse',
+					coordinates: expectedCoordinates,
+					additionalInfo: expectedInfo,
+					email: expectedEmail,
+					category: expectedCategory,
+					categoryData: 'field1: text1\nfield2: text2'
+				}),
 				'application/json'
 			);
+
+			expect(store.getState().ea.currentModule).toBeNull();
+
 		});
 
 	});

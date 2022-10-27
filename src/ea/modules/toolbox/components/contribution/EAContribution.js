@@ -17,7 +17,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 		super({
 			isPortrait: false,
 			hasMinWidth: false,
-			validation: false,
+			showInvalidFields: false,
 			currentCategory: nothing,
 			categoryFields: { },
 			additionalInfo: '',
@@ -139,13 +139,13 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 		return html`
 			<style>${css}</style>
-			<style>${model.validation ? validationCss : nothing}</style>
+			<style>${model.showInvalidFields ? validationCss : nothing}</style>
 			<div class="container">
 
 				<div class='header'>Abwärmeinformations- und Solarflächenbörse</div>
 				<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>
 
-				<form id='boerse' action="#" @submit="${onSubmit}">
+				<form id='report' action="#" @submit="${onSubmit}">
 
 				<collapsable-content id='step1' title='1. Melden oder Suchen' .open=${true}>
 					<div class="button-headers flex-container">
@@ -212,7 +212,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 					<div class='form-buttons'>
 						<button id="send" class="button" type='submit'
 							.label=${translate('ea_contribution_button_send')}
-							@click=${() => this.signal(Update, { validation: true })}>
+							@click=${() => this.signal(Update, { showInvalidFields: true })}>
 							Senden
 						</button>
 					</div>
