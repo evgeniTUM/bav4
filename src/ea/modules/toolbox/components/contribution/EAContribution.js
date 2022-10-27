@@ -21,23 +21,24 @@ export class EAContribution extends AbstractMvuContentPanel {
 			currentCategory: nothing,
 			categoryFields: { },
 			additionalInfo: '',
-			email: ''
+			email: '',
+			categoriesSpecification: []
 		});
 
 		const {
 			EnvironmentService: environmentService,
 			TranslationService: translationService,
 			CoordinateService: coordinateService,
-			ConfigService: configService
+			ConfigService: configService,
+			HttpService: httpService
 		}
-			= $injector.inject('EnvironmentService', 'TranslationService', 'CoordinateService', 'ConfigService');
+			= $injector.inject('EnvironmentService', 'TranslationService', 'CoordinateService', 'ConfigService', 'HttpService');
 
 		this._environmentService = environmentService;
 		this._translationService = translationService;
 		this._coordinateService = coordinateService;
 		this._configService = configService;
-
-		this._categories = [];
+		this._httpService = httpService;
 	}
 
 
@@ -46,29 +47,18 @@ export class EAContribution extends AbstractMvuContentPanel {
 	 */
 	update(type, data, model) {
 		switch (type) {
-			case Update: {
-				return {
-					...model,
-					...data
-				};
-			}
+			case Update:
+				return { ...model, ...data };
 
 			case Update_Field: {
 				const categoryFields = model.categoryFields;
 				categoryFields[data.name] = data.value;
 
-				return {
-					...model,
-					categoryFields
-				};
+				return { ...model, categoryFields };
 			}
 
 			case Reset_Fields:
-				return {
-					...model,
-					categoryFields: {}
-				};
-
+				return { ...model, categoryFields: {} };
 		}
 	}
 
@@ -100,12 +90,11 @@ export class EAContribution extends AbstractMvuContentPanel {
 		};
 
 		const onSubmit = async (event) => {
-			alert(JSON.stringify(model, null, 1));
 			setTaggingMode(false);
 			event.preventDefault();
 
 			const url = this._configService.getValueAsPath('BACKEND_URL') + 'report/message';
-
+			const fieldData = Object.entries(model.categoryFields).map(f => `${f[0]}: ${f[1]}`).join('\n');
 
 			const json = {
 				reportType: 'Börse',
@@ -113,19 +102,14 @@ export class EAContribution extends AbstractMvuContentPanel {
 				additionalInfo: model.additionalInfo,
 				email: model.email,
 				category: model.currentCategory,
-				categoryData: JSON.stringify(model.categoryFields, null, 1)
+				categoryData: fieldData
 			};
 
-			const request = await fetch(url, {
-				method: 'POST',
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(json)
-			});
+			const dataBody = JSON.stringify(json);
+
+			const request = await this._httpService.post(url, dataBody, 'application/json');
 			const response = await request.text();
-			alert(response);
+
 		};
 
 		const createField = (name, optional, type = 'text') => {
@@ -134,7 +118,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			return html`
 				<div id=${name} title=${name}>								
 					<input placeholder=${label}  ?required=${!optional}  type=${type} name="${name}" .value="" 
-						@change=${(e) => this.signal(Update_Field, { name: e.target.name, value: e.target.value })} >
+						@input=${(e) => this.signal(Update_Field, { name: e.target.name, value: e.target.value })} >
 				</div>
 			`;
 		};
@@ -146,9 +130,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 		};
 
 		const categoryFields = {};
-		this._categories.forEach(e => {
+		model.categoriesSpecification.forEach(e => {
 			categoryFields[e['ee-name']] = e['ee-angaben'].map(e => createField(e.name, e.optional));
 		});
+
 
 		const tagButtonTitle = translate(model.tagging ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag_title');
 
@@ -199,7 +184,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 				<collapsable-content id='step2' title='2. Melden: Auswahl der Kategorie' .open=${true}>
 					<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}" required>
 						<option value="" selected disabled>Bitte wählen ... </option>
-						${this._categories.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
+						${model.categoriesSpecification.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
 						<label for="category">Category</label>
 					</select>
 				</collapsable-content>
@@ -210,14 +195,14 @@ export class EAContribution extends AbstractMvuContentPanel {
 						${categoryFields[model.currentCategory]}
 					</div>
 
-					<textarea placeholder="Zusätzlicher Text" id="textarea" name='additionalInfo' value=${model.description}
-						@change=${(e) => this.signal(Update, { additionalInfo: e.target.value })}></textarea>
+					<textarea placeholder="Zusätzlicher Text" id="additional-info" name='additionalInfo' value=${model.description}
+						@input=${(e) => this.signal(Update, { additionalInfo: e.target.value })}></textarea>
 
 				</collapsable-content>
 
 				<collapsable-content id='step4' title='4. Melden: Ihre E-Mail-Adresse' .open=${true}>
-					<input placeholder='Ihre Email Adresse' required  type='email' name="email" 
-						@change=${(e) => this.signal(Update, { email: e.target.value })}>
+					<input id='email' placeholder='Ihre Email Adresse' required  type='email' name="email" 
+						@input=${(e) => this.signal(Update, { email: e.target.value })}>
 					
 					<p>
 						<br/>
@@ -225,10 +210,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 						<a href="https://www.energieatlas.bayern.de/datenschutz" target='_blank'>Datenschutzes</a>.
 					</p>
 					<div class='form-buttons'>
-						<button id="select" class="button" type='submit'
+						<button id="send" class="button" type='submit'
 							.label=${translate('ea_contribution_button_send')}
 							@click=${() => this.signal(Update, { validation: true })}>
-							Send
+							Senden
 						</button>
 					</div>
 
@@ -245,11 +230,11 @@ export class EAContribution extends AbstractMvuContentPanel {
 	}
 
 	get categories() {
-		return this._categories;
+		return this.getModel().categoriesSpecification;
 	}
 
 	set categories(cat) {
-		this._categories = cat;
+		this.signal(Update, { categoriesSpecification: cat });
 	}
 
 	static get name() {
