@@ -18,6 +18,10 @@ export class LegendPlugin extends BaPlugin {
 	 */
 	async register(store) {
 		const updateLegendItems = (activeLayers, previewLayers) => {
+
+			const previewLayersTitles = previewLayers.map(l => l.title);
+			activeLayers = activeLayers.filter(l => !previewLayersTitles.includes(l.title));
+
 			const sortedActiveLayers = activeLayers.sort((a, b) => a.title.localeCompare(b.title));
 			setLegendItems([...previewLayers, ...sortedActiveLayers]);
 		};
@@ -52,9 +56,6 @@ export class LegendPlugin extends BaPlugin {
 
 			activeLayers = wmsLayers.flat(1);
 
-			const activeLayersTitles = activeLayers.map(l => l.title);
-			previewLayers = previewLayers.filter(l => !activeLayersTitles.includes(l.title));
-
 			updateLegendItems(activeLayers, previewLayers);
 		};
 
@@ -66,15 +67,14 @@ export class LegendPlugin extends BaPlugin {
 			// save current parameters in global state
 			syncObject.onPreviewIdChange = geoResourceId;
 
-			const layers = geoResourceId ? await this._wmsCapabilitiesService.getWmsLayers(geoResourceId) : [];
+			const wmsLayers = geoResourceId ? await this._wmsCapabilitiesService.getWmsLayers(geoResourceId) : [];
 
 			// check if another event was triggered => current run is obsolete => abort
 			if (syncObject.onPreviewIdChange !== geoResourceId) {
 				return;
 			}
 
-			const activeLayerTitles = activeLayers.map(l => l.title);
-			previewLayers = layers.filter(l => !activeLayerTitles.includes(l.title));
+			previewLayers = wmsLayers;
 
 			updateLegendItems(activeLayers, previewLayers);
 		};
