@@ -17,6 +17,7 @@ import { RedesignModuleContent } from '../modules/toolbox/components/redesign/Re
 import { ResearchModuleContent } from '../modules/toolbox/components/research/ResearchModuleContent';
 import { clearMap } from '../store/geofeature/geofeature.action';
 import { deactivateAllGeoResources, EaModulesQueryParameters, EaModules, setCurrentModule } from '../store/module/ea.action';
+import { EnergyReportingModuleContent } from '../modules/toolbox/components/contribution/EnergyReportingModuleContent';
 
 export class ManageModulesPlugin extends BaPlugin {
 	constructor() {
@@ -72,6 +73,7 @@ export class ManageModulesPlugin extends BaPlugin {
 		// remove layers for last module
 			switch (lastModule) {
 				case EnergyMarketModuleContent.name:
+				case EnergyReportingModuleContent.name:
 					removeLayer(SELECT_LOCATION_LAYER_ID);
 					break;
 				case MixerModuleContent.name:
@@ -86,6 +88,7 @@ export class ManageModulesPlugin extends BaPlugin {
 			// enable layers for new module
 			switch (currentModule) {
 				case EnergyMarketModuleContent.name:
+				case EnergyReportingModuleContent.name:
 					addLayer(SELECT_LOCATION_LAYER_ID, { label: 'Standortselektion', constraints: { hidden: true, alwaysTop: false } });
 					break;
 

@@ -28,7 +28,7 @@ export const setState = (enabled) => {
  * Toggle contribution dialog
  * @function
  */
-export const toggleTaggingMode = () => {
+export const toggleContributionMode = () => {
 	const state = getStore().getState().contribution.active;
 	setState(!state);
 };

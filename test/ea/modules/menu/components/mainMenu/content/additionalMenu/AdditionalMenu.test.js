@@ -3,6 +3,7 @@
 import { AdditionalMenu } from '../../../../../../../../src/ea/modules/menu/components/mainMenu/content/additionalMenu/AdditionalMenu';
 import { Analyse3DModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/analyse3d/Analyse3DModuleContent';
 import { EnergyMarketModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/contribution/EnergyMarketModuleContent';
+import { EnergyReportingModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/contribution/EnergyReportingModuleContent';
 import { GeothermModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/geotherm/GeothermModuleContent';
 import { MixerModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/mixer/MixerModuleContent';
 import { RedesignModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/redesign/RedesignModuleContent';
@@ -75,7 +76,7 @@ describe('AdditionalMenu', () => {
 			expect(element.isRenderingSkipped()).toBeFalse();
 		});
 
-		it('toggles contribution module', async () => {
+		it('toggles contribution module for energy-market', async () => {
 			const element = await setup();
 
 			element.shadowRoot.getElementById('energy-market').click();
@@ -98,6 +99,29 @@ describe('AdditionalMenu', () => {
 			expect(setModuleActions[0].payload).toBe(null);
 		});
 
+		it('toggles contribution module for energy-reporting', async () => {
+			const element = await setup();
+
+			element.shadowRoot.getElementById('energy-reporting').click();
+
+			let setStateActions = storeActions.filter(e => e.type === SET_STATE);
+			expect(setStateActions.length).toBe(1);
+
+			let setModuleActions = storeActions.filter(e => e.type === SET_CURRENT_MODULE);
+			expect(setModuleActions.length).toBe(1);
+			expect(setModuleActions[0].payload).toBe(EnergyReportingModuleContent.name);
+
+			storeActions.length = 0;
+			element.shadowRoot.getElementById('energy-reporting').click();
+
+			setStateActions = storeActions.filter(e => e.type === SET_STATE);
+			expect(setStateActions.length).toBe(1);
+
+			setModuleActions = storeActions.filter(e => e.type === SET_CURRENT_MODULE);
+			expect(setModuleActions.length).toBe(1);
+			expect(setModuleActions[0].payload).toBe(null);
+		});
+
 		it('toggles modules', async () => {
 			const element = await setup();
 
@@ -106,7 +130,9 @@ describe('AdditionalMenu', () => {
 				{ id: 'redesign', name: RedesignModuleContent.name },
 				{ id: 'research', name: ResearchModuleContent.name },
 				{ id: 'analyse3d', name: Analyse3DModuleContent.name },
-				{ id: 'geotherm', name: GeothermModuleContent.name }
+				{ id: 'geotherm', name: GeothermModuleContent.name },
+				{ id: 'energy-market', name: EnergyMarketModuleContent.name },
+				{ id: 'energy-reporting', name: EnergyReportingModuleContent.name }
 			];
 
 			modules.forEach((module) => {
@@ -124,6 +150,22 @@ describe('AdditionalMenu', () => {
 				expect(setModuleActions.length).toBe(1);
 				expect(setModuleActions[0].payload).toBe(null);
 			});
+		});
+
+		it('respects a specific order of menu items', async () => {
+			const element = await setup();
+
+			const itemIds = Array.from(element.shadowRoot.querySelectorAll('li')).map(i => i.id);
+			expect(itemIds).toEqual([
+				'research',
+				'mixer',
+				'redesign',
+				'analyse3d',
+				'geotherm',
+				'energy-market',
+				'energy-reporting'
+			]);
+
 		});
 
 	});
