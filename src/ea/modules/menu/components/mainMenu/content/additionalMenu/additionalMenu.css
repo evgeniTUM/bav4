@@ -127,7 +127,7 @@
 	width: 6em;
 	border-radius: 3.5em;
 	background-color: var(--primary-bg-color);
-	border: none
+	border: none;
 }
 
 .action-button__border {
