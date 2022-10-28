@@ -128,3 +128,7 @@ button {
 	background-image: url('assets/arrow-down-short.svg');
 	margin: 0 auto;
 }
+
+.error {
+	color: red;
+}

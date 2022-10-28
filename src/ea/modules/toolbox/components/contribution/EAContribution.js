@@ -17,25 +17,35 @@ export class EAContribution extends AbstractMvuContentPanel {
 		super({
 			isPortrait: false,
 			hasMinWidth: false,
-			validation: false,
+			showInvalidFields: false,
 			currentCategory: nothing,
 			categoryFields: { },
 			additionalInfo: '',
-			email: ''
+			email: '',
+			categoriesSpecification: [],
+			statusMessage: nothing
 		});
 
 		const {
 			EnvironmentService: environmentService,
 			TranslationService: translationService,
-			CoordinateService: coordinateService
+			CoordinateService: coordinateService,
+			ConfigService: configService,
+			HttpService: httpService
 		}
-			= $injector.inject('EnvironmentService', 'TranslationService', 'CoordinateService');
+			= $injector.inject(
+				'EnvironmentService',
+				'TranslationService',
+				'CoordinateService',
+				'ConfigService',
+				'HttpService'
+			);
 
 		this._environmentService = environmentService;
 		this._translationService = translationService;
 		this._coordinateService = coordinateService;
-
-		this._categories = {};
+		this._configService = configService;
+		this._httpService = httpService;
 	}
 
 
@@ -44,29 +54,18 @@ export class EAContribution extends AbstractMvuContentPanel {
 	 */
 	update(type, data, model) {
 		switch (type) {
-			case Update: {
-				return {
-					...model,
-					...data
-				};
-			}
+			case Update:
+				return { ...model, ...data };
 
 			case Update_Field: {
 				const categoryFields = model.categoryFields;
 				categoryFields[data.name] = data.value;
 
-				return {
-					...model,
-					categoryFields
-				};
+				return { ...model, categoryFields };
 			}
 
 			case Reset_Fields:
-				return {
-					...model,
-					categoryFields: {}
-				};
-
+				return { ...model, categoryFields: {} };
 		}
 	}
 
@@ -93,26 +92,54 @@ export class EAContribution extends AbstractMvuContentPanel {
 			setCurrentModule(ResearchModuleContent.name);
 		};
 
-
-		const onSubmit = (event) => {
-			alert(JSON.stringify(model, null, 1));
-			setTaggingMode(false);
-			event.preventDefault();
-		};
-
 		const getCoordinatesString = () => {
 			return model.position ? this._coordinateService.stringify(this._coordinateService.toLonLat(model.position), 4326, { digits: 5 }) : '';
 		};
 
-		const createField = (name, optional, type = 'text') => {
-			const label = optional ? name : name + '*';
+		const completionMessage = html`
+		<div id='completion-message'>
+			<h2>Vielen Dank!</h2>
+			<p>Ihre Meldung wurde erfolgreich versendet. Damit leisten Sie einen wertvollen Beitrag, die Datenbasis in unserem Portal fortlaufend zu verbessern.</p>
+			<p>Nach Prüfung der Angaben werden wir das gemeldete Objekt oder die Korrektur übernehmen. Bei Rückfragen kommen wir auf Sie zu.</p>
+			<p>Ihr Energie-Atlas Bayern-Team</p>
+		</div>`;
 
+		const failureMessage = html`
+		<div id='failure-message'>
+			<h2 class='error'>Bei der Verarbeitung ist ein Fehler aufgetreten</h2>
+			<p>Bitte versuchen sie es zu einem späteren Zeitpunkt noch einmal</p>
+		</div>`;
+
+
+		const onSubmit = async (event) => {
+			setTaggingMode(false);
+			event.preventDefault();
+
+			const url = this._configService.getValueAsPath('BACKEND_URL') + 'report/message';
+			const fieldData = Object.entries(model.categoryFields).map(f => `${f[0]}: ${f[1]}`).join('\n');
+
+			const json = {
+				reportType: 'Börse',
+				coordinates: getCoordinatesString(),
+				additionalInfo: model.additionalInfo,
+				email: model.email,
+				category: model.currentCategory,
+				categoryData: fieldData
+			};
+
+			const dataBody = JSON.stringify(json);
+			const response = await this._httpService.post(url, dataBody, 'application/json');
+
+			const statusMessage = response.status === 200 ? completionMessage : failureMessage;
+			this.signal(Update, { statusMessage });
+		};
+
+		const createField = (name, optional, type = 'text') => {
 			return html`
 				<div id=${name} title=${name}>								
-					<input placeholder=${label}  ?required=${!optional}  type=${type} name="${name}" .value="" 
-						@change=${(e) => this.signal(Update_Field, { name: e.target.name, value: e.target.value })} >
-				</div>
-			`;
+					<input placeholder=${name + (optional ? '' : '*')}  ?required=${!optional}  type=${type} name="${name}" .value="" 
+						@input=${(e) => this.signal(Update_Field, { name: e.target.name, value: e.target.value })} >
+				</div> `;
 		};
 
 		const onSelectionChanged = (e) => {
@@ -122,21 +149,14 @@ export class EAContribution extends AbstractMvuContentPanel {
 		};
 
 		const categoryFields = {};
-		this._categories.forEach(e => {
+		model.categoriesSpecification.forEach(e => {
 			categoryFields[e['ee-name']] = e['ee-angaben'].map(e => createField(e.name, e.optional));
 		});
 
 		const tagButtonTitle = translate(model.tagging ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag_title');
 
-		return html`
-			<style>${css}</style>
-			<style>${model.validation ? validationCss : nothing}</style>
-			<div class="container">
-
-				<div class='header'>Abwärmeinformations- und Solarflächenbörse</div>
-				<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>
-
-				<form id='boerse' action="#" @submit="${onSubmit}">
+		const form = html`
+			<form id='report' action="#" @submit="${onSubmit}">
 
 				<collapsable-content id='step1' title='1. Melden oder Suchen' .open=${true}>
 					<div class="button-headers flex-container">
@@ -175,7 +195,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 				<collapsable-content id='step2' title='2. Melden: Auswahl der Kategorie' .open=${true}>
 					<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}" required>
 						<option value="" selected disabled>Bitte wählen ... </option>
-						${this._categories.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
+						${model.categoriesSpecification.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
 						<label for="category">Category</label>
 					</select>
 				</collapsable-content>
@@ -186,14 +206,14 @@ export class EAContribution extends AbstractMvuContentPanel {
 						${categoryFields[model.currentCategory]}
 					</div>
 
-					<textarea placeholder="Zusätzlicher Text" id="textarea" name='additionalInfo' value=${model.description}
-						@change=${(e) => this.signal(Update, { additionalInfo: e.target.value })}></textarea>
+					<textarea placeholder="Zusätzlicher Text" id="additional-info" name='additionalInfo' value=${model.description}
+						@input=${(e) => this.signal(Update, { additionalInfo: e.target.value })}></textarea>
 
 				</collapsable-content>
 
 				<collapsable-content id='step4' title='4. Melden: Ihre E-Mail-Adresse' .open=${true}>
-					<input placeholder='Ihre Email Adresse' required  type='email' name="email" 
-						@change=${(e) => this.signal(Update, { email: e.target.value })}>
+					<input id='email' placeholder='Ihre Email Adresse' required  type='email' name="email" 
+						@input=${(e) => this.signal(Update, { email: e.target.value })}>
 					
 					<p>
 						<br/>
@@ -201,15 +221,25 @@ export class EAContribution extends AbstractMvuContentPanel {
 						<a href="https://www.energieatlas.bayern.de/datenschutz" target='_blank'>Datenschutzes</a>.
 					</p>
 					<div class='form-buttons'>
-						<button id="select" class="button" type='submit'
+						<button id="send" class="button" type='submit'
 							.label=${translate('ea_contribution_button_send')}
-							@click=${() => this.signal(Update, { validation: true })}>
-							Send
+							@click=${() => this.signal(Update, { showInvalidFields: true })}>
+							Senden
 						</button>
 					</div>
 
 				</collapsable-content>
-				</form>
+			</form>`;
+
+		return html`
+			<style>${css}</style>
+			<style>${model.showInvalidFields ? validationCss : nothing}</style>
+			<div class="container">
+
+				<div class='header'>Abwärmeinformations- und Solarflächenbörse</div>
+				<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>
+
+				${model.statusMessage !== nothing ? model.statusMessage : form}
 			
 			</div>
 		`;
@@ -221,11 +251,11 @@ export class EAContribution extends AbstractMvuContentPanel {
 	}
 
 	get categories() {
-		return this._categories;
+		return this.getModel().categoriesSpecification;
 	}
 
 	set categories(cat) {
-		this._categories = cat;
+		this.signal(Update, { categoriesSpecification: cat });
 	}
 
 	static get name() {
