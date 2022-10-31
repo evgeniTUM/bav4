@@ -1,0 +1,13 @@
+Solarflächenbörse:Dachflächen,Ansprechpartner,FALSE,text
+Solarflächenbörse:Dachflächen,Ansprechpartner E-Mail,FALSE,text
+Solarflächenbörse:Dachflächen,Ansprechpartner Telefon,FALSE,text
+Solarflächenbörse:Dachflächen,Nutzbare Dachfläche,FALSE,text
+Solarflächenbörse:Dachflächen,Dachneigung (°),FALSE,text
+Solarflächenbörse:Dachflächen,Dachausrichtung (Süd/West/...),FALSE,text
+Solarflächenbörse:Dachflächen,Bezeichnung der Fläche,TRUE,text
+Solarflächenbörse:Dachflächen,Gebäudeeigentümer,TRUE,text
+Solarflächenbörse:Dachflächen,Aktuelle Nutzung,TRUE,text
+Solarflächenbörse:Dachflächen,Jahr der Errichtung bzw. letzten ...,TRUE,text
+Solarflächenbörse:Dachflächen,Dachmaterial,TRUE,text
+Solarflächenbörse:Dachflächen,Stand,TRUE,text
+TestKategorie2,Name1,TRUE,text
