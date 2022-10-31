@@ -1,8 +1,7 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
-import css from './energyMarket.css';
-import categories from './field-pecifications/energyMarketCategories';
+import css from './container.css';
 
 export class EnergyReportingModuleContent extends MvuElement {
 
@@ -36,7 +35,7 @@ export class EnergyReportingModuleContent extends MvuElement {
 					${translate('ea_menu_energy_reporting')}
 				</div>
 				<div class='content'>
-					<ea-feature-contribution mode='market' .categories=${categories}></ea-feature-contribution>
+					<ea-feature-contribution mode='market'></ea-feature-contribution>
 				</div>
 			</div>
 			`;

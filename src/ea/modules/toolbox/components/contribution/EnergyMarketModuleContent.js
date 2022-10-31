@@ -2,7 +2,7 @@ import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import { generateJsonCategorySpecFromCSV } from '../../../../utils/eaUtils';
-import css from './energyMarket.css';
+import css from './container.css';
 
 
 export class EnergyMarketModuleContent extends MvuElement {
@@ -39,7 +39,14 @@ export class EnergyMarketModuleContent extends MvuElement {
 					${translate('ea_menu_boerse')}
 				</div>
 				<div class='content'>
-					<ea-feature-contribution mode='market' .categories=${categories}></ea-feature-contribution>
+					${content}
+					<ea-feature-contribution mode='market' .categories=${categories}>
+						<div slot='introduction'>
+							<div class='header'>Abwärmeinformations- und Solarflächenbörse</div>
+							<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>
+						</div>
+					</ea-feature-contribution>
+
 				</div>
 			</div>
 			`;

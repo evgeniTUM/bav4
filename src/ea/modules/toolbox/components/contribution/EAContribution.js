@@ -230,8 +230,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			<style>${model.showInvalidFields ? validationCss : nothing}</style>
 			<div class="container">
 
-				<div class='header'>Abwärmeinformations- und Solarflächenbörse</div>
-				<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>
+				<slot name='introduction'></slot>
 
 				${model.statusMessage !== nothing ? model.statusMessage : form}
 			
