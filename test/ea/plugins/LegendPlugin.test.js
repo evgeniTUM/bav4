@@ -1,5 +1,5 @@
 import { LegendPlugin } from '../../../src/ea/plugins/LegendPlugin.js';
-import { activateLegend, clearPreviewGeoresourceId, deactivateLegend, setPreviewGeoresourceId } from '../../../src/ea/store/module/ea.action.js';
+import { activateLegend, deactivateLegend, setPreviewGeoresourceId } from '../../../src/ea/store/module/ea.action.js';
 import { eaReducer } from '../../../src/ea/store/module/ea.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
 import { addLayer, modifyLayer, removeLayer } from '../../../src/store/layers/layers.action';
