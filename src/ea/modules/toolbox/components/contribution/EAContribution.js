@@ -153,41 +153,35 @@ export class EAContribution extends AbstractMvuContentPanel {
 			categoryFields[e['ee-name']] = e['ee-angaben'].map(e => createField(e.name, e.optional));
 		});
 
-		const tagButtonTitle = translate(model.tagging ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag_title');
-
 		const form = html`
 			<form id='report' action="#" @submit="${onSubmit}">
 
 				<collapsable-content id='step1' title='1. Melden oder Suchen' .open=${true}>
-					<div class="button-headers flex-container">
-						<div class='button-space'></div>
-					</div>
-					<div class="button-container">
-						<div class='mode-selection-column'>
+					<div class='button-container'>
 							<div class='button-header'>Meldung neuer Einträge/ Korrektur bestehender Einträge</div>
-							<div class='arrow-down'></div>
-							<button id="tag" type='button' @click=${onClickTagButton} title=${tagButtonTitle}>
-								${tagButtonTitle}
-								<div class='tag-icon'></div>
-								${translate('ea_contribution_button_tag_text')}
-							</button>
-						</div>
-						<div class='mode-selection-column'>
 							<div class='button-header'>Bestehende Einträge durchsuchen</div>
+
 							<div class='arrow-down'></div>
-							<button id="search" type='button' @click=${onClickFindButton} title=${translate('ea_contribution_button_find_title')}>
+							<div class='arrow-down'></div>
+
+							<button id="tag" type='button' @click=${onClickTagButton} title=${translate('ea_contribution_button_tag_tooltip')}>
+								${translate(model.tagging ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag_title')}
+								<div class='tag-icon'></div>
+								<span class='subtext'>${translate('ea_contribution_button_tag_text')}</span>
+							</button>
+							<button id="search" type='button' @click=${onClickFindButton} title=${translate('ea_contribution_button_find_tooltip')}>
 								${translate('ea_contribution_button_find_title')}
 								<div class='search-icon'></div>
-								${translate('ea_contribution_button_find_text')}
+								<span class='subtext'>${translate('ea_contribution_button_find_text')}</span>
 							</button>
-						</div>
 					</div>
 
 					<br/>
-					<div class="" title="${translate('ea_contribution_coordinates_text')}">
+					<div title=${translate(model.tagging ? 'ea_contribution_coordintaes_tooltip_2' : 'ea_contribution_coordinates_tooltip_1')}>
 						<label for="coordinates">${translate('ea_contribution_coordinates_text')}</label>	
 						<input id='coordinates' name='coordiantes' class="coordinates" 
 							oninvalid="this.setCustomValidity('Bitte Standort markieren')"
+							placeholder=${translate('ea_contribution_coordinates_placeholder')}
 							value=${getCoordinatesString()} required></input>
 					</div>
 				</collapsable-content>

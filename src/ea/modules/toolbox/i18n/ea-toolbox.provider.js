@@ -11,14 +11,19 @@ export const provide = (lang) => {
 				module_prevent_switching_tool: 'Please close the current tool first',
 				toolbox_redesign_header: 'Mischpult "Redesign"',
 
-				ea_contribution_additional_input: 'Additional text',
-				ea_contribution_button_tag_title: 'Report',
-				ea_contribution_button_tag_text: 'Mark location',
-				ea_contribution_button_tag_cancel: 'Cancel',
-				ea_contribution_button_send: 'Send',
-				ea_contribution_button_find_title: 'Find',
-				ea_contribution_button_find_text: 'Go to research tab',
-				ea_contribution_coordinates_text: 'Location coordinates'
+				ea_contribution_additional_input: 'Zusätzlicher Text',
+				ea_contribution_button_tag_title: 'Melden',
+				ea_contribution_button_tag_text: 'Standort markieren',
+				ea_contribution_button_tag_tooltip: 'Nach Klick auf "Melden" markieren Sie bitte einen Standort in der Karte. Die Koordinaten werden automatisch übernommen.',
+				ea_contribution_button_tag_cancel: 'Abbrechen',
+				ea_contribution_button_send: 'Senden',
+				ea_contribution_button_find_title: 'Suchen',
+				ea_contribution_button_find_text: 'Wechsel in Daten-Recherche',
+				ea_contribution_button_find_tooltip: 'Nach Klick auf "Suchen" öffnet sich die Daten-Recherche, in der Sie nach bestehenden Börseneinträgen (Abwärmequellen/-senken und Dach-/Freiflächen zur PV-Nutzung) recherchieren können.',
+				ea_contribution_coordinates_text: 'Koordinaten des Standorts',
+				ea_contribution_coordintaes_tooltip_1: 'Bitte klicken Sie auf "Melden" und markieren dann einen Standort.',
+				ea_contribution_coordinates_tooltip_2: 'Bitte klicken Sie in die Karte.',
+				ea_contribution_coordinates_placeholder: 'Bitte klicken Sie in die Karte'
 			};
 
 		case 'de':
@@ -34,11 +39,16 @@ export const provide = (lang) => {
 				ea_contribution_additional_input: 'Zusätzlicher Text',
 				ea_contribution_button_tag_title: 'Melden',
 				ea_contribution_button_tag_text: 'Standort markieren',
+				ea_contribution_button_tag_tooltip: 'Nach Klick auf "Melden" markieren Sie bitte einen Standort in der Karte. Die Koordinaten werden automatisch übernommen.',
 				ea_contribution_button_tag_cancel: 'Abbrechen',
 				ea_contribution_button_send: 'Senden',
 				ea_contribution_button_find_title: 'Suchen',
 				ea_contribution_button_find_text: 'Wechsel in Daten-Recherche',
-				ea_contribution_coordinates_text: 'Koordinaten des Standorts'
+				ea_contribution_button_find_tooltip: 'Nach Klick auf "Suchen" öffnet sich die Daten-Recherche, in der Sie nach bestehenden Börseneinträgen (Abwärmequellen/-senken und Dach-/Freiflächen zur PV-Nutzung) recherchieren können.',
+				ea_contribution_coordinates_text: 'Koordinaten des Standorts',
+				ea_contribution_coordintaes_tooltip_1: 'Bitte klicken Sie auf "Melden" und markieren dann einen Standort.',
+				ea_contribution_coordinates_tooltip_2: 'Bitte klicken Sie in die Karte.',
+				ea_contribution_coordinates_placeholder: 'Bitte klicken Sie in die Karte'
 			};
 
 		default:
