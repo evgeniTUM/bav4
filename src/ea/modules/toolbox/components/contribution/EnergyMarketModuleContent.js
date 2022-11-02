@@ -1,15 +1,14 @@
-import { html, nothing } from 'lit-html';
+import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import { generateJsonCategorySpecFromCSV } from '../../../../utils/eaUtils';
 import css from './energyMarket.css';
 
-const Update_Categories = 'update_categories';
+
 export class EnergyMarketModuleContent extends MvuElement {
 
 	constructor() {
 		super({
-			categories: null,
 			isPortrait: false,
 			hasMinWidth: false
 		});
@@ -27,33 +26,11 @@ export class EnergyMarketModuleContent extends MvuElement {
 	/**
 	 * @override
 	 */
-	update(type, data, model) {
-		switch (type) {
-			case Update_Categories:
-				return { ...model, categories: data };
-
-		}
-	}
-
-	/**
-	 * @override
-	 */
-	createView(model) {
+	createView() {
 		const translate = (key) => this._translationService.translate(key);
 
-
-		setTimeout(async () => {
-
-			const text = await (await fetch('/assets/energyMarketCategories.csv')).text();
-
-			const categoriesSpecification = generateJsonCategorySpecFromCSV(text);
-			this.signal(Update_Categories, categoriesSpecification);
-		});
-
-		const content = model.categories ?
-			html`<ea-feature-contribution mode='market' .categories=${model.categories}></ea-feature-contribution>`
-			: nothing;
-
+		const csv = require('dsv-loader?delimiter=,!./assets/energyMarketCategories.csv');
+		const categories = generateJsonCategorySpecFromCSV(csv);
 
 		return html`
 			<style>${css}</style>
@@ -62,7 +39,7 @@ export class EnergyMarketModuleContent extends MvuElement {
 					${translate('ea_menu_boerse')}
 				</div>
 				<div class='content'>
-					${content}
+					<ea-feature-contribution mode='market' .categories=${categories}></ea-feature-contribution>
 				</div>
 			</div>
 			`;

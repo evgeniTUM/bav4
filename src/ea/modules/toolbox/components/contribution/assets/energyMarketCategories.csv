@@ -1,3 +1,4 @@
+category,name,optional,type
 Solarflächenbörse:Dachflächen,Ansprechpartner,FALSE,text
 Solarflächenbörse:Dachflächen,Ansprechpartner E-Mail,FALSE,text
 Solarflächenbörse:Dachflächen,Ansprechpartner Telefon,FALSE,text
