@@ -53,8 +53,7 @@ module.exports = {
 				{ from: path.resolve(__dirname, './src/assets/favicon/icon_512x512.png'), to: path.join('assets') },
 				{ from: path.resolve(__dirname, './src/assets/favicon/icon.svg'), to: path.join('assets') },
 				{ from: path.resolve(__dirname, './src/assets/favicon/apple-touch-icon.png'), to: path.join('assets') },
-				{ from: path.resolve(__dirname, './src/assets/icons/marker.png'), to: path.join('assets') },
-				{ from: path.resolve(__dirname, './src/assets/data/energyMarketCategories.csv'), to: path.join('assets') }
+				{ from: path.resolve(__dirname, './src/assets/icons/marker.png'), to: path.join('assets') }
 			]
 		}),
 		new Dotenv()

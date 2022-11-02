@@ -69,11 +69,6 @@ input:required::placeholder {
 	font-size: larger;
 }
 
-.button-container button {
-	width: 15em;
-	justify-self: center;
-}
-
 button {
 	padding: .5em 0.9em;
 	background: var(--primary-color);
@@ -87,6 +82,11 @@ button {
 	font-weight: bold;
 	position: relative;
 	z-index: 1;
+}
+
+.button-container button {
+	width: 15em;
+	justify-self: center;
 }
 
 button .subtext {

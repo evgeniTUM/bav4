@@ -4,11 +4,12 @@ describe('EA Utils', () => {
 
 	describe('generateJsonCategorySpecFromCSV', () => {
 		it('converts csv to list of JSON objects', () => {
-			const csv = `category,name,optional,type
-                         cat1,name1,true,text
-                         cat1,name2,false,email
-                         cat2,name3,TRUE,text
-                         category 3,hello there - me is a name,TRUE,text`;
+			const csv = [
+				{ category: 'cat1', name: 'name1', optional: 'true', type: 'text' },
+				{ category: 'cat1', name: 'name2', optional: 'false', type: 'email' },
+				{ category: 'cat2', name: 'name3', optional: 'TRUE', type: 'text' },
+				{ category: 'category 3', name: 'hello there - me is a name', optional: 'TRUE', type: 'text' }
+			];
 
 			const actual = generateJsonCategorySpecFromCSV(csv);
 
