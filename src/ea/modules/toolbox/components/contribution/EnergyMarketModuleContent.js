@@ -39,14 +39,7 @@ export class EnergyMarketModuleContent extends MvuElement {
 					${translate('ea_menu_boerse')}
 				</div>
 				<div class='content'>
-					${content}
-					<ea-feature-contribution mode='market' .categories=${categories}>
-						<div slot='introduction'>
-							<div class='header'>Abwärmeinformations- und Solarflächenbörse</div>
-							<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>
-						</div>
-					</ea-feature-contribution>
-
+					<ea-feature-contribution .mode=${'energy-market'} .categories=${categories}></ea-feature-contribution>
 				</div>
 			</div>
 			`;

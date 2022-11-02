@@ -21,7 +21,7 @@ export const provide = (lang) => {
 				ea_contribution_button_find_text: 'Wechsel in Daten-Recherche',
 				ea_contribution_button_find_tooltip: 'Nach Klick auf "Suchen" öffnet sich die Daten-Recherche, in der Sie nach bestehenden Börseneinträgen (Abwärmequellen/-senken und Dach-/Freiflächen zur PV-Nutzung) recherchieren können.',
 				ea_contribution_coordinates_text: 'Koordinaten des Standorts',
-				ea_contribution_coordintaes_tooltip_1: 'Bitte klicken Sie auf "Melden" und markieren dann einen Standort.',
+				ea_contribution_coordinates_tooltip_1: 'Bitte klicken Sie auf "Melden" und markieren dann einen Standort.',
 				ea_contribution_coordinates_tooltip_2: 'Bitte klicken Sie in die Karte.',
 				ea_contribution_coordinates_placeholder: 'Bitte klicken Sie in die Karte'
 			};
@@ -46,7 +46,7 @@ export const provide = (lang) => {
 				ea_contribution_button_find_text: 'Wechsel in Daten-Recherche',
 				ea_contribution_button_find_tooltip: 'Nach Klick auf "Suchen" öffnet sich die Daten-Recherche, in der Sie nach bestehenden Börseneinträgen (Abwärmequellen/-senken und Dach-/Freiflächen zur PV-Nutzung) recherchieren können.',
 				ea_contribution_coordinates_text: 'Koordinaten des Standorts',
-				ea_contribution_coordintaes_tooltip_1: 'Bitte klicken Sie auf "Melden" und markieren dann einen Standort.',
+				ea_contribution_coordinates_tooltip_1: 'Bitte klicken Sie auf "Melden" und markieren dann einen Standort.',
 				ea_contribution_coordinates_tooltip_2: 'Bitte klicken Sie in die Karte.',
 				ea_contribution_coordinates_placeholder: 'Bitte klicken Sie in die Karte'
 			};

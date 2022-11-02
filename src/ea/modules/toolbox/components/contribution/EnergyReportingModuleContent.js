@@ -1,6 +1,7 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
+import { generateJsonCategorySpecFromCSV } from '../../../../utils/eaUtils';
 import css from './container.css';
 
 export class EnergyReportingModuleContent extends MvuElement {
@@ -27,7 +28,12 @@ export class EnergyReportingModuleContent extends MvuElement {
 	 * @override
 	 */
 	createView() {
+
 		const translate = (key) => this._translationService.translate(key);
+
+		const csv = require('dsv-loader?delimiter=,!./assets/energyMarketCategories.csv');
+		const categories = generateJsonCategorySpecFromCSV(csv);
+
 		return html`
 			<style>${css}</style>
 			<div class='container'>
@@ -35,11 +41,10 @@ export class EnergyReportingModuleContent extends MvuElement {
 					${translate('ea_menu_energy_reporting')}
 				</div>
 				<div class='content'>
-					<ea-feature-contribution mode='market'></ea-feature-contribution>
+					<ea-feature-contribution .mode=${'energy-reporting'} .categories=${categories}></ea-feature-contribution>
 				</div>
 			</div>
 			`;
-
 	}
 
 	isRenderingSkipped() {
