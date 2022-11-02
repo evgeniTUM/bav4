@@ -6,12 +6,13 @@ p {
 	padding: 1em;
 }
 
-.mode-selection-column {
-	width: 50%;
-	padding: 0.1em;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+.button-container {
+	display: grid;
+	grid-column-gap: 2em;
+	grid-template-columns: calc(50% - 1em) calc(50% - 1em);
+}
+
+.button-header {
 	text-align: center;
 }
 
@@ -68,8 +69,9 @@ input:required::placeholder {
 	font-size: larger;
 }
 
-.button-container {
-	display: flex;
+.button-container button {
+	width: 15em;
+	justify-self: center;
 }
 
 button {
@@ -87,19 +89,10 @@ button {
 	z-index: 1;
 }
 
-.button-container button {
-	padding: .5em 0.9em;
-	background: var(--primary-color);
+button .subtext {
 	color: var(--text3);
-	border-color: var(--primary-color);
-	border-width: 1px;
-	border-style: solid;
-	border-radius: 10px;
-	cursor: pointer;
-	transition: all var(--animation-duration-medium-open) var(--animation-easing-linea); 
-	font-weight: bold;
-	z-index: 1;
-	width: 17em;
+	font-weight: normal;
+	font-size: small;
 }
 
 .form-buttons {
@@ -107,14 +100,10 @@ button {
 	display: flex;
 }
 
-.button-container span {
-	color: var(--text3);
-	opacity: .8;
-}
-.button-container button:hover span {
+button:hover span {
 	opacity: 1;
 }
-.button-container button:focus {
+button:focus {
 	z-index: 0;
 	box-shadow: 0 0 0 .2em var(--primary-color-lighter);
 }
