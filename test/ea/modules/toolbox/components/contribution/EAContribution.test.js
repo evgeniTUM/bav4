@@ -153,11 +153,11 @@ describe('EAContributon', () => {
 			const tagButton = element.shadowRoot.querySelector('#tag');
 
 			setTaggingMode(false);
-			expect(tagButton.title).toBe('ea_contribution_button_tag_title');
+			expect(tagButton.title).toBe('ea_contribution_button_tag_tooltip');
 			expect(tagButton.innerText).toBe('ea_contribution_button_tag_title\nea_contribution_button_tag_text');
 
 			setTaggingMode(true);
-			expect(tagButton.title).toBe('ea_contribution_button_tag_cancel');
+			expect(tagButton.title).toBe('ea_contribution_button_tag_tooltip');
 			expect(tagButton.innerText).toBe('ea_contribution_button_tag_cancel\nea_contribution_button_tag_text');
 		});
 
@@ -271,6 +271,47 @@ describe('EAContributon', () => {
 					email: expectedEmail,
 					category: expectedCategory,
 					categoryData: 'field1: text1\nfield2: text2'
+				}),
+				'application/json'
+			);
+
+			await TestUtils.timeout();
+
+			expect(element.shadowRoot.querySelectorAll('collapsable-content').length).toBe(0);
+			expect(element.shadowRoot.querySelector('#completion-message')).not.toBeNull();
+		});
+
+		it('on submit, sends correct  reportType for mode energy-reporting', async () => {
+			const expectedEmail = 'testicus@domainicus.com';
+			const expectedCoordinates = [4, 2];
+			const expectedCategory = 'Test2';
+
+			const postSpy = spyOn(httpServiceMock, 'post').and.returnValue({ status: 200 });
+
+			const element = await setup({ contribution: { position: expectedCoordinates } });
+
+			element.categories = SAMPLE_JSON_SPEC;
+			element.mode = 'energy-reporting';
+
+			const query = (query) => element.shadowRoot.querySelector(query);
+
+			query('#category').value = expectedCategory;
+			query('#category').dispatchEvent(new Event('change'));
+
+			query('#email').value = expectedEmail;
+			query('#email').dispatchEvent(new Event('input'));
+
+			query('#send').click();
+
+			expect(postSpy).toHaveBeenCalledWith(
+				'BACKEND_URLreport/message',
+				JSON.stringify({
+					reportType: 'Meldung',
+					coordinates: expectedCoordinates,
+					additionalInfo: '',
+					email: expectedEmail,
+					category: expectedCategory,
+					categoryData: ''
 				}),
 				'application/json'
 			);
