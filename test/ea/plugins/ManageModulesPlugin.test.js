@@ -19,6 +19,7 @@ import { createMainMenuReducer } from '../../../src/store/mainMenu/mainMenu.redu
 import { LevelTypes } from '../../../src/store/notifications/notifications.action.js';
 import { NOTIFICATION_ADDED } from '../../../src/store/notifications/notifications.reducer.js';
 import { TestUtils } from '../../test-utils.js';
+import { EnergyReportingModuleContent } from '../../../src/ea/modules/toolbox/components/contribution/EnergyReportingModuleContent.js';
 
 
 describe('ManageModulesPlugin', () => {
@@ -52,7 +53,7 @@ describe('ManageModulesPlugin', () => {
 		return store;
 	};
 
-	it('toggles select location layer when tool ID equals name of contribution component', async () => {
+	it('toggles select location layer when tool ID equals name of energy-market component', async () => {
 		const store = setup();
 
 		const instanceUnderTest = new ManageModulesPlugin();
@@ -61,6 +62,24 @@ describe('ManageModulesPlugin', () => {
 		expect(store.getState().layers.active.length).toBe(0);
 
 		setCurrentModule(EnergyMarketModuleContent.name);
+
+		expect(store.getState().layers.active.length).toBe(1);
+		expect(store.getState().layers.active[0].id).toBe(SELECT_LOCATION_LAYER_ID);
+
+		setCurrentModule('something');
+
+		expect(store.getState().layers.active.length).toBe(0);
+	});
+
+	it('toggles select location layer when tool ID equals name of energy-reporting component', async () => {
+		const store = setup();
+
+		const instanceUnderTest = new ManageModulesPlugin();
+		await instanceUnderTest.register(store);
+
+		expect(store.getState().layers.active.length).toBe(0);
+
+		setCurrentModule(EnergyReportingModuleContent.name);
 
 		expect(store.getState().layers.active.length).toBe(1);
 		expect(store.getState().layers.active[0].id).toBe(SELECT_LOCATION_LAYER_ID);

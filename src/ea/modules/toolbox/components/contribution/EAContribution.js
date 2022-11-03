@@ -15,6 +15,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 	constructor() {
 		super({
+			mode: 'energy-market',
 			isPortrait: false,
 			hasMinWidth: false,
 			showInvalidFields: false,
@@ -111,6 +112,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 		</div>`;
 
 
+
 		const onSubmit = async (event) => {
 			setTaggingMode(false);
 			event.preventDefault();
@@ -119,7 +121,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			const fieldData = Object.entries(model.categoryFields).map(f => `${f[0]}: ${f[1]}`).join('\n');
 
 			const json = {
-				reportType: 'Börse',
+				reportType: model.mode === 'energy-market' ? 'Börse' : 'Meldung',
 				coordinates: getCoordinatesString(),
 				additionalInfo: model.additionalInfo,
 				email: model.email,
@@ -153,31 +155,48 @@ export class EAContribution extends AbstractMvuContentPanel {
 			categoryFields[e['ee-name']] = e['ee-angaben'].map(e => createField(e.name, e.optional));
 		});
 
+		const introduction = model.mode === 'energy-market' ?
+			html`<div class='header'>Abwärmeinformations- und Solarflächenbörse</div>
+				<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>` :
+			html`<div class='header'>Neumeldungen und Korrekturen</div>
+				<p>Melden Sie bisher nicht dargestellte Objekte (z. B. EEG-Anlagen, Wärmenetze) und ergänzen oder korrigieren Sie Angaben zu bestehenden Objekten.</p>`;
+
+		const energyMarketMode = model.mode === 'energy-market';
+		const prefix = energyMarketMode ? 'Melden' : 'Neumeldung und Korrektur';
+		const step1 = energyMarketMode ? 'Melden oder Suchen' : `${prefix}: Standort des Objektes markieren`;
+
+		const buttonHeaders = energyMarketMode ?
+			html`<div class='button-header'>Meldung neuer Einträge/ Korrektur bestehender Einträge</div>
+				<div class='button-header'>Bestehende Einträge durchsuchen</div>
+				<div class='arrow-down'></div>
+				<div class='arrow-down'></div>` :
+			'';
+		const findButton = energyMarketMode ?
+			html`<button id="search" type='button' @click=${onClickFindButton} title=${translate('ea_contribution_button_find_tooltip')}>
+				${translate('ea_contribution_button_find_title')}
+				<div class='search-icon'></div>
+				<span class='subtext'>${translate('ea_contribution_button_find_text')}</span>
+			</button>` :
+			'';
+
 		const form = html`
 			<form id='report' action="#" @submit="${onSubmit}">
 
-				<collapsable-content id='step1' title='1. Melden oder Suchen' .open=${true}>
+				${introduction}
+
+				<collapsable-content id='step1' title='1. ${step1}' .open=${true}>
 					<div class='button-container'>
-							<div class='button-header'>Meldung neuer Einträge/ Korrektur bestehender Einträge</div>
-							<div class='button-header'>Bestehende Einträge durchsuchen</div>
-
-							<div class='arrow-down'></div>
-							<div class='arrow-down'></div>
-
+							${buttonHeaders}
 							<button id="tag" type='button' @click=${onClickTagButton} title=${translate('ea_contribution_button_tag_tooltip')}>
 								${translate(model.tagging ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag_title')}
 								<div class='tag-icon'></div>
 								<span class='subtext'>${translate('ea_contribution_button_tag_text')}</span>
 							</button>
-							<button id="search" type='button' @click=${onClickFindButton} title=${translate('ea_contribution_button_find_tooltip')}>
-								${translate('ea_contribution_button_find_title')}
-								<div class='search-icon'></div>
-								<span class='subtext'>${translate('ea_contribution_button_find_text')}</span>
-							</button>
+							${findButton}
 					</div>
 
 					<br/>
-					<div title=${translate(model.tagging ? 'ea_contribution_coordintaes_tooltip_2' : 'ea_contribution_coordinates_tooltip_1')}>
+					<div title=${translate(model.tagging ? 'ea_contribution_coordinates_tooltip_2' : 'ea_contribution_coordinates_tooltip_1')}>
 						<label for="coordinates">${translate('ea_contribution_coordinates_text')}</label>	
 						<input id='coordinates' name='coordiantes' class="coordinates" 
 							oninvalid="this.setCustomValidity('Bitte Standort markieren')"
@@ -186,7 +205,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</div>
 				</collapsable-content>
 
-				<collapsable-content id='step2' title='2. Melden: Auswahl der Kategorie' .open=${true}>
+				<collapsable-content id='step2' title='2. ${prefix}: Auswahl der Kategorie' .open=${true}>
 					<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}" required>
 						<option value="" selected disabled>Bitte wählen ... </option>
 						${model.categoriesSpecification.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
@@ -194,7 +213,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</select>
 				</collapsable-content>
 
-				<collapsable-content id='step3' .title=${'3. Melden: Angaben zu neuem Eintrag/zu bestehendem Eintrag'} .open=${true}>
+				<collapsable-content id='step3' .title='3. ${prefix}: Angaben zu neuem Eintrag/zu bestehendem Eintrag'} .open=${true}>
 					<p>Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</p>
 					<div class='category-fields'>
 						${categoryFields[model.currentCategory]}
@@ -205,7 +224,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 				</collapsable-content>
 
-				<collapsable-content id='step4' title='4. Melden: Ihre E-Mail-Adresse' .open=${true}>
+				<collapsable-content id='step4' title='4. ${prefix}: Ihre E-Mail-Adresse' .open=${true}>
 					<input id='email' placeholder='Ihre Email Adresse' required  type='email' name="email" 
 						@input=${(e) => this.signal(Update, { email: e.target.value })}>
 					
@@ -230,8 +249,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			<style>${model.showInvalidFields ? validationCss : nothing}</style>
 			<div class="container">
 
-				<div class='header'>Abwärmeinformations- und Solarflächenbörse</div>
-				<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>
+				<slot name='introduction'></slot>
 
 				${model.statusMessage !== nothing ? model.statusMessage : form}
 			
@@ -250,6 +268,14 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 	set categories(cat) {
 		this.signal(Update, { categoriesSpecification: cat });
+	}
+
+	get mode() {
+		return this.getModel().mode;
+	}
+
+	set mode(m) {
+		this.signal(Update, { mode: m });
 	}
 
 	static get name() {

@@ -1,10 +1,11 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../../../../injection';
 import { MvuElement } from '../../../../../../../modules/MvuElement';
-import { toggleTaggingMode } from '../../../../../../store/contribution/contribution.action';
+import { toggleContributionMode } from '../../../../../../store/contribution/contribution.action';
 import { setCurrentModule } from '../../../../../../store/module/ea.action';
 import { Analyse3DModuleContent } from '../../../../../toolbox/components/analyse3d/Analyse3DModuleContent';
 import { EnergyMarketModuleContent } from '../../../../../toolbox/components/contribution/EnergyMarketModuleContent';
+import { EnergyReportingModuleContent } from '../../../../../toolbox/components/contribution/EnergyReportingModuleContent';
 import { GeothermModuleContent } from '../../../../../toolbox/components/geotherm/GeothermModuleContent';
 import { MixerModuleContent } from '../../../../../toolbox/components/mixer/MixerModuleContent';
 import { RedesignModuleContent } from '../../../../../toolbox/components/redesign/RedesignModuleContent';
@@ -67,28 +68,20 @@ export class AdditionalMenu extends MvuElement {
 		};
 
 		const toggleEnergyMarketModule = () => {
-			toggleTaggingMode();
+			toggleContributionMode();
 			toggleModuleFn(EnergyMarketModuleContent.name)();
+		};
+
+		const toggleEnergyReportingModule = () => {
+			toggleContributionMode();
+			toggleModuleFn(EnergyReportingModuleContent.name)();
 		};
 
 		const translate = (key) => this._translationService.translate(key);
 
 		return html`
 		<style>${css}</style>		
-		<li id="energy-market" class="ba-list-item" @click="${toggleEnergyMarketModule}">
-			<span class="ba-list-item__pre">
-				<span class="ba-list-item__icon icon-boerse">
-				</span>
-			</span>
-			<span class="ba-list-item__text vertical-center">
-				<span class="ba-list-item__primary-text">
-					${translate('ea_menu_boerse')}
-				</span>
-				<span class="ba-list-item__secondary-text">
-					${translate('ea_menu_boerse_tooltip')}
-				</span>
-			</span>
-		</li>
+		
 		<li id="research" class="ba-list-item" @click="${toggleModuleFn(ResearchModuleContent.name)}">
 			<span class="ba-list-item__pre">
 				<span class="ba-list-item__icon icon-recherche">
@@ -156,6 +149,34 @@ export class AdditionalMenu extends MvuElement {
 				</span>
 				<span class="ba-list-item__secondary-text">
 					${translate('ea_menu_geotherm_tooltip')}
+				</span>
+			</span>
+		</li>
+		<li id="energy-market" class="ba-list-item" @click="${toggleEnergyMarketModule}">
+			<span class="ba-list-item__pre">
+				<span class="ba-list-item__icon icon-boerse">
+				</span>
+			</span>
+			<span class="ba-list-item__text vertical-center">
+				<span class="ba-list-item__primary-text">
+					${translate('ea_menu_boerse')}
+				</span>
+				<span class="ba-list-item__secondary-text">
+					${translate('ea_menu_boerse_tooltip')}
+				</span>
+			</span>
+		</li>
+		<li id="energy-reporting" class="ba-list-item" @click="${toggleEnergyReportingModule}">
+			<span class="ba-list-item__pre">
+				<span class="ba-list-item__icon icon-boerse">
+				</span>
+			</span>
+			<span class="ba-list-item__text vertical-center">
+				<span class="ba-list-item__primary-text">
+					${translate('ea_menu_energy_reporting')}
+				</span>
+				<span class="ba-list-item__secondary-text">
+					${translate('ea_menu_energy_reporting_tooltip')}
 				</span>
 			</span>
 		</li>

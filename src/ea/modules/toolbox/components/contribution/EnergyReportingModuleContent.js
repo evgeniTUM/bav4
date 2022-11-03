@@ -4,11 +4,11 @@ import { MvuElement } from '../../../../../modules/MvuElement';
 import { generateJsonCategorySpecFromCSV } from '../../../../utils/eaUtils';
 import css from './container.css';
 
-
-export class EnergyMarketModuleContent extends MvuElement {
+export class EnergyReportingModuleContent extends MvuElement {
 
 	constructor() {
 		super({
+			description: '',
 			isPortrait: false,
 			hasMinWidth: false
 		});
@@ -23,10 +23,12 @@ export class EnergyMarketModuleContent extends MvuElement {
 		this._translationService = translationService;
 	}
 
+
 	/**
 	 * @override
 	 */
 	createView() {
+
 		const translate = (key) => this._translationService.translate(key);
 
 		const csv = require('dsv-loader?delimiter=,!./assets/energyMarketCategories.csv');
@@ -36,14 +38,13 @@ export class EnergyMarketModuleContent extends MvuElement {
 			<style>${css}</style>
 			<div class='container'>
 				<div class='header'> 
-					${translate('ea_menu_boerse')}
+					${translate('ea_menu_energy_reporting')}
 				</div>
 				<div class='content'>
-					<ea-feature-contribution .mode=${'energy-market'} .categories=${categories}></ea-feature-contribution>
+					<ea-feature-contribution .mode=${'energy-reporting'} .categories=${categories}></ea-feature-contribution>
 				</div>
 			</div>
 			`;
-
 	}
 
 	isRenderingSkipped() {
@@ -51,10 +52,10 @@ export class EnergyMarketModuleContent extends MvuElement {
 	}
 
 	static get name() {
-		return 'energy-market';
+		return 'energy-reporting';
 	}
 
 	static get tag() {
-		return 'ea-module-energy-market';
+		return 'ea-module-energy-reporting';
 	}
 }
