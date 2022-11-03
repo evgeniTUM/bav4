@@ -38,9 +38,17 @@ export class MainMenu extends MvuElement {
 		this._translationService = translationService;
 	}
 
+	_resetScroll() {
+		const container = this.shadowRoot.getElementById('mainMenuContainer');
+		if (container) {
+			container.scrollTop = 0;
+		}
+	}
+
 	onInitialize() {
 		this.observe(state => state.mainMenu, data => this.signal(Update_Main_Menu, data), true);
 		this.observe(state => state.media, data => this.signal(Update_Media, data), true);
+		this.observe(state => state.mainMenu.tab, () => this._resetScroll());
 	}
 
 	update(type, data, model) {

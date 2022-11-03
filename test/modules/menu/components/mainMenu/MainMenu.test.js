@@ -513,4 +513,22 @@ describe('MainMenu', () => {
 			expect(stopPropagationSpy).toHaveBeenCalled();
 		});
 	});
+
+	it('reset scroll on tab change', async () => {
+		const state = {
+			mainMenu: {
+				open: true,
+				tab: TabId.TOPICS
+			}
+		};
+		const element = await setup(state);
+
+		const container = element.shadowRoot.getElementById('mainMenuContainer');
+		const spy = spyOnProperty(container, 'scrollTop', 'set').and.callThrough();
+
+		setTab(TabId.FEATUREINFO);
+
+		expect(spy).toHaveBeenCalledOnceWith(0);
+
+	});
 });
