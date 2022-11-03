@@ -247,7 +247,7 @@ describe('EAContributon', () => {
 			expect(postSpy).toHaveBeenCalledWith(
 				'BACKEND_URLreport/message',
 				JSON.stringify({
-					reportType: 'Meldung',
+					reportType: 'Neumeldung/Korrektur',
 					coordinates: expectedCoordinates,
 					additionalInfo: '',
 					email: expectedEmail,
