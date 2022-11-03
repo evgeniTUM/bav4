@@ -165,9 +165,9 @@ describe('EAContributon', () => {
 
 	it('opens the research module when "find" button is clicked', async () => {
 		const element = await setup();
-		const tagButton = element.shadowRoot.querySelector('#search');
+		const findButton = element.shadowRoot.querySelector('#search');
 
-		tagButton.click();
+		findButton.click();
 
 		expect(store.getState().ea.currentModule).toEqual('recherche');
 	});
@@ -209,6 +209,60 @@ describe('EAContributon', () => {
 			expect(field3.required).toBeFalse();
 			expect(field3.type).toBe('text');
 		});
+	});
+
+	describe('mode energy-reporting', () => {
+
+		it('does not show find button', async () => {
+			const element = await setup();
+			element.mode = 'energy-reporting';
+
+			const findButton = element.shadowRoot.querySelector('#search');
+
+			expect(findButton).toBeNull();
+		});
+
+		it('on submit, sends correct reportType for mode energy-reporting', async () => {
+			const expectedEmail = 'testicus@domainicus.com';
+			const expectedCoordinates = [4, 2];
+			const expectedCategory = 'Test2';
+
+			const postSpy = spyOn(httpServiceMock, 'post').and.returnValue({ status: 200 });
+
+			const element = await setup({ contribution: { position: expectedCoordinates } });
+
+			element.mode = 'energy-reporting';
+			element.categories = SAMPLE_JSON_SPEC;
+
+			const query = (query) => element.shadowRoot.querySelector(query);
+
+			query('#category').value = expectedCategory;
+			query('#category').dispatchEvent(new Event('change'));
+
+			query('#email').value = expectedEmail;
+			query('#email').dispatchEvent(new Event('input'));
+
+			query('#send').click();
+
+			expect(postSpy).toHaveBeenCalledWith(
+				'BACKEND_URLreport/message',
+				JSON.stringify({
+					reportType: 'Meldung',
+					coordinates: expectedCoordinates,
+					additionalInfo: '',
+					email: expectedEmail,
+					category: expectedCategory,
+					categoryData: ''
+				}),
+				'application/json'
+			);
+
+			await TestUtils.timeout();
+
+			expect(element.shadowRoot.querySelectorAll('collapsable-content').length).toBe(0);
+			expect(element.shadowRoot.querySelector('#completion-message')).not.toBeNull();
+		});
+
 	});
 
 
@@ -281,46 +335,6 @@ describe('EAContributon', () => {
 			expect(element.shadowRoot.querySelector('#completion-message')).not.toBeNull();
 		});
 
-		it('on submit, sends correct  reportType for mode energy-reporting', async () => {
-			const expectedEmail = 'testicus@domainicus.com';
-			const expectedCoordinates = [4, 2];
-			const expectedCategory = 'Test2';
-
-			const postSpy = spyOn(httpServiceMock, 'post').and.returnValue({ status: 200 });
-
-			const element = await setup({ contribution: { position: expectedCoordinates } });
-
-			element.categories = SAMPLE_JSON_SPEC;
-			element.mode = 'energy-reporting';
-
-			const query = (query) => element.shadowRoot.querySelector(query);
-
-			query('#category').value = expectedCategory;
-			query('#category').dispatchEvent(new Event('change'));
-
-			query('#email').value = expectedEmail;
-			query('#email').dispatchEvent(new Event('input'));
-
-			query('#send').click();
-
-			expect(postSpy).toHaveBeenCalledWith(
-				'BACKEND_URLreport/message',
-				JSON.stringify({
-					reportType: 'Meldung',
-					coordinates: expectedCoordinates,
-					additionalInfo: '',
-					email: expectedEmail,
-					category: expectedCategory,
-					categoryData: ''
-				}),
-				'application/json'
-			);
-
-			await TestUtils.timeout();
-
-			expect(element.shadowRoot.querySelectorAll('collapsable-content').length).toBe(0);
-			expect(element.shadowRoot.querySelector('#completion-message')).not.toBeNull();
-		});
 
 
 		it('shows failure message when reponse code is not 200', async () => {
