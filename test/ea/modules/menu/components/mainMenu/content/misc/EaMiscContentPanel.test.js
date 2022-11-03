@@ -37,7 +37,7 @@ describe('EaMiscContentPanel', () => {
 
 		it('checks the list ', async () => {
 			const element = await setup();
-			expect(element.shadowRoot.querySelectorAll('.ba-section').length).toBe(5);
+			expect(element.shadowRoot.querySelectorAll('collapsable-content').length).toBe(5);
 			expect(element.shadowRoot.querySelectorAll('a').length).toBe(11);
 			expect(element.shadowRoot.querySelectorAll('[href]').length).toBe(11);
 		});
@@ -112,28 +112,6 @@ describe('EaMiscContentPanel', () => {
 			const sections = element.shadowRoot.querySelectorAll('.collapse-content');
 			sections.forEach((section) => {
 				expect(section.classList).toContain('iscollapse');
-			});
-		});
-
-		it('toggles sections on click', async () => {
-			const element = await setup();
-
-			const sections = [
-				'moreinfo',
-				'aboutus',
-				'legal',
-				'settings',
-				'links'
-			];
-			sections.forEach(section => {
-				const header = element.shadowRoot.getElementById(section + '-header');
-				const content = element.shadowRoot.getElementById(section + '-content');
-
-				const collapsedState = content.classList.contains('iscollapse');
-
-				header.click();
-
-				expect(content.classList.contains('iscollapsed')).toBe(!collapsedState);
 			});
 		});
 	});

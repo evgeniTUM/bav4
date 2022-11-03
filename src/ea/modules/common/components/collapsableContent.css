@@ -10,8 +10,12 @@
 	display: none;
 }
 
+.ba-section .ba-list-item > *:first-child {
+	padding-left: 0.5em;
+}
+
 .content {
-	padding-left: 2em;
+	padding-left: 1em;
 	padding-right: 1em;
 }
 
