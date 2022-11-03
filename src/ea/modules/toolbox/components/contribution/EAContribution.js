@@ -121,7 +121,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			const fieldData = Object.entries(model.categoryFields).map(f => `${f[0]}: ${f[1]}`).join('\n');
 
 			const json = {
-				reportType: model.mode === 'energy-market' ? 'Börse' : 'Meldung',
+				reportType: model.mode === 'energy-market' ? 'Börse' : 'Neumeldung/Korrektur',
 				coordinates: getCoordinatesString(),
 				additionalInfo: model.additionalInfo,
 				email: model.email,
