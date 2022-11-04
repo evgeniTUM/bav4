@@ -13,6 +13,7 @@
 }
 
 .main-menu__container {
+	overflow-x: hidden;
 	top: 13.5em;
 	bottom: 0;
 	height: auto;
@@ -170,7 +171,6 @@
 .tabcontent {
 	height: 100%;
 	overflow-y: auto;
-	overflow-x: hidden;
 	display: none;
 }
 .is-active {
