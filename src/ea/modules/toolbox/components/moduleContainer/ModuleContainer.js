@@ -57,15 +57,12 @@ export class ModuleContainer extends MvuElement {
 	createView(model) {
 		const { moduleId, isPortrait, hasMinWidth } = model;
 
-		const getContentPanel = (moduleId) => {
-			const module = EaModules.find(m => m.name === moduleId);
-			if (!module) {
-				return nothing;
-			}
+		const module = EaModules.find(m => m.name === moduleId);
+		if (!module) {
+			return nothing;
+		}
 
-			return html`${unsafeHTML(`<${module.tag}/>`)}`;
-		};
-
+		const content = html`${unsafeHTML(`<${module.tag}/>`)}`;
 
 		const close = () => {
 			setCurrentModule(null);
@@ -83,21 +80,17 @@ export class ModuleContainer extends MvuElement {
 			return open ? 'is-open' : '';
 		};
 
-		const content = getContentPanel(moduleId);
-		if (content == null) {
-			return nothing;
-		}
-
 		const changeWidth = (event) => {
 			const container = this.shadowRoot.getElementById('module-container');
 			container.style.width = parseInt(event.target.value) + 'em';
 			window.dispatchEvent(new Event('resize'));
+			this.render();
 		};
 
 
 		const getValue = () => {
 			const container = this.shadowRoot.getElementById('module-container');
-			return (container && container.style.width !== '') ? parseInt(container.style.width) : ModuleContainer.INITIAL_WIDTH_EM;
+			return (container && container.style.width !== '') ? parseInt(container.style.width) : module.initialWidth;
 		};
 
 		const onPreventDragging = (e) => {
@@ -112,8 +105,8 @@ export class ModuleContainer extends MvuElement {
 			<div class='slider-container'>
 				<input  
 					type="range" 
-					min="${ModuleContainer.MIN_WIDTH_EM}" 
-					max="${ModuleContainer.MAX_WIDTH_EM}" 
+					min="${module.minWidth}" 
+					max="${module.maxWidth}" 
 					value="${getValue()}" 
 					draggable='true' 
 					@input=${changeWidth} 
@@ -122,9 +115,10 @@ export class ModuleContainer extends MvuElement {
 			</div>
 
 			<div id="module-container" class="column module-container ${getOrientationClass()}  ${getMinWidthClass()}"
-				style="width: ${ModuleContainer.INITIAL_WIDTH_EM}em">
+				style="width: ${module.initialWidth}em">
 				<div class="module-container__content ${getOverlayClass()}">
 					<div class="module-container__tools-nav">
+						<span style='color: white; font-weight: large'> Fensterbreite: ${getValue()}em</span>
 						<button @click=${close} class="module-container__close-button">
 							x
 						</button>
@@ -149,17 +143,5 @@ export class ModuleContainer extends MvuElement {
 
 	static get tag() {
 		return 'ea-module-container';
-	}
-
-	static get INITIAL_WIDTH_EM() {
-		return 40;
-	}
-
-	static get MIN_WIDTH_EM() {
-		return 34;
-	}
-
-	static get MAX_WIDTH_EM() {
-		return 100;
 	}
 }
