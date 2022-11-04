@@ -13,8 +13,6 @@
 }
 
 .main-menu__container {
-	overflow-y: auto;
-	overflow-x: hidden;
 	top: 13.5em;
 	bottom: 0;
 	height: auto;
@@ -165,7 +163,14 @@
 	font-size: 1.2rem;
 }
 
+.overlay-content {
+	height: 100%;
+}
+
 .tabcontent {
+	height: 100%;
+	overflow-y: auto;
+	overflow-x: hidden;
 	display: none;
 }
 .is-active {
