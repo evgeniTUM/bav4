@@ -84,6 +84,7 @@ export class ModuleContainer extends MvuElement {
 			const container = this.shadowRoot.getElementById('module-container');
 			container.style.width = parseInt(event.target.value) + 'em';
 			window.dispatchEvent(new Event('resize'));
+			this.render();
 		};
 
 
@@ -117,6 +118,7 @@ export class ModuleContainer extends MvuElement {
 				style="width: ${module.initialWidth}em">
 				<div class="module-container__content ${getOverlayClass()}">
 					<div class="module-container__tools-nav">
+						<span style='color: white; font-weight: large'> Fensterbreite: ${getValue()}em</span>
 						<button @click=${close} class="module-container__close-button">
 							x
 						</button>
