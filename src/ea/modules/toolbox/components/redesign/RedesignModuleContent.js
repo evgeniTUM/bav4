@@ -25,4 +25,16 @@ export class RedesignModuleContent extends AbstractModuleContent {
 	static get tag() {
 		return 'ea-module-redesign-content';
 	}
+
+	static get minWidth() {
+		return 34;
+	}
+
+	static get maxWidth() {
+		return 100;
+	}
+
+	static get initialWidth() {
+		return 40;
+	}
 }

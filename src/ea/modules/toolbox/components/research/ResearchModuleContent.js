@@ -26,4 +26,16 @@ export class ResearchModuleContent extends AbstractModuleContent {
 		return 'ea-module-research-content';
 	}
 
+	static get minWidth() {
+		return 34;
+	}
+
+	static get maxWidth() {
+		return 100;
+	}
+
+	static get initialWidth() {
+		return 40;
+	}
+
 }
