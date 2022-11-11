@@ -11,7 +11,7 @@ import Style from 'ol/style/Style';
 import { Icon as IconStyle } from 'ol/style';
 import { Feature } from 'ol';
 import { MeasurementOverlay, MeasurementOverlayTypes } from '../components/MeasurementOverlay';
-import { Circle, LineString, Polygon } from 'ol/geom';
+import { Circle, LineString, MultiPolygon, Polygon } from 'ol/geom';
 import LayerGroup from 'ol/layer/Group';
 import { WMTS } from 'ol/source';
 
@@ -110,8 +110,7 @@ export class BvvMfp3Encoder {
 		const encodedLayers = olMap.getLayers().getArray()
 			.filter(layer => {
 				const layerExtent = layer.getExtent();
-
-				return layerExtent ? extentIntersects(layer.getExtent(), this._pageExtent) : true;
+				return layerExtent ? extentIntersects(layer.getExtent(), this._pageExtent) && layer.getVisible() : layer.getVisible();
 			})
 			.flatMap(l => this._encode(l))
 			.reduce((layerSpecs, encodedLayer) => {
@@ -142,8 +141,8 @@ export class BvvMfp3Encoder {
 					rotation: this._mfpProperties.rotation,
 					layers: layers
 				},
-				dataOwner: encodedLayers.dataOwners.length !== 0 ? encodedLayers.dataOwners.join(',') : null,
-				thirdPartyDataOwner: encodedLayers.thirdPartyDataOwners.length !== 0 ? encodedLayers.thirdPartyDataOwners.join(',') : '',
+				dataOwner: encodedLayers.dataOwners.length !== 0 ? encodedLayers.dataOwners.join(', ') : '',
+				thirdPartyDataOwner: encodedLayers.thirdPartyDataOwners.length !== 0 ? encodedLayers.thirdPartyDataOwners.join(', ') : '',
 				shortLink: shortLinkUrl,
 				qrcodeurl: qrCodeUrl
 			}
@@ -158,7 +157,6 @@ export class BvvMfp3Encoder {
 
 		const geoResource = this._geoResourceService.byId(layer.get('geoResourceId'));
 		if (!geoResource) {
-			console.warn('No geoResource found for Layer', layer);
 			return false;
 		}
 		switch (geoResource.getType()) {
@@ -237,7 +235,7 @@ export class BvvMfp3Encoder {
 		};
 
 		const createEmptySpecsAndWarn = () => {
-			console.warn(`Missing substitution georesource for layer '${olLayer.id}' and georesource '${wmtsGeoResource.id}'.`);
+			console.warn(`Missing substitution for GeoResource '${wmtsGeoResource.id}'.`);
 			return [];
 		};
 
@@ -391,7 +389,7 @@ export class BvvMfp3Encoder {
 
 			const isEncodable = () => {
 				const geometry = olFeature.getGeometry();
-				return geometry instanceof Polygon || geometry instanceof LineString || geometry instanceof Point;
+				return geometry instanceof Polygon || geometry instanceof MultiPolygon || geometry instanceof LineString || geometry instanceof Point;
 			};
 			return isEncodable() ? olFeature : toEncodableFeature();
 		};
@@ -444,8 +442,10 @@ export class BvvMfp3Encoder {
 	}
 
 	_encodeGeometryType(olGeometryType) {
-		const geometryType = olGeometryType.toLowerCase();
-		return olGeometryType === 'LineString' ? 'line' : geometryType.toLowerCase();
+		const defaultEncoding = (geometryType) => geometryType.toLowerCase();
+		const specialEncodings = { LineString: () => 'line', MultiPolygon: () => 'polygon' };
+
+		return Object.hasOwn(specialEncodings, olGeometryType) ? specialEncodings[olGeometryType]() : defaultEncoding(olGeometryType);
 	}
 
 	_encodeStyle(olStyle, olGeometry, dpi) {
@@ -528,7 +528,7 @@ export class BvvMfp3Encoder {
 
 
 		if (textStyle && textStyle.getText()) {
-			encoded.label = encodeURIComponent(textStyle.getText());
+			encoded.label = textStyle.getText();
 			encoded.labelXOffset = textStyle.getOffsetX();
 			encoded.labelYOffset = textStyle.getOffsetY();
 			encoded.type = 'text';
