@@ -58,7 +58,7 @@ export const provide = (lang) => {
 				olMap_handler_draw_new_text: 'Neuer Text',
 				olMap_handler_storage_offline: 'Offline: Die Zeichnung kann nicht gespeichert werden. Die Daten werden nach der Sitzung gelöscht.',
 				olMap_handler_featureInfo_not_available: 'Objekt-Info nicht verfügbar',
-				olMap_handler_termsOfUse: 'Ihre Zeichnung wird automatisch gespeichert. Durch die Nutzung dieses Dienstes stimmen Sie den <a href="https://geoportal.bayern.de/geoportalbayern/seiten/nutzungsbedingungen.html" target="_blank" tabindex="0">Nutzungsbedingungen</a> zu.',
+				olMap_handler_termsOfUse: 'Ihre Zeichnung wird automatisch gespeichert. Durch die Nutzung dieses Dienstes stimmen Sie den <a href="https://www.energieatlas.bayern.de/hilfe/karten/HilfeTech/HilfeNutzung" target="_blank" tabindex="0">Nutzungsbedingungen</a> zu.',
 				olMap_handler_mfp_distortion_warning: 'Achtung! Die für den Export verwendete Projektion besitzt in den markierten Bereichen\nVerzerrungen die nicht für Längenmessungen geeignet sind.',
 				olMap_handler_mfp_id_a4_landscape: 'DIN A4 Querformat',
 				olMap_handler_mfp_id_a4_portrait: 'DIN A4 Hochformat',
