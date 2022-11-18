@@ -229,7 +229,7 @@ export class LayerItem extends AbstractMvuContentPanel {
 			];
 		};
 
-		const validResolution = checkIfResolutionValid(layer.id, this, model.mapResolution);
+		const validResolution = checkIfResolutionValid(layer.geoResourceId, this, model.mapResolution);
 		this.observe(state => state.ea.mapResolution, res => this.signal(Update_MapResolution, res));
 
 		const createTitle = (validResolution) =>
