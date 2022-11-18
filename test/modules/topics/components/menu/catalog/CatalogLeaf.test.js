@@ -12,7 +12,6 @@ import { isTemplateResult } from '../../../../../../src/utils/checks';
 import { TEST_ID_ATTRIBUTE_NAME } from '../../../../../../src/utils/markup';
 import { positionReducer } from '../../../../../../src/store/position/position.reducer';
 import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
-import { setMapResolution, setPreviewGeoresourceId } from '../../../../../../src/ea/store/module/ea.action';
 
 
 
