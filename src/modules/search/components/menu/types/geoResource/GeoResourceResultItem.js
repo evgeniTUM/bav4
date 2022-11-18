@@ -79,7 +79,7 @@ export class GeoResourceResultItem extends MvuElement {
 
 
 				addLayer(id,
-					{ label: result.label, geoResourceId: result.geoResourceId, constraints: { hidden: true, alwaysTop: true } });
+					{ geoResourceId: result.geoResourceId, constraints: { hidden: true } });
 
 				setPreviewGeoresourceId(result.geoResourceId);
 
@@ -109,7 +109,7 @@ export class GeoResourceResultItem extends MvuElement {
 			//add the "real" layer after some delay, which gives the user a better feedback
 			const id = `${result.geoResourceId}_${createUniqueId()}`;
 			//we ask the GeoResourceService for an optionally updated label
-			addLayer(id, { geoResourceId: result.geoResourceId, label: this._geoResourceService.byId(result.geoResourceId)?.label ?? result.label });
+			addLayer(id, { geoResourceId: result.geoResourceId });
 
 			if (isPortrait) {
 				//close the main menu
@@ -134,7 +134,7 @@ export class GeoResourceResultItem extends MvuElement {
 							</span>
 						</span>
 						<span class="ba-list-item__text ">
-						${unsafeHTML(geoResourceSearchResult.labelFormatted)} ${loadingPreview ? html`<ba-spinner .label=${' '}></ba-spinner>` : nothing}
+							${loadingPreview ? html`<ba-spinner .label=${geoResourceSearchResult.labelFormatted}></ba-spinner>` : html`${unsafeHTML(geoResourceSearchResult.labelFormatted)}`}   
 						</span>
 				</li>				
             `;

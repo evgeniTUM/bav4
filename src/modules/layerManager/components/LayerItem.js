@@ -171,7 +171,7 @@ export class LayerItem extends AbstractMvuContentPanel {
 
 		const cloneLayer = () => {
 			//state store change -> implicit call of #render()
-			addLayer(`${layer.geoResourceId}_${createUniqueId()}`, { ...layer, geoResourceId: layer.geoResourceId, label: `${layer.label} (${translate('layerManager_layer_copy')})`, zIndex: layer.zIndex + 1 });
+			addLayer(`${layer.geoResourceId}_${createUniqueId()}`, { ...layer, geoResourceId: layer.geoResourceId, zIndex: layer.zIndex + 1 });
 		};
 
 		const zoomToExtent = () => {
@@ -241,7 +241,7 @@ export class LayerItem extends AbstractMvuContentPanel {
         <div class='ba-section divider'>
             <div class='ba-list-item'>          
 
-                    <ba-checkbox .title='${createTitle(validResolution)}' .disabled='${!validResolution}' class='ba-list-item__text' tabindex='0' .checked=${layer.visible} @toggle=${toggleVisibility}>${currentLabel}${layer.loading ? html`<ba-spinner .label=${' '}></ba-spinner>` : nothing}</ba-checkbox>                                                   
+				<ba-checkbox .title='${createTitle(validResolution)}' .disabled='${!validResolution}' class='ba-list-item__text' tabindex='0' .checked=${layer.visible} @toggle=${toggleVisibility}>${layer.loading ? html`<ba-spinner .label=${currentLabel}></ba-spinner>` : html`${currentLabel}`}</ba-checkbox>    
                                        
                 <button id='button-detail' data-test-id class='ba-list-item__after' title="${getCollapseTitle()}" @click="${toggleCollapse}">
                     <i class='icon chevron icon-rotate-90 ${classMap(iconCollapseClass)}'></i>

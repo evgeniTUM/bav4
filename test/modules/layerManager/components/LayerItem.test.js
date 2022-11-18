@@ -308,7 +308,7 @@ describe('LayerItem', () => {
 			const element = await setup(layer);
 
 			expect(element.shadowRoot.querySelectorAll(Spinner.tag)).toHaveSize(1);
-			expect(element.shadowRoot.querySelector('.ba-list-item__text').innerText).toBe('layerManager_loading_hint');
+			expect(element.shadowRoot.querySelector(Spinner.tag).label).toBe('layerManager_loading_hint');
 
 			await geoResFuture.get(); // resolve future
 
@@ -639,7 +639,6 @@ describe('LayerItem', () => {
 			expect(store.getState().layers.active[0].id).toBe(layer0.id);
 			expect(store.getState().layers.active[1].id.startsWith('geoResourceId0_')).toBeTrue();
 			expect(store.getState().layers.active[1].geoResourceId).toBe(layer0.geoResourceId);
-			expect(store.getState().layers.active[1].label).toBe('label0 (layerManager_layer_copy)');
 		});
 
 		it('click on remove-button change state in store', async () => {

@@ -102,6 +102,8 @@ describe('GeoResourceResultItem', () => {
 				expect(element._timeoutId).toBeNull();
 				expect(store.getState().layers.active.length).toBe(1);
 				expect(store.getState().layers.active[0].id).toBe(GeoResourceResultItem._tmpLayerId(geoResourceId));
+				expect(store.getState().layers.active[0].constraints.hidden).toBeTrue();
+				expect(store.getState().layers.active[0].geoResourceId).toBe(geoResourceId);
 				expect(store.getState().position.fitLayerRequest.payload).not.toBeNull();
 				expect(element.shadowRoot.querySelectorAll(Spinner.tag)).toHaveSize(0);
 			});
@@ -120,12 +122,15 @@ describe('GeoResourceResultItem', () => {
 
 				expect(store.getState().layers.active.length).toBe(1);
 				expect(store.getState().layers.active[0].id).toBe(GeoResourceResultItem._tmpLayerId(geoResourceId));
+				expect(store.getState().layers.active[0].geoResourceId).toBe(geoResourceId);
 				expect(store.getState().position.fitLayerRequest.payload).not.toBeNull();
 				expect(element.shadowRoot.querySelectorAll(Spinner.tag)).toHaveSize(1);
+				expect(element.shadowRoot.querySelector(Spinner.tag).label).toBe('labelFormatted');
 
 				await geoResFuture.get();
 
 				expect(element.shadowRoot.querySelectorAll(Spinner.tag)).toHaveSize(0);
+				expect(element.shadowRoot.querySelector('li').innerText).toBe('labelFormatted');
 			});
 		});
 
@@ -200,19 +205,6 @@ describe('GeoResourceResultItem', () => {
 
 				expect(store.getState().layers.active.length).toBe(1);
 				expect(store.getState().layers.active[0].id).toContain(geoResourceId);
-				expect(store.getState().layers.active[0].label).toBe('label');
-			});
-
-			it('optionally updates the real layers label', async () => {
-				spyOn(geoResourceService, 'byId').withArgs(geoResourceId).and.returnValue({ label: 'updatedLabel' });
-				const element = await setupOnClickTests();
-				const target = element.shadowRoot.querySelector('li');
-
-				target.click();
-
-				expect(store.getState().layers.active.length).toBe(1);
-				expect(store.getState().layers.active[0].id).toContain(geoResourceId);
-				expect(store.getState().layers.active[0].label).toBe('updatedLabel');
 			});
 
 			it('opens the "maps" tab of the main menu in landscape orientation', async () => {
