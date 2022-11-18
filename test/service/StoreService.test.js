@@ -113,7 +113,7 @@ describe('StoreService', () => {
 			expect(store).toBeDefined();
 
 			const reducerKeys = Object.keys(store.getState());
-			expect(reducerKeys.length).toBe(27);
+			expect(reducerKeys.length).toBe(28);
 			expect(reducerKeys.includes('map')).toBeTrue();
 			expect(reducerKeys.includes('pointer')).toBeTrue();
 			expect(reducerKeys.includes('position')).toBeTrue();
@@ -141,6 +141,7 @@ describe('StoreService', () => {
 			expect(reducerKeys.includes('mapclick')).toBeTrue();
 			expect(reducerKeys.includes('ea')).toBeTrue();
 			expect(reducerKeys.includes('mfp')).toBeTrue();
+			expect(reducerKeys.includes('geoResources')).toBeTrue();
 		});
 
 		it('registers all plugins', async () => {

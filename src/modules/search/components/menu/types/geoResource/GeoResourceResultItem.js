@@ -8,14 +8,16 @@ import { $injector } from '../../../../../../injection';
 import { createUniqueId } from '../../../../../../utils/numberUtils';
 import { clearPreviewGeoresourceId, setPreviewGeoresourceId } from '../../../../../../ea/store/module/ea.action';
 import { fitLayer } from '../../../../../../store/position/position.action';
+import { GeoResourceFuture } from '../../../../../../domain/geoResources';
 
 const Update_IsPortrait = 'update_isPortrait';
 const Update_GeoResourceSearchResult = 'update_geoResourceSearchResult';
+const Update_LoadingPreviewFlag = 'update_loadingPreviewFlag';
 
 /**
  * Amount of time waiting before adding a layer in ms.
  */
-export const LAYER_ADDING_DELAY_MS = 500;
+export const LOADING_PREVIEW_DELAY_MS = 500;
 
 /**
  * Renders a search result item for a geoResource.
@@ -31,12 +33,14 @@ export class GeoResourceResultItem extends MvuElement {
 	constructor() {
 		super({
 			geoResourceSearchResult: null,
-			isPortrait: false
+			isPortrait: false,
+			loadingPreview: false
 		});
 
 		const { GeoResourceService: geoResourceService }
 			= $injector.inject('GeoResourceService');
 		this._geoResourceService = geoResourceService;
+		this._timeoutId = null;
 	}
 
 	update(type, data, model) {
@@ -45,6 +49,8 @@ export class GeoResourceResultItem extends MvuElement {
 				return { ...model, geoResourceSearchResult: data };
 			case Update_IsPortrait:
 				return { ...model, isPortrait: data };
+			case Update_LoadingPreviewFlag:
+				return { ...model, loadingPreview: data };
 		}
 	}
 
@@ -61,7 +67,7 @@ export class GeoResourceResultItem extends MvuElement {
 	}
 
 	createView(model) {
-		const { isPortrait, geoResourceSearchResult } = model;
+		const { isPortrait, geoResourceSearchResult, loadingPreview } = model;
 		/**
 		 * Uses mouseenter and mouseleave events for adding/removing a preview layer.
 		 * These events are not fired on touch devices, so there's no extra handling needed.
@@ -69,26 +75,41 @@ export class GeoResourceResultItem extends MvuElement {
 		const onMouseEnter = (result) => {
 			const id = GeoResourceResultItem._tmpLayerId(result.geoResourceId);
 			//add a preview layer
-			addLayer(id,
-				{ label: result.label, geoResourceId: result.geoResourceId, constraints: { hidden: true, alwaysTop: true } });
-			setPreviewGeoresourceId(result.geoResourceId);
-			fitLayer(id);
+			this._timeoutId = setTimeout(() => {
+
+
+				addLayer(id,
+					{ label: result.label, geoResourceId: result.geoResourceId, constraints: { hidden: true, alwaysTop: true } });
+
+				setPreviewGeoresourceId(result.geoResourceId);
+
+				const geoRes = this._geoResourceService.byId(result.geoResourceId);
+
+				if (geoRes instanceof GeoResourceFuture) {
+					this.signal(Update_LoadingPreviewFlag, true);
+					geoRes.onResolve(() => this.signal(Update_LoadingPreviewFlag, false));
+				}
+				fitLayer(id);
+				this._timeoutId = null;
+			}, LOADING_PREVIEW_DELAY_MS);
 		};
 		const onMouseLeave = (result) => {
 			//remove the preview layer
 			removeLayer(GeoResourceResultItem._tmpLayerId(result.geoResourceId));
 			clearPreviewGeoresourceId();
+			if (this._timeoutId) {
+				clearTimeout(this._timeoutId);
+				this._timeoutId = null;
+			}
+			this.signal(Update_LoadingPreviewFlag, false);
 		};
 		const onClick = (result) => {
 			//remove the preview layer
 			removeLayer(GeoResourceResultItem._tmpLayerId(result.geoResourceId));
 			//add the "real" layer after some delay, which gives the user a better feedback
-			setTimeout(() => {
-				const id = `${result.geoResourceId}_${createUniqueId()}`;
-				//we ask the GeoResourceService for an optionally updated label
-				addLayer(id, { geoResourceId: result.geoResourceId, label: this._geoResourceService.byId(result.geoResourceId)?.label ?? result.label });
-				fitLayer(id);
-			}, LAYER_ADDING_DELAY_MS);
+			const id = `${result.geoResourceId}_${createUniqueId()}`;
+			//we ask the GeoResourceService for an optionally updated label
+			addLayer(id, { geoResourceId: result.geoResourceId, label: this._geoResourceService.byId(result.geoResourceId)?.label ?? result.label });
 
 			if (isPortrait) {
 				//close the main menu
@@ -113,7 +134,7 @@ export class GeoResourceResultItem extends MvuElement {
 							</span>
 						</span>
 						<span class="ba-list-item__text ">
-						${unsafeHTML(geoResourceSearchResult.labelFormatted)}
+						${unsafeHTML(geoResourceSearchResult.labelFormatted)} ${loadingPreview ? html`<ba-spinner .label=${' '}></ba-spinner>` : nothing}
 						</span>
 				</li>				
             `;

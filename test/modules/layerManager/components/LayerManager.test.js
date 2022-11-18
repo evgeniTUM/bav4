@@ -7,6 +7,8 @@ import { LayerItem } from '../../../../src/modules/layerManager/components/Layer
 import { modifyLayer } from '../../../../src/store/layers/layers.action';
 import { TEST_ID_ATTRIBUTE_NAME } from '../../../../src/utils/markup';
 import { eaReducer } from '../../../../src/ea/store/module/ea.reducer';
+import { VectorGeoResource, VectorSourceType } from '../../../../src/domain/geoResources';
+import { geoResourcesReducer } from '../../../../src/store/geoResources/geoResources.reducer';
 
 window.customElements.define(Checkbox.tag, Checkbox);
 window.customElements.define(LayerItem.tag, LayerItem);
@@ -22,15 +24,17 @@ describe('LayerManager', () => {
 
 	const wmsCapabilitiesServiceMock = { getWmsLayers: () => ([]) };
 
+	const geoResourceServiceMock = { byId: () => new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML) };
 	const setup = async (state) => {
 
 		store = TestUtils.setupStoreAndDi(state, {
 			layers: layersReducer,
+			geoResources: geoResourcesReducer,
 			ea: eaReducer
 		});
 		$injector.registerSingleton('TranslationService', { translate: (key) => key });
 		$injector.registerSingleton('EnvironmentService', environmentServiceMock);
-		$injector.registerSingleton('GeoResourceService', { byId: () => { } });
+		$injector.registerSingleton('GeoResourceService', geoResourceServiceMock);
 		$injector.registerSingleton('WmsCapabilitiesService', wmsCapabilitiesServiceMock);
 		return TestUtils.render(LayerManager.tag);
 	};
@@ -51,7 +55,7 @@ describe('LayerManager', () => {
 		it('with one layer displays one layer item', async () => {
 			const layer = {
 				...createDefaultLayerProperties(),
-				id: 'id0', label: 'label0', visible: true, zIndex: 0
+				id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0
 			};
 			const state = {
 				layers: {
@@ -69,7 +73,7 @@ describe('LayerManager', () => {
 		it('with one not visible layer displays one layer item', async () => {
 			const layer = {
 				...createDefaultLayerProperties(),
-				id: 'id0', label: 'label0', visible: false, zIndex: 0
+				id: 'id0', geoResourceId: 'geoResourceId0', visible: false, zIndex: 0
 			};
 			const state = {
 				layers: {
@@ -87,12 +91,12 @@ describe('LayerManager', () => {
 		it('displays one out of two layers - one is hidden', async () => {
 			const layer = {
 				...createDefaultLayerProperties(),
-				id: 'id0', label: 'label0', visible: true, zIndex: 0
+				id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0
 			};
 
 			const hiddenLayer = {
 				...createDefaultLayerProperties(),
-				id: 'id1', label: 'label1', visible: false, zIndex: 0, constraints: { hidden: true, alwaysOnTop: false }
+				id: 'id1', geoResourceId: 'geoResourceId0', visible: false, zIndex: 0, constraints: { hidden: true, alwaysOnTop: false }
 			};
 			const state = {
 				layers: {
@@ -122,9 +126,9 @@ describe('LayerManager', () => {
 	describe('when layer items are rendered', () => {
 		let element;
 		beforeEach(async () => {
-			const layer0 = { ...createDefaultLayerProperties(), id: 'id0', label: '', visible: true, zIndex: 0, draggable: true };
-			const layer1 = { ...createDefaultLayerProperties(), id: 'id0', label: '', visible: true, zIndex: 1, draggable: true };
-			const layer2 = { ...createDefaultLayerProperties(), id: 'id0', label: '', visible: true, zIndex: 2, draggable: true };
+			const layer0 = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, draggable: true };
+			const layer1 = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 1, draggable: true };
+			const layer2 = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 2, draggable: true };
 			const state = {
 				layers: {
 					active: [layer0, layer1, layer2],
@@ -161,9 +165,9 @@ describe('LayerManager', () => {
 	describe('when layer items dragged', () => {
 		let element;
 		beforeEach(async () => {
-			const layer0 = { ...createDefaultLayerProperties(), id: 'id0', label: 'Label 0', visible: true, zIndex: 0 };
-			const layer1 = { ...createDefaultLayerProperties(), id: 'id1', label: 'Label 1', visible: true, zIndex: 1 };
-			const layer2 = { ...createDefaultLayerProperties(), id: 'id2', label: 'Label 2', visible: true, zIndex: 2 };
+			const layer0 = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0 };
+			const layer1 = { ...createDefaultLayerProperties(), id: 'id1', geoResourceId: 'geoResourceId0', visible: true, zIndex: 1 };
+			const layer2 = { ...createDefaultLayerProperties(), id: 'id2', geoResourceId: 'geoResourceId0', visible: true, zIndex: 2 };
 			const state = {
 				layers: {
 					active: [layer0, layer1, layer2],
@@ -434,29 +438,6 @@ describe('LayerManager', () => {
 	});
 
 	describe('when layers are modified', () => {
-
-		it('renders changed layer.label', async () => {
-			const layer = {
-				...createDefaultLayerProperties(),
-				id: 'id0', label: 'Foo'
-			};
-			const state = {
-				layers: {
-					active: [layer],
-					background: 'bg0'
-				}
-			};
-			const modifyableLayerProperties = { label: 'Bar' };
-
-			const element = await setup(state);
-			const layerItem = element.shadowRoot.querySelector('ba-layer-item');
-			const layerLabel = layerItem.shadowRoot.querySelector('.ba-list-item__text');
-			expect(layerLabel.innerText).toBe('Foo');
-
-			modifyLayer('id0', modifyableLayerProperties);
-			expect(store.getState().layers.active[0].label).toBe(modifyableLayerProperties.label);
-			expect(layerLabel.innerText).toBe(modifyableLayerProperties.label);
-		});
 
 		it('renders changed layer.opacity', async () => {
 			const layer = {

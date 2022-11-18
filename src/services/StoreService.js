@@ -27,6 +27,7 @@ import { fnModuleCommReducer } from '../ea/store/fnModuleComm/fnModuleComm.reduc
 import { contributionReducer } from '../ea/store/contribution/contribution.reducer';
 import { geofeatureReducer } from '../ea/store/geofeature/geofeature.reducer';
 import { mapclickReducer } from '../ea/store/mapclick/mapclick.reducer';
+import { geoResourcesReducer } from '../store/geoResources/geoResources.reducer';
 
 
 
@@ -70,7 +71,8 @@ export class StoreService {
 			fnModuleComm: fnModuleCommReducer,
 			ea: eaReducer,
 			import: importReducer,
-			mfp: mfpReducer
+			mfp: mfpReducer,
+			geoResources: geoResourcesReducer
 		});
 
 		this._store = createStore(rootReducer);
