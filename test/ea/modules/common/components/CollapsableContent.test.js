@@ -78,11 +78,11 @@ describe('CollapsableContent', () => {
 			const element = await TestUtils.render(CollapsableContent.tag);
 			const header = element.shadowRoot.querySelector('.header');
 
-			expect(header.innerText).toBe('title');
+			expect(header.innerText.trim()).toBe('title');
 
 			element.title = 'foo';
 
-			expect(header.innerText).toBe('foo');
+			expect(header.innerText.trim()).toBe('foo');
 		});
 	});
 
