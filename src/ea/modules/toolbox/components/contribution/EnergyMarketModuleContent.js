@@ -59,7 +59,7 @@ export class EnergyMarketModuleContent extends MvuElement {
 	}
 
 	static get minWidth() {
-		return 34;
+		return 36;
 	}
 
 	static get maxWidth() {
