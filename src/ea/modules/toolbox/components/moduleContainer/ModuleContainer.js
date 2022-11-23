@@ -10,6 +10,8 @@ import css from './moduleContainer.css';
 const Update_IsPortrait_HasMinWidth = 'update_isPortrait_hasMinWidth';
 const Update_ModuleId = 'update_moduleId';
 
+const MIN_WIDTH = 36;
+const MAX_WIDTH = 100;
 
 /**
  * @class
@@ -105,8 +107,8 @@ export class ModuleContainer extends MvuElement {
 			<div class='slider-container'>
 				<input  
 					type="range" 
-					min="${module.minWidth}" 
-					max="${module.maxWidth}" 
+					min="${MIN_WIDTH}" 
+					max="${MAX_WIDTH}" 
 					value="${getValue()}" 
 					draggable='true' 
 					@input=${changeWidth} 
@@ -118,7 +120,6 @@ export class ModuleContainer extends MvuElement {
 				style="width: ${module.initialWidth}em">
 				<div class="module-container__content ${getOverlayClass()}">
 					<div class="module-container__tools-nav">
-						<span style='color: white; font-weight: large'> Fensterbreite: ${getValue()}em</span>
 						<button @click=${close} class="module-container__close-button">
 							x
 						</button>

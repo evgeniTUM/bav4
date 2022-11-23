@@ -26,15 +26,7 @@ export class GeothermModuleContent extends AbstractModuleContent {
 		return 'ea-module-geotherm-content';
 	}
 
-	static get minWidth() {
-		return 36;
-	}
-
-	static get maxWidth() {
-		return 100;
-	}
-
 	static get initialWidth() {
-		return 36;
+		return 40;
 	}
 }

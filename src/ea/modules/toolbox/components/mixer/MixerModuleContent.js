@@ -31,14 +31,6 @@ export class MixerModuleContent extends AbstractModuleContent {
 		return 'ea-module-mixer-content';
 	}
 
-	static get minWidth() {
-		return 40;
-	}
-
-	static get maxWidth() {
-		return 100;
-	}
-
 	static get initialWidth() {
 		return 46;
 	}
