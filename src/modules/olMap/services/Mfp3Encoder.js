@@ -139,14 +139,6 @@ export class BvvMfp3Encoder {
 					rotation: this._mfpProperties.rotation,
 					layers: layers
 				},
-				legend: {
-					'name': 'name1',
-					'classes': [
-						{
-							'name': 'item1',
-							'icons': ['https://upload.wikimedia.org/wikipedia/commons/7/70/Example.png']
-						}
-					] },
 				dataOwner: encodedLayers.dataOwners.length !== 0 ? Array.from(new Set(encodedLayers.dataOwners)).join(',') : '',
 				thirdPartyDataOwner: encodedLayers.thirdPartyDataOwners.length !== 0 ? Array.from(new Set(encodedLayers.thirdPartyDataOwners)).join(',') : '',
 				shortLink: shortLinkUrl,
