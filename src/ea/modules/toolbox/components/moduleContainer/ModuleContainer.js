@@ -120,7 +120,6 @@ export class ModuleContainer extends MvuElement {
 				style="width: ${module.initialWidth}em">
 				<div class="module-container__content ${getOverlayClass()}">
 					<div class="module-container__tools-nav">
-						<span style='color: white; font-weight: large'> Fensterbreite: ${getValue()}em</span>
 						<button @click=${close} class="module-container__close-button">
 							x
 						</button>
