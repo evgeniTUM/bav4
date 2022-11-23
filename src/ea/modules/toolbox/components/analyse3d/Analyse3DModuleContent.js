@@ -27,7 +27,7 @@ export class Analyse3DModuleContent extends AbstractModuleContent {
 	}
 
 	static get minWidth() {
-		return 34;
+		return 36;
 	}
 
 	static get maxWidth() {
@@ -35,6 +35,6 @@ export class Analyse3DModuleContent extends AbstractModuleContent {
 	}
 
 	static get initialWidth() {
-		return 40;
+		return 36;
 	}
 }

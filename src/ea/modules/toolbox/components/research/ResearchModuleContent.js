@@ -27,7 +27,7 @@ export class ResearchModuleContent extends AbstractModuleContent {
 	}
 
 	static get minWidth() {
-		return 34;
+		return 36;
 	}
 
 	static get maxWidth() {
