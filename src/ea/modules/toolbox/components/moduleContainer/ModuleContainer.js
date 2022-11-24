@@ -89,17 +89,10 @@ export class ModuleContainer extends MvuElement {
 			this.render();
 		};
 
-
-		const getValue = () => {
-			const container = this.shadowRoot.getElementById('module-container');
-			return (container && container.style.width !== '') ? parseInt(container.style.width) : module.initialWidth;
-		};
-
 		const onPreventDragging = (e) => {
 			e.preventDefault();
 			e.stopPropagation();
 		};
-
 
 		return content !== nothing ? html`
 			<style>${css}</style>		
@@ -109,7 +102,7 @@ export class ModuleContainer extends MvuElement {
 					type="range" 
 					min="${MIN_WIDTH}" 
 					max="${MAX_WIDTH}" 
-					value="${getValue()}" 
+					value="${module.initialWidth}" 
 					draggable='true' 
 					@input=${changeWidth} 
 					@dragstart=${onPreventDragging}>

@@ -34,46 +34,13 @@ describe('Energy Atlas Module', () => {
 		expect(EnergyReportingModuleContent.name).toBe('energy-reporting');
 	});
 
-
-	it('mixer module has initialWidth, minWidht and maxWidth properties', () => {
-		expect(MixerModuleContent.initialWidth).toBe(40);
-		expect(MixerModuleContent.minWidth).toBe(34);
-		expect(MixerModuleContent.maxWidth).toBe(100);
-	});
-
-	it('redesign module has initialWidth, minWidht and maxWidth properties', () => {
-		expect(RedesignModuleContent.initialWidth).toBe(40);
-		expect(RedesignModuleContent.minWidth).toBe(34);
-		expect(RedesignModuleContent.maxWidth).toBe(100);
-	});
-
-	it('research module has initialWidth, minWidht and maxWidth properties', () => {
+	it('every module has an initialWidth properties', () => {
+		expect(MixerModuleContent.initialWidth).toBe(46);
 		expect(ResearchModuleContent.initialWidth).toBe(40);
-		expect(ResearchModuleContent.minWidth).toBe(34);
-		expect(ResearchModuleContent.maxWidth).toBe(100);
-	});
-
-	it('analyse3d module has initialWidth, minWidht and maxWidth properties', () => {
-		expect(Analyse3DModuleContent.initialWidth).toBe(40);
-		expect(Analyse3DModuleContent.minWidth).toBe(34);
-		expect(Analyse3DModuleContent.maxWidth).toBe(100);
-	});
-
-	it('geomodule has initialWidth, minWidht and maxWidth properties', () => {
+		expect(RedesignModuleContent.initialWidth).toBe(40);
+		expect(Analyse3DModuleContent.initialWidth).toBe(36);
 		expect(GeothermModuleContent.initialWidth).toBe(40);
-		expect(GeothermModuleContent.minWidth).toBe(34);
-		expect(GeothermModuleContent.maxWidth).toBe(100);
-	});
-
-	it('energy-market module has initialWidth, minWidht and maxWidth properties', () => {
 		expect(EnergyMarketModuleContent.initialWidth).toBe(40);
-		expect(EnergyMarketModuleContent.minWidth).toBe(34);
-		expect(EnergyMarketModuleContent.maxWidth).toBe(100);
-	});
-
-	it('energy-reporting module has initialWidth, minWidht and maxWidth properties', () => {
 		expect(EnergyReportingModuleContent.initialWidth).toBe(40);
-		expect(EnergyReportingModuleContent.minWidth).toBe(34);
-		expect(EnergyReportingModuleContent.maxWidth).toBe(100);
 	});
 });
