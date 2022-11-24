@@ -47,7 +47,7 @@ describe('CollapsableContent', () => {
 			const element = await TestUtils.render(CollapsableContent.tag, { title: 'title42' });
 			const header = element.shadowRoot.querySelector('.header');
 
-			expect(header.innerText).toBe('title42');
+			expect(header.innerText.trim()).toBe('title42');
 
 		});
 	});
