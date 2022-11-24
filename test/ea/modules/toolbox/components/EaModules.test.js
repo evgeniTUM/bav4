@@ -39,7 +39,7 @@ describe('Energy Atlas Module', () => {
 		expect(ResearchModuleContent.initialWidth).toBe(40);
 		expect(RedesignModuleContent.initialWidth).toBe(40);
 		expect(Analyse3DModuleContent.initialWidth).toBe(36);
-		expect(GeothermModuleContent.initialWidth).toBe(40);
+		expect(GeothermModuleContent.initialWidth).toBe(36);
 		expect(EnergyMarketModuleContent.initialWidth).toBe(40);
 		expect(EnergyReportingModuleContent.initialWidth).toBe(40);
 	});
