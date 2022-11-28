@@ -26,7 +26,7 @@
 	--text3-dark: hsl(var(--brand-hue) 0% 100%);
 	--surface1-dark: hsl(var(--brand-hue) 10% 20%);
 	--surface2-dark: hsl(var(--brand-hue) 15% 40%);
-	--surface3-dark: hsl(var(--brand-hue) 40% 25%);
+	--surface3-dark: hsl(var(--brand-hue) 40% 30%);
 	--surface4-dark: hsl(var(--brand-hue) 10% 15%);
 	--surface5-dark: hsla(var(--brand-hue),15%,40%,.8);
 
