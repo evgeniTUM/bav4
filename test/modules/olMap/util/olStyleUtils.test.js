@@ -117,6 +117,16 @@ describe('measureStyleFunction', () => {
 		expect(circleStyle).toBeTruthy();
 	});
 
+	it('should have a fallback-style', () => {
+		const styles = measureStyleFunction(feature, null);
+
+		expect(styles).toHaveSize(2);
+		expect(styles[1].getStroke().getColor()).toEqual([255, 0, 0, 1]);
+		expect(styles[1].getStroke().getLineDash()).toEqual([8]);
+		expect(styles[1].getStroke().getWidth()).toBe(2);
+		expect(styles[1].getFill().getColor()).toEqual([255, 0, 0, 0.4]);
+	});
+
 	it('should have a ruler-style with renderer-function', () => {
 		const styles = measureStyleFunction(feature, resolution);
 
@@ -313,10 +323,11 @@ describe('defaultStyleFunction', () => {
 		const pointStyles = styleFunction(getFeatureMock('Point'));
 		const lineStyles = styleFunction(getFeatureMock('LineString'));
 		const polygonStyles = styleFunction(getFeatureMock('Polygon'));
+		const collectionStyles = styleFunction(getFeatureMock('GeometryCollection'));
+
 		expect(pointStyles.length).toBe(1);
 		expect(pointStyles[0].getImage().getFill().getColor()).toEqual([0, 0, 0, 0]);
 		expect(pointStyles[0].getImage().getRadius()).toBe(5);
-
 
 		expect(lineStyles.length).toBe(1);
 		expect(lineStyles[0].getStroke().getColor()).toEqual([0, 0, 0]);
@@ -326,6 +337,13 @@ describe('defaultStyleFunction', () => {
 		expect(polygonStyles[0].getStroke().getColor()).toEqual([0, 0, 0]);
 		expect(polygonStyles[0].getStroke().getWidth()).toBe(2);
 		expect(polygonStyles[0].getFill().getColor()).toEqual([0, 0, 0, 0]);
+
+		expect(collectionStyles.length).toBe(1);
+		expect(collectionStyles[0].getImage().getFill().getColor()).toEqual([0, 0, 0, 0]);
+		expect(collectionStyles[0].getImage().getRadius()).toBe(5);
+		expect(collectionStyles[0].getStroke().getColor()).toEqual([0, 0, 0]);
+		expect(collectionStyles[0].getStroke().getWidth()).toBe(2);
+		expect(collectionStyles[0].getFill().getColor()).toEqual([0, 0, 0, 0]);
 	});
 });
 

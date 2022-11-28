@@ -11,7 +11,6 @@ import { createDefaultLayer, layersReducer } from '../../src/store/layers/layers
 import { positionReducer } from '../../src/store/position/position.reducer.js';
 import { FeatureInfoResult } from '../../src/services/FeatureInfoService.js';
 import { notificationReducer } from '../../src/store/notifications/notifications.reducer.js';
-import { provide } from '../../src/plugins/i18n/featureInfoPlugin.provider.js';
 import { LevelTypes } from '../../src/store/notifications/notifications.action.js';
 import { setCurrentTool } from '../../src/store/tools/tools.action.js';
 import { DRAW_TOOL_ID } from '../../src/plugins/DrawPlugin.js';
@@ -26,6 +25,10 @@ describe('FeatureInfoPlugin', () => {
 
 	const mapService = {
 		calcResolution() { }
+	};
+
+	const geoResourceService = {
+		byId() { }
 	};
 
 	const translationService = {
@@ -55,21 +58,10 @@ describe('FeatureInfoPlugin', () => {
 		$injector
 			.registerSingleton('FeatureInfoService', featureInfoService)
 			.registerSingleton('MapService', mapService)
+			.registerSingleton('GeoResourceService', geoResourceService)
 			.registerSingleton('TranslationService', translationService);
 		return store;
 	};
-
-	describe('constructor', () => {
-
-		it('registers an i18n provider', async () => {
-			const translationServiceSpy = spyOn(translationService, 'register');
-			setup();
-
-			new FeatureInfoPlugin();
-
-			expect(translationServiceSpy).toHaveBeenCalledWith('featureInfoPluginProvider', provide);
-		});
-	});
 
 	describe('when pointer.click property changes', () => {
 
@@ -103,12 +95,13 @@ describe('FeatureInfoPlugin', () => {
 
 			it('adds FeatureInfo items ', async () => {
 				const layerId0 = 'id0';
+				const geoResourceId0 = 'geoResourceId0';
 				const coordinate = [11, 22];
 				const zoom = 5;
 				const resolution = 25;
 				const store = setup({
 					layers: {
-						active: [createDefaultLayer(layerId0)]
+						active: [createDefaultLayer(layerId0, geoResourceId0)]
 					},
 					position: {
 						zoom: zoom
@@ -117,7 +110,7 @@ describe('FeatureInfoPlugin', () => {
 				const instanceUnderTest = new FeatureInfoPlugin();
 
 				spyOn(mapService, 'calcResolution').withArgs(zoom, coordinate).and.returnValue(resolution);
-				spyOn(featureInfoService, 'get').withArgs(layerId0, coordinate, resolution).and.resolveTo(new FeatureInfoResult('content', 'title'));
+				spyOn(featureInfoService, 'get').withArgs(geoResourceId0, coordinate, resolution).and.resolveTo(new FeatureInfoResult('content', 'title'));
 				await instanceUnderTest.register(store);
 
 				setClick({ coordinate: coordinate, screenCoordinate: [33, 44] });
@@ -130,15 +123,17 @@ describe('FeatureInfoPlugin', () => {
 				expect(store.getState().featureInfo.querying).toBeFalse();
 			});
 
-			it('adds FeatureInfo items taking layerProperties\' label as title', async () => {
+			it('adds FeatureInfo items taking the GeoResource\' label as title', async () => {
+				const labelO = 'label0';
 				const layerId0 = 'id0';
-				const layerLabel0 = 'label0';
+				const geoResourceId0 = 'geoResourceId0';
+				spyOn(geoResourceService, 'byId').withArgs(geoResourceId0).and.returnValue({ label: labelO } /*fake GeoResource */);
 				const coordinate = [11, 22];
 				const zoom = 5;
 				const resolution = 25;
 				const store = setup({
 					layers: {
-						active: [{ ...createDefaultLayer(layerId0), label: layerLabel0 }]
+						active: [{ ...createDefaultLayer(layerId0, geoResourceId0) }]
 					},
 					position: {
 						zoom: zoom
@@ -147,7 +142,7 @@ describe('FeatureInfoPlugin', () => {
 				const instanceUnderTest = new FeatureInfoPlugin();
 
 				spyOn(mapService, 'calcResolution').withArgs(zoom, coordinate).and.returnValue(resolution);
-				spyOn(featureInfoService, 'get').withArgs(layerId0, coordinate, resolution).and.resolveTo(new FeatureInfoResult('content'));
+				spyOn(featureInfoService, 'get').withArgs(geoResourceId0, coordinate, resolution).and.resolveTo(new FeatureInfoResult('content'));
 				await instanceUnderTest.register(store);
 
 				setClick({ coordinate: coordinate, screenCoordinate: [33, 44] });
@@ -155,20 +150,22 @@ describe('FeatureInfoPlugin', () => {
 				await TestUtils.timeout();
 				expect(store.getState().featureInfo.current).toHaveSize(1);
 				expect(store.getState().featureInfo.current[0].content).toBe('content');
-				expect(store.getState().featureInfo.current[0].title).toBe(layerLabel0);
+				expect(store.getState().featureInfo.current[0].title).toBe(labelO);
 			});
 
 			it('adds NO FeatureInfo items when layer is invisible or hidden', async () => {
 				const layerId0 = 'id0';
+				const geoResourceId0 = 'geoResourceId0';
 				const layerId1 = 'id1';
+				const geoResourceId1 = 'geoResourceId1';
 				const coordinate = [11, 22];
 				const zoom = 5;
 				const resolution = 25;
 				const store = setup({
 					layers: {
 						active: [
-							{ ...createDefaultLayer(layerId0), constraints: { hidden: true } },
-							{ ...createDefaultLayer(layerId1), visible: false }
+							{ ...createDefaultLayer(layerId0, geoResourceId0), constraints: { hidden: true } },
+							{ ...createDefaultLayer(layerId1, geoResourceId1), visible: false }
 						]
 					},
 					position: {
@@ -188,13 +185,15 @@ describe('FeatureInfoPlugin', () => {
 
 			it('adds NO FeatureInfo items when service returns NO result', async () => {
 				const layerId0 = 'id0';
-				const layerLabel0 = 'label0';
+				const geoResourceId0 = 'geoResource0';
+				const label0 = 'label0';
+				spyOn(geoResourceService, 'byId').withArgs(geoResourceId0).and.returnValue({ label: label0 } /*fake GeoResource */);
 				const coordinate = [11, 22];
 				const zoom = 5;
 				const resolution = 25;
 				const store = setup({
 					layers: {
-						active: [{ ...createDefaultLayer(layerId0), label: layerLabel0 }]
+						active: [{ ...createDefaultLayer(layerId0, geoResourceId0) }]
 					},
 					position: {
 						zoom: zoom
@@ -203,7 +202,7 @@ describe('FeatureInfoPlugin', () => {
 				const instanceUnderTest = new FeatureInfoPlugin();
 
 				spyOn(mapService, 'calcResolution').withArgs(zoom, coordinate).and.returnValue(resolution);
-				spyOn(featureInfoService, 'get').withArgs(layerId0, coordinate, resolution).and.resolveTo(null);
+				spyOn(featureInfoService, 'get').withArgs(geoResourceId0, coordinate, resolution).and.resolveTo(null);
 				await instanceUnderTest.register(store);
 
 				setClick({ coordinate: coordinate, screenCoordinate: [33, 44] });
@@ -216,14 +215,16 @@ describe('FeatureInfoPlugin', () => {
 
 			it('emits a notification and logs a warning when service throws exception', async () => {
 				const layerId0 = 'id0';
-				const layerLabel0 = 'label0';
+				const geoResourceId0 = 'geoResource0';
+				const label0 = 'label0';
+				spyOn(geoResourceService, 'byId').withArgs(geoResourceId0).and.returnValue({ label: label0 } /*fake GeoResource */);
 				const coordinate = [11, 22];
 				const zoom = 5;
 				const resolution = 25;
 				const errorMessage = 'something got wrong';
 				const store = setup({
 					layers: {
-						active: [{ ...createDefaultLayer(layerId0), label: layerLabel0 }]
+						active: [{ ...createDefaultLayer(layerId0, geoResourceId0) }]
 					},
 					position: {
 						zoom: zoom
@@ -231,7 +232,7 @@ describe('FeatureInfoPlugin', () => {
 				});
 				const instanceUnderTest = new FeatureInfoPlugin();
 				spyOn(mapService, 'calcResolution').withArgs(zoom, coordinate).and.returnValue(resolution);
-				spyOn(featureInfoService, 'get').withArgs(layerId0, coordinate, resolution).and.returnValue(Promise.reject(errorMessage));
+				spyOn(featureInfoService, 'get').withArgs(geoResourceId0, coordinate, resolution).and.returnValue(Promise.reject(errorMessage));
 				const warnSpy = spyOn(console, 'warn');
 				await instanceUnderTest.register(store);
 
@@ -240,7 +241,7 @@ describe('FeatureInfoPlugin', () => {
 				expect(store.getState().featureInfo.querying).toBeTrue();
 				await TestUtils.timeout();
 				expect(store.getState().featureInfo.current).toHaveSize(0);
-				expect(store.getState().notifications.latest.payload.content).toBe(`${layerLabel0}: featureInfoPlugin_featureInfoService_exception`);
+				expect(store.getState().notifications.latest.payload.content).toBe(`${label0}: global_featureInfoService_exception`);
 				expect(store.getState().notifications.latest.payload.level).toBe(LevelTypes.WARN);
 				expect(warnSpy).toHaveBeenCalledWith(errorMessage);
 				expect(store.getState().featureInfo.querying).toBeFalse();

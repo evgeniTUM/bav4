@@ -47,7 +47,7 @@ import { BvvMfp3Encoder } from '../modules/olMap/services/Mfp3Encoder';
 import { eaConfig } from '../ea/injection/eaConfig';
 
 $injector
-	.registerSingleton('Proj4JsService', new Proj4JsService())
+	.registerSingleton('ProjectionService', new Proj4JsService())
 	.register('HttpService', NetworkStateSyncHttpService)
 	.registerSingleton('ConfigService', new EaProcessEnvConfigService())
 	.registerSingleton('TranslationService', new TranslationService)

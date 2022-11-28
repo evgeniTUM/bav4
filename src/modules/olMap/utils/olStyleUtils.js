@@ -428,11 +428,10 @@ export const measureStyleFunction = (feature, resolution) => {
 		return new Style({
 			stroke: new Stroke({
 				color: Red_Color.concat([1]),
-				fill: new Fill({
-					color: Red_Color.concat([0.4])
-				}),
 				lineDash: [8],
 				width: 2
+			}), fill: new Fill({
+				color: Red_Color.concat([0.4])
 			})
 		});
 	};
@@ -558,6 +557,16 @@ export const defaultStyleFunction = (color) => {
 			case 'Polygon':
 			case 'MultiPolygon':
 				return [new Style({
+					fill: fill,
+					stroke: getColoredStroke(2)
+				})];
+			case 'GeometryCollection':
+				return [new Style({
+					image: new CircleStyle({
+						fill: fill,
+						radius: 5,
+						stoke: getColoredStroke(1)
+					}),
 					fill: fill,
 					stroke: getColoredStroke(2)
 				})];
