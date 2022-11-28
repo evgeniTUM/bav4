@@ -45,6 +45,7 @@ export class OlMfpHandler extends OlLayerHandler {
 		this._pageSize = null;
 		this._visibleViewport = null;
 		this._mapProjection = 'EPSG:' + this._mapService.getSrid();
+		this._legendItems = [];
 	}
 
 	/**
@@ -96,8 +97,13 @@ export class OlMfpHandler extends OlLayerHandler {
 			observe(store, state => state.position.liveCenter, () => this._updateMfpPreview()),
 			observe(store, state => state.position.center, () => this._updateRotation()),
 			observe(store, state => state.position.zoom, () => this._updateRotation()),
-			observe(store, state => state.position.rotation, () => this._updateRotation())
+			observe(store, state => state.position.rotation, () => this._updateRotation()),
+			observe(store, state => state.ea.legendItems, items => this._updateLegendItems(items))
 		];
+	}
+
+	_updateLegendItems(items) {
+		this._legendItems = items;
 	}
 
 	_unregister(observers) {
@@ -254,7 +260,7 @@ export class OlMfpHandler extends OlLayerHandler {
 	async _encodeMap() {
 		const { id, scale, dpi } = this._storeService.getStore().getState().mfp.current;
 		const pageCenter = this._getVisibleCenterPoint();
-		const encodingProperties = { layoutId: id, scale: scale, rotation: 0, dpi: dpi, pageCenter: pageCenter };
+		const encodingProperties = { layoutId: id, scale: scale, rotation: 0, dpi: dpi, pageCenter: pageCenter, legendItems: this._legendItems };
 		const specs = await this._encoder.encode(this._map, encodingProperties);
 
 		startJob(specs);

@@ -128,6 +128,12 @@ export class BvvMfp3Encoder {
 		const shortLinkUrl = await this._generateShortUrl();
 		const qrCodeUrl = this._urlService.qrCode(shortLinkUrl);
 		const layers = [...encodedOverlays, ...encodedLayers.specs.reverse()].filter(spec => Object.hasOwn(spec, 'type'));
+		const legend = {
+			'name': '',
+			'classes': encodingProperties.legendItems
+				.map(item => ({ name: item.title, icons: [item.legendUrl] }))
+		};
+
 		return {
 			layout: this._mfpProperties.layoutId,
 			attributes: {
@@ -142,7 +148,8 @@ export class BvvMfp3Encoder {
 				dataOwner: encodedLayers.dataOwners.length !== 0 ? Array.from(new Set(encodedLayers.dataOwners)).join(',') : '',
 				thirdPartyDataOwner: encodedLayers.thirdPartyDataOwners.length !== 0 ? Array.from(new Set(encodedLayers.thirdPartyDataOwners)).join(',') : '',
 				shortLink: shortLinkUrl,
-				qrcodeurl: qrCodeUrl
+				qrcodeurl: qrCodeUrl,
+				legend
 			}
 		};
 	}
