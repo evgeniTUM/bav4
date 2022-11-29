@@ -128,9 +128,11 @@ export class BvvMfp3Encoder {
 		const qrCodeUrl = this._urlService.qrCode(shortLinkUrl);
 		const layers = [encodedOverlays, ...encodedLayers.specs.reverse()].filter(spec => Object.hasOwn(spec, 'type'));
 
+		const printResolution = this._mfpProperties.scale / UnitsRatio / PointsPerInch;
 		const legend = {
 			'name': '',
 			'classes': encodingProperties.legendItems
+				.filter(item => printResolution > item.maxResolution && printResolution < item.minResolution)
 				.map(item => ({ name: item.title, icons: [item.legendUrl] }))
 		};
 
