@@ -91,6 +91,10 @@ export class OlMfpHandler extends OlLayerHandler {
 		// A shortcut and allowed alternative is the direct binding to the ol map events.
 		// The current design is choosen prior to the alternative, due to the fact, that the call traffic have no substantial influence to
 		// the performance and time consumptions (< 1 ms), but makes it simpler to follow only one source of events.
+
+		const legendItems = store.getState().ea.legendItems;
+		this._updateLegendItems(legendItems);
+
 		return [
 			observe(store, state => state.mfp.current, (current) => this._updateMfpPage(current)),
 			observe(store, state => state.mfp.jobRequest, () => this._encodeMap()),
