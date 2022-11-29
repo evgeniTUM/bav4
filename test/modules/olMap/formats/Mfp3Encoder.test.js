@@ -79,7 +79,8 @@ describe('BvvMfp3Encoder', () => {
 		layoutId: 'foo',
 		scale: 1,
 		dpi: 42,
-		rotation: null
+		rotation: null,
+		legendItems: []
 	};
 
 	$injector.registerSingleton('MapService', mapServiceMock)
@@ -331,7 +332,8 @@ describe('BvvMfp3Encoder', () => {
 					dataOwner: 'Foo CopyRight,Bar CopyRight',
 					thirdPartyDataOwner: '',
 					shortLink: 'http://url.to/shorten',
-					qrcodeurl: 'http://url.to/shorten.png'
+					qrcodeurl: 'http://url.to/shorten.png',
+					legend: { name: '', classes: [] }
 				}
 			});
 		});
@@ -375,7 +377,8 @@ describe('BvvMfp3Encoder', () => {
 					dataOwner: 'Bar CopyRight',
 					thirdPartyDataOwner: 'Foo CopyRight',
 					shortLink: 'http://url.to/shorten',
-					qrcodeurl: 'http://url.to/shorten.png'
+					qrcodeurl: 'http://url.to/shorten.png',
+					legend: { name: '', classes: [] }
 				}
 			});
 		});
@@ -419,7 +422,8 @@ describe('BvvMfp3Encoder', () => {
 					dataOwner: '',
 					thirdPartyDataOwner: 'Foo CopyRight,Bar CopyRight',
 					shortLink: 'http://url.to/shorten',
-					qrcodeurl: 'http://url.to/shorten.png'
+					qrcodeurl: 'http://url.to/shorten.png',
+					legend: { name: '', classes: [] }
 				}
 			});
 		});
@@ -463,7 +467,8 @@ describe('BvvMfp3Encoder', () => {
 					dataOwner: 'Bar CopyRight,Baz CopyRight',
 					thirdPartyDataOwner: 'Foo CopyRight',
 					shortLink: 'http://url.to/shorten',
-					qrcodeurl: 'http://url.to/shorten.png'
+					qrcodeurl: 'http://url.to/shorten.png',
+					legend: { name: '', classes: [] }
 				}
 			});
 		});
@@ -507,7 +512,8 @@ describe('BvvMfp3Encoder', () => {
 					dataOwner: 'Foo CopyRight',
 					thirdPartyDataOwner: '',
 					shortLink: 'http://url.to/shorten',
-					qrcodeurl: 'http://url.to/shorten.png'
+					qrcodeurl: 'http://url.to/shorten.png',
+					legend: { name: '', classes: [] }
 				}
 			});
 		});

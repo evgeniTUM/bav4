@@ -92,9 +92,6 @@ export class OlMfpHandler extends OlLayerHandler {
 		// The current design is choosen prior to the alternative, due to the fact, that the call traffic have no substantial influence to
 		// the performance and time consumptions (< 1 ms), but makes it simpler to follow only one source of events.
 
-		const legendItems = store.getState().ea.legendItems;
-		this._updateLegendItems(legendItems);
-
 		return [
 			observe(store, state => state.mfp.current, (current) => this._updateMfpPage(current)),
 			observe(store, state => state.mfp.jobRequest, () => this._encodeMap()),
@@ -102,7 +99,7 @@ export class OlMfpHandler extends OlLayerHandler {
 			observe(store, state => state.position.center, () => this._updateRotation()),
 			observe(store, state => state.position.zoom, () => this._updateRotation()),
 			observe(store, state => state.position.rotation, () => this._updateRotation()),
-			observe(store, state => state.ea.legendItems, items => this._updateLegendItems(items))
+			observe(store, state => state.ea.legendItems, items => this._updateLegendItems(items), false)
 		];
 	}
 
