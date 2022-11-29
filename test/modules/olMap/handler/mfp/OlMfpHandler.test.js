@@ -7,6 +7,7 @@ import { OSM, TileDebug } from 'ol/source';
 import { $injector } from '../../../../../src/injection';
 import { OlMfpHandler } from '../../../../../src/modules/olMap/handler/mfp/OlMfpHandler';
 import { mfpReducer } from '../../../../../src/store/mfp/mfp.reducer';
+import { eaReducer } from '../../../../../src/ea/store/module/ea.reducer';
 import { positionReducer } from '../../../../../src/store/position/position.reducer';
 import { TestUtils } from '../../../../test-utils';
 
@@ -16,6 +17,7 @@ import { Polygon, Point } from 'ol/geom';
 import { requestJob, setCurrent } from '../../../../../src/store/mfp/mfp.action';
 import { changeCenter, changeLiveCenter, changeRotation, changeZoom } from '../../../../../src/store/position/position.action';
 import proj4 from 'proj4';
+import { setLegendItems } from '../../../../../src/ea/store/module/ea.action';
 
 
 describe('OlMfpHandler', () => {
@@ -55,9 +57,14 @@ describe('OlMfpHandler', () => {
 
 	const setup = (state = initialState) => {
 		const mfpState = {
-			mfp: state
+			mfp: state,
+			ea: { legendItems: [1, 2] }
 		};
-		TestUtils.setupStoreAndDi(mfpState, { mfp: mfpReducer, position: positionReducer });
+		TestUtils.setupStoreAndDi(mfpState, {
+			mfp: mfpReducer,
+			position: positionReducer,
+			ea: eaReducer
+		});
 		$injector.registerSingleton('TranslationService', translationServiceMock)
 			.registerSingleton('ConfigService', configService)
 			.registerSingleton('MapService', mapServiceMock)
@@ -134,7 +141,7 @@ describe('OlMfpHandler', () => {
 			const actualLayer = handler.activate(map);
 
 			expect(actualLayer).toBeTruthy();
-			expect(handler._registeredObservers).toHaveSize(6);
+			expect(handler._registeredObservers).toHaveSize(7);
 		});
 
 		it('initializing mfpBoundaryFeature only once', () => {
@@ -206,12 +213,32 @@ describe('OlMfpHandler', () => {
 			expect(updateSpy).toHaveBeenCalled();
 		});
 
+		it('updates legend items after layers change', () => {
+			const map = setupMap();
+			setup();
+
+			const handler = new OlMfpHandler();
+			const updateSpy = spyOn(handler, '_updateLegendItems').and.callThrough();
+
+			handler.activate(map);
+			setLegendItems([42]);
+
+			expect(updateSpy).toHaveBeenCalled();
+		});
+
 		it('encodes map to mfp spec after store changes', async () => {
 			const map = setupMap();
 			setup();
 
 			const handler = new OlMfpHandler();
-			spyOn(mfpEncoderMock, 'encode').withArgs(map, { layoutId: 'foo', scale: 1, rotation: 0, dpi: 125, pageCenter: jasmine.any(Point) }).and.callFake(() => { });
+			spyOn(mfpEncoderMock, 'encode').withArgs(map, {
+				layoutId: 'foo',
+				scale: 1,
+				rotation: 0,
+				dpi: 125,
+				pageCenter: jasmine.any(Point),
+				legendItems: [1, 2]
+			}).and.callFake(() => { });
 			const centerPointSpy = spyOn(handler, '_getVisibleCenterPoint').and.callThrough();
 			const encodeSpy = spyOn(handler, '_encodeMap').and.callThrough();
 
