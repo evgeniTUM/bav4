@@ -99,7 +99,8 @@ export const provide = (lang) => {
 				toolbox_exportMfp_id_a4_landscape: 'A4 landscape',
 				toolbox_exportMfp_id_a4_portrait: 'A4 portrait',
 				toolbox_exportMfp_id_a3_landscape: 'A3 landscape',
-				toolbox_exportMfp_id_a3_portrait: 'A3 portrait'
+				toolbox_exportMfp_id_a3_portrait: 'A3 portrait',
+				toolbox_exportMfp_print_legend: 'Print legend'
 			};
 
 		case 'de':
@@ -200,7 +201,8 @@ export const provide = (lang) => {
 				toolbox_exportMfp_id_a4_landscape: 'A4 Querformat',
 				toolbox_exportMfp_id_a4_portrait: 'A4 Hochformat',
 				toolbox_exportMfp_id_a3_landscape: 'A3 Querformat',
-				toolbox_exportMfp_id_a3_portrait: 'A3 Hochformat'
+				toolbox_exportMfp_id_a3_portrait: 'A3 Hochformat',
+				toolbox_exportMfp_print_legend: 'Legende drucken'
 			};
 
 		default:

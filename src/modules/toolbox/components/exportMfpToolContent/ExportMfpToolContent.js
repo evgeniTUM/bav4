@@ -33,7 +33,7 @@ export class ExportMfpToolContent extends AbstractToolContent {
 	onInitialize() {
 		this.observe(state => state.mfp.current, data => this.signal(Update, data));
 		this.observe(state => state.mfp.jobSpec, data => this.signal(Update_Job_Started, data));
-		this.observe(state => state.mfp.printLegend, data => this.signal(Update_PrintLegend, data), true);
+		this.observe(state => state.mfp.printLegend, data => this.signal(Update_PrintLegend, data));
 	}
 
 	update(type, data, model) {
@@ -165,9 +165,9 @@ export class ExportMfpToolContent extends AbstractToolContent {
 					</div>
 				</div>
 
-				<div class='tool-section'>
-					<div class='tool-sub-header'>	
-						<ba-toggle id='printLegend' .checked=${printLegend} .title="Legende drucken" @toggle=${onChangePrintLegend}>Legende drucken</ba-toggle>
+				<div class='tool-section' style='margin-top:1em'>
+					<div class='tool-sub-header' style='width: 12em'>	
+						<ba-toggle id='print-legend' .checked=${printLegend} .title="${translate('toolbox_exportMfp_print_legend')}" @toggle=${onChangePrintLegend}>${translate('toolbox_exportMfp_print_legend')}</ba-toggle>
 					</div>
 				</div>`;
 	}

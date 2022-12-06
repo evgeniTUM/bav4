@@ -167,7 +167,7 @@ describe('ExportMfpToolContent', () => {
 			spyOn(mfpServiceMock, 'getCapabilities').and.returnValue(capabilities);
 			const element = await setup({ ...mfpDefaultState, current: initialCurrent, printLegend: true });
 
-			const checkbox = element.shadowRoot.querySelector('#printLegend');
+			const checkbox = element.shadowRoot.querySelector('#print-legend');
 
 			expect(checkbox.checked).toBeTrue();
 		});
@@ -385,12 +385,16 @@ describe('ExportMfpToolContent', () => {
 			spyOn(mfpServiceMock, 'getCapabilities').and.returnValue(capabilities);
 			const element = await setup({ ...mfpDefaultState, current: initialCurrent });
 
-			const printLegendCheckbox = element.shadowRoot.querySelector('#printLegend');
+			const printLegendCheckbox = element.shadowRoot.querySelector('#print-legend');
 
-			printLegendCheckbox.click();
+			printLegendCheckbox.dispatchEvent(new CustomEvent('toggle', {
+				detail: { checked: true }
+			}));
 			expect(store.getState().mfp.printLegend).toBeTrue();
 
-			printLegendCheckbox.click();
+			printLegendCheckbox.dispatchEvent(new CustomEvent('toggle', {
+				detail: { checked: false }
+			}));
 			expect(store.getState().mfp.printLegend).toBeFalse();
 		});
 	});
