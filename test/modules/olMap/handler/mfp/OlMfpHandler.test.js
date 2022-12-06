@@ -14,7 +14,7 @@ import { TestUtils } from '../../../../test-utils';
 
 import { register } from 'ol/proj/proj4';
 import { Polygon, Point } from 'ol/geom';
-import { requestJob, setCurrent } from '../../../../../src/store/mfp/mfp.action';
+import { requestJob, setCurrent, setPrintLegend } from '../../../../../src/store/mfp/mfp.action';
 import { changeCenter, changeLiveCenter, changeRotation, changeZoom } from '../../../../../src/store/position/position.action';
 import proj4 from 'proj4';
 import { setLegendItems } from '../../../../../src/ea/store/module/ea.action';
@@ -141,7 +141,7 @@ describe('OlMfpHandler', () => {
 			const actualLayer = handler.activate(map);
 
 			expect(actualLayer).toBeTruthy();
-			expect(handler._registeredObservers).toHaveSize(7);
+			expect(handler._registeredObservers).toHaveSize(8);
 		});
 
 		it('initializing mfpBoundaryFeature only once', () => {
@@ -213,19 +213,6 @@ describe('OlMfpHandler', () => {
 			expect(updateSpy).toHaveBeenCalled();
 		});
 
-		it('updates legend items after layers change', () => {
-			const map = setupMap();
-			setup();
-
-			const handler = new OlMfpHandler();
-			const updateSpy = spyOn(handler, '_updateLegendItems').and.callThrough();
-
-			handler.activate(map);
-			setLegendItems([42]);
-
-			expect(updateSpy).toHaveBeenCalled();
-		});
-
 		it('encodes map to mfp spec after store changes', async () => {
 			const map = setupMap();
 			setup();
@@ -237,7 +224,7 @@ describe('OlMfpHandler', () => {
 				rotation: 0,
 				dpi: 125,
 				pageCenter: jasmine.any(Point),
-				legendItems: [1, 2]
+				legendItems: jasmine.any(Array)
 			}).and.callFake(() => { });
 			const centerPointSpy = spyOn(handler, '_getVisibleCenterPoint').and.callThrough();
 			const encodeSpy = spyOn(handler, '_encodeMap').and.callThrough();
@@ -364,5 +351,56 @@ describe('OlMfpHandler', () => {
 
 			expect(classUnderTest._createMfpBoundary(pageSize, center)).toEqual(jasmine.any(Polygon));
 		});
+	});
+
+
+	describe('legend handling', () => {
+		it('updates legend items after store change', () => {
+			const map = setupMap();
+			setup();
+
+			const handler = new OlMfpHandler();
+			const updateSpy = spyOn(handler, '_updateLegendItems').and.callThrough();
+
+			handler.activate(map);
+			setLegendItems([42]);
+
+			expect(updateSpy).toHaveBeenCalled();
+		});
+
+		it('encodes legend items when printLegend is true', async () => {
+			const map = setupMap();
+			setup();
+
+			setPrintLegend(true);
+
+			const handler = new OlMfpHandler();
+			spyOn(mfpEncoderMock, 'encode')
+				.withArgs(map, jasmine.objectContaining({ legendItems: [1, 2] }))
+				.and.callFake(() => { });
+
+			handler.activate(map);
+			requestJob();
+
+			await TestUtils.timeout();
+		});
+
+		it('does not encode legend items when printLegend is false', async () => {
+			const map = setupMap();
+			setup();
+
+			setPrintLegend(false);
+
+			const handler = new OlMfpHandler();
+			spyOn(mfpEncoderMock, 'encode')
+				.withArgs(map, jasmine.objectContaining({ legendItems: [] }))
+				.and.callFake(() => { });
+
+			handler.activate(map);
+			requestJob();
+
+			await TestUtils.timeout();
+		});
+
 	});
 });
