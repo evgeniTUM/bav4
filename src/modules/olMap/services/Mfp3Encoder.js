@@ -133,7 +133,7 @@ export class BvvMfp3Encoder {
 			'name': '',
 			'classes': encodingProperties.legendItems
 				.filter(item => printResolution > item.maxResolution && printResolution < item.minResolution)
-				.map(item => ({ name: item.title, icons: [item.legendUrl] }))
+				.map(item => ({ name: `${item.title},${item.legendUrl}`, icons: [item.legendUrl] }))
 		};
 
 		return {
@@ -151,7 +151,8 @@ export class BvvMfp3Encoder {
 				thirdPartyDataOwner: encodedLayers.thirdPartyDataOwners.length !== 0 ? Array.from(new Set(encodedLayers.thirdPartyDataOwners)).join(',') : '',
 				shortLink: shortLinkUrl,
 				qrcodeurl: qrCodeUrl,
-				legend
+				legend,
+				printLegend: legend.classes.length > 0
 			}
 		};
 	}

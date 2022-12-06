@@ -29,7 +29,8 @@ describe('ExportMfpToolContent', () => {
 		active: false,
 		current: { id: null, scale: null, dpi: null },
 		jobSpec: null,
-		isJobStarted: false
+		isJobStarted: false,
+		printLegend: false
 	};
 
 	const setup = async (mfpState = mfpDefaultState, config = {}) => {
@@ -72,7 +73,8 @@ describe('ExportMfpToolContent', () => {
 			expect(model).toEqual({
 				id: null,
 				scale: null,
-				isJobStarted: false
+				isJobStarted: false,
+				printLegend: false
 			});
 		});
 	});
@@ -159,6 +161,15 @@ describe('ExportMfpToolContent', () => {
 			const layoutOptions = element.shadowRoot.querySelectorAll('#select_scale option');
 
 			expect(layoutOptions[1].textContent).toMatch(/1:\d+/);
+		});
+
+		it('loads value of printLegend', async () => {
+			spyOn(mfpServiceMock, 'getCapabilities').and.returnValue(capabilities);
+			const element = await setup({ ...mfpDefaultState, current: initialCurrent, printLegend: true });
+
+			const checkbox = element.shadowRoot.querySelector('#printLegend');
+
+			expect(checkbox.checked).toBeTrue();
 		});
 	});
 
@@ -365,6 +376,22 @@ describe('ExportMfpToolContent', () => {
 			expect(element.shadowRoot.querySelectorAll('#btn_cancel')).toHaveSize(0);
 			expect(element.shadowRoot.querySelectorAll('#btn_submit')).toHaveSize(1);
 			expect(element.shadowRoot.querySelectorAll('#btn_submit')[0].type).toBe('primary');
+		});
+	});
+
+	describe('when the user toggles the printLegend checkbox', () => {
+
+		it('changes store', async () => {
+			spyOn(mfpServiceMock, 'getCapabilities').and.returnValue(capabilities);
+			const element = await setup({ ...mfpDefaultState, current: initialCurrent });
+
+			const printLegendCheckbox = element.shadowRoot.querySelector('#printLegend');
+
+			printLegendCheckbox.click();
+			expect(store.getState().mfp.printLegend).toBeTrue();
+
+			printLegendCheckbox.click();
+			expect(store.getState().mfp.printLegend).toBeFalse();
 		});
 	});
 });
