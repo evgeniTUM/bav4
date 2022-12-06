@@ -58,7 +58,7 @@ describe('OlMfpHandler', () => {
 	const setup = (state = initialState) => {
 		const mfpState = {
 			mfp: state,
-			ea: { legendItems: [1, 2] }
+			ea: { legendItems: [{ title: '1' }, { title: '2' }] }
 		};
 		TestUtils.setupStoreAndDi(mfpState, {
 			mfp: mfpReducer,
@@ -363,9 +363,32 @@ describe('OlMfpHandler', () => {
 			const updateSpy = spyOn(handler, '_updateLegendItems').and.callThrough();
 
 			handler.activate(map);
-			setLegendItems([42]);
+			setLegendItems([{ title: 't1' }]);
 
 			expect(updateSpy).toHaveBeenCalled();
+		});
+
+		it('update only unique legend items', async () => {
+			const map = setupMap();
+			setup();
+			setPrintLegend(true);
+
+			const handler = new OlMfpHandler();
+
+			handler.activate(map);
+			setLegendItems([{ title: 't1' }, { title: 't2' }, { title: 't1' }]);
+			spyOn(mfpEncoderMock, 'encode')
+				.withArgs(map, jasmine.objectContaining(
+					{ legendItems: [
+						{ title: 't1' },
+						{ title: 't2' }
+					] }))
+				.and.callFake(() => { });
+
+			handler.activate(map);
+			requestJob();
+
+			await TestUtils.timeout();
 		});
 
 		it('encodes legend items when printLegend is true', async () => {
@@ -376,7 +399,9 @@ describe('OlMfpHandler', () => {
 
 			const handler = new OlMfpHandler();
 			spyOn(mfpEncoderMock, 'encode')
-				.withArgs(map, jasmine.objectContaining({ legendItems: [1, 2] }))
+				.withArgs(map, jasmine.objectContaining(
+					{ legendItems: [{ title: '1' }, { title: '2' }] }
+				))
 				.and.callFake(() => { });
 
 			handler.activate(map);

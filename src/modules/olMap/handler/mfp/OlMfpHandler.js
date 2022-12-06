@@ -106,7 +106,7 @@ export class OlMfpHandler extends OlLayerHandler {
 	}
 
 	_updateLegendItems(items) {
-		this._legendItems = items;
+		this._legendItems = [...new Map(items.map(item => [item.title, item])).values()];
 	}
 
 	_updatePrintLegend(v) {
