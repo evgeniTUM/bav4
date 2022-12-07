@@ -138,7 +138,9 @@ export class BvvMfp3Encoder {
 				// as mapfish processes each property separately and it is not possible to
 				// group the fields together (keep both title and image on same page).
 				// Inside the Jasper template the field is split and processed correctly.
-				.map(item => ({ name: `${item.title}:DELIMITER:${item.legendUrl}`, icons: [] }))
+				// Also note that the 'icons' field has to be filled (although not used in the template)
+				// for the mapfish legend processor to work properly.
+				.map(item => ({ name: `${item.title}:DELIMITER:${item.legendUrl}`, icons: [item.legendUrl] }))
 		};
 
 		return {
