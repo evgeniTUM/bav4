@@ -563,8 +563,8 @@ describe('BvvMfp3Encoder', () => {
 					legend: {
 						name: '', classes: [
 
-							{ name: 't1:DELIMITER:url1', icons: [] },
-							{ name: 't2:DELIMITER:url2', icons: [] }
+							{ name: 't1:DELIMITER:url1', icons: ['url1'] },
+							{ name: 't2:DELIMITER:url2', icons: ['url2'] }
 						]
 					},
 					printLegend: true
