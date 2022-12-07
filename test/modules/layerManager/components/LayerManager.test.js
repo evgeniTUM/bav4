@@ -4,11 +4,10 @@ import { layersReducer, createDefaultLayerProperties } from '../../../../src/sto
 import { TestUtils } from '../../../test-utils';
 import { $injector } from '../../../../src/injection';
 import { LayerItem } from '../../../../src/modules/layerManager/components/LayerItem';
-import { modifyLayer } from '../../../../src/store/layers/layers.action';
+import { geoResourceChanged, modifyLayer } from '../../../../src/store/layers/layers.action';
 import { TEST_ID_ATTRIBUTE_NAME } from '../../../../src/utils/markup';
 import { eaReducer } from '../../../../src/ea/store/module/ea.reducer';
 import { VectorGeoResource, VectorSourceType } from '../../../../src/domain/geoResources';
-import { geoResourcesReducer } from '../../../../src/store/geoResources/geoResources.reducer';
 
 window.customElements.define(Checkbox.tag, Checkbox);
 window.customElements.define(LayerItem.tag, LayerItem);
@@ -24,14 +23,12 @@ describe('LayerManager', () => {
 
 	const wmsCapabilitiesServiceMock = { getWmsLayers: () => ([]) };
 
-	const geoResourceServiceMock = { byId: () => new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML) };
+	const geoResourceId = 'geoResourceId0';
+	const geoResourceLabel = 'label0';
+	const geoResourceServiceMock = { byId: () => new VectorGeoResource(geoResourceId, geoResourceLabel, VectorSourceType.KML) };
 	const setup = async (state) => {
 
-		store = TestUtils.setupStoreAndDi(state, {
-			layers: layersReducer,
-			geoResources: geoResourcesReducer,
-			ea: eaReducer
-		});
+		store = TestUtils.setupStoreAndDi(state, { layers: layersReducer, ea: eaReducer });
 		$injector.registerSingleton('TranslationService', { translate: (key) => key });
 		$injector.registerSingleton('EnvironmentService', environmentServiceMock);
 		$injector.registerSingleton('GeoResourceService', geoResourceServiceMock);
@@ -55,7 +52,7 @@ describe('LayerManager', () => {
 		it('with one layer displays one layer item', async () => {
 			const layer = {
 				...createDefaultLayerProperties(),
-				id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0
+				id: 'id0', geoResourceId: geoResourceId, visible: true, zIndex: 0
 			};
 			const state = {
 				layers: {
@@ -73,7 +70,7 @@ describe('LayerManager', () => {
 		it('with one not visible layer displays one layer item', async () => {
 			const layer = {
 				...createDefaultLayerProperties(),
-				id: 'id0', geoResourceId: 'geoResourceId0', visible: false, zIndex: 0
+				id: 'id0', geoResourceId: geoResourceId, visible: false, zIndex: 0
 			};
 			const state = {
 				layers: {
@@ -91,12 +88,12 @@ describe('LayerManager', () => {
 		it('displays one out of two layers - one is hidden', async () => {
 			const layer = {
 				...createDefaultLayerProperties(),
-				id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0
+				id: 'id0', geoResourceId: geoResourceId, visible: true, zIndex: 0
 			};
 
 			const hiddenLayer = {
 				...createDefaultLayerProperties(),
-				id: 'id1', geoResourceId: 'geoResourceId0', visible: false, zIndex: 0, constraints: { hidden: true, alwaysOnTop: false }
+				id: 'id1', geoResourceId: geoResourceId, visible: false, zIndex: 0, constraints: { hidden: true, alwaysOnTop: false }
 			};
 			const state = {
 				layers: {
@@ -126,9 +123,9 @@ describe('LayerManager', () => {
 	describe('when layer items are rendered', () => {
 		let element;
 		beforeEach(async () => {
-			const layer0 = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, draggable: true };
-			const layer1 = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 1, draggable: true };
-			const layer2 = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 2, draggable: true };
+			const layer0 = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: geoResourceId, visible: true, zIndex: 0, draggable: true };
+			const layer1 = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: geoResourceId, visible: true, zIndex: 1, draggable: true };
+			const layer2 = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: geoResourceId, visible: true, zIndex: 2, draggable: true };
 			const state = {
 				layers: {
 					active: [layer0, layer1, layer2],
@@ -165,9 +162,9 @@ describe('LayerManager', () => {
 	describe('when layer items dragged', () => {
 		let element;
 		beforeEach(async () => {
-			const layer0 = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0 };
-			const layer1 = { ...createDefaultLayerProperties(), id: 'id1', geoResourceId: 'geoResourceId0', visible: true, zIndex: 1 };
-			const layer2 = { ...createDefaultLayerProperties(), id: 'id2', geoResourceId: 'geoResourceId0', visible: true, zIndex: 2 };
+			const layer0 = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: geoResourceId, visible: true, zIndex: 0 };
+			const layer1 = { ...createDefaultLayerProperties(), id: 'id1', geoResourceId: geoResourceId, visible: true, zIndex: 1 };
+			const layer2 = { ...createDefaultLayerProperties(), id: 'id2', geoResourceId: geoResourceId, visible: true, zIndex: 2 };
 			const state = {
 				layers: {
 					active: [layer0, layer1, layer2],
@@ -485,7 +482,34 @@ describe('LayerManager', () => {
 			expect(checkbox.checked).toBe(true);
 		});
 
+		it('renders changed label', async () => {
+			const updatedGeoResourceLabel = 'updatedLabel';
+			const spy = spyOn(geoResourceServiceMock, 'byId').withArgs(geoResourceId).and.callFake(() => {
+				if (spy.calls.count() > 1) {
+					return new VectorGeoResource(geoResourceId, updatedGeoResourceLabel, VectorSourceType.KML);
+				}
+				return new VectorGeoResource(geoResourceId, geoResourceLabel, VectorSourceType.KML);
+			});
+			const layer = {
+				...createDefaultLayerProperties(), id: 'id0', geoResourceId: geoResourceId
+			};
+			const state = {
+				layers: {
+					active: [layer]
+				}
+			};
+			const element = await setup(state);
+			const layerItem = element.shadowRoot.querySelector('ba-layer-item');
+			let label = layerItem.shadowRoot.querySelector('ba-checkbox').innerText;
 
+			expect(label).toBe(geoResourceLabel);
+
+			geoResourceChanged(geoResourceId);
+
+			label = layerItem.shadowRoot.querySelector('ba-checkbox').innerText;
+
+			expect(label).toBe(updatedGeoResourceLabel);
+		});
 	});
 
 	describe('when layerItems are modified', () => {

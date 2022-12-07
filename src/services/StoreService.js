@@ -27,7 +27,8 @@ import { fnModuleCommReducer } from '../ea/store/fnModuleComm/fnModuleComm.reduc
 import { contributionReducer } from '../ea/store/contribution/contribution.reducer';
 import { geofeatureReducer } from '../ea/store/geofeature/geofeature.reducer';
 import { mapclickReducer } from '../ea/store/mapclick/mapclick.reducer';
-import { geoResourcesReducer } from '../store/geoResources/geoResources.reducer';
+import { bottomSheetReducer } from '../store/bottomSheet/bottomSheet.reducer';
+import { altitudeProfileReducer } from '../store/altitudeProfile/altitudeProfile.reducer';
 
 
 
@@ -72,7 +73,8 @@ export class StoreService {
 			ea: eaReducer,
 			import: importReducer,
 			mfp: mfpReducer,
-			geoResources: geoResourcesReducer
+			bottomSheet: bottomSheetReducer,
+			altitudeProfile: altitudeProfileReducer
 		});
 
 		this._store = createStore(rootReducer);
