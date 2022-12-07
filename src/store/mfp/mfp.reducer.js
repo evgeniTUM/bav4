@@ -5,6 +5,7 @@ export const ID_CHANGED = 'mfp/current/id';
 export const CURRENT_CHANGED = 'mfp/current';
 export const JOB_REQUEST_CHANGED = 'mfp/job/request';
 export const JOB_SPEC_CHANGED = 'mfp/job/spec';
+export const PRINT_LEGEND_CHANGED = 'mfp/printLegend';
 
 
 export const initialState = {
@@ -28,7 +29,11 @@ export const initialState = {
 	/**
 	 *@property {EvenLike | null}
 	 */
-	jobSpec: null
+	jobSpec: null,
+	/**
+	 * @property {boolean}
+	 */
+	printLegend: false
 };
 
 export const mfpReducer = (state = initialState, action) => {
@@ -70,6 +75,12 @@ export const mfpReducer = (state = initialState, action) => {
 			return {
 				...state,
 				jobSpec: payload
+			};
+		}
+		case PRINT_LEGEND_CHANGED: {
+			return {
+				...state,
+				printLegend: payload
 			};
 		}
 	}

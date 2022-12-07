@@ -7,7 +7,7 @@
 
 import { $injector } from '../../injection';
 import { EventLike } from '../../utils/storeUtils';
-import { ACTIVE_CHANGED, CURRENT_CHANGED, ID_CHANGED, JOB_REQUEST_CHANGED, JOB_SPEC_CHANGED, SCALE_CHANGED } from './mfp.reducer';
+import { ACTIVE_CHANGED, CURRENT_CHANGED, ID_CHANGED, JOB_REQUEST_CHANGED, JOB_SPEC_CHANGED, PRINT_LEGEND_CHANGED, SCALE_CHANGED } from './mfp.reducer';
 
 const getStore = () => {
 	const { StoreService: storeService } = $injector.inject('StoreService');
@@ -102,5 +102,16 @@ export const cancelJob = () => {
 	getStore().dispatch({
 		type: JOB_SPEC_CHANGED,
 		payload: new EventLike(null)
+	});
+};
+
+/**
+ * Enables/disables printing of the legend.
+ * @function
+ */
+export const setPrintLegend = (enabled) => {
+	getStore().dispatch({
+		type: PRINT_LEGEND_CHANGED,
+		payload: enabled
 	});
 };

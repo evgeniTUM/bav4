@@ -133,7 +133,12 @@ export class BvvMfp3Encoder {
 			'name': '',
 			'classes': encodingProperties.legendItems
 				.filter(item => printResolution > item.maxResolution && printResolution < item.minResolution)
-				.map(item => ({ name: item.title, icons: [item.legendUrl] }))
+				// NOTE: THE FOLLOWING IS A WORKAROUND
+				// We enocde both properties (title and url) into the name field,
+				// as mapfish processes each property separately and it is not possible to
+				// group the fields together (keep both title and image on same page).
+				// Inside the Jasper template the field is split and processed correctly.
+				.map(item => ({ name: `${item.title}:DELIMITER:${item.legendUrl}`, icons: [] }))
 		};
 
 		return {
@@ -151,7 +156,8 @@ export class BvvMfp3Encoder {
 				thirdPartyDataOwner: encodedLayers.thirdPartyDataOwners.length !== 0 ? Array.from(new Set(encodedLayers.thirdPartyDataOwners)).join(',') : '',
 				shortLink: shortLinkUrl,
 				qrcodeurl: qrCodeUrl,
-				legend
+				legend,
+				printLegend: legend.classes.length > 0
 			}
 		};
 	}

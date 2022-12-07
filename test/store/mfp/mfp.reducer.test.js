@@ -1,4 +1,4 @@
-import { activate, cancelJob, deactivate, requestJob, setCurrent, setId, setScale, startJob } from '../../../src/store/mfp/mfp.action';
+import { activate, cancelJob, deactivate, requestJob, setCurrent, setId, setPrintLegend, setScale, startJob } from '../../../src/store/mfp/mfp.action';
 import { mfpReducer } from '../../../src/store/mfp/mfp.reducer';
 import { EventLike } from '../../../src/utils/storeUtils';
 import { TestUtils } from '../../test-utils';
@@ -18,6 +18,7 @@ describe('mfpReducer', () => {
 		expect(store.getState().mfp.current.scale).toBeNull();
 		expect(store.getState().mfp.jobRequest).toBeNull();
 		expect(store.getState().mfp.jobSpec).toBeNull();
+		expect(store.getState().mfp.printLegend).toBeFalse();
 	});
 
 	it('updates the active property', () => {
@@ -30,6 +31,18 @@ describe('mfpReducer', () => {
 		deactivate();
 
 		expect(store.getState().mfp.active).toBeFalse();
+	});
+
+	it('updates the printLegend property', () => {
+		const store = setup();
+
+		setPrintLegend(true);
+
+		expect(store.getState().mfp.printLegend).toBeTrue();
+
+		setPrintLegend(false);
+
+		expect(store.getState().mfp.printLegend).toBeFalse();
 	});
 
 	it('updates the current.id property', () => {
