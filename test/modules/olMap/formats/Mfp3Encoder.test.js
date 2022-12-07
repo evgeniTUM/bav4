@@ -80,7 +80,8 @@ describe('BvvMfp3Encoder', () => {
 		scale: 1,
 		dpi: 42,
 		rotation: null,
-		legendItems: []
+		legendItems: [],
+		printLegend: false
 	};
 
 	$injector.registerSingleton('MapService', mapServiceMock)
@@ -255,42 +256,6 @@ describe('BvvMfp3Encoder', () => {
 			expect(encodingSpy).toHaveBeenCalled();
 		});
 
-		it('encodes legend items by print resolution', async () => {
-
-			const UnitsRatio = 39.37; //inches per meter
-			const PointsPerInch = 72; // PostScript points 1/72"
-			const resolution = 1 / UnitsRatio / PointsPerInch;
-
-			const encoder = new BvvMfp3Encoder();
-
-			const properties = { ...getProperties(),
-				legendItems: [
-					{ title: 't1', legendUrl: 'url1', minResolution: 100, maxResolution: 0 },
-					{ title: 't2', legendUrl: 'url2', minResolution: 100, maxResolution: resolution - 1 },
-					{ title: 'not encoded', legendUrl: 'url not used', minResolution: 100, maxResolution: resolution + 1 }
-				] };
-
-			const actualSpec = await encoder.encode(mapMock, properties);
-
-			expect(actualSpec).toEqual({
-				layout: 'foo',
-				attributes: {
-					map: jasmine.any(Object),
-					dataOwner: jasmine.any(String),
-					thirdPartyDataOwner: jasmine.any(String),
-					shortLink: jasmine.any(String),
-					qrcodeurl: jasmine.any(String),
-					legend: {
-						name: '', classes: [
-
-							{ name: 't1', icons: ['url1'] },
-							{ name: 't2', icons: ['url2'] }
-						]
-					}
-				}
-			});
-		});
-
 		it('does NOT encode a invisible layer', async () => {
 			const encoder = new BvvMfp3Encoder();
 			const invisibleLayerMock = { get: () => 'foo', getExtent: () => [20, 20, 50, 50], getVisible: () => false };
@@ -369,7 +334,8 @@ describe('BvvMfp3Encoder', () => {
 					thirdPartyDataOwner: '',
 					shortLink: 'http://url.to/shorten',
 					qrcodeurl: 'http://url.to/shorten.png',
-					legend: jasmine.any(Object)
+					legend: jasmine.any(Object),
+					printLegend: jasmine.any(Boolean)
 				}
 			});
 		});
@@ -414,7 +380,8 @@ describe('BvvMfp3Encoder', () => {
 					thirdPartyDataOwner: 'Foo CopyRight',
 					shortLink: 'http://url.to/shorten',
 					qrcodeurl: 'http://url.to/shorten.png',
-					legend: jasmine.any(Object)
+					legend: jasmine.any(Object),
+					printLegend: jasmine.any(Boolean)
 				}
 			});
 		});
@@ -459,7 +426,8 @@ describe('BvvMfp3Encoder', () => {
 					thirdPartyDataOwner: 'Foo CopyRight,Bar CopyRight',
 					shortLink: 'http://url.to/shorten',
 					qrcodeurl: 'http://url.to/shorten.png',
-					legend: jasmine.any(Object)
+					legend: jasmine.any(Object),
+					printLegend: jasmine.any(Boolean)
 				}
 			});
 		});
@@ -504,7 +472,8 @@ describe('BvvMfp3Encoder', () => {
 					thirdPartyDataOwner: 'Foo CopyRight',
 					shortLink: 'http://url.to/shorten',
 					qrcodeurl: 'http://url.to/shorten.png',
-					legend: jasmine.any(Object)
+					legend: jasmine.any(Object),
+					printLegend: jasmine.any(Boolean)
 				}
 			});
 		});
@@ -549,8 +518,64 @@ describe('BvvMfp3Encoder', () => {
 					thirdPartyDataOwner: '',
 					shortLink: 'http://url.to/shorten',
 					qrcodeurl: 'http://url.to/shorten.png',
-					legend: jasmine.any(Object)
+					legend: jasmine.any(Object),
+					printLegend: jasmine.any(Boolean)
 				}
+			});
+		});
+
+		it('encodes legend items by print resolution', async () => {
+			const UnitsRatio = 39.37; //inches per meter
+			const PointsPerInch = 72; // PostScript points 1/72"
+			const resolution = 1 / UnitsRatio / PointsPerInch;
+
+			const encoder = new BvvMfp3Encoder();
+
+			const properties = { ...getProperties(),
+				legendItems: [
+					{ title: 't1', legendUrl: 'url1', minResolution: 100, maxResolution: 0 },
+					{ title: 't2', legendUrl: 'url2', minResolution: 100, maxResolution: resolution - 1 },
+					{ title: 'not encoded', legendUrl: 'url not used', minResolution: 100, maxResolution: resolution + 1 }
+				] };
+
+			const actualSpec = await encoder.encode(mapMock, properties);
+
+			expect(actualSpec).toEqual({
+				layout: 'foo',
+				attributes: {
+					map: jasmine.any(Object),
+					dataOwner: jasmine.any(String),
+					thirdPartyDataOwner: jasmine.any(String),
+					shortLink: jasmine.any(String),
+					qrcodeurl: jasmine.any(String),
+					legend: {
+						name: '', classes: [
+
+							{ name: 't1:DELIMITER:url1', icons: [] },
+							{ name: 't2:DELIMITER:url2', icons: [] }
+						]
+					},
+					printLegend: true
+				}
+			});
+		});
+
+		it('encodes printLegend to false when no legend items', async () => {
+			const encoder = new BvvMfp3Encoder();
+
+			const properties = { ...getProperties(),
+				legendItems: [] };
+
+			const actualSpec = await encoder.encode(mapMock, properties);
+
+			expect(actualSpec).toEqual({
+				layout: 'foo',
+				attributes: jasmine.objectContaining({
+					legend: {
+						name: '', classes: []
+					},
+					printLegend: false
+				})
 			});
 		});
 
@@ -1967,4 +1992,6 @@ describe('BvvMfp3Encoder', () => {
 			expect(tileMatrixSet[15].matrixSize).toEqual([32768, 32768]);
 		});
 	});
+
+
 });
