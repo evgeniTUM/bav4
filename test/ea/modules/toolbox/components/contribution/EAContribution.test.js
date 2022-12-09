@@ -86,20 +86,20 @@ describe('EAContributon', () => {
 	});
 
 	describe('when initialized', () => {
-		it('all sections are shown expanded', async () => {
+		it('first section is open', async () => {
 			const element = await setup();
 
 			expect(element.shadowRoot.querySelector('#step1')).toBeTruthy();
 			expect(element.shadowRoot.querySelector('#step1').open).toBeTruthy();
 
 			expect(element.shadowRoot.querySelector('#step2')).toBeTruthy();
-			expect(element.shadowRoot.querySelector('#step2').open).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#step2').open).toBeFalse();
 
 			expect(element.shadowRoot.querySelector('#step3')).toBeTruthy();
-			expect(element.shadowRoot.querySelector('#step3').open).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#step3').open).toBeFalse();
 
 			expect(element.shadowRoot.querySelector('#step4')).toBeTruthy();
-			expect(element.shadowRoot.querySelector('#step4').open).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#step4').open).toBeFalse();
 		});
 
 		it('email, category and position are required inputs', async () => {
@@ -171,7 +171,6 @@ describe('EAContributon', () => {
 
 		expect(store.getState().ea.currentModule).toEqual('recherche');
 	});
-
 
 	describe('selection handling', () => {
 		it('shows corresponding input fiels for each category', async () => {

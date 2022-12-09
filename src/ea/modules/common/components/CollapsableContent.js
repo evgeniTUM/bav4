@@ -20,6 +20,7 @@ export class CollapsableContent extends AbstractMvuContentPanel {
 	}
 
 	onInitialize() {
+		this._onToggle = () => { };
 		this.setAttribute(TEST_ID_ATTRIBUTE_NAME, '');
 	}
 
@@ -41,8 +42,15 @@ export class CollapsableContent extends AbstractMvuContentPanel {
 	createView(model) {
 		const { disabled, open } = model;
 
-		const onClick = () => {
-			this.signal(Update_Open, !open);
+		const onClick = (event) => {
+			const newState = !open;
+			this.signal(Update_Open, newState);
+
+			this.dispatchEvent(new CustomEvent('toggle', {
+				detail: { open: newState }
+			}));
+
+			this._onToggle(event);
 		};
 
 		const titleAttribute = this.getAttribute('title');
@@ -92,5 +100,15 @@ export class CollapsableContent extends AbstractMvuContentPanel {
 		return this.getModel().open;
 	}
 
+	/**
+	 * @property {function} onToggle - Callback function
+	 */
+	set onToggle(callback) {
+		this._onToggle = callback;
+	}
+
+	get onToggle() {
+		return this._onToggle;
+	}
 
 }

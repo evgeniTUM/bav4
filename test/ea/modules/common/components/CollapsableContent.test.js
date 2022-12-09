@@ -120,5 +120,17 @@ describe('CollapsableContent', () => {
 			expect(element.open).toBeTrue();
 		});
 
+		it('calls the onToggle callback via property callback', async () => {
+
+			const element = await TestUtils.render(CollapsableContent.tag);
+
+			const button = element.shadowRoot.querySelector('button');
+			element.onToggle = jasmine.createSpy();
+
+			button.click();
+
+			expect(element.onToggle).toHaveBeenCalled();
+		});
+
 	});
 });

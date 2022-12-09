@@ -24,7 +24,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 			additionalInfo: '',
 			email: '',
 			categoriesSpecification: [],
-			statusMessage: nothing
+			statusMessage: nothing,
+			openSection: 'step1'
 		});
 
 		const {
@@ -162,8 +163,6 @@ export class EAContribution extends AbstractMvuContentPanel {
 				<p>Melden Sie bisher nicht dargestellte Objekte (z. B. EEG-Anlagen, Wärmenetze) und ergänzen oder korrigieren Sie Angaben zu bestehenden Objekten.</p>`;
 
 		const energyMarketMode = model.mode === 'energy-market';
-		const prefix = energyMarketMode ? 'Melden' : 'Neumeldung und Korrektur';
-		const step1 = energyMarketMode ? 'Melden oder Suchen' : `${prefix}: Standort des Objektes markieren`;
 
 		const buttonHeaders = energyMarketMode ?
 			html`<div class='button-header'>Meldung neuer Einträge/ Korrektur bestehender Einträge</div>
@@ -179,12 +178,19 @@ export class EAContribution extends AbstractMvuContentPanel {
 			</button>` :
 			'';
 
+		const onToggle = (e) => {
+			this.signal(Update, { openSection: e.target.id });
+		};
+
+		const step1Title = energyMarketMode ? 'Melden oder Suchen' : 'Standort des Objektes markieren';
+		const step4Title = energyMarketMode ? 'Meldung absenden' : 'Neumeldung/Korrektur absenden';
+
 		const form = html`
 			<form id='report' action="#" @submit="${onSubmit}">
 
 				${introduction}
 
-				<collapsable-content id='step1' title='1. ${step1}' .open=${true}>
+				<collapsable-content id='step1' title='1. ${step1Title}' .open=${model.openSection === 'step1'} @toggle=${onToggle}>
 					<div class='button-container'>
 							${buttonHeaders}
 							<button id="tag" type='button' @click=${onClickTagButton} title=${translate('ea_contribution_button_tag_tooltip')}>
@@ -205,7 +211,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</div>
 				</collapsable-content>
 
-				<collapsable-content id='step2' title='2. ${prefix}: Auswahl der Kategorie' .open=${true}>
+				<collapsable-content id='step2' title='2. Auswahl der Kategorie' .open=${model.openSection === 'step2'} @toggle=${onToggle} >
 					<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}" required>
 						<option value="" selected disabled>Bitte wählen ... </option>
 						${model.categoriesSpecification.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
@@ -213,7 +219,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</select>
 				</collapsable-content>
 
-				<collapsable-content id='step3' .title='3. ${prefix}: Angaben zu neuem Eintrag/zu bestehendem Eintrag'} .open=${true}>
+				<collapsable-content id='step3' title='3. Angaben zu neuem Eintrag/zu bestehendem Eintrag' .open=${model.openSection === 'step3'} @toggle=${onToggle}>
 					<p>Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</p>
 					<div class='category-fields'>
 						${categoryFields[model.currentCategory]}
@@ -224,7 +230,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 				</collapsable-content>
 
-				<collapsable-content id='step4' title='4. ${prefix}: Ihre E-Mail-Adresse' .open=${true}>
+				<collapsable-content id='step4' title='4. ${step4Title}' .open=${model.openSection === 'step4'} @toggle=${onToggle}>
 					<input id='email' placeholder='Ihre Email Adresse' required  type='email' name="email" 
 						@input=${(e) => this.signal(Update, { email: e.target.value })}>
 					
