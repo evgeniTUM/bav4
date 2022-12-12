@@ -110,20 +110,6 @@ export class AdditionalMenu extends MvuElement {
 					</span>
 				</span>
 		</li>
-		<li id="redesign" class="ba-list-item" @click="${toggleModuleFn(RedesignModuleContent.name)}">
-				<span class="ba-list-item__pre">
-					<span class="ba-list-item__icon icon-mischpult">
-					</span>
-				</span>
-				<span class="ba-list-item__text vertical-center">
-					<span class="ba-list-item__primary-text">
-						${translate('ea_menu_redesign')}
-					</span>
-					<span class="ba-list-item__secondary-text">
-						${translate('ea_menu_redesign_tooltip')}
-					</span>
-				</span>
-		</li>
 		<li id="analyse3d" class="ba-list-item" @click="${toggleModuleFn(Analyse3DModuleContent.name)}">
 			<span class="ba-list-item__pre">
 				<span class="ba-list-item__icon icon-3d_wind">
