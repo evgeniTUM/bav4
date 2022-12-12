@@ -464,6 +464,10 @@
 }
 
 .icon-boerse::before {
+	content: url("./assets/boerse_icon.svg");
+}
+
+.icon-reporting::before {
 	content: url("./assets/mitmachen_icon.svg");
 }
 

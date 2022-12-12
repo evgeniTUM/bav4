@@ -168,7 +168,7 @@ export class AdditionalMenu extends MvuElement {
 		</li>
 		<li id="energy-reporting" class="ba-list-item" @click="${toggleEnergyReportingModule}">
 			<span class="ba-list-item__pre">
-				<span class="ba-list-item__icon icon-boerse">
+				<span class="ba-list-item__icon icon-reporting">
 				</span>
 			</span>
 			<span class="ba-list-item__text vertical-center">
