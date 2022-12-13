@@ -3,6 +3,7 @@ import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import { generateJsonCategorySpecFromCSV } from '../../../../utils/eaUtils';
 import css from './container.css';
+import { MODUS } from './EAContribution';
 
 
 export class EnergyMarketModuleContent extends MvuElement {
@@ -39,7 +40,7 @@ export class EnergyMarketModuleContent extends MvuElement {
 					${translate('ea_menu_boerse')}
 				</div>
 				<div class='content'>
-					<ea-feature-contribution .mode=${'energy-market'} .categories=${categories}></ea-feature-contribution>
+					<ea-feature-contribution .mode=${MODUS.market} .categories=${categories}></ea-feature-contribution>
 				</div>
 			</div>
 			`;

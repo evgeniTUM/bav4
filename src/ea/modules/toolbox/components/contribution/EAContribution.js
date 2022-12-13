@@ -11,11 +11,16 @@ const Update = 'update';
 const Update_Field = 'update_field';
 const Reset_Fields = 'reset_fields';
 
+export const MODUS = {
+	reporting: 'Neumeldung/Korrektur',
+	market: 'Börse'
+};
+
 export class EAContribution extends AbstractMvuContentPanel {
 
 	constructor() {
 		super({
-			mode: 'energy-market',
+			mode: MODUS.market,
 			isPortrait: false,
 			hasMinWidth: false,
 			showInvalidFields: false,
@@ -25,7 +30,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 			email: '',
 			categoriesSpecification: [],
 			statusMessage: nothing,
-			openSection: 'step1'
+			openSections: ['step1'],
+			isCorrection: false
 		});
 
 		const {
@@ -84,15 +90,17 @@ export class EAContribution extends AbstractMvuContentPanel {
 	createView(model) {
 		const translate = (key) => this._translationService.translate(key);
 
-		const onClickTagButton = () => {
+		const onClickTagButton = (isCorrection) => () => {
 			const taggingActive = !model.tagging;
 			setTaggingMode(taggingActive);
 			this.shadowRoot.getElementById('coordinates').setCustomValidity('');
+			this.signal(Update, { isCorrection });
 		};
 
 		const onClickFindButton = () => {
 			setCurrentModule(ResearchModuleContent.name);
 		};
+
 
 		const getCoordinatesString = () => {
 			return model.position ? this._coordinateService.stringify(this._coordinateService.toLonLat(model.position), 4326, { digits: 5 }) : '';
@@ -122,7 +130,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			const fieldData = Object.entries(model.categoryFields).map(f => `${f[0]}: ${f[1]}`).join('\n');
 
 			const json = {
-				reportType: model.mode === 'energy-market' ? 'Börse' : 'Neumeldung/Korrektur',
+				reportType: model.mode,
 				coordinates: getCoordinatesString(),
 				additionalInfo: model.additionalInfo,
 				email: model.email,
@@ -135,6 +143,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 			const statusMessage = response.status === 200 ? completionMessage : failureMessage;
 			this.signal(Update, { statusMessage });
+
 		};
 
 		const createField = (name, optional, type = 'text') => {
@@ -156,13 +165,11 @@ export class EAContribution extends AbstractMvuContentPanel {
 			categoryFields[e['ee-name']] = e['ee-angaben'].map(e => createField(e.name, e.optional));
 		});
 
-		const introduction = model.mode === 'energy-market' ?
-			html`<div class='header'>Abwärmeinformations- und Solarflächenbörse</div>
-				<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>` :
-			html`<div class='header'>Neumeldungen und Korrekturen</div>
-				<p>Melden Sie bisher nicht dargestellte Objekte (z. B. EEG-Anlagen, Wärmenetze) und ergänzen oder korrigieren Sie Angaben zu bestehenden Objekten.</p>`;
+		const introduction = model.mode === MODUS.market ?
+			html`<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>` :
+			html`<p>Melden Sie bisher nicht dargestellte Objekte (z. B. EEG-Anlagen, Wärmenetze) und ergänzen oder korrigieren Sie Angaben zu bestehenden Objekten.</p>`;
 
-		const energyMarketMode = model.mode === 'energy-market';
+		const energyMarketMode = model.mode === MODUS.market;
 
 		const buttonHeaders = energyMarketMode ?
 			html`<div class='button-header'>Meldung neuer Einträge/ Korrektur bestehender Einträge</div>
@@ -170,35 +177,43 @@ export class EAContribution extends AbstractMvuContentPanel {
 				<div class='arrow-down'></div>
 				<div class='arrow-down'></div>` :
 			'';
-		const findButton = energyMarketMode ?
+		const secondButton = energyMarketMode ?
 			html`<button id="search" type='button' @click=${onClickFindButton} title=${translate('ea_contribution_button_find_tooltip')}>
 				${translate('ea_contribution_button_find_title')}
 				<div class='search-icon'></div>
 				<span class='subtext'>${translate('ea_contribution_button_find_text')}</span>
 			</button>` :
-			'';
+			html`<button id="tag" type='button' @click=${onClickTagButton(true)} title=${translate('ea_contribution_button_correction_tooltip')}>
+					${translate(model.tagging && model.isCorrection ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_correction_title')}
+					<div class='tag-icon'></div>
+					<span class='subtext'>${translate('ea_contribution_button_tag_text')}</span>
+				</button>`;
 
 		const onToggle = (e) => {
-			this.signal(Update, { openSection: e.target.id });
+			this.signal(Update, { openSections: [e.target.id] });
 		};
 
 		const step1Title = energyMarketMode ? 'Melden oder Suchen' : 'Standort des Objektes markieren';
 		const step4Title = energyMarketMode ? 'Meldung absenden' : 'Neumeldung/Korrektur absenden';
+
+		const onClickSendButton = () => {
+			this.signal(Update, { openSections: ['step1', 'step2', 'step3', 'step4'], showInvalidFields: true });
+		};
 
 		const form = html`
 			<form id='report' action="#" @submit="${onSubmit}">
 
 				${introduction}
 
-				<collapsable-content id='step1' title='1. ${step1Title}' .open=${model.openSection === 'step1'} @toggle=${onToggle}>
+				<collapsable-content id='step1' title='1. ${step1Title}' .open=${model.openSections.includes('step1')} @toggle=${onToggle}>
 					<div class='button-container'>
 							${buttonHeaders}
-							<button id="tag" type='button' @click=${onClickTagButton} title=${translate('ea_contribution_button_tag_tooltip')}>
-								${translate(model.tagging ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag_title')}
+							<button id="tag" type='button' @click=${onClickTagButton(false)} title=${translate('ea_contribution_button_tag_tooltip')}>
+								${translate(model.tagging && !model.isCorrection ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag_title')}
 								<div class='tag-icon'></div>
 								<span class='subtext'>${translate('ea_contribution_button_tag_text')}</span>
 							</button>
-							${findButton}
+							${secondButton}
 					</div>
 
 					<br/>
@@ -211,7 +226,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</div>
 				</collapsable-content>
 
-				<collapsable-content id='step2' title='2. Auswahl der Kategorie' .open=${model.openSection === 'step2'} @toggle=${onToggle} >
+				<collapsable-content id='step2' title='2. Auswahl der Kategorie' .open=${model.openSections.includes('step2')} @toggle=${onToggle} >
 					<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}" required>
 						<option value="" selected disabled>Bitte wählen ... </option>
 						${model.categoriesSpecification.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
@@ -219,19 +234,23 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</select>
 				</collapsable-content>
 
-				<collapsable-content id='step3' title='3. Angaben zu neuem Eintrag/zu bestehendem Eintrag' .open=${model.openSection === 'step3'} @toggle=${onToggle}>
+				<collapsable-content id='step3' title='3. Angaben zu neuem Eintrag/zu bestehendem Eintrag' .open=${model.openSections.includes('step3')} @toggle=${onToggle}>
 					<p>Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</p>
-					<div class='category-fields'>
-						${categoryFields[model.currentCategory]}
-					</div>
 
-					<textarea placeholder="Zusätzlicher Text" id="additional-info" name='additionalInfo' value=${model.description}
+${model.isCorrection ? '' :
+		html`<div class='category-fields'>
+			${categoryFields[model.currentCategory]}
+		</div>`
+}
+
+					<textarea placeholder=${model.isCorrection ? 'Bitte hier Korrektur eintragen*' : 'Zusätzliche Information'} 
+						id="additional-info" name='additionalInfo' value=${model.description} ?required=${model.isCorrection}
 						@input=${(e) => this.signal(Update, { additionalInfo: e.target.value })}></textarea>
 
 				</collapsable-content>
 
-				<collapsable-content id='step4' title='4. ${step4Title}' .open=${model.openSection === 'step4'} @toggle=${onToggle}>
-					<input id='email' placeholder='Ihre Email Adresse' required  type='email' name="email" 
+				<collapsable-content id='step4' title='4. ${step4Title}' .open=${model.openSections.includes('step4')} @toggle=${onToggle}>
+					<input id='email' placeholder='Ihre E-Mail-Adresse' required  type='email' name="email" 
 						@input=${(e) => this.signal(Update, { email: e.target.value })}>
 					
 					<p>
@@ -242,7 +261,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 					<div class='form-buttons'>
 						<button id="send" class="button" type='submit'
 							.label=${translate('ea_contribution_button_send')}
-							@click=${() => this.signal(Update, { showInvalidFields: true })}>
+							@click=${onClickSendButton}>
 							Senden
 						</button>
 					</div>
