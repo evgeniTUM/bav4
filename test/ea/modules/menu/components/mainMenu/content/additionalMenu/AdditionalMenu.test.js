@@ -6,7 +6,6 @@ import { EnergyMarketModuleContent } from '../../../../../../../../src/ea/module
 import { EnergyReportingModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/contribution/EnergyReportingModuleContent';
 import { GeothermModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/geotherm/GeothermModuleContent';
 import { MixerModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/mixer/MixerModuleContent';
-import { RedesignModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/redesign/RedesignModuleContent';
 import { ResearchModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/research/ResearchModuleContent';
 import { contributionReducer, SET_STATE } from '../../../../../../../../src/ea/store/contribution/contribution.reducer';
 import { eaReducer, SET_CURRENT_MODULE } from '../../../../../../../../src/ea/store/module/ea.reducer';
@@ -127,7 +126,6 @@ describe('AdditionalMenu', () => {
 
 			const modules = [
 				{ id: 'mixer', name: MixerModuleContent.name },
-				{ id: 'redesign', name: RedesignModuleContent.name },
 				{ id: 'research', name: ResearchModuleContent.name },
 				{ id: 'analyse3d', name: Analyse3DModuleContent.name },
 				{ id: 'geotherm', name: GeothermModuleContent.name },
@@ -159,7 +157,6 @@ describe('AdditionalMenu', () => {
 			expect(itemIds).toEqual([
 				'research',
 				'mixer',
-				'redesign',
 				'analyse3d',
 				'geotherm',
 				'energy-market',
