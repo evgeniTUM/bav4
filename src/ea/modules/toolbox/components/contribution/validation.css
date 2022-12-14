@@ -5,3 +5,7 @@ input:invalid {
 select:invalid {
 	background-color: rgba(200, 0, 0, 0.2);
 }
+
+textarea:invalid {
+	background-color: rgba(200, 0, 0, 0.2);
+}
