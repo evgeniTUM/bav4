@@ -197,7 +197,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 		const step4Title = energyMarketMode ? 'Meldung absenden' : 'Neumeldung/Korrektur absenden';
 
 		const onClickSendButton = () => {
-			this.signal(Update, { openSections: ['step1', 'step2', 'step3', 'step4'], showInvalidFields: true });
+			const form = this.shadowRoot.getElementById('report');
+			if (!form.reportValidity()) {
+				this.signal(Update, { openSections: ['step1', 'step2', 'step3', 'step4'], showInvalidFields: true });
+			}
 		};
 
 		const form = html`
