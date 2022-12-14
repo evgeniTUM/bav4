@@ -8,7 +8,6 @@ import { EnergyMarketModuleContent } from '../../../../../toolbox/components/con
 import { EnergyReportingModuleContent } from '../../../../../toolbox/components/contribution/EnergyReportingModuleContent';
 import { GeothermModuleContent } from '../../../../../toolbox/components/geotherm/GeothermModuleContent';
 import { MixerModuleContent } from '../../../../../toolbox/components/mixer/MixerModuleContent';
-import { RedesignModuleContent } from '../../../../../toolbox/components/redesign/RedesignModuleContent';
 import { ResearchModuleContent } from '../../../../../toolbox/components/research/ResearchModuleContent';
 import css from './additionalMenu.css';
 
