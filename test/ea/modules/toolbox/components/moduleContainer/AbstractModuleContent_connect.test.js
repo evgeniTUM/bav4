@@ -1,5 +1,5 @@
 import { AbstractModuleContent } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/AbstractModuleContent';
-import { fnModuleCommReducer, OPEN_MODULE_REQUESTED } from '../../../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
+import { fnModuleCommReducer } from '../../../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
 import { geofeatureReducer } from '../../../../../../src/ea/store/geofeature/geofeature.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { TestUtils } from '../../../../../test-utils';
@@ -61,17 +61,6 @@ describe('ModuleContent, when loaded', () => {
 
 		expect(window.ea_moduleWindow).toHaveSize(1);
 		expect(window.ea_moduleWindow[element.getConfig().module]).toEqual(iframeWindow);
-	});
-
-	it('opens fnCommModule when element renders', async () => {
-		await TestUtils.timeout(1500);
-
-		const lastAction = storeActions.pop();
-		expect(lastAction.type).toEqual(OPEN_MODULE_REQUESTED);
-		expect(lastAction.payload).toEqual({
-			module: element.getConfig().module,
-			domain: 'MODULE_BACKEND_URL'
-		});
 	});
 
 });
