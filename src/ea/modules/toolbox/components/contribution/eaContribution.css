@@ -41,6 +41,10 @@ input:required::placeholder {
 	font-weight: bold;
 }
 
+textarea:required::placeholder {
+	font-weight: bold;
+}
+
 .search-icon {
 	height: 2em;
 	width: 100%;

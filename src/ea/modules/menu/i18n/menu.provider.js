@@ -4,7 +4,7 @@ export const provide = (lang) => {
 		case 'en':
 			return {
 				//the first part of the snake_case key should be the name of the related module
-				ea_menu_boerse: 'Börsen (Abwärme/Solarflächen)',
+				ea_menu_boerse: 'Abwärmeinformations- und Solarflächenbörse',
 				ea_menu_boerse_tooltip: 'Abwärmequellen-/senken oder Flächen zur PV-Nutzung melden',
 				ea_menu_energy_reporting: 'Neumeldungen und Korrekturen',
 				ea_menu_energy_reporting_tooltip: 'Korrekturen und neue Objekte melden',
@@ -48,7 +48,7 @@ export const provide = (lang) => {
 		case 'de':
 			return {
 				//the first part of the snake_case key should be the name of the related module
-				ea_menu_boerse: 'Börsen (Abwärme/Solarflächen)',
+				ea_menu_boerse: 'Abwärmeinformations- und Solarflächenbörse',
 				ea_menu_boerse_tooltip: 'Abwärmequellen-/senken oder Flächen zur PV-Nutzung melden',
 				ea_menu_energy_reporting: 'Neumeldungen und Korrekturen',
 				ea_menu_energy_reporting_tooltip: 'Korrekturen und neue Objekte melden',

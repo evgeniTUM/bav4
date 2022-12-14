@@ -1,4 +1,4 @@
-import { EAContribution } from '../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
+import { EAContribution, MODUS } from '../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
 import { setTaggingMode } from '../../../../../../src/ea/store/contribution/contribution.action';
 import { contributionReducer, initialState } from '../../../../../../src/ea/store/contribution/contribution.reducer';
 import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
@@ -214,7 +214,7 @@ describe('EAContributon', () => {
 
 		it('does not show find button', async () => {
 			const element = await setup();
-			element.mode = 'energy-reporting';
+			element.mode = MODUS.reporting;
 
 			const findButton = element.shadowRoot.querySelector('#search');
 
@@ -230,7 +230,7 @@ describe('EAContributon', () => {
 
 			const element = await setup({ contribution: { position: expectedCoordinates } });
 
-			element.mode = 'energy-reporting';
+			element.mode = MODUS.reporting;
 			element.categories = SAMPLE_JSON_SPEC;
 
 			const query = (query) => element.shadowRoot.querySelector(query);
