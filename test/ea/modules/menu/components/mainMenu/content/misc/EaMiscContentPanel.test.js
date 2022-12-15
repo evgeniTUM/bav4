@@ -32,7 +32,7 @@ describe('EaMiscContentPanel', () => {
 
 		it('renders the view', async () => {
 			const element = await setup();
-			expect(element.shadowRoot.querySelectorAll(ThemeToggle.tag)).toHaveSize(1);
+			expect(element.shadowRoot.querySelectorAll(ThemeToggle.tag)).toHaveSize(0);
 		});
 
 		it('checks the list ', async () => {

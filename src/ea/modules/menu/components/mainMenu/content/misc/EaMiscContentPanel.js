@@ -67,12 +67,6 @@ export class EaMiscContentPanel extends AbstractMvuContentPanel {
 				${link('https://www.energieatlas.bayern.de/hilfe/karten/HilfeTech/HilfeNutzung', 'ea_menu_misc_content_panel_terms_of_use', 'ea_menu_misc_content_panel_terms_of_use_tooltip', 'checklist')}
 			</collapsable-content>
 			<collapsable-content .title=${translate('menu_misc_content_panel_settings')}>
-				<div  class="ba-list-item divider">
-					<span class="ba-list-item__text vertical-center">${translate('menu_misc_content_panel_dark_mode')}</span>
-					<span class="ba-list-item__after">
-						<ba-theme-toggle></ba-theme-toggle>
-					</span>
-				</div>
 				${link('https://www.energieatlas.bayern.de/infos_schriftgroesse', 'ea_menu_misc_content_panel_change_font', 'ea_menu_misc_content_panel_change_font_tooltip', 'link')}
 			</collapsable-content>
 			<collapsable-content .title=${translate('ea_menu_misc_content_panel_links')}>
