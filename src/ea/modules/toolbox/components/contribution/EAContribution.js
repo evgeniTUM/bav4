@@ -4,6 +4,7 @@ import { AbstractMvuContentPanel } from '../../../../../modules/menu/components/
 import { setTaggingMode } from '../../../../store/contribution/contribution.action';
 import { setCurrentModule } from '../../../../store/module/ea.action';
 import { ResearchModuleContent } from '../research/ResearchModuleContent';
+import { MODUS } from './ContributionModus';
 import css from './eaContribution.css';
 import validationCss from './validation.css';
 
@@ -11,10 +12,6 @@ const Update = 'update';
 const Update_Field = 'update_field';
 const Reset_Fields = 'reset_fields';
 
-export const MODUS = {
-	reporting: 'Neumeldung/Korrektur',
-	market: 'Börse'
-};
 
 export class EAContribution extends AbstractMvuContentPanel {
 

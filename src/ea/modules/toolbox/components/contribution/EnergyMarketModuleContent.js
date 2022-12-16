@@ -3,7 +3,7 @@ import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import { generateJsonCategorySpecFromCSV } from '../../../../utils/eaUtils';
 import css from './container.css';
-import { MODUS } from './EAContribution';
+import { MODUS } from './ContributionModus';
 
 
 export class EnergyMarketModuleContent extends MvuElement {
