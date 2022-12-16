@@ -34,6 +34,12 @@ describe('LayerVisibilityNotificationPlugin', () => {
 		legendUrl: 'https://url2/img'
 	};
 
+	const geoResourceServiceMock = {
+		byId: (id) => ({
+			label: `label for ${id}`
+		})
+	};
+
 
 	const setup = async (state) => {
 
@@ -49,6 +55,7 @@ describe('LayerVisibilityNotificationPlugin', () => {
 
 		$injector
 			.registerSingleton('WmsCapabilitiesService', wmsCapabilitiesServiceMock)
+			.registerSingleton('GeoResourceService', geoResourceServiceMock)
 			.registerSingleton('TranslationService', translationServiceMock);
 
 		const instanceUnderTest = new LayerVisibilityNotificationPlugin();
@@ -64,7 +71,7 @@ describe('LayerVisibilityNotificationPlugin', () => {
 	it('shows a notification if switching from active to inactive layer for wms', async () => {
 		await setup();
 
-		addLayer('id1', { label: 'wms' });
+		addLayer('id1');
 		setMapResolution(10);
 		await TestUtils.timeout();
 
@@ -75,7 +82,7 @@ describe('LayerVisibilityNotificationPlugin', () => {
 		const notificationActions = storeActions.filter(a => a.type === NOTIFICATION_ADDED);
 		expect(notificationActions.length).toBe(1);
 		expect(notificationActions[0].payload._payload).toEqual({
-			content: '"wms" ea_notification_layer_not_visible',
+			content: '"label for id1" ea_notification_layer_not_visible',
 			level: LevelTypes.INFO
 		});
 	});
