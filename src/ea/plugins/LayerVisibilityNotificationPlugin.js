@@ -11,12 +11,13 @@ export class LayerVisibilityNotificationPlugin extends BaPlugin {
 	 */
 	async register(store) {
 
-		const { WmsCapabilitiesService, TranslationService } = $injector
-			.inject('WmsCapabilitiesService', 'TranslationService');
+		const { WmsCapabilitiesService, TranslationService, GeoResourceService } = $injector
+			.inject('WmsCapabilitiesService', 'TranslationService', 'GeoResourceService');
 
 		const translate = (key) => TranslationService.translate(key);
 
 		this._wmsCapabilitiesService = WmsCapabilitiesService;
+		this._geoResourcseService = GeoResourceService;
 
 		let wmsLayers = [];
 		let displayState = [];
@@ -38,7 +39,7 @@ export class LayerVisibilityNotificationPlugin extends BaPlugin {
 				layers
 					.filter(l => l.visible)
 					.map(async l => ({
-						label: l.label,
+						geoResourceId: l.geoResourceId,
 						layers: await this._wmsCapabilitiesService.getWmsLayers(l.geoResourceId)
 					})));
 
@@ -52,11 +53,13 @@ export class LayerVisibilityNotificationPlugin extends BaPlugin {
 			const delta = newDisplayState
 				.filter(wms => !wms.isDisplayed)
 				.filter(wms => {
-					const oldWms = displayState.find(w => w.label === wms.label);
+					const oldWms = displayState.find(w => w.geoResourceId === wms.geoResourceId);
 					return oldWms && oldWms.isDisplayed;
 				});
 
-			const uniqueTitles = [...new Set(delta.map(wms => wms.label))];
+			const uniqueTitles = [...new Set(delta.map(wms => wms.geoResourceId))]
+				.map(geoResourceId => this._geoResourcseService.byId(geoResourceId).label);
+
 			const msg = translate('ea_notification_layer_not_visible');
 			uniqueTitles.forEach(title => emitNotification(`"${title}" ${msg}`, LevelTypes.INFO));
 
