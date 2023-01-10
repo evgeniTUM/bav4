@@ -1,0 +1,92 @@
+category,name,optional,type
+Biomasseanlage,Strom-/Wärmeerzeugung (Strom/Wärme/Strom + Wärme),FALSE,text
+Biomasseanlage,Brennstofftyp (fest/flüssig/gasförmig),FALSE,text
+Biomasseanlage,Inbetriebnahmedatum,FALSE,text
+Biomasseanlage,Hauptbrennstoff,TRUE,text
+Biomasseanlage,weitere Brennstoffe,TRUE,text
+Biomasseanlage,Elektrische Leistung,TRUE,text
+Biomasseanlage,Jährliche Stromproduktion,TRUE,text
+Biomasseanlage,Nennwärmeleistung Biomasse,TRUE,text
+Biomasseanlage,Jährlich genutzte Wärmemenge,TRUE,text
+Biomasseanlage,Führung bei Anlagen mit KWK,TRUE,text
+Biomasseanlage,Anlagenschlüssel,TRUE,text
+Biomasseanlage,Bürgerenergieanlage (ja/nein),TRUE,text
+Biomasseanlage,Link zur Webseite,TRUE,text
+Biomasseanlage,Name der Webseite,TRUE,text
+Biomasseanlage,Stand,TRUE,text
+Photovoltaikanlage,Leistung (kW),FALSE,text
+Photovoltaikanlage,Inbetriebnahmedatum,FALSE,text
+Photovoltaikanlage,Freiflächenanlage (ja/nein),TRUE,text
+Photovoltaikanlage,Anlagenschlüssel,TRUE,text
+Photovoltaikanlage,Bürgerenergieanlage (ja/nein),TRUE,text
+Photovoltaikanlage,Link zur Webseite,TRUE,text
+Photovoltaikanlage,Name der Webseite,TRUE,text
+Photovoltaikanlage,Stand,TRUE,text
+Wasserkraftanlage,Kraftwerkstyp (Lauf-/Speicherkraftwerk),FALSE,text
+Wasserkraftanlage,Leistung (kW),FALSE,text
+Wasserkraftanlage,Jährliche Stromproduktion,FALSE,text
+Wasserkraftanlage,Inbetriebnahmedatum,FALSE,text
+Wasserkraftanlage,Turbinentyp,FALSE,text
+Wasserkraftanlage,Generatortyp,FALSE,text
+Wasserkraftanlage,Art der Fischaufstiegsanlage,TRUE,text
+Wasserkraftanlage,Einrichtung für Fischschutz/-abstieg,TRUE,text
+Wasserkraftanlage,Ausbaupotenzial vorhanden (ja/nein),TRUE,text
+Wasserkraftanlage,Bürgerenergieanlage (ja/nein),TRUE,text
+Wasserkraftanlage,Link zur Webseite,TRUE,text
+Wasserkraftanlage,Name der Webseite,TRUE,text
+Wasserkraftanlage,Stand,TRUE,text
+Windenergieanlage,Leistung,TRUE,text
+Windenergieanlage,Inbetriebnahmedatum,TRUE,text
+Windenergieanlage,Typ,TRUE,text
+Windenergieanlage,Hersteller,TRUE,text
+Windenergieanlage,Rotordurchmesser,TRUE,text
+Windenergieanlage,Nabenhöhe,TRUE,text
+Windenergieanlage,Gesamthöhe,TRUE,text
+Windenergieanlage,Anlagenschlüssel,TRUE,text
+Windenergieanlage,Kleinwindkraftanlage (ja/nein),TRUE,text
+Windenergieanlage,Bürgerenergieanlage (ja/nein),TRUE,text
+Windenergieanlage,Link zur Webseite,TRUE,text
+Windenergieanlage,Name der Webseite,TRUE,text
+Windenergieanlage,Stand,TRUE,text
+Heiz(kraft)werk - fossil,Stand,FALSE,text
+Heiz(kraft)werk - fossil,Hauptbrennstoff (Gas/Heizöl/Kohle),FALSE,text
+Heiz(kraft)werk - fossil,Inbetriebnahmedatum,FALSE,text
+Heiz(kraft)werk - fossil,Anlagenschlüssel,TRUE,text
+Heiz(kraft)werk - fossil,Führung bei Anlagen mit KWK,TRUE,text
+Heiz(kraft)werk - fossil,weitere Brennstoffe,TRUE,text
+Heiz(kraft)werk - fossil,Elektrische Leistung,TRUE,text
+Heiz(kraft)werk - fossil,Nennwärmeleistung,TRUE,text
+Heiz(kraft)werk - fossil,Art der Anlage,TRUE,text
+Heiz(kraft)werk - fossil,Link zur Webseite,TRUE,text
+Heiz(kraft)werk - fossil,Name der Webseite,TRUE,text
+Heiz(kraft)werk - fossil,Stand,TRUE,text
+Wärmenetz,Netztyp (Wassernetz/Dampfnetz),FALSE,text
+Wärmenetz,Netzlänge (km),FALSE,text
+Wärmenetz,Vorlauftemperatur (°C),FALSE,text
+Wärmenetz,Erweiterungsmöglichkeit (ja um Wärmequellen oder -abnehmer/nein),FALSE,text
+Wärmenetz,Inbetriebnahmejahr,FALSE,text
+Wärmenetz,Energieträger der Wärmequelle,FALSE,text
+Wärmenetz,Anlagenschlüssel,TRUE,text
+Wärmenetz,Primärenergiefaktor,TRUE,text
+Wärmenetz,Versorgte Objekte,TRUE,text
+Wärmenetz,Link zur Webseite,TRUE,text
+Wärmenetz,Name zur Webseite,TRUE,text
+Wärmenetz,Name des Betreibers,TRUE,text
+Wärmenetz,Anschrift des Betreibers,TRUE,text
+Wärmenetz,Ansprechpartner,TRUE,text
+Wärmenetz,Ansprechpartner Telefon,TRUE,text
+Wärmenetz,Ansprechpartner E-Mail,TRUE,text
+Wärmenetz,Stand,TRUE,text
+Anlage Tiefe Geothermie,Energieerzeugung (Strom/Wärme/Strom + Wärme),FALSE,text
+Anlage Tiefe Geothermie,Nennwärmeleistung,FALSE,text
+Anlage Tiefe Geothermie,Inbetriebnahmedatum,FALSE,text
+Anlage Tiefe Geothermie,Anlagenschlüssel,TRUE,text
+Anlage Tiefe Geothermie,Führung bei Anlagen mit KWK,TRUE,text
+Anlage Tiefe Geothermie,Elektrische Leistung,TRUE,text
+Anlage Tiefe Geothermie,Fließrate,TRUE,text
+Anlage Tiefe Geothermie,Temperatur,TRUE,text
+Anlage Tiefe Geothermie,Teufe,TRUE,text
+Anlage Tiefe Geothermie,Anzahl Bohrungen,TRUE,text
+Anlage Tiefe Geothermie,Link zur Webseite,TRUE,text
+Anlage Tiefe Geothermie,Name der Webseite,TRUE,text
+Anlage Tiefe Geothermie,Stand,TRUE,text

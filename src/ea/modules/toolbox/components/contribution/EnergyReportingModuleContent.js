@@ -2,7 +2,7 @@ import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import { csv2json, generateJsonCategorySpecFromCSV } from '../../../../utils/eaUtils';
-import csvContent from './assets/energyMarketCategories.csv';
+import csvContent from './assets/energyPlantCategories.csv';
 import css from './container.css';
 import { MODUS } from './ContributionModus';
 
