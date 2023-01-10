@@ -26,6 +26,10 @@ module.exports = {
 				include: /src/,
 				exclude: /node_modules|\.spec\.js$/,
 				use: '@jsdevtools/coverage-istanbul-loader'
+			},
+			{
+				test: /\.csv$/i,
+				use: 'raw-loader'
 			}
 		]
 	},
