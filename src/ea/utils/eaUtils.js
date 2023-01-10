@@ -25,14 +25,14 @@ export const checkIfResolutionValid = (id, obj, resolution) => {
 
 
 /***
- * Converts a csv contribution category to JSON.
- * @param csv the csv to convert (using the webpack csv-loader). The format is (category, name, optional, type)
+ * Converts a contribution category definition to JSON spec.
+ * @param spec the csv to convert. The format is (category, name, optional, type)
  * @returns {List<Object>}
  */
-export const generateJsonCategorySpecFromCSV = (csv) => {
+export const generateJsonCategorySpecFromCSV = (spec) => {
 	const categories = [];
 
-	csv.forEach(e => {
+	spec.forEach(e => {
 		const category = e.category.trim();
 
 
@@ -49,3 +49,25 @@ export const generateJsonCategorySpecFromCSV = (csv) => {
 
 	return Object.entries(categories).map(([n, v]) => ({ 'ee-name': n, 'ee-angaben': v }));
 };
+
+/***
+ * Converts a csv string to a list of entries.
+ * Expects that the first line of the csv contains the field names.
+ * @returns {List<Object>}
+ */
+export const csv2json = (csv) => {
+	const lines = csv.split('\n');
+	const categories = lines[0].split(',').map(cat => cat.trim());
+
+	const objects = lines.slice(1).map(line => {
+		const obj = {};
+		line.split(',').forEach((entry, index) => {
+			obj[categories[index]] = entry.trim();
+		});
+
+		return obj;
+	});
+
+	return objects.filter(entry => Object.keys(entry).length === categories.length);
+};
+

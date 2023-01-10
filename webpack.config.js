@@ -37,7 +37,12 @@ module.exports = {
 			{
 				test: /\.(woff2|svg|webp|png)$/,
 				type: 'asset/inline'
+			},
+			{
+				test: /\.csv$/i,
+				use: 'raw-loader'
 			}
+
 		]
 	},
 	plugins: [
