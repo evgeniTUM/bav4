@@ -1,7 +1,8 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
-import { generateJsonCategorySpecFromCSV } from '../../../../utils/eaUtils';
+import { csv2json, generateJsonCategorySpecFromCSV } from '../../../../utils/eaUtils';
+import csvContent from './assets/energyMarketCategories.csv';
 import css from './container.css';
 import { MODUS } from './ContributionModus';
 
@@ -32,8 +33,8 @@ export class EnergyReportingModuleContent extends MvuElement {
 
 		const translate = (key) => this._translationService.translate(key);
 
-		const csv = require('dsv-loader?delimiter=,!./assets/energyMarketCategories.csv');
-		const categories = generateJsonCategorySpecFromCSV(csv);
+		const json = csv2json(csvContent);
+		const categories = generateJsonCategorySpecFromCSV(json);
 
 		return html`
 			<style>${css}</style>

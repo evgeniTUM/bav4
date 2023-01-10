@@ -1,6 +1,24 @@
-import { generateJsonCategorySpecFromCSV } from '../../../src/ea/utils/eaUtils';
+import { csv2json, generateJsonCategorySpecFromCSV } from '../../../src/ea/utils/eaUtils';
 
 describe('EA Utils', () => {
+
+	describe('csv2json', () => {
+		it('parses a csv and returns a list of json objects', () => {
+
+			const csv = `cat1, cat2, cat3
+			val1.1, val1.2, val1.3
+			val2.1, val2.2, val2.3
+			`;
+
+			const actual = csv2json(csv);
+
+			expect(actual).toEqual([
+				{ cat1: 'val1.1', cat2: 'val1.2', cat3: 'val1.3' },
+				{ cat1: 'val2.1', cat2: 'val2.2', cat3: 'val2.3' }
+			]);
+		});
+
+	});
 
 	describe('generateJsonCategorySpecFromCSV', () => {
 		it('converts csv to list of JSON objects', () => {
