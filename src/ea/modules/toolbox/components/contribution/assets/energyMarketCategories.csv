@@ -1,14 +1,67 @@
 category,name,optional,type
-Solarflächenbörse:Dachflächen,Ansprechpartner,FALSE,text
-Solarflächenbörse:Dachflächen,Ansprechpartner E-Mail,FALSE,text
-Solarflächenbörse:Dachflächen,Ansprechpartner Telefon,FALSE,text
-Solarflächenbörse:Dachflächen,Nutzbare Dachfläche,FALSE,text
-Solarflächenbörse:Dachflächen,Dachneigung (°),FALSE,text
-Solarflächenbörse:Dachflächen,Dachausrichtung (Süd/West/...),FALSE,text
-Solarflächenbörse:Dachflächen,Bezeichnung der Fläche,TRUE,text
-Solarflächenbörse:Dachflächen,Gebäudeeigentümer,TRUE,text
-Solarflächenbörse:Dachflächen,Aktuelle Nutzung,TRUE,text
-Solarflächenbörse:Dachflächen,Jahr der Errichtung bzw. letzten ...,TRUE,text
-Solarflächenbörse:Dachflächen,Dachmaterial,TRUE,text
-Solarflächenbörse:Dachflächen,Stand,TRUE,text
-TestKategorie2,Name1,TRUE,text
+Solarflächenbörse: Dachflächen,Ansprechpartner,FALSE,text
+Solarflächenbörse: Dachflächen,Ansprechpartner E-Mail,FALSE,text
+Solarflächenbörse: Dachflächen,Ansprechpartner Telefon,FALSE,text
+Solarflächenbörse: Dachflächen,Nutzbare Dachfläche (m2),FALSE,text
+Solarflächenbörse: Dachflächen,Dachneigung (°),FALSE,text
+Solarflächenbörse: Dachflächen,Dachausrichtung (Süd/West/...),FALSE,text
+Solarflächenbörse: Dachflächen,Dachmaterial,FALSE,text
+Solarflächenbörse: Dachflächen,Bezeichnung der Fläche,TRUE,text
+Solarflächenbörse: Dachflächen,Gebäudeeigentümer,TRUE,text
+Solarflächenbörse: Dachflächen,Aktuelle Nutzung,TRUE,text
+Solarflächenbörse: Dachflächen,Jahr der Errichtung bzw. letzten Dachsanierung,TRUE,text
+Solarflächenbörse: Dachflächen,Link zur Webseite,TRUE,text
+Solarflächenbörse: Dachflächen,Name der Webseite,TRUE,text
+Solarflächenbörse: Dachflächen,Stand,TRUE,text
+Solarflächenbörse: Freiflächen,Ansprechpartner,FALSE,text
+Solarflächenbörse: Freiflächen,Ansprechpartner E-Mail,FALSE,text
+Solarflächenbörse: Freiflächen,Ansprechpartner Telefon,FALSE,text
+Solarflächenbörse: Freiflächen,Aussagekräftige Bezeichnung der Fläche,FALSE,text
+Solarflächenbörse: Freiflächen,Flächengröße (ha),FALSE,text
+Solarflächenbörse: Freiflächen,Eigentümer,FALSE,text
+Solarflächenbörse: Freiflächen,Fläche zum Verkauf oder Verpachtung,FALSE,text
+Solarflächenbörse: Freiflächen,Art der Fläche,FALSE,text
+Solarflächenbörse: Freiflächen,Aktuelle Nutzung,FALSE,text
+Solarflächenbörse: Freiflächen,Weitere Erläuterungen zur Art der Fläche,TRUE,text
+Solarflächenbörse: Freiflächen,Voraussichtliche Vergütung im Sinne des EEG möglich (ja/nein),TRUE,text
+Solarflächenbörse: Freiflächen,Voraussichtliche Entfernung zum Einspeisepunkt,TRUE,text
+Solarflächenbörse: Freiflächen,In gültigem Bebauungsplan als Sondergebiet für Photovoltaik ausgewiesen (ja/nein),TRUE,text
+Solarflächenbörse: Freiflächen,Link zur Webseite,TRUE,text
+Solarflächenbörse: Freiflächen,Name der Webseite,TRUE,text
+Solarflächenbörse: Freiflächen,Stand,TRUE,text
+Abwärmeinformationsbörse: Abwärmequellen,Ansprechpartner,FALSE,text
+Abwärmeinformationsbörse: Abwärmequellen,Ansprechpartner Telefon,FALSE,text
+Abwärmeinformationsbörse: Abwärmequellen,Ansprechpartner E-Mail,FALSE,text
+Abwärmeinformationsbörse: Abwärmequellen,Anzahl der Anlagen,FALSE,text
+Abwärmeinformationsbörse: Abwärmequellen,Wärmeträger (gasförmig/flüssig),FALSE,text
+Abwärmeinformationsbörse: Abwärmequellen,Temperaturbereich,FALSE,text
+Abwärmeinformationsbörse: Abwärmequellen,Abwärmemenge,FALSE,text
+Abwärmeinformationsbörse: Abwärmequellen,Abwärmeleistung,FALSE,text
+Abwärmeinformationsbörse: Abwärmequellen,Betriebsdauer,FALSE,text
+Abwärmeinformationsbörse: Abwärmequellen,Details zur Betriebsdauer,TRUE,text
+Abwärmeinformationsbörse: Abwärmequellen,Abwärmequelle,TRUE,text
+Abwärmeinformationsbörse: Abwärmequellen,Anlagenschlüssel,TRUE,text
+Abwärmeinformationsbörse: Abwärmequellen,Firma,TRUE,text
+Abwärmeinformationsbörse: Abwärmequellen,Anschrift der Firma,TRUE,text
+Abwärmeinformationsbörse: Abwärmequellen,Betreiber,TRUE,text
+Abwärmeinformationsbörse: Abwärmequellen,Link zur Webseite,TRUE,text
+Abwärmeinformationsbörse: Abwärmequellen,Name der Webseite Webseite,TRUE,text
+Abwärmeinformationsbörse: Abwärmequellen,Stand,TRUE,text
+Abwärmeinformationsbörse: Abwärmesenken,Ansprechpartner,FALSE,text
+Abwärmeinformationsbörse: Abwärmesenken,Ansprechpartner Telefon,FALSE,text
+Abwärmeinformationsbörse: Abwärmesenken,Ansprechpartner E-Mail,FALSE,text
+Abwärmeinformationsbörse: Abwärmesenken,Wärmeträger (Dampf/Luft/Wasser),FALSE,text
+Abwärmeinformationsbörse: Abwärmesenken,Temperaturbereich,FALSE,text
+Abwärmeinformationsbörse: Abwärmesenken,Abwärmemenge,FALSE,text
+Abwärmeinformationsbörse: Abwärmesenken,Abwärmeleistung,FALSE,text
+Abwärmeinformationsbörse: Abwärmesenken,Betriebsdauer,TRUE,text
+Abwärmeinformationsbörse: Abwärmesenken,Details zur Betriebsdauer,TRUE,text
+Abwärmeinformationsbörse: Abwärmesenken,Anlagenschlüssel,TRUE,text
+Abwärmeinformationsbörse: Abwärmesenken,Firma,TRUE,text
+Abwärmeinformationsbörse: Abwärmesenken,Anschrift der Firma,TRUE,text
+Abwärmeinformationsbörse: Abwärmesenken,Betreiber,TRUE,text
+Abwärmeinformationsbörse: Abwärmesenken,Anschrift des Betreibers,TRUE,text
+Abwärmeinformationsbörse: Abwärmesenken,Branche,TRUE,text
+Abwärmeinformationsbörse: Abwärmesenken,Link zur Webseite,TRUE,text
+Abwärmeinformationsbörse: Abwärmesenken,Name der Webseite,TRUE,text
+Abwärmeinformationsbörse: Abwärmesenken,Stand,TRUE,text
