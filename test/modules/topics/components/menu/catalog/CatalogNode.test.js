@@ -81,6 +81,60 @@ describe('CatalogNode', () => {
 			expect(element.shadowRoot.querySelector('.ba-list-item__sub-header')).toBeTruthy();
 		});
 
+		it('renders level 1 as collapsable item', async () => {
+			//load node data
+			const [node] = await loadExampleCatalog('foo');
+			const element = await setup({ level: 1 });
+
+			//assign data
+			element.data = node;
+
+			expect(element.shadowRoot.querySelector('.ba-list-item__header')).toBeFalsy();
+			expect(element.shadowRoot.querySelector('.ba-list-item__sub-header')).toBeTruthy();
+
+			expect(element.shadowRoot.querySelector('.iscollapse')).toBeFalsy();
+			expect(element.shadowRoot.querySelector('.iconexpand')).toBeTruthy();
+		});
+
+		it('renders level 2 as not collapsable item', async () => {
+			//load node data
+			const [node] = await loadExampleCatalog('foo');
+			const element = await setup({ level: 2 });
+
+			//assign data
+			element.data = node;
+
+			expect(element.shadowRoot.querySelector('.ba-list-item__header')).toBeFalsy();
+			expect(element.shadowRoot.querySelector('.ba-list-item__sub-header')).toBeTruthy();
+
+			expect(element.shadowRoot.querySelector('.iscollapse')).toBeFalsy();
+			expect(element.shadowRoot.querySelector('.iconexpand')).toBeFalsy();
+		});
+
+		it('renders level 1 with correct css style', async () => {
+			//load node data
+			const [node] = await loadExampleCatalog('foo');
+			const element = await setup({ level: 1 });
+
+			//assign data
+			element.data = node;
+
+			expect(element.shadowRoot.querySelector('.subcategory1')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('.subcategory2')).toBeFalsy();
+		});
+
+		it('renders level 2 with correct css style', async () => {
+			//load node data
+			const [node] = await loadExampleCatalog('foo');
+			const element = await setup({ level: 2 });
+
+			//assign data
+			element.data = node;
+
+			expect(element.shadowRoot.querySelector('.subcategory1')).toBeFalsy();
+			expect(element.shadowRoot.querySelector('.subcategory2')).toBeTruthy();
+		});
+
 		it('click collapse', async () => {
 			//load node data
 			const [node] = await loadExampleCatalog('foo');
