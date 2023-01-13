@@ -35,11 +35,11 @@ describe('Energy Atlas Module', () => {
 	});
 
 	it('every module has an initialWidth properties', () => {
-		expect(MixerModuleContent.initialWidth).toBe(46);
+		expect(MixerModuleContent.initialWidth).toBe(48);
 		expect(ResearchModuleContent.initialWidth).toBe(40);
 		expect(RedesignModuleContent.initialWidth).toBe(40);
-		expect(Analyse3DModuleContent.initialWidth).toBe(36);
-		expect(GeothermModuleContent.initialWidth).toBe(36);
+		expect(Analyse3DModuleContent.initialWidth).toBe(39);
+		expect(GeothermModuleContent.initialWidth).toBe(39);
 		expect(EnergyMarketModuleContent.initialWidth).toBe(40);
 		expect(EnergyReportingModuleContent.initialWidth).toBe(40);
 	});

@@ -27,6 +27,6 @@ export class GeothermModuleContent extends AbstractModuleContent {
 	}
 
 	static get initialWidth() {
-		return 36;
+		return 39;
 	}
 }
