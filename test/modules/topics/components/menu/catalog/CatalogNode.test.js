@@ -96,7 +96,7 @@ describe('CatalogNode', () => {
 			expect(element.shadowRoot.querySelector('.iconexpand')).toBeTruthy();
 		});
 
-		it('renders level 2 as not collapsable item', async () => {
+		it('renders level 2 as collapsable item', async () => {
 			//load node data
 			const [node] = await loadExampleCatalog('foo');
 			const element = await setup({ level: 2 });
@@ -108,7 +108,7 @@ describe('CatalogNode', () => {
 			expect(element.shadowRoot.querySelector('.ba-list-item__sub-header')).toBeTruthy();
 
 			expect(element.shadowRoot.querySelector('.iscollapse')).toBeFalsy();
-			expect(element.shadowRoot.querySelector('.iconexpand')).toBeFalsy();
+			expect(element.shadowRoot.querySelector('.iconexpand')).toBeTruthy();
 		});
 
 		it('renders level 1 with correct css style', async () => {
