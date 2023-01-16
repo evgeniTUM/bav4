@@ -79,6 +79,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 	 */
 	onInitialize() {
 		this.observe(state => state.contribution, data => this.signal(Update, data));
+		this.observe(state => state.contribution.position, () => this.signal(Update, { openSections: 'step2' }), false);
 	}
 
 	/**
@@ -155,6 +156,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			this.signal(Update, { currentCategory: e.target.value });
 			model.categoryFields = {};
 			this.shadowRoot.querySelectorAll('.category-fields input').forEach(i => i.value = '');
+			this.signal(Update, { openSections: 'step3' });
 		};
 
 		const categoryFields = {};
@@ -199,6 +201,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 				this.signal(Update, { openSections: ['step1', 'step2', 'step3', 'step4'], showInvalidFields: true });
 			}
 		};
+
 
 		const form = html`
 			<form id='report' action="#" @submit="${onSubmit}">

@@ -1,6 +1,6 @@
 import { MODUS } from '../../../../../../src/ea/modules/toolbox/components/contribution/ContributionModus';
 import { EAContribution } from '../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
-import { setTaggingMode } from '../../../../../../src/ea/store/contribution/contribution.action';
+import { setLocation, setTaggingMode } from '../../../../../../src/ea/store/contribution/contribution.action';
 import { contributionReducer, initialState } from '../../../../../../src/ea/store/contribution/contribution.reducer';
 import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../src/injection';
@@ -208,6 +208,32 @@ describe('EAContributon', () => {
 			expect(field3.placeholder).toBe('field3');
 			expect(field3.required).toBeFalse();
 			expect(field3.type).toBe('text');
+		});
+
+		it('opens section 2 when coordinates are selected', async () => {
+			const element = await setup();
+			element.categories = SAMPLE_JSON_SPEC;
+
+			setLocation([42, 24]);
+
+			expect(element.shadowRoot.querySelector('#step1').open).toBeFalsy();
+			expect(element.shadowRoot.querySelector('#step2').open).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#step3').open).toBeFalsy();
+			expect(element.shadowRoot.querySelector('#step4').open).toBeFalsy();
+		});
+
+		it('opens section 3 when category is selected', async () => {
+			const element = await setup();
+			element.categories = SAMPLE_JSON_SPEC;
+
+			const selectBox = element.shadowRoot.querySelector('#category');
+			selectBox.value = 'Test2';
+			selectBox.dispatchEvent(new Event('change'));
+
+			expect(element.shadowRoot.querySelector('#step1').open).toBeFalsy();
+			expect(element.shadowRoot.querySelector('#step2').open).toBeFalsy();
+			expect(element.shadowRoot.querySelector('#step3').open).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#step4').open).toBeFalsy();
 		});
 	});
 
