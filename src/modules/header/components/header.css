@@ -52,8 +52,6 @@
 	left: -28em;
 	width: 26em;
 	height: 6.5em;
-	background-image: url('assets/header_eab.svg');
-	background-repeat: no-repeat;
 	transition: all var(--animation-duration-large-open) var(--animation-easing-linea); 
 }
 .header__emblem {
@@ -367,10 +365,6 @@ input[type="search"]::-webkit-search-results-decoration {
 	width: 26em;
 	left: -7em;
 	height: 6.5em;
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: 22.7em;
-	background-image: url('assets/header_eab.svg');
 	display: none;
 	transition: all var(--animation-duration-large-open) var(--animation-easing-linea); 
 }
@@ -422,4 +416,19 @@ input[type="search"]::-webkit-search-results-decoration {
 
 #extension_button.is-tablet {
 	display: none;
+}
+
+.eab-logo-link {
+	display: block;
+	position: relative;
+	height: 4em;
+	width: 22.7em;
+	left: 1.8em;
+	top: 1.25em;
+	margin: 0;
+	padding: 0;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 22.7em;
+	background-image: url('assets/header_eab.svg');
 }

@@ -197,7 +197,6 @@ export class Header extends MvuElement {
 			<style>${css}</style>
 			<div class="preload">
 				<div class="${getOrientationClass()} ${getMinWidthClass()}">
-					<a  title=${translate('header_action_button_title')} class="header_action_link" target="_blank" href="https://www.energieatlas.bayern.de/">
 					<div class='header__logo'>				
 						<div class="action-button">
 								<div class="action-button__border animated-action-button__border ${getAnimatedBorderClass()}">
@@ -207,15 +206,16 @@ export class Header extends MvuElement {
 								</div>
 							</div>
 						</div>
-							<div id='header__text' class='${getOverlayClass()} header__text'>
+						<div id='header__text' class='${getOverlayClass()} header__text'>
+							<a  title=${translate('header_action_button_title')} class="eab-logo-link" target="_blank" href="https://www.energieatlas.bayern.de/"></a>
 						</div>
 						<div class='header__logo-badge'>										
 							${translate('header_logo_badge')}
 						</div>	
 					</div>		
-						<div id='headerMobile' class='${getOverlayClass()} header__text-mobile'>	
+					<div id='headerMobile' class='${getOverlayClass()} header__text-mobile'>
+						<a  title=${translate('header_action_button_title')} class="eab-logo-link" target="_blank" href="https://www.energieatlas.bayern.de/"></a>
 					</div>
-					</a>
 					<span class='header__emblem_label' >Bayerische Staatsregierung</span>
 					<a  title=${translate('header_emblem_action_title')} class="header_action_link" target="_blank" href="https://www.bayern.de/">
 						<div class='header__emblem'></div>
