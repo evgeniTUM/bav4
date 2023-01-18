@@ -3,6 +3,7 @@ import { LegendContent } from '../../../../../../src/ea/modules/legend/component
 import { activateLegend, setLegendItems, setMapResolution } from '../../../../../../src/ea/store/module/ea.action';
 import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../src/injection';
+import { createMediaReducer } from '../../../../../../src/store/media/media.reducer';
 import { positionReducer } from '../../../../../../src/store/position/position.reducer';
 import { TestUtils } from '../../../../../test-utils';
 
@@ -14,10 +15,12 @@ describe('LegendContent', () => {
 
 		TestUtils.setupStoreAndDi(state, {
 			ea: eaReducer,
-			position: positionReducer
+			position: positionReducer,
+			media: createMediaReducer()
 		});
 		$injector
-			.registerSingleton('TranslationService', { translate: (key) => key });
+			.registerSingleton('TranslationService', { translate: (key) => key })
+			.registerSingleton('EnvironmentService', { portrait: false });
 
 		setMapResolution(50);
 		return await TestUtils.render(LegendContent.tag);
