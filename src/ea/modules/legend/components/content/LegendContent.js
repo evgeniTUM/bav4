@@ -6,6 +6,7 @@ import css from './legendContent.css';
 const Update_legend_active = 'update_legend_active';
 const Update_resolution = 'update_resolution';
 const Update_legend_items = 'update_legend_items';
+const Update_IsPortrait_HasMinWidth = 'update_isPortrait';
 
 export class LegendContent extends MvuElement {
 
@@ -13,13 +14,16 @@ export class LegendContent extends MvuElement {
 		super({
 			legendActive: true,
 			legendItems: [],
-			resolution: 0
+			resolution: 0,
+			isPortrait: false,
+			hasMinWidth: false
 		});
 
-		const { StoreService, TranslationService } = $injector
-			.inject('StoreService', 'TranslationService');
+		const { StoreService, TranslationService, EnvironmentService } = $injector
+			.inject('StoreService', 'TranslationService', 'EnvironmentService');
 		this._storeService = StoreService;
 		this._translationService = TranslationService;
+		this._environmentService = EnvironmentService;
 	}
 
 	/**
@@ -35,6 +39,9 @@ export class LegendContent extends MvuElement {
 
 			case Update_resolution:
 				return { ...model, resolution: data };
+
+			case Update_IsPortrait_HasMinWidth:
+				return { ...model, ...data };
 		}
 	}
 
@@ -45,6 +52,7 @@ export class LegendContent extends MvuElement {
 		this.observe(state => state.ea.legendActive, active => this.signal(Update_legend_active, active));
 		this.observe(state => state.ea.legendItems, items => this.signal(Update_legend_items, items));
 		this.observe(state => state.ea.mapResolution, resolution => this.signal(Update_resolution, resolution));
+		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
 	}
 
 	createView(model) {
@@ -68,7 +76,7 @@ export class LegendContent extends MvuElement {
 
 		return html`
         <style>${css}</style>
-            <div class="ea-legend-container">
+            <div class="ea-legend-container ${model.isPortrait ? 'portrait-mode' : ''}">
 				<div class="ea-legend-filler"></div>
 				<div class="ea-legend-content">
 					<div class="ea-legend__title">

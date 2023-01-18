@@ -16,6 +16,10 @@
 	flex-direction: column;
 }
 
+.ea-legend-container.portrait-mode {
+	--top-padding: 7em;
+}
+
 .ea-legend-filler {
 	position: relative;
 	flex-grow: 1;
