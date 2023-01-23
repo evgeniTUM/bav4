@@ -235,13 +235,32 @@ describe('EAContributon', () => {
 			expect(element.shadowRoot.querySelector('#step3').open).toBeTruthy();
 			expect(element.shadowRoot.querySelector('#step4').open).toBeFalsy();
 		});
+
+		it('shows chosen mode in section titles', async () => {
+			const element = await setup();
+			element.mode = MODUS.report;
+			element.categories = SAMPLE_JSON_SPEC;
+
+			const tagButton = element.shadowRoot.querySelector('#tag');
+			const correctionButton = element.shadowRoot.querySelector('#correction');
+
+			const getStep = (step) => element.shadowRoot.querySelector(step);
+			expect(getStep('#step1').title).toEqual('1. Standort des Objektes markieren');
+			expect(getStep('#step2').title).toEqual('2. Auswahl der Kategorie');
+			expect(getStep('#step3').title).toEqual('3. Angaben zum Objekt');
+			expect(getStep('#step4').title).toEqual('4. Meldung absenden');
+
+			tagButton.click();
+
+			expect(getStep('#step1').title).toEqual('1. Standort des Objektes markieren: Neumeldung');
+		});
 	});
 
 	describe('mode energy-reporting', () => {
 
 		it('does not show find button', async () => {
 			const element = await setup();
-			element.mode = MODUS.reporting;
+			element.mode = MODUS.report;
 
 			const findButton = element.shadowRoot.querySelector('#search');
 
@@ -257,7 +276,7 @@ describe('EAContributon', () => {
 
 			const element = await setup({ contribution: { position: expectedCoordinates } });
 
-			element.mode = MODUS.reporting;
+			element.mode = MODUS.report;
 			element.categories = SAMPLE_JSON_SPEC;
 
 			const query = (query) => element.shadowRoot.querySelector(query);

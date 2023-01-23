@@ -4,7 +4,6 @@ import { MvuElement } from '../../../../../modules/MvuElement';
 import { csv2json, generateJsonCategorySpecFromCSV } from '../../../../utils/eaUtils';
 import csvContent from './assets/energyPlantCategories.csv';
 import css from './container.css';
-import { MODUS } from './ContributionModus';
 
 export class EnergyReportingModuleContent extends MvuElement {
 
@@ -43,7 +42,7 @@ export class EnergyReportingModuleContent extends MvuElement {
 					${translate('ea_menu_energy_reporting')}
 				</div>
 				<div class='content'>
-					<ea-feature-contribution .mode=${MODUS.reporting} .categories=${categories}></ea-feature-contribution>
+					<ea-feature-contribution .categories=${categories}></ea-feature-contribution>
 				</div>
 			</div>
 			`;

@@ -1,4 +1,5 @@
 export const MODUS = Object.freeze({
-	reporting: 'Neumeldung/Korrektur',
+	report: 'Neumeldung',
+	correction: 'Korrektur',
 	market: 'Börse'
 });

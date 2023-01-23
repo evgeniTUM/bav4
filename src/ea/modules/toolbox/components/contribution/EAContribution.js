@@ -9,6 +9,7 @@ import css from './eaContribution.css';
 import validationCss from './validation.css';
 
 const Update = 'update';
+const Update_title = 'update_title';
 const Update_Field = 'update_field';
 const Reset_Fields = 'reset_fields';
 
@@ -17,7 +18,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 	constructor() {
 		super({
-			mode: MODUS.market,
+			mode: '',
 			isPortrait: false,
 			hasMinWidth: false,
 			showInvalidFields: false,
@@ -28,7 +29,12 @@ export class EAContribution extends AbstractMvuContentPanel {
 			categoriesSpecification: [],
 			statusMessage: nothing,
 			openSections: ['step1'],
-			isCorrection: false
+			stepTitles: {
+				step1: '1. Standort des Objektes markieren',
+				step2: '2. Auswahl der Kategorie',
+				step3: '3. Angaben zum Objekt',
+				step4: '4. Meldung absenden'
+			}
 		});
 
 		const {
@@ -62,6 +68,9 @@ export class EAContribution extends AbstractMvuContentPanel {
 			case Update:
 				return { ...model, ...data };
 
+			case Update_title:
+				return { ...model, stepTitles: { ...model.stepTitles, ...data } };
+
 			case Update_Field: {
 				const categoryFields = model.categoryFields;
 				categoryFields[data.name] = data.value;
@@ -79,7 +88,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 	 */
 	onInitialize() {
 		this.observe(state => state.contribution, data => this.signal(Update, data));
-		this.observe(state => state.contribution.position, () => this.signal(Update, { openSections: 'step2' }), false);
+		this.observe(state => state.contribution.position, () => {
+			setTaggingMode(false);
+		}, false
+		);
 	}
 
 	/**
@@ -88,11 +100,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 	createView(model) {
 		const translate = (key) => this._translationService.translate(key);
 
-		const onClickTagButton = (isCorrection) => () => {
-			const taggingActive = !model.tagging;
-			setTaggingMode(taggingActive);
+		const onClickTagButton = (mode) => () => {
+			setTaggingMode(true);
 			this.shadowRoot.getElementById('coordinates').setCustomValidity('');
-			this.signal(Update, { isCorrection });
+			this.signal(Update, { mode });
 		};
 
 		const onClickFindButton = () => {
@@ -157,6 +168,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			model.categoryFields = {};
 			this.shadowRoot.querySelectorAll('.category-fields input').forEach(i => i.value = '');
 			this.signal(Update, { openSections: 'step3' });
+			this.signal(Update_title, { step2: html`2. Auswahl der Kategorie: <span style="font-style: italic">${e.target.value}</span>` });
 		};
 
 		const categoryFields = {};
@@ -164,11 +176,12 @@ export class EAContribution extends AbstractMvuContentPanel {
 			categoryFields[e['ee-name']] = e['ee-angaben'].map(e => createField(e.name, e.optional));
 		});
 
-		const introduction = model.mode === MODUS.market ?
+		const energyMarketMode = model.mode === MODUS.market;
+		const isCorrection = model.mode === MODUS.correction;
+
+		const introduction = energyMarketMode ?
 			html`<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>` :
 			html`<p>Melden Sie bisher nicht dargestellte Objekte (z. B. EEG-Anlagen, Wärmenetze) und ergänzen oder korrigieren Sie Angaben zu bestehenden Objekten.</p>`;
-
-		const energyMarketMode = model.mode === MODUS.market;
 
 		const buttonHeaders = energyMarketMode ?
 			html`<div class='button-header'>Meldung neuer Einträge/ Korrektur bestehender Einträge</div>
@@ -182,8 +195,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 				<div class='search-icon'></div>
 				<span class='subtext'>${translate('ea_contribution_button_find_text')}</span>
 			</button>` :
-			html`<button id="tag" type='button' @click=${onClickTagButton(true)} title=${translate('ea_contribution_button_correction_tooltip')}>
-					${translate(model.tagging && model.isCorrection ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_correction_title')}
+			html`<button id="correction" type='button' @click=${onClickTagButton(MODUS.correction)} title=${translate('ea_contribution_button_correction_tooltip')}>
+					${translate(model.tagging && isCorrection ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_correction_title')}
 					<div class='tag-icon'></div>
 					<span class='subtext'>${translate('ea_contribution_button_tag_text')}</span>
 				</button>`;
@@ -192,8 +205,6 @@ export class EAContribution extends AbstractMvuContentPanel {
 			this.signal(Update, { openSections: [e.target.id] });
 		};
 
-		const step1Title = energyMarketMode ? 'Melden oder Suchen' : 'Standort des Objektes markieren';
-		const step4Title = energyMarketMode ? 'Meldung absenden' : 'Neumeldung/Korrektur absenden';
 
 		const onClickSendButton = () => {
 			const form = this.shadowRoot.getElementById('report');
@@ -208,11 +219,11 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 				${introduction}
 
-				<collapsable-content id='step1' title='1. ${step1Title}' .open=${model.openSections.includes('step1')} @toggle=${onToggle}>
+				<collapsable-content id='step1' .title='${model.stepTitles.step1 + model.mode}' .open=${model.openSections.includes('step1')} @toggle=${onToggle}>
 					<div class='button-container'>
 							${buttonHeaders}
-							<button id="tag" type='button' @click=${onClickTagButton(false)} title=${translate('ea_contribution_button_tag_tooltip')}>
-								${translate(model.tagging && !model.isCorrection ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag_title')}
+							<button id="tag" type='button' @click=${onClickTagButton(MODUS.report)} title=${translate('ea_contribution_button_tag_tooltip')}>
+								${translate(model.tagging && !isCorrection ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag_title')}
 								<div class='tag-icon'></div>
 								<span class='subtext'>${translate('ea_contribution_button_tag_text')}</span>
 							</button>
@@ -229,7 +240,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</div>
 				</collapsable-content>
 
-				<collapsable-content id='step2' title='2. Auswahl der Kategorie' .open=${model.openSections.includes('step2')} @toggle=${onToggle} >
+				<collapsable-content id='step2' .title='${model.stepTitles.step2 + model.currentCategory}' .open=${model.openSections.includes('step2')} @toggle=${onToggle} >
 					<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}" required>
 						<option value="" selected disabled>Bitte wählen ... </option>
 						${model.categoriesSpecification.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
@@ -237,22 +248,22 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</select>
 				</collapsable-content>
 
-				<collapsable-content id='step3' title='3. Angaben zu neuem Eintrag/zu bestehendem Eintrag' .open=${model.openSections.includes('step3')} @toggle=${onToggle}>
+				<collapsable-content id='step3' title='${model.stepTitles.step3}' .open=${model.openSections.includes('step3')} @toggle=${onToggle}>
 					<p>Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</p>
 
-${model.isCorrection ? '' :
+${isCorrection ? '' :
 		html`<div class='category-fields'>
 			${categoryFields[model.currentCategory]}
 		</div>`
 }
 
-					<textarea placeholder=${model.isCorrection ? 'Bitte hier Korrektur eintragen*' : 'Zusätzliche Information'} 
+					<textarea placeholder=${isCorrection ? 'Bitte hier Korrektur eintragen*' : 'Zusätzliche Information'} 
 						id="additional-info" name='additionalInfo' value=${model.description} ?required=${model.isCorrection}
 						@input=${(e) => this.signal(Update, { additionalInfo: e.target.value })}></textarea>
 
 				</collapsable-content>
 
-				<collapsable-content id='step4' title='4. ${step4Title}' .open=${model.openSections.includes('step4')} @toggle=${onToggle}>
+				<collapsable-content id='step4' title='${model.stepTitles.step4}' .open=${model.openSections.includes('step4')} @toggle=${onToggle}>
 					<input id='email' placeholder='Ihre E-Mail-Adresse' required  type='email' name="email" 
 						@input=${(e) => this.signal(Update, { email: e.target.value })}>
 					
