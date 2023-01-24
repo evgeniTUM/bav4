@@ -23,7 +23,7 @@ export class HttpService {
 	   */
 	async fetch(resource, options = {}, controller = new AbortController()) {
 
-		const { timeout = 1000 } = options;
+		const { timeout = 3000 } = options;
 
 		const id = setTimeout(() => controller.abort(), timeout);
 
