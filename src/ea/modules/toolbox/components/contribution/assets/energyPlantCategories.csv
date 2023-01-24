@@ -35,12 +35,12 @@ Wasserkraftanlage,Bürgerenergieanlage (ja/nein),TRUE,text
 Wasserkraftanlage,Link zur Webseite,TRUE,text
 Wasserkraftanlage,Name der Webseite,TRUE,text
 Wasserkraftanlage,Stand,TRUE,text
-Windenergieanlage,Leistung,TRUE,text
-Windenergieanlage,Inbetriebnahmedatum,TRUE,text
-Windenergieanlage,Typ,TRUE,text
-Windenergieanlage,Hersteller,TRUE,text
-Windenergieanlage,Rotordurchmesser,TRUE,text
-Windenergieanlage,Nabenhöhe,TRUE,text
+Windenergieanlage,Leistung,FALSE,text
+Windenergieanlage,Inbetriebnahmedatum,FALSE,text
+Windenergieanlage,Typ,FALSE,text
+Windenergieanlage,Hersteller,FALSE,text
+Windenergieanlage,Rotordurchmesser,FALSE,text
+Windenergieanlage,Nabenhöhe,FALSE,text
 Windenergieanlage,Gesamthöhe,TRUE,text
 Windenergieanlage,Anlagenschlüssel,TRUE,text
 Windenergieanlage,Kleinwindkraftanlage (ja/nein),TRUE,text
@@ -48,7 +48,7 @@ Windenergieanlage,Bürgerenergieanlage (ja/nein),TRUE,text
 Windenergieanlage,Link zur Webseite,TRUE,text
 Windenergieanlage,Name der Webseite,TRUE,text
 Windenergieanlage,Stand,TRUE,text
-Heiz(kraft)werk - fossil,Stand,FALSE,text
+Heiz(kraft)werk - fossil,Energieerzeugung (Strom/Wärme/Strom + Wärme),FALSE,text
 Heiz(kraft)werk - fossil,Hauptbrennstoff (Gas/Heizöl/Kohle),FALSE,text
 Heiz(kraft)werk - fossil,Inbetriebnahmedatum,FALSE,text
 Heiz(kraft)werk - fossil,Anlagenschlüssel,TRUE,text
@@ -63,7 +63,7 @@ Heiz(kraft)werk - fossil,Stand,TRUE,text
 Wärmenetz,Netztyp (Wassernetz/Dampfnetz),FALSE,text
 Wärmenetz,Netzlänge (km),FALSE,text
 Wärmenetz,Vorlauftemperatur (°C),FALSE,text
-Wärmenetz,Erweiterungsmöglichkeit (ja um Wärmequellen oder -abnehmer/nein),FALSE,text
+Wärmenetz,Erweiterungsmöglichkeit (Wärmequellen und/oder -abnehmer),FALSE,text
 Wärmenetz,Inbetriebnahmejahr,FALSE,text
 Wärmenetz,Energieträger der Wärmequelle,FALSE,text
 Wärmenetz,Anlagenschlüssel,TRUE,text
