@@ -9,7 +9,6 @@ import css from './eaContribution.css';
 import validationCss from './validation.css';
 
 const Update = 'update';
-const Update_title = 'update_title';
 const Update_Field = 'update_field';
 const Reset_Fields = 'reset_fields';
 
@@ -18,7 +17,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 	constructor() {
 		super({
-			mode: '',
+			mode: nothing,
 			isPortrait: false,
 			hasMinWidth: false,
 			showInvalidFields: false,
@@ -28,13 +27,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			email: '',
 			categoriesSpecification: [],
 			statusMessage: nothing,
-			openSections: ['step1'],
-			stepTitles: {
-				step1: '1. Standort des Objektes markieren',
-				step2: '2. Auswahl der Kategorie',
-				step3: '3. Angaben zum Objekt',
-				step4: '4. Meldung absenden'
-			}
+			openSections: ['step1']
 		});
 
 		const {
@@ -68,9 +61,6 @@ export class EAContribution extends AbstractMvuContentPanel {
 			case Update:
 				return { ...model, ...data };
 
-			case Update_title:
-				return { ...model, stepTitles: { ...model.stepTitles, ...data } };
-
 			case Update_Field: {
 				const categoryFields = model.categoryFields;
 				categoryFields[data.name] = data.value;
@@ -88,9 +78,11 @@ export class EAContribution extends AbstractMvuContentPanel {
 	 */
 	onInitialize() {
 		this.observe(state => state.contribution, data => this.signal(Update, data));
-		this.observe(state => state.contribution.position, () => {
-			setTaggingMode(false);
-		}, false
+		this.observe(state => state.contribution.position,
+			() => {
+				this.signal(Update, { openSections: 'step2' });
+				setTaggingMode(false);
+			}, false
 		);
 	}
 
@@ -168,7 +160,6 @@ export class EAContribution extends AbstractMvuContentPanel {
 			model.categoryFields = {};
 			this.shadowRoot.querySelectorAll('.category-fields input').forEach(i => i.value = '');
 			this.signal(Update, { openSections: 'step3' });
-			this.signal(Update_title, { step2: html`2. Auswahl der Kategorie: <span style="font-style: italic">${e.target.value}</span>` });
 		};
 
 		const categoryFields = {};
@@ -214,12 +205,19 @@ export class EAContribution extends AbstractMvuContentPanel {
 		};
 
 
+		const step1Title = model.mode === nothing ?
+			'1. Standort des Objektes markieren' :
+			html`1. Standort des Objektes markieren: <span style="font-style: italic">${model.mode}</span>`;
+		const step2Title = model.currentCategory === nothing ?
+			'2. Auswahl der Kategorie' :
+			html`2. Auswahl der Kategorie: <span style="font-style: italic">${model.currentCategory}</span>`;
+
 		const form = html`
 			<form id='report' action="#" @submit="${onSubmit}">
 
 				${introduction}
 
-				<collapsable-content id='step1' .title='${model.stepTitles.step1 + model.mode}' .open=${model.openSections.includes('step1')} @toggle=${onToggle}>
+				<collapsable-content id='step1' .title='${step1Title}' .open=${model.openSections.includes('step1')} @toggle=${onToggle}>
 					<div class='button-container'>
 							${buttonHeaders}
 							<button id="tag" type='button' @click=${onClickTagButton(MODUS.report)} title=${translate('ea_contribution_button_tag_tooltip')}>
@@ -240,7 +238,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</div>
 				</collapsable-content>
 
-				<collapsable-content id='step2' .title='${model.stepTitles.step2 + model.currentCategory}' .open=${model.openSections.includes('step2')} @toggle=${onToggle} >
+				<collapsable-content id='step2' .title='${step2Title}' .open=${model.openSections.includes('step2')} @toggle=${onToggle} >
 					<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}" required>
 						<option value="" selected disabled>Bitte wählen ... </option>
 						${model.categoriesSpecification.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
@@ -248,7 +246,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</select>
 				</collapsable-content>
 
-				<collapsable-content id='step3' title='${model.stepTitles.step3}' .open=${model.openSections.includes('step3')} @toggle=${onToggle}>
+				<collapsable-content id='step3' title='3. Angaben zum Objekt' .open=${model.openSections.includes('step3')} @toggle=${onToggle}>
 					<p>Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</p>
 
 ${isCorrection ? '' :
@@ -263,7 +261,7 @@ ${isCorrection ? '' :
 
 				</collapsable-content>
 
-				<collapsable-content id='step4' title='${model.stepTitles.step4}' .open=${model.openSections.includes('step4')} @toggle=${onToggle}>
+				<collapsable-content id='step4' title='4. Meldung absenden' .open=${model.openSections.includes('step4')} @toggle=${onToggle}>
 					<input id='email' placeholder='Ihre E-Mail-Adresse' required  type='email' name="email" 
 						@input=${(e) => this.signal(Update, { email: e.target.value })}>
 					
