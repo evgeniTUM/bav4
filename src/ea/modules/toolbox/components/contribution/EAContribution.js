@@ -215,70 +215,77 @@ export class EAContribution extends AbstractMvuContentPanel {
 		const form = html`
 			<form id='report' action="#" @submit="${onSubmit}">
 
-				${introduction}
+				<div class='form-content'>
+					${introduction}
 
-				<collapsable-content id='step1' .title='${step1Title}' .open=${model.openSections.includes('step1')} @toggle=${onToggle}>
-					<div class='button-container'>
-							${buttonHeaders}
-							<button id="tag" type='button' @click=${onClickTagButton(MODUS.report)} title=${translate('ea_contribution_button_tag_tooltip')}>
-								${translate(model.tagging && !isCorrection ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag_title')}
-								<div class='tag-icon'></div>
-								<span class='subtext'>${translate('ea_contribution_button_tag_text')}</span>
-							</button>
-							${secondButton}
-					</div>
+					<collapsable-content id='step1' .title='${step1Title}' .open=${model.openSections.includes('step1')} @toggle=${onToggle}>
+						<div class='button-container'>
+								${buttonHeaders}
+								<button id="tag" type='button' @click=${onClickTagButton(MODUS.report)} title=${translate('ea_contribution_button_tag_tooltip')}>
+									${translate(model.tagging && !isCorrection ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag_title')}
+									<div class='tag-icon'></div>
+									<span class='subtext'>${translate('ea_contribution_button_tag_text')}</span>
+								</button>
+								${secondButton}
+						</div>
 
-					<br/>
-					<div title=${translate(model.tagging ? 'ea_contribution_coordinates_tooltip_2' : 'ea_contribution_coordinates_tooltip_1')}>
-						<label for="coordinates">${translate('ea_contribution_coordinates_text')}</label>	
-						<input id='coordinates' name='coordiantes' class="coordinates" 
-							oninvalid="this.setCustomValidity('Bitte Standort markieren')"
-							placeholder=${translate('ea_contribution_coordinates_placeholder')}
-							value=${getCoordinatesString()} required></input>
-					</div>
-				</collapsable-content>
+						<br/>
+						<div title=${translate(model.tagging ? 'ea_contribution_coordinates_tooltip_2' : 'ea_contribution_coordinates_tooltip_1')}>
+							<label for="coordinates">${translate('ea_contribution_coordinates_text')}</label>	
+							<input id='coordinates' name='coordiantes' class="coordinates" 
+								oninvalid="this.setCustomValidity('Bitte Standort markieren')"
+								placeholder=${translate('ea_contribution_coordinates_placeholder')}
+								value=${getCoordinatesString()} required></input>
+						</div>
+					</collapsable-content>
 
-				<collapsable-content id='step2' .title='${step2Title}' .open=${model.openSections.includes('step2')} @toggle=${onToggle} >
-					<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}" required>
-						<option value="" selected disabled>Bitte wählen ... </option>
-						${model.categoriesSpecification.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
-						<label for="category">Category</label>
-					</select>
-				</collapsable-content>
+					<collapsable-content id='step2' .title='${step2Title}' .open=${model.openSections.includes('step2')} @toggle=${onToggle} >
+						<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}" required>
+							<option value="" selected disabled>Bitte wählen ... </option>
+							${model.categoriesSpecification.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
+							<label for="category">Category</label>
+						</select>
+					</collapsable-content>
 
-				<collapsable-content id='step3' title='3. Angaben zum Objekt' .open=${model.openSections.includes('step3')} @toggle=${onToggle}>
-					<p>Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</p>
+					<collapsable-content id='step3' title='3. Angaben zum Objekt' .open=${model.openSections.includes('step3')} @toggle=${onToggle}>
+						<p>Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</p>
 
-${isCorrection ? '' :
+	${isCorrection ? '' :
 		html`<div class='category-fields'>
-			${categoryFields[model.currentCategory]}
-		</div>`
+				${categoryFields[model.currentCategory]}
+			</div>`
 }
 
-					<textarea placeholder=${isCorrection ? 'Bitte hier Korrektur eintragen*' : 'Zusätzliche Information'} 
-						id="additional-info" name='additionalInfo' value=${model.description} ?required=${model.isCorrection}
-						@input=${(e) => this.signal(Update, { additionalInfo: e.target.value })}></textarea>
+						<textarea placeholder=${isCorrection ? 'Bitte hier Korrektur eintragen*' : 'Zusätzliche Information'} 
+							id="additional-info" name='additionalInfo' value=${model.description} ?required=${model.isCorrection}
+							@input=${(e) => this.signal(Update, { additionalInfo: e.target.value })}></textarea>
 
-				</collapsable-content>
+					</collapsable-content>
 
-				<collapsable-content id='step4' title='4. Meldung absenden' .open=${model.openSections.includes('step4')} @toggle=${onToggle}>
-					<input id='email' placeholder='Ihre E-Mail-Adresse' required  type='email' name="email" 
-						@input=${(e) => this.signal(Update, { email: e.target.value })}>
-					
-					<p>
-						<br/>
-						Wir behalten uns vor, Meldungen nicht zu übernehmen. Wir beachten die Vorschriften des 
-						<a href="https://www.energieatlas.bayern.de/datenschutz" target='_blank'>Datenschutzes</a>.
-					</p>
-					<div class='form-buttons'>
-						<button id="send" class="button" type='submit'
-							.label=${translate('ea_contribution_button_send')}
-							@click=${onClickSendButton}>
-							Senden
-						</button>
+					<collapsable-content id='step4' title='4. Meldung absenden' .open=${model.openSections.includes('step4')} @toggle=${onToggle}>
+						<input id='email' placeholder='Ihre E-Mail-Adresse' required  type='email' name="email" 
+							@input=${(e) => this.signal(Update, { email: e.target.value })}>
+						
+						<p>
+							<br/>
+							Wir behalten uns vor, Meldungen nicht zu übernehmen. Wir beachten die Vorschriften des 
+							<a href="https://www.energieatlas.bayern.de/datenschutz" target='_blank'>Datenschutzes</a>.
+						</p>
+
+					</collapsable-content>
 					</div>
 
-				</collapsable-content>
+
+					</collapsable-content>
+				</div>
+
+				<div class='form-buttons'>
+					<button id="send" class="button" type='submit'
+						.label=${translate('ea_contribution_button_send')}
+						@click=${onClickSendButton}>
+						Senden
+					</button>
+				</div>
 			</form>`;
 
 		return html`
