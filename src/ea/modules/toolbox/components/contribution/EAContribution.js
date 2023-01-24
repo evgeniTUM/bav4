@@ -206,10 +206,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 
 		const step1Title = model.mode === nothing ?
-			'1. Standort des Objektes markieren' :
+			html`1. Standort des Objektes markieren` :
 			html`1. Standort des Objektes markieren: <span style="font-style: italic">${model.mode}</span>`;
 		const step2Title = model.currentCategory === nothing ?
-			'2. Auswahl der Kategorie' :
+			html`2. Auswahl der Kategorie` :
 			html`2. Auswahl der Kategorie: <span style="font-style: italic">${model.currentCategory}</span>`;
 
 		const form = html`
