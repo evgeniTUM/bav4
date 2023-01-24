@@ -113,9 +113,9 @@ export class ModuleContainer extends MvuElement {
 				style="width: ${module.initialWidth}em">
 				<div class="module-container__content ${getOverlayClass()}">
 					<div class="module-container__tools-nav">
-						<button @click=${close} class="module-container__close-button">
-							x
-						</button>
+						<div @click=${close} class="module-container__close-button">
+							&times;
+						</div>
 					</div>
 					${content}
 				</div>
