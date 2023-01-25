@@ -17,16 +17,17 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 	constructor() {
 		super({
-			mode: nothing,
+			mode: undefined,
 			isPortrait: false,
 			hasMinWidth: false,
 			showInvalidFields: false,
-			currentCategory: nothing,
+			currentCategory: undefined,
+			position: undefined,
 			categoryFields: { },
 			additionalInfo: '',
 			email: '',
 			categoriesSpecification: [],
-			statusMessage: nothing,
+			statusMessage: undefined,
 			openSections: ['step1']
 		});
 
@@ -77,13 +78,14 @@ export class EAContribution extends AbstractMvuContentPanel {
 	 * @override
 	 */
 	onInitialize() {
-		this.observe(state => state.contribution, data => this.signal(Update, data));
 		this.observe(state => state.contribution.position,
 			() => {
-				this.signal(Update, { openSections: 'step2' });
-				setTaggingMode(false);
+				if (this.getModel().position === null) {
+					this.signal(Update, { openSections: 'step2' });
+				}
 			}, false
 		);
+		this.observe(state => state.contribution, data => this.signal(Update, data));
 	}
 
 	/**
@@ -148,10 +150,12 @@ export class EAContribution extends AbstractMvuContentPanel {
 		};
 
 		const createField = (name, optional, type = 'text') => {
+
 			return html`
-				<div id=${name} title=${name}>								
-					<input placeholder=${name + (optional ? '' : '*')}  ?required=${!optional}  type=${type} name="${name}" .value="" 
-						@input=${(e) => this.signal(Update_Field, { name: e.target.name, value: e.target.value })} >
+				<div  id=${name} class="fieldset">						
+					<input type=${type} ?required=${!optional} name=${name} 
+					   @input=${e => this.signal(Update_Field, { name: e.target.name, value: e.target.value })}></input>
+					<label for=${name} class="control-label">${name}</label><i class="bar"></i>
 				</div> `;
 		};
 
@@ -180,16 +184,22 @@ export class EAContribution extends AbstractMvuContentPanel {
 				<div class='arrow-down'></div>
 				<div class='arrow-down'></div>` :
 			'';
+
+		const firstButton = html`
+			<button id="tag" type='button' @click=${onClickTagButton(energyMarketMode ? MODUS.market : MODUS.report)} title=${translate('ea_contribution_button_tag_tooltip')}>
+				<div class='tag-icon'></div>
+				${translate('ea_contribution_button_tag_title')}
+			</button>
+			`;
 		const secondButton = energyMarketMode ?
 			html`<button id="search" type='button' @click=${onClickFindButton} title=${translate('ea_contribution_button_find_tooltip')}>
-				${translate('ea_contribution_button_find_title')}
 				<div class='search-icon'></div>
+				${translate('ea_contribution_button_find_title')}
 				<span class='subtext'>${translate('ea_contribution_button_find_text')}</span>
 			</button>` :
 			html`<button id="correction" type='button' @click=${onClickTagButton(MODUS.correction)} title=${translate('ea_contribution_button_correction_tooltip')}>
-					${translate(model.tagging && isCorrection ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_correction_title')}
-					<div class='tag-icon'></div>
-					<span class='subtext'>${translate('ea_contribution_button_tag_text')}</span>
+					<div class='correction-icon'></div>
+					${translate('ea_contribution_button_correction_title')}
 				</button>`;
 
 		const onToggle = (e) => {
@@ -205,12 +215,9 @@ export class EAContribution extends AbstractMvuContentPanel {
 		};
 
 
-		const step1Title = model.mode === nothing ?
-			html`1. Standort des Objektes markieren` :
-			html`1. Standort des Objektes markieren: <span style="font-style: italic">${model.mode}</span>`;
-		const step2Title = model.currentCategory === nothing ?
-			html`2. Auswahl der Kategorie` :
-			html`2. Auswahl der Kategorie: <span style="font-style: italic">${model.currentCategory}</span>`;
+		const stepTitle = (text, subtext) => html`
+		<span style='color: var(--primary-color)'>${text}${subtext ? ':' : ''}</span>
+		<span style='font-style: italic'>${subtext}</span>`;
 
 		const form = html`
 			<form id='report' action="#" @submit="${onSubmit}">
@@ -218,14 +225,12 @@ export class EAContribution extends AbstractMvuContentPanel {
 				<div class='form-content'>
 					${introduction}
 
-					<collapsable-content id='step1' .title='${step1Title}' .open=${model.openSections.includes('step1')} @toggle=${onToggle}>
+					<div class='step'>
+					<collapsable-content id='step1' .title=${stepTitle('1. Standort des Objektes markieren', model.mode)}
+						.open=${model.openSections.includes('step1')} @toggle=${onToggle}>
 						<div class='button-container'>
 								${buttonHeaders}
-								<button id="tag" type='button' @click=${onClickTagButton(MODUS.report)} title=${translate('ea_contribution_button_tag_tooltip')}>
-									${translate(model.tagging && !isCorrection ? 'ea_contribution_button_tag_cancel' : 'ea_contribution_button_tag_title')}
-									<div class='tag-icon'></div>
-									<span class='subtext'>${translate('ea_contribution_button_tag_text')}</span>
-								</button>
+								${firstButton}
 								${secondButton}
 						</div>
 
@@ -238,16 +243,21 @@ export class EAContribution extends AbstractMvuContentPanel {
 								value=${getCoordinatesString()} required></input>
 						</div>
 					</collapsable-content>
+					</div>
 
-					<collapsable-content id='step2' .title='${step2Title}' .open=${model.openSections.includes('step2')} @toggle=${onToggle} >
+					<div class='step'>
+					<collapsable-content id='step2' .title=${stepTitle('2. Auswahl der Kategorie', model.currentCategory)}
+						.open=${model.openSections.includes('step2')} @toggle=${onToggle} >
 						<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}" required>
 							<option value="" selected disabled>Bitte wählen ... </option>
 							${model.categoriesSpecification.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
 							<label for="category">Category</label>
 						</select>
 					</collapsable-content>
+					</div>
 
-					<collapsable-content id='step3' title='3. Angaben zum Objekt' .open=${model.openSections.includes('step3')} @toggle=${onToggle}>
+					<div class='step'>
+					<collapsable-content id='step3' .title=${stepTitle('3. Angaben zum Objekt')} .open=${model.openSections.includes('step3')} @toggle=${onToggle}>
 						<p>Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</p>
 
 	${isCorrection ? '' :
@@ -261,8 +271,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 							@input=${(e) => this.signal(Update, { additionalInfo: e.target.value })}></textarea>
 
 					</collapsable-content>
+					</div>
 
-					<collapsable-content id='step4' title='4. Meldung absenden' .open=${model.openSections.includes('step4')} @toggle=${onToggle}>
+					<div class='step'>
+					<collapsable-content id='step4' .title=${stepTitle('4. Meldung absenden')} .open=${model.openSections.includes('step4')} @toggle=${onToggle}>
 						<input id='email' placeholder='Ihre E-Mail-Adresse' required  type='email' name="email" 
 							@input=${(e) => this.signal(Update, { email: e.target.value })}>
 						
@@ -274,15 +286,12 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 					</collapsable-content>
 					</div>
-
-
-					</collapsable-content>
 				</div>
 
 				<div class='form-buttons'>
 					<button id="send" class="button" type='submit'
 						.label=${translate('ea_contribution_button_send')}
-						@click=${onClickSendButton}>
+						@click=${onClickSendButton} >
 						Senden
 					</button>
 				</div>
@@ -295,7 +304,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 				<slot name='introduction'></slot>
 
-				${model.statusMessage !== nothing ? model.statusMessage : form}
+				${model.statusMessage !== undefined ? model.statusMessage : form}
 			
 			</div>
 		`;

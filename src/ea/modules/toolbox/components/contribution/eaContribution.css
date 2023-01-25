@@ -58,10 +58,21 @@ textarea:required::placeholder {
 .tag-icon {
 	height: 2em;
 	width: 100%;
+
 	background-position: center;
 	background-size: contain;
 	background-repeat: no-repeat;
-	background-image: url('assets/marker.svg');
+	background-image: url('assets/icon_report.svg');
+	background-blend-mode: difference;
+}
+
+.correction-icon {
+	height: 2em;
+	width: 100%;
+	background-position: center;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-image: url('assets/icon_correction.svg');
 }
 
 .header {
@@ -87,6 +98,10 @@ button {
 	font-weight: bold;
 	position: relative;
 	z-index: 1;
+}
+
+button:disabled {
+	background: gray;
 }
 
 .button-container button {
@@ -136,4 +151,8 @@ button:focus {
 
 .error {
 	color: red;
+}
+
+.step {
+	border-top: 2px solid var(--primary-color);
 }
