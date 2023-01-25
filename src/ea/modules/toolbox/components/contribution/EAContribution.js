@@ -186,19 +186,24 @@ export class EAContribution extends AbstractMvuContentPanel {
 			'';
 
 		const firstButton = html`
-			<button id="tag" type='button' @click=${onClickTagButton(energyMarketMode ? MODUS.market : MODUS.report)} title=${translate('ea_contribution_button_tag_tooltip')}>
-				<div class='tag-icon'></div>
+			<button id="tag" type='button' class=${!energyMarketMode && (model.mode === MODUS.report) ? 'active' : 'inactive'} 
+				@click=${onClickTagButton(energyMarketMode ? MODUS.market : MODUS.report)} 
+				title=${translate('ea_contribution_button_tag_tooltip')}>
+				<div class='button-icon tag-icon active'></div>
 				${translate('ea_contribution_button_tag_title')}
 			</button>
 			`;
 		const secondButton = energyMarketMode ?
-			html`<button id="search" type='button' @click=${onClickFindButton} title=${translate('ea_contribution_button_find_tooltip')}>
+			html`<button id="search" class=type='button' 
+				@click=${onClickFindButton} title=${translate('ea_contribution_button_find_tooltip')}>
 				<div class='search-icon'></div>
 				${translate('ea_contribution_button_find_title')}
 				<span class='subtext'>${translate('ea_contribution_button_find_text')}</span>
 			</button>` :
-			html`<button id="correction" type='button' @click=${onClickTagButton(MODUS.correction)} title=${translate('ea_contribution_button_correction_tooltip')}>
-					<div class='correction-icon'></div>
+			html`<button id="correction" class=${model.mode === MODUS.correction ? 'active' : 'inactive'} type='button' 
+				@click=${onClickTagButton(MODUS.correction)} 
+				title=${translate('ea_contribution_button_correction_tooltip')}>
+					<div class='button-icon correction-icon'></div>
 					${translate('ea_contribution_button_correction_title')}
 				</button>`;
 
