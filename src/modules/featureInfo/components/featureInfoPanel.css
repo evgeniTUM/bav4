@@ -91,6 +91,10 @@ td:nth-last-child(2):first-child {
 	padding-top: .9em;
 }
 
+td:nth-last-child(1):first-child:empty {
+	background: var(--secondary-bg-color);
+}
+
 .collapse-content b {
 	font-size: .9rem;
 	opacity: .8;
