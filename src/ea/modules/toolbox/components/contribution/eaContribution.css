@@ -55,7 +55,6 @@ textarea:required::placeholder {
 	background-image: url('assets/search.svg');
 }
 
-
 .inactive .button-icon {
 	height: 4em;
 	width: 100%;
