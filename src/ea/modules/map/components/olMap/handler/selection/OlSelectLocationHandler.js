@@ -43,7 +43,7 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 		}
 		this._map = olMap;
 
-		this._unregister = this._register(this._storeService.getStore());
+		this._unregisterList = this._register(this._storeService.getStore());
 		this._helpTooltip.messageProvideFunction = () => 'Standort markieren';
 
 		return this._layer;
@@ -57,7 +57,8 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 		this._layer = null;
 		this._map = null;
 		this._helpTooltip.deactivate();
-		this._unregister();
+		this._positionFeature = new Feature();
+		this._unregisterList.forEach(unregister => unregister());
 		unByKey(this._listeners);
 	}
 
@@ -65,15 +66,13 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 
 		let tagging = false;
 
+
 		const onClick = (event) => {
 			const position = event.coordinate;
 			if (!(tagging && position)) {
 				return;
 			}
 			setLocation(position);
-			this._positionFeature.setStyle(highlightCoordinateFeatureStyleFunction);
-			this._positionFeature.setGeometry(new Point(position));
-			this._map.renderSync();
 		};
 
 		const onMove = (event) => {
@@ -101,8 +100,21 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 			}
 		};
 
-		onTaggingChanged(store.getState().contribution.tagging);
 
-		return observe(store, state => state.contribution.tagging, onTaggingChanged);
+		const onPositionChanged = (position) => {
+			if (!position) {
+				return;
+			}
+
+			this._positionFeature.setStyle(highlightCoordinateFeatureStyleFunction);
+			this._positionFeature.setGeometry(new Point(position));
+
+			this._map.renderSync();
+		};
+
+		return [
+			observe(store, state => state.contribution.position, onPositionChanged, false),
+			observe(store, state => state.contribution.tagging, onTaggingChanged, false)
+		];
 	}
 }

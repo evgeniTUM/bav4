@@ -112,6 +112,13 @@ describe('EAContributon', () => {
 
 			expect(element.shadowRoot.querySelector('#additional-info').required).toBeFalse();
 		});
+
+		it('resets position on activate', async () => {
+			setLocation([4, 2]);
+			await setup();
+
+			expect(store.getState().contribution.position).toEqual(null);
+		});
 	});
 
 	describe('location handling', () => {

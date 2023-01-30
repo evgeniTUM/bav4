@@ -1,7 +1,7 @@
 import { html, nothing } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { AbstractMvuContentPanel } from '../../../../../modules/menu/components/mainMenu/content/AbstractMvuContentPanel';
-import { setTaggingMode } from '../../../../store/contribution/contribution.action';
+import { setLocation, setTaggingMode } from '../../../../store/contribution/contribution.action';
 import { setCurrentModule } from '../../../../store/module/ea.action';
 import { ResearchModuleContent } from '../research/ResearchModuleContent';
 import { MODUS } from './ContributionModus';
@@ -78,6 +78,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 	 * @override
 	 */
 	onInitialize() {
+		setLocation(null);
+
 		this.observe(state => state.contribution.position,
 			() => {
 				if (this.getModel().position === null) {

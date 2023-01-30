@@ -1,8 +1,10 @@
-import { Map, View } from 'ol';
+import { Feature, Map, View } from 'ol';
+import { Geometry, Point } from 'ol/geom';
 import TileLayer from 'ol/layer/Tile';
 import { fromLonLat } from 'ol/proj';
 import { OSM, TileDebug } from 'ol/source';
 import { SELECT_LOCATION_LAYER_ID, OlSelectLocationHandler } from '../../../../../../../../src/ea/modules/map/components/olMap/handler/selection/OlSelectLocationHandler';
+import { setLocation } from '../../../../../../../../src/ea/store/contribution/contribution.action';
 import { contributionReducer, initialState } from '../../../../../../../../src/ea/store/contribution/contribution.reducer';
 import { $injector } from '../../../../../../../../src/injection';
 import { TestUtils } from '../../../../../../../test-utils.js';
@@ -61,6 +63,19 @@ describe('OlSelectLocationHandler', () => {
 			const layer = classUnderTest.activate(map);
 
 			expect(layer).toBeTruthy();
+		});
+
+		it('displays current selected location', () => {
+			const map = setupMap();
+			setup();
+
+			const classUnderTest = new OlSelectLocationHandler();
+			classUnderTest.activate(map);
+
+			setLocation([4, 2]);
+
+			expect(classUnderTest._positionFeature.getGeometry().getCoordinates()).toEqual([4, 2]);
+
 		});
 	});
 });
