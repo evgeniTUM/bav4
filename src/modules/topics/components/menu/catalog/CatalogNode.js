@@ -87,7 +87,7 @@ export class CatalogNode extends AbstractContentPanel {
 					<div class="ba-list-item  ba-list-item__sub-header non-selectable" @click="${toggleCollapse}">
 						<span class="ba-list-item__text  ba-list-item__primary-text">
 							${label}
-							<i class='icon icon-rotate-90 chevron ${classMap(iconCollapseClass)}'></i>
+							<i class='centered-icon icon icon-rotate-90 chevron ${classMap(iconCollapseClass)}'></i>
 						</span>					
 					</div>		
 					<div class=" collapse-content ${classMap(bodyCollapseClass)}">	
