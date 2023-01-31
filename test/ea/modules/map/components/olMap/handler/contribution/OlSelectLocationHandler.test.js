@@ -1,9 +1,8 @@
-import { Feature, Map, View } from 'ol';
-import { Geometry, Point } from 'ol/geom';
+import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import { fromLonLat } from 'ol/proj';
 import { OSM, TileDebug } from 'ol/source';
-import { SELECT_LOCATION_LAYER_ID, OlSelectLocationHandler } from '../../../../../../../../src/ea/modules/map/components/olMap/handler/selection/OlSelectLocationHandler';
+import { OlSelectLocationHandler, SELECT_LOCATION_LAYER_ID } from '../../../../../../../../src/ea/modules/map/components/olMap/handler/selection/OlSelectLocationHandler';
 import { setLocation } from '../../../../../../../../src/ea/store/contribution/contribution.action';
 import { contributionReducer, initialState } from '../../../../../../../../src/ea/store/contribution/contribution.reducer';
 import { $injector } from '../../../../../../../../src/injection';

@@ -64,7 +64,7 @@ describe('HttpService', () => {
 			const controllerSpy = spyOn(controller, 'abort');
 			const fetchSpy = spyOn(window, 'fetch').and.callFake(() => {
 				// we wait 2000ms in order to exceed the default timeout limit
-				jasmine.clock().tick(2000);
+				jasmine.clock().tick(3500);
 			});
 
 			await httpService.fetch('something', {}, controller);
