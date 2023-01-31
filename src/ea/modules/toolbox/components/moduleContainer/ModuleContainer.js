@@ -102,7 +102,7 @@ export class ModuleContainer extends MvuElement {
 					type="range" 
 					min="${MIN_WIDTH}" 
 					max="${MAX_WIDTH}" 
-					value="${module.initialWidth}" 
+					.value="${module.initialWidth}"
 					draggable='true' 
 					@input=${changeWidth} 
 					@dragstart=${onPreventDragging}>
