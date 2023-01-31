@@ -74,11 +74,22 @@ export class EAContribution extends AbstractMvuContentPanel {
 		}
 	}
 
+	reset() {
+		setLocation(null);
+		setTaggingMode(false);
+	}
+
+	/**
+	 * @override
+	 */
+	onDisconnect() {
+		this.reset();
+	}
+
 	/**
 	 * @override
 	 */
 	onInitialize() {
-		setLocation(null);
 
 		this.observe(state => state.contribution.position,
 			() => {
