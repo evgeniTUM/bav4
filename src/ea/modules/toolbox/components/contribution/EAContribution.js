@@ -152,12 +152,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 		};
 
 		const createField = (name, optional, type = 'text') => {
-
 			return html`
-				<div  id=${name} class="fieldset">						
-					<input type=${type} ?required=${!optional} name=${name} 
-					   @input=${e => this.signal(Update_Field, { name: e.target.name, value: e.target.value })}></input>
-					<label for=${name} class="control-label">${name}</label><i class="bar"></i>
+				<div id=${name} title=${name}>								
+					<input placeholder=${name + (optional ? '' : '*')}  ?required=${!optional}  type=${type} name="${name}" .value="" 
+						@input=${(e) => this.signal(Update_Field, { name: e.target.name, value: e.target.value })} >
 				</div> `;
 		};
 
