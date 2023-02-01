@@ -196,22 +196,31 @@ export class EAContribution extends AbstractMvuContentPanel {
 				<div class='arrow-down'></div>` :
 			'';
 
+		const firstButtonClass = model.tagging ?
+			energyMarketMode || !isCorrection ?
+				'active' : 'inactive'
+			: 'unselected';
+		const secondButtonClass = model.tagging ?
+			!energyMarketMode && isCorrection ?
+				'active' : 'inactive'
+			: 'unselected';
+
 		const firstButton = html`
-			<button id="tag" type='button' class=${!energyMarketMode && (model.mode === MODUS.report) ? 'active' : 'inactive'} 
+			<button id="tag" type='button' class=${firstButtonClass} 
 				@click=${onClickTagButton(energyMarketMode ? MODUS.market : MODUS.report)} 
 				title=${translate('ea_contribution_button_tag_tooltip')}>
-				<div class='button-icon tag-icon active'></div>
+				<div class='button-icon tag-icon'></div>
 				${translate('ea_contribution_button_tag_title')}
 			</button>
 			`;
 		const secondButton = energyMarketMode ?
-			html`<button id="search" class=type='button' 
+			html`<button id="search" class=type='unselected' 
 				@click=${onClickFindButton} title=${translate('ea_contribution_button_find_tooltip')}>
 				<div class='search-icon'></div>
 				${translate('ea_contribution_button_find_title')}
 				<span class='subtext'>${translate('ea_contribution_button_find_text')}</span>
 			</button>` :
-			html`<button id="correction" class=${model.mode === MODUS.correction ? 'active' : 'inactive'} type='button' 
+			html`<button id="correction" class=${secondButtonClass} type='button' 
 				@click=${onClickTagButton(MODUS.correction)} 
 				title=${translate('ea_contribution_button_correction_tooltip')}>
 					<div class='button-icon correction-icon'></div>
@@ -291,7 +300,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 					<div class='step'>
 					<collapsable-content id='step4' .title=${stepTitle('4. Ihre E-Mail Adresse')} .open=${model.openSections.includes('step4')} @toggle=${onToggle}>
-						<input id='email' placeholder='Ihre E-Mail-Adresse' required  type='email' name="email" 
+						<input id='email' placeholder='Ihre E-Mail-Adresse*' required  type='email' name="email" 
 							@input=${(e) => this.signal(Update, { email: e.target.value })}>
 						
 						<p>

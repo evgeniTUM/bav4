@@ -31,24 +31,25 @@ p {
 	margin: 0 auto;
 }
 
-.active .button-icon {
-	height: 4em;
+.button-icon {
+	height: 3em;
 	width: 100%;
-
-	background-color: white;
-	color: var(--primary-color);
-
 	margin-bottom: 0.5em;
 }
 
-.inactive .button-icon {
-	height: 4em;
-	width: 100%;
+.active .button-icon {
+	background-color: white;
+	color: var(--primary-color);
+}
 
+.inactive .button-icon {
 	background-color: var(--primary-color);
 	color: white;
+}
 
-	margin-bottom: 0.5em;
+.unselected .button-icon {
+	background-color: var(--primary-color);
+	color: white;
 }
 
 .tag-icon {
@@ -116,12 +117,21 @@ p {
 	justify-self: center;
 }
 
+.button-container:hover button:hover {
+	filter: brightness(0.8);
+}
 .button-container button.active {
 	color: white;
 	background-color: var(--primary-color);
 }
 
 .button-container button.inactive {
+	opacity: 0.5;
+	background-color: white;
+	color: var(--primary-color);
+}
+
+.button-container button.unselected {
 	background-color: white;
 	color: var(--primary-color);
 }
