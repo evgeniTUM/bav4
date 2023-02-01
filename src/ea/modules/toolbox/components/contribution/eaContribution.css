@@ -87,6 +87,10 @@ p {
 	background-image: url('assets/search.svg');
 }
 
+button:hover {
+	filter: brightness(0.8);
+}
+
 .button-container {
 	border-color: var(--primary-color-lighter);
 	border-width: 1px;
@@ -115,10 +119,6 @@ p {
 	width: 100%;
 	/* width: 15em; */
 	justify-self: center;
-}
-
-.button-container:hover button:hover {
-	filter: brightness(0.8);
 }
 
 .button-container button.active {
@@ -203,8 +203,4 @@ textarea:required::placeholder {
 
 .error {
 	color: red;
-}
-
-.step {
-	border-top: 2px solid var(--primary-color);
 }

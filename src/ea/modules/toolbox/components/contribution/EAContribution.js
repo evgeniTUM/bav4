@@ -6,6 +6,7 @@ import { setCurrentModule } from '../../../../store/module/ea.action';
 import { ResearchModuleContent } from '../research/ResearchModuleContent';
 import { MODUS } from './ContributionModus';
 import css from './eaContribution.css';
+import collapsableContentCss from './collapsableContent.css';
 import validationCss from './validation.css';
 
 const Update = 'update';
@@ -251,7 +252,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 					${introduction}
 
 					<div class='step'>
-					<collapsable-content id='step1' .title=${stepTitle('1. Standort des Objektes markieren', model.mode)}
+					<collapsable-content id='step1' .customCSS=${collapsableContentCss}
+						.title=${stepTitle('1. Standort des Objektes markieren', model.mode)}
 						.open=${model.openSections.includes('step1')} @toggle=${onToggle}>
 						<div class='button-container'>
 								${buttonHeaders}
@@ -271,7 +273,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</div>
 
 					<div class='step'>
-					<collapsable-content id='step2' .title=${stepTitle('2. Auswahl der Kategorie', model.currentCategory)}
+					<collapsable-content id='step2' .customCSS=${collapsableContentCss}
+						.title=${stepTitle('2. Auswahl der Kategorie', model.currentCategory)}
 						.open=${model.openSections.includes('step2')} @toggle=${onToggle} >
 						<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}" required>
 							<option value="" selected disabled>Bitte wählen ... </option>
@@ -282,7 +285,9 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</div>
 
 					<div class='step'>
-					<collapsable-content id='step3' .title=${stepTitle('3. Angaben zum Objekt')} .open=${model.openSections.includes('step3')} @toggle=${onToggle}>
+					<collapsable-content id='step3' .customCSS=${collapsableContentCss}
+						.title=${stepTitle('3. Angaben zum Objekt')} .open=${model.openSections.includes('step3')}
+						@toggle=${onToggle}>
 						<p>Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</p>
 
 	${isCorrection ? '' :
@@ -299,7 +304,9 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</div>
 
 					<div class='step'>
-					<collapsable-content id='step4' .title=${stepTitle('4. Ihre E-Mail Adresse')} .open=${model.openSections.includes('step4')} @toggle=${onToggle}>
+					<collapsable-content id='step4' .customCSS=${collapsableContentCss}
+						.title=${stepTitle('4. Ihre E-Mail Adresse')} .open=${model.openSections.includes('step4')} 
+						@toggle=${onToggle}>
 						<input id='email' placeholder='Ihre E-Mail-Adresse*' required  type='email' name="email" 
 							@input=${(e) => this.signal(Update, { email: e.target.value })}>
 						

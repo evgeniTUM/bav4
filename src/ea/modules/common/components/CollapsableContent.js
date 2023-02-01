@@ -1,4 +1,4 @@
-import { html } from 'lit-html';
+import { html, nothing } from 'lit-html';
 import css from './collapsableContent.css';
 import { classMap } from 'lit-html/directives/class-map.js';
 import { TEST_ID_ATTRIBUTE_NAME } from '../../../../utils/markup';
@@ -8,6 +8,7 @@ import { AbstractMvuContentPanel } from '../../../../modules/menu/components/mai
 const Update_Disabled = 'update_disabled';
 const Update_Open = 'update_open';
 const Update_Title = 'update_title';
+const Update_CSS = 'update_css';
 
 export class CollapsableContent extends AbstractMvuContentPanel {
 
@@ -15,7 +16,8 @@ export class CollapsableContent extends AbstractMvuContentPanel {
 		super({
 			disabled: false,
 			open: false,
-			title: 'title'
+			title: 'title',
+			customCSS: nothing
 		});
 	}
 
@@ -33,6 +35,8 @@ export class CollapsableContent extends AbstractMvuContentPanel {
 				return { ...model, open: data };
 			case Update_Title:
 				return { ...model, title: data };
+			case Update_CSS:
+				return { ...model, customCSS: data };
 		}
 	}
 
@@ -40,7 +44,7 @@ export class CollapsableContent extends AbstractMvuContentPanel {
 	 * @override
 	 */
 	createView(model) {
-		const { disabled, open } = model;
+		const { disabled, open, customCSS } = model;
 
 		const onClick = (event) => {
 			const newState = !open;
@@ -57,6 +61,7 @@ export class CollapsableContent extends AbstractMvuContentPanel {
 		const title = titleAttribute ? titleAttribute : model.title;
 
 		return html`
+		<style>${customCSS}</style> 
 		<style>${css}</style> 
         <div class='ba-section divider ${classMap({ disabled: disabled })}'>
             <div class='header ba-list-item' @click=${onClick}>
@@ -98,6 +103,10 @@ export class CollapsableContent extends AbstractMvuContentPanel {
 
 	get open() {
 		return this.getModel().open;
+	}
+
+	set customCSS(value) {
+		this.signal(Update_CSS, value);
 	}
 
 	/**
