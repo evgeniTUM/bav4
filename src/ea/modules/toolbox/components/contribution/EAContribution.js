@@ -290,7 +290,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</div>
 
 					<div class='step'>
-					<collapsable-content id='step4' .title=${stepTitle('4. Meldung absenden')} .open=${model.openSections.includes('step4')} @toggle=${onToggle}>
+					<collapsable-content id='step4' .title=${stepTitle('4. Ihre E-Mail Adresse')} .open=${model.openSections.includes('step4')} @toggle=${onToggle}>
 						<input id='email' placeholder='Ihre E-Mail-Adresse' required  type='email' name="email" 
 							@input=${(e) => this.signal(Update, { email: e.target.value })}>
 						
