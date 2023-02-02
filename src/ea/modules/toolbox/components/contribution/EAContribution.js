@@ -6,6 +6,7 @@ import { setCurrentModule } from '../../../../store/module/ea.action';
 import { ResearchModuleContent } from '../research/ResearchModuleContent';
 import { MODUS } from './ContributionModus';
 import css from './eaContribution.css';
+import collapsableContentCss from './collapsableContent.css';
 import validationCss from './validation.css';
 
 const Update = 'update';
@@ -74,11 +75,22 @@ export class EAContribution extends AbstractMvuContentPanel {
 		}
 	}
 
+	reset() {
+		setLocation(null);
+		setTaggingMode(false);
+	}
+
+	/**
+	 * @override
+	 */
+	onDisconnect() {
+		this.reset();
+	}
+
 	/**
 	 * @override
 	 */
 	onInitialize() {
-		setLocation(null);
 
 		this.observe(state => state.contribution.position,
 			() => {
@@ -152,12 +164,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 		};
 
 		const createField = (name, optional, type = 'text') => {
-
 			return html`
-				<div  id=${name} class="fieldset">						
-					<input type=${type} ?required=${!optional} name=${name} 
-					   @input=${e => this.signal(Update_Field, { name: e.target.name, value: e.target.value })}></input>
-					<label for=${name} class="control-label">${name}</label><i class="bar"></i>
+				<div id=${name} title=${name}>								
+					<input placeholder=${name + (optional ? '' : '*')}  ?required=${!optional}  type=${type} name="${name}" .value="" 
+						@input=${(e) => this.signal(Update_Field, { name: e.target.name, value: e.target.value })} >
 				</div> `;
 		};
 
@@ -177,36 +187,47 @@ export class EAContribution extends AbstractMvuContentPanel {
 		const isCorrection = model.mode === MODUS.correction;
 
 		const introduction = energyMarketMode ?
-			html`<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>` :
-			html`<p>Melden Sie bisher nicht dargestellte Objekte (z. B. EEG-Anlagen, Wärmenetze) und ergänzen oder korrigieren Sie Angaben zu bestehenden Objekten.</p>`;
+			html`<div class='introduction'>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</div>` :
+			html`<div class='introduction'>Melden Sie bisher nicht dargestellte Objekte (z. B. EEG-Anlagen, Wärmenetze) und ergänzen oder korrigieren Sie Angaben zu bestehenden Objekten.</div>`;
 
 		const buttonHeaders = energyMarketMode ?
-			html`<div class='button-header'>Meldung neuer Einträge/ Korrektur bestehender Einträge</div>
+			html`<div class='button-header'>Meldung neuer Einträge</div>
 				<div class='button-header'>Bestehende Einträge durchsuchen</div>
 				<div class='arrow-down'></div>
 				<div class='arrow-down'></div>` :
 			'';
 
+		const firstButtonClass = model.tagging ?
+			energyMarketMode || !isCorrection ?
+				'active' : 'inactive'
+			: 'unselected';
+		const secondButtonClass = model.tagging ?
+			energyMarketMode || isCorrection ?
+				'active' : 'inactive'
+			: 'unselected';
+
 		const firstButton = html`
-			<button id="tag" type='button' class=${!energyMarketMode && (model.mode === MODUS.report) ? 'active' : 'inactive'} 
+			<button id="tag" type='button' class=${firstButtonClass} 
 				@click=${onClickTagButton(energyMarketMode ? MODUS.market : MODUS.report)} 
 				title=${translate('ea_contribution_button_tag_tooltip')}>
-				<div class='button-icon tag-icon active'></div>
-				${translate('ea_contribution_button_tag_title')}
+					<div class='button-icon tag-icon'></div>
+					${translate('ea_contribution_button_tag_title')}
+					<div class='subtext'>${translate('ea_contribution_button_tag_subtext')}</div>
 			</button>
 			`;
 		const secondButton = energyMarketMode ?
-			html`<button id="search" class=type='button' 
+			html`<button id="search" type='button' class='unselected' 
 				@click=${onClickFindButton} title=${translate('ea_contribution_button_find_tooltip')}>
-				<div class='search-icon'></div>
-				${translate('ea_contribution_button_find_title')}
-				<span class='subtext'>${translate('ea_contribution_button_find_text')}</span>
+					<div class='button-icon search-icon'></div>
+					${translate('ea_contribution_button_find_title')}
+					<div class='subtext'>${translate('ea_contribution_button_find_text')}</div>
 			</button>` :
-			html`<button id="correction" class=${model.mode === MODUS.correction ? 'active' : 'inactive'} type='button' 
+			html`<button id="correction" type='button' class=${secondButtonClass}
 				@click=${onClickTagButton(MODUS.correction)} 
 				title=${translate('ea_contribution_button_correction_tooltip')}>
 					<div class='button-icon correction-icon'></div>
 					${translate('ea_contribution_button_correction_title')}
+					<div class='subtext'>${translate('ea_contribution_button_tag_subtext')}</div>
 				</button>`;
 
 		const onToggle = (e) => {
@@ -233,10 +254,13 @@ export class EAContribution extends AbstractMvuContentPanel {
 					${introduction}
 
 					<div class='step'>
-					<collapsable-content id='step1' .title=${stepTitle('1. Standort des Objektes markieren', model.mode)}
+					<collapsable-content id='step1' .customCSS=${collapsableContentCss}
+						.title=${stepTitle('1. Standort des Objektes markieren', model.mode)}
 						.open=${model.openSections.includes('step1')} @toggle=${onToggle}>
+						<div class='arrow-container'>
+							${buttonHeaders}
+						</div>
 						<div class='button-container'>
-								${buttonHeaders}
 								${firstButton}
 								${secondButton}
 						</div>
@@ -253,7 +277,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</div>
 
 					<div class='step'>
-					<collapsable-content id='step2' .title=${stepTitle('2. Auswahl der Kategorie', model.currentCategory)}
+					<collapsable-content id='step2' .customCSS=${collapsableContentCss}
+						.title=${stepTitle('2. Auswahl der Kategorie', model.currentCategory)}
 						.open=${model.openSections.includes('step2')} @toggle=${onToggle} >
 						<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}" required>
 							<option value="" selected disabled>Bitte wählen ... </option>
@@ -264,7 +289,9 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</div>
 
 					<div class='step'>
-					<collapsable-content id='step3' .title=${stepTitle('3. Angaben zum Objekt')} .open=${model.openSections.includes('step3')} @toggle=${onToggle}>
+					<collapsable-content id='step3' .customCSS=${collapsableContentCss}
+						.title=${stepTitle('3. Angaben zum Objekt')} .open=${model.openSections.includes('step3')}
+						@toggle=${onToggle}>
 						<p>Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</p>
 
 	${isCorrection ? '' :
@@ -281,8 +308,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</div>
 
 					<div class='step'>
-					<collapsable-content id='step4' .title=${stepTitle('4. Meldung absenden')} .open=${model.openSections.includes('step4')} @toggle=${onToggle}>
-						<input id='email' placeholder='Ihre E-Mail-Adresse' required  type='email' name="email" 
+					<collapsable-content id='step4' .customCSS=${collapsableContentCss}
+						.title=${stepTitle('4. Ihre E-Mail Adresse')} .open=${model.openSections.includes('step4')} 
+						@toggle=${onToggle}>
+						<input id='email' placeholder='Ihre E-Mail-Adresse*' required  type='email' name="email" 
 							@input=${(e) => this.signal(Update, { email: e.target.value })}>
 						
 						<p>
