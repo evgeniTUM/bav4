@@ -187,11 +187,11 @@ export class EAContribution extends AbstractMvuContentPanel {
 		const isCorrection = model.mode === MODUS.correction;
 
 		const introduction = energyMarketMode ?
-			html`<p>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</p>` :
-			html`<p>Melden Sie bisher nicht dargestellte Objekte (z. B. EEG-Anlagen, Wärmenetze) und ergänzen oder korrigieren Sie Angaben zu bestehenden Objekten.</p>`;
+			html`<div class='introduction'>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</div>` :
+			html`<div class='introduction'>Melden Sie bisher nicht dargestellte Objekte (z. B. EEG-Anlagen, Wärmenetze) und ergänzen oder korrigieren Sie Angaben zu bestehenden Objekten.</div>`;
 
 		const buttonHeaders = energyMarketMode ?
-			html`<div class='button-header'>Meldung neuer Einträge/ Korrektur bestehender Einträge</div>
+			html`<div class='button-header'>Meldung neuer Einträge</div>
 				<div class='button-header'>Bestehende Einträge durchsuchen</div>
 				<div class='arrow-down'></div>
 				<div class='arrow-down'></div>` :
@@ -202,7 +202,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 				'active' : 'inactive'
 			: 'unselected';
 		const secondButtonClass = model.tagging ?
-			!energyMarketMode && isCorrection ?
+			energyMarketMode || isCorrection ?
 				'active' : 'inactive'
 			: 'unselected';
 
@@ -210,22 +210,24 @@ export class EAContribution extends AbstractMvuContentPanel {
 			<button id="tag" type='button' class=${firstButtonClass} 
 				@click=${onClickTagButton(energyMarketMode ? MODUS.market : MODUS.report)} 
 				title=${translate('ea_contribution_button_tag_tooltip')}>
-				<div class='button-icon tag-icon'></div>
-				${translate('ea_contribution_button_tag_title')}
+					<div class='button-icon tag-icon'></div>
+					${translate('ea_contribution_button_tag_title')}
+					<div class='subtext'>${translate('ea_contribution_button_tag_subtext')}</div>
 			</button>
 			`;
 		const secondButton = energyMarketMode ?
-			html`<button id="search" class=type='unselected' 
+			html`<button id="search" type='button' class='unselected' 
 				@click=${onClickFindButton} title=${translate('ea_contribution_button_find_tooltip')}>
-				<div class='search-icon'></div>
-				${translate('ea_contribution_button_find_title')}
-				<span class='subtext'>${translate('ea_contribution_button_find_text')}</span>
+					<div class='button-icon search-icon'></div>
+					${translate('ea_contribution_button_find_title')}
+					<div class='subtext'>${translate('ea_contribution_button_find_text')}</div>
 			</button>` :
-			html`<button id="correction" class=${secondButtonClass} type='button' 
+			html`<button id="correction" type='button' class=${secondButtonClass}
 				@click=${onClickTagButton(MODUS.correction)} 
 				title=${translate('ea_contribution_button_correction_tooltip')}>
 					<div class='button-icon correction-icon'></div>
 					${translate('ea_contribution_button_correction_title')}
+					<div class='subtext'>${translate('ea_contribution_button_tag_subtext')}</div>
 				</button>`;
 
 		const onToggle = (e) => {
@@ -255,8 +257,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 					<collapsable-content id='step1' .customCSS=${collapsableContentCss}
 						.title=${stepTitle('1. Standort des Objektes markieren', model.mode)}
 						.open=${model.openSections.includes('step1')} @toggle=${onToggle}>
+						<div class='arrow-container'>
+							${buttonHeaders}
+						</div>
 						<div class='button-container'>
-								${buttonHeaders}
 								${firstButton}
 								${secondButton}
 						</div>

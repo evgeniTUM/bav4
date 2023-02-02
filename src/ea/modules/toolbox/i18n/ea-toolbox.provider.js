@@ -13,7 +13,7 @@ export const provide = (lang) => {
 
 				ea_contribution_additional_input: 'Zusätzlicher Text',
 				ea_contribution_button_tag_title: 'Neumeldung',
-				ea_contribution_button_tag_text: 'Standort markieren',
+				ea_contribution_button_tag_subtext: 'Standort markieren',
 				ea_contribution_button_tag_tooltip: 'Nach Klick auf "Melden" markieren Sie bitte einen Standort in der Karte. Die Koordinaten werden automatisch übernommen.',
 				ea_contribution_button_tag_cancel: 'Abbrechen',
 				ea_contribution_button_correction_title: 'Korrektur',
@@ -40,7 +40,7 @@ export const provide = (lang) => {
 
 				ea_contribution_additional_input: 'Zusätzlicher Text',
 				ea_contribution_button_tag_title: 'Neumeldung',
-				ea_contribution_button_tag_text: 'Standort markieren',
+				ea_contribution_button_tag_subtext: 'Standort markieren',
 				ea_contribution_button_tag_tooltip: 'Nach Klick auf "Neumeldung" markieren Sie bitte einen Standort in der Karte. Die Koordinaten werden automatisch übernommen.',
 				ea_contribution_button_tag_cancel: 'Abbrechen',
 				ea_contribution_button_correction_title: 'Korrektur',
