@@ -249,9 +249,9 @@ export class EAContribution extends AbstractMvuContentPanel {
 		<span style='font-style: italic'>${subtext}</span>`;
 
 		const form = html`
-			<form id='report' action="#">
+			<form id='report' class='form-content' action="#">
 
-				<div class='form-content'>
+				<div>
 					${introduction}
 
 					<div class='step'>
@@ -333,14 +333,29 @@ export class EAContribution extends AbstractMvuContentPanel {
 				</div>
 			</form>`;
 
+		const reset = () => {
+			alert('resset');
+		};
+
+		const content = model.statusMessage !== undefined ?
+			html`
+			<div class='form-content'>
+				<div>${model.statusMessage}</div>
+				<div class='form-buttons'>
+					<ba-button id="back" .label=${translate('ea_contribution_button_back')} 
+						.type=${'primary'} @click=${reset} >
+						Senden
+					</button>
+				</div>
+			</div>` :
+			form;
+
 		return html`
 			<style>${css}</style>
 			<style>${model.showInvalidFields ? validationCss : nothing}</style>
 			<div class="container">
 
-				<slot name='introduction'></slot>
-
-				${model.statusMessage !== undefined ? model.statusMessage : form}
+				${content}
 			
 			</div>
 		`;
