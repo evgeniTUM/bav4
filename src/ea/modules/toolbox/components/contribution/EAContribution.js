@@ -137,11 +137,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 			<p>Bitte versuchen sie es zu einem späteren Zeitpunkt noch einmal</p>
 		</div>`;
 
-
-
-		const onSubmit = async (event) => {
+		const submit = async () => {
 			setTaggingMode(false);
-			event.preventDefault();
 
 			const url = this._configService.getValueAsPath('BACKEND_URL') + 'report/message';
 			const fieldData = Object.entries(model.categoryFields).map(f => `${f[0]}: ${f[1]}`).join('\n');
@@ -160,8 +157,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 			const statusMessage = response.status === 200 ? completionMessage : failureMessage;
 			this.signal(Update, { statusMessage });
-
 		};
+
 
 		const createField = (name, optional, type = 'text') => {
 			return html`
@@ -240,6 +237,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 			if (!form.reportValidity()) {
 				this.signal(Update, { openSections: ['step1', 'step2', 'step3', 'step4'], showInvalidFields: true });
 			}
+			else {
+				submit();
+			}
+
 		};
 
 
@@ -248,7 +249,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 		<span style='font-style: italic'>${subtext}</span>`;
 
 		const form = html`
-			<form id='report' action="#" @submit="${onSubmit}">
+			<form id='report' action="#">
 
 				<div class='form-content'>
 					${introduction}
@@ -301,7 +302,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 }
 
 						<textarea placeholder=${isCorrection ? 'Bitte hier Korrektur eintragen*' : 'Zusätzliche Information'} 
-							id="additional-info" name='additionalInfo' value=${model.description} ?required=${model.isCorrection}
+							id="additional-info" name='additionalInfo' value=${model.description} ?required=${isCorrection}
 							@input=${(e) => this.signal(Update, { additionalInfo: e.target.value })}></textarea>
 
 					</collapsable-content>
@@ -325,9 +326,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 				</div>
 
 				<div class='form-buttons'>
-					<button id="send" class="button" type='submit'
-						.label=${translate('ea_contribution_button_send')}
-						@click=${onClickSendButton} >
+					<ba-button id="send" .label=${translate('ea_contribution_button_send')} 
+						.type=${'primary'} @click=${onClickSendButton} >
 						Senden
 					</button>
 				</div>

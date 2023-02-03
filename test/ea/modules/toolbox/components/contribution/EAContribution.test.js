@@ -134,7 +134,10 @@ describe('EAContributon', () => {
 			const toLonLatSpy = spyOn(coordinateServiceMock, 'toLonLat').and.returnValue({});
 			spyOn(coordinateServiceMock, 'stringify').and.returnValue(expectedCoordString);
 
-			const element = await setup({ contribution: { position: expectedCoordinates } });
+			const element = await setup();
+
+			element.shadowRoot.querySelector('#tag').click();
+			setLocation([42, 24]);
 
 			expect(toLonLatSpy).toHaveBeenCalledWith(expectedCoordinates);
 			expect(element.shadowRoot.querySelector('.coordinates').value).toEqual(expectedCoordString);
@@ -149,31 +152,6 @@ describe('EAContributon', () => {
 			tagButton.click();
 
 			expect(store.getState().contribution.tagging).toBe(true);
-		});
-
-		it('deactivates tagging mode inside the map when tag position changes', async () => {
-			const element = await setup();
-			const tagButton = element.shadowRoot.querySelector('#tag');
-
-			tagButton.click();
-
-			setLocation([1, 2]);
-
-			expect(store.getState().contribution.tagging).toBe(false);
-		});
-
-
-		it('changes button tittle when tagging mode is active', async () => {
-			const element = await setup();
-			const tagButton = element.shadowRoot.querySelector('#tag');
-
-			setTaggingMode(false);
-			expect(tagButton.title).toBe('ea_contribution_button_tag_tooltip');
-			expect(tagButton.innerText).toBe('ea_contribution_button_tag_title\nea_contribution_button_tag_text');
-
-			setTaggingMode(true);
-			expect(tagButton.title).toBe('ea_contribution_button_tag_tooltip');
-			expect(tagButton.innerText).toBe('ea_contribution_button_tag_cancel\nea_contribution_button_tag_text');
 		});
 
 	});
@@ -250,6 +228,25 @@ describe('EAContributon', () => {
 			expect(element.shadowRoot.querySelector('#step3').open).toBeTruthy();
 			expect(element.shadowRoot.querySelector('#step4').open).toBeFalsy();
 		});
+
+		it('shows only one text area when correction mode', async () => {
+			const element = await setup();
+			element.categories = SAMPLE_JSON_SPEC;
+
+			const query = (query) => element.shadowRoot.querySelector(query);
+
+			query('#correction').click();
+
+			query('#category').value = 'Test1';
+			query('#category').dispatchEvent(new Event('change'));
+
+			expect(query('#step3').querySelectorAll('input').length).toBe(0);
+			expect(query('#step3').querySelectorAll('textaread').length).toBe(0);
+
+			const textArea = query('textarea');
+			expect(textArea.placeholder).toBe('Bitte hier Korrektur eintragen*');
+			expect(textArea.required).toBeTrue();
+		});
 	});
 
 	describe('mode energy-reporting', () => {
@@ -270,12 +267,16 @@ describe('EAContributon', () => {
 
 			const postSpy = spyOn(httpServiceMock, 'post').and.returnValue({ status: 200 });
 
-			const element = await setup({ contribution: { position: expectedCoordinates } });
+			const element = await setup();
+
 
 			element.mode = MODUS.report;
 			element.categories = SAMPLE_JSON_SPEC;
 
 			const query = (query) => element.shadowRoot.querySelector(query);
+
+			query('#tag').click();
+			setLocation(expectedCoordinates);
 
 			query('#category').value = expectedCategory;
 			query('#category').dispatchEvent(new Event('change'));
@@ -336,12 +337,15 @@ describe('EAContributon', () => {
 
 			const postSpy = spyOn(httpServiceMock, 'post').and.returnValue({ status: 200 });
 
-			const element = await setup({ contribution: { position: expectedCoordinates } });
+			const element = await setup();
 			element.mode = MODUS.market;
 
 			element.categories = SAMPLE_JSON_SPEC;
 
 			const query = (query) => element.shadowRoot.querySelector(query);
+
+			query('#tag').click();
+			setLocation(expectedCoordinates);
 
 			query('#category').value = expectedCategory;
 			query('#category').dispatchEvent(new Event('change'));
@@ -382,11 +386,14 @@ describe('EAContributon', () => {
 		it('shows failure message when reponse code is not 200', async () => {
 			spyOn(httpServiceMock, 'post').and.returnValue({ status: 201 });
 
-			const element = await setup({ contribution: { position: [42, 0] } });
+			const element = await setup();
 
 			element.categories = SAMPLE_JSON_SPEC;
 
 			const query = (query) => element.shadowRoot.querySelector(query);
+
+			query('#tag').click();
+			setLocation([42, 0]);
 
 			query('#category').value = 'Test2';
 			query('#category').dispatchEvent(new Event('change'));
