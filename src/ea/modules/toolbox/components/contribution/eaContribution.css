@@ -160,7 +160,7 @@ button:hover {
 	font-size: small;
 }
 
-form {
+.form-content {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
