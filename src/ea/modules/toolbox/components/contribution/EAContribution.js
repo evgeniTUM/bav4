@@ -301,7 +301,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 }
 
 						<textarea placeholder=${isCorrection ? 'Bitte hier Korrektur eintragen*' : 'Zusätzliche Information'} 
-							id="additional-info" name='additionalInfo' value=${model.description} ?required=${model.isCorrection}
+							id="additional-info" name='additionalInfo' value=${model.description} ?required=${isCorrection}
 							@input=${(e) => this.signal(Update, { additionalInfo: e.target.value })}></textarea>
 
 					</collapsable-content>
