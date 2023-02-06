@@ -19,6 +19,7 @@
 
 .collapse-content {
 	padding: .8em 1em; 
+	overflow: scroll;
 }
 
 .featureinfo-header {
