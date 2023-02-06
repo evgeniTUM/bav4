@@ -10,27 +10,29 @@ import collapsableContentCss from './collapsableContent.css';
 import validationCss from './validation.css';
 
 const Update = 'update';
+const Reset = 'reset';
 const Update_Field = 'update_field';
 const Reset_Fields = 'reset_fields';
 
+const initialModel = {
+	mode: undefined,
+	isPortrait: false,
+	hasMinWidth: false,
+	showInvalidFields: false,
+	currentCategory: undefined,
+	position: undefined,
+	categoryFields: { },
+	additionalInfo: '',
+	email: '',
+	categoriesSpecification: [],
+	statusMessage: undefined,
+	openSections: ['step1']
+};
 
 export class EAContribution extends AbstractMvuContentPanel {
 
 	constructor() {
-		super({
-			mode: undefined,
-			isPortrait: false,
-			hasMinWidth: false,
-			showInvalidFields: false,
-			currentCategory: undefined,
-			position: undefined,
-			categoryFields: { },
-			additionalInfo: '',
-			email: '',
-			categoriesSpecification: [],
-			statusMessage: undefined,
-			openSections: ['step1']
-		});
+		super(initialModel);
 
 		const {
 			EnvironmentService: environmentService,
@@ -60,6 +62,9 @@ export class EAContribution extends AbstractMvuContentPanel {
 	 */
 	update(type, data, model) {
 		switch (type) {
+			case Reset:
+				return { ...initialModel, ...data };
+
 			case Update:
 				return { ...model, ...data };
 
@@ -95,6 +100,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 		this.observe(state => state.contribution.position,
 			() => {
 				if (this.getModel().position === null) {
+					this.shadowRoot.getElementById('coordinates').setCustomValidity('');
 					this.signal(Update, { openSections: 'step2' });
 				}
 			}, false
@@ -110,7 +116,6 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 		const onClickTagButton = (mode) => () => {
 			setTaggingMode(true);
-			this.shadowRoot.getElementById('coordinates').setCustomValidity('');
 			this.signal(Update, { mode });
 		};
 
@@ -234,8 +239,9 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 		const onClickSendButton = () => {
 			const form = this.shadowRoot.getElementById('report');
-			if (!form.reportValidity()) {
+			if (!form.checkValidity()) {
 				this.signal(Update, { openSections: ['step1', 'step2', 'step3', 'step4'], showInvalidFields: true });
+				form.reportValidity();
 			}
 			else {
 				submit();
@@ -269,7 +275,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 						<br/>
 						<div title=${translate(model.tagging ? 'ea_contribution_coordinates_tooltip_2' : 'ea_contribution_coordinates_tooltip_1')}>
 							<label for="coordinates">${translate('ea_contribution_coordinates_text')}</label>	
-							<input id='coordinates' name='coordiantes' class="coordinates" 
+							<input id='coordinates' name='coordinates' class="coordinates" 
 								oninvalid="this.setCustomValidity('Bitte Standort markieren')"
 								placeholder=${translate('ea_contribution_coordinates_placeholder')}
 								value=${getCoordinatesString()} required></input>
@@ -333,8 +339,12 @@ export class EAContribution extends AbstractMvuContentPanel {
 				</div>
 			</form>`;
 
-		const reset = () => {
-			alert('resset');
+		const onClickBackButton = () => {
+			this.reset();
+			this.signal(Reset, {
+				mode: energyMarketMode ? MODUS.market : undefined,
+				categoriesSpecification: model.categoriesSpecification
+			});
 		};
 
 		const content = model.statusMessage !== undefined ?
@@ -343,7 +353,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 				<div>${model.statusMessage}</div>
 				<div class='form-buttons'>
 					<ba-button id="back" .label=${translate('ea_contribution_button_back')} 
-						.type=${'primary'} @click=${reset} >
+						.type=${'primary'} @click=${onClickBackButton} >
 						Senden
 					</button>
 				</div>

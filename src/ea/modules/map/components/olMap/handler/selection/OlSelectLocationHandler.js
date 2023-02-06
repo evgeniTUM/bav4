@@ -103,11 +103,14 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 
 		const onPositionChanged = (position) => {
 			if (!position) {
-				return;
+				this._positionFeature.setStyle(null);
+				this._positionFeature.setGeometry(new Point([0, 0]));
+			}
+			else {
+				this._positionFeature.setStyle(highlightCoordinateFeatureStyleFunction);
+				this._positionFeature.setGeometry(new Point(position));
 			}
 
-			this._positionFeature.setStyle(highlightCoordinateFeatureStyleFunction);
-			this._positionFeature.setGeometry(new Point(position));
 
 			this._map.renderSync();
 		};
