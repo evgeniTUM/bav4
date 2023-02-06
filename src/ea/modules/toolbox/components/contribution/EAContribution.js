@@ -13,7 +13,7 @@ const Update = 'update';
 const Reset = 'reset';
 const Update_Field = 'update_field';
 const Reset_Fields = 'reset_fields';
-const Postion_Change = 'position_change';
+const Position_Change = 'position_change';
 
 const initialModel = {
 	mode: undefined,
@@ -79,7 +79,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			case Reset_Fields:
 				return { ...model, categoryFields: {} };
 
-			case Postion_Change: {
+			case Position_Change: {
 				if ((model.position === null) && data) {
 					this.shadowRoot.getElementById('coordinates').setCustomValidity('');
 					return { ...model, openSections: model.currentCategory ? model.openSections : 'step2' };
@@ -106,7 +106,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 	 * @override
 	 */
 	onInitialize() {
-		this.observe(state => state.contribution.position, data => this.signal(Postion_Change, data), false);
+		this.observe(state => state.contribution.position, data => this.signal(Position_Change, data), false);
 		this.observe(state => state.contribution, data => this.signal(Update, data));
 	}
 
