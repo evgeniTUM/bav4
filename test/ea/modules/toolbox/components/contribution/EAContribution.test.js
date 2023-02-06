@@ -285,6 +285,7 @@ describe('EAContributon', () => {
 			query('#email').dispatchEvent(new Event('input'));
 
 			query('#send').click();
+			await TestUtils.timeout();
 
 			expect(postSpy).toHaveBeenCalledWith(
 				'BACKEND_URLreport/message',
@@ -298,8 +299,6 @@ describe('EAContributon', () => {
 				}),
 				'application/json'
 			);
-
-			await TestUtils.timeout();
 
 			expect(element.shadowRoot.querySelectorAll('collapsable-content').length).toBe(0);
 			expect(element.shadowRoot.querySelector('#completion-message')).not.toBeNull();
@@ -361,6 +360,7 @@ describe('EAContributon', () => {
 			query('#email').dispatchEvent(new Event('input'));
 
 			query('#send').click();
+			await TestUtils.timeout();
 
 			expect(postSpy).toHaveBeenCalledWith(
 				'BACKEND_URLreport/message',
@@ -375,7 +375,6 @@ describe('EAContributon', () => {
 				'application/json'
 			);
 
-			await TestUtils.timeout();
 
 			expect(element.shadowRoot.querySelectorAll('collapsable-content').length).toBe(0);
 			expect(element.shadowRoot.querySelector('#completion-message')).not.toBeNull();
@@ -402,11 +401,49 @@ describe('EAContributon', () => {
 			query('#email').dispatchEvent(new Event('input'));
 
 			query('#send').click();
-
 			await TestUtils.timeout();
 
 			expect(element.shadowRoot.querySelectorAll('collapsable-content').length).toBe(0);
 			expect(element.shadowRoot.querySelector('#failure-message')).not.toBeNull();
+		});
+
+
+		it('resets model on back button after submit', async () => {
+			spyOn(httpServiceMock, 'post').and.returnValue({ status: 200 });
+
+			const element = await setup();
+			element.mode = MODUS.report;
+
+			element.categories = SAMPLE_JSON_SPEC;
+
+			const query = (query) => element.shadowRoot.querySelector(query);
+
+			query('#tag').click();
+			setLocation([42, 2]);
+
+			query('#category').value = 'Test2';
+			query('#category').dispatchEvent(new Event('change'));
+
+			query('#email').value = 'test@abc.com';
+			query('#email').dispatchEvent(new Event('input'));
+
+			query('#send').click();
+			await TestUtils.timeout();
+
+			expect(element.shadowRoot.querySelector('#completion-message')).not.toBeNull();
+			const backButton = element.shadowRoot.querySelector('#back');
+			expect(backButton).toBeTruthy();
+
+			backButton.click();
+
+			expect(element.shadowRoot.querySelectorAll('collapsable-content').length).toBe(4);
+			expect(element.shadowRoot.querySelector('#failure-message')).toBeNull();
+
+			expect(element.getModel().mode).toBeUndefined();
+			expect(element.getModel().categoriesSpecification).toEqual(SAMPLE_JSON_SPEC);
+
+			expect(store.getState().contribution.tagging).toBeFalse();
+			expect(store.getState().contribution.position).toBeNull();
 		});
 
 	});
