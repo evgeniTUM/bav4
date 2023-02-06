@@ -9,8 +9,13 @@
 }
 
 .introduction {
-	margin-bottom: 1em;
+	margin-top: 1em;
+	margin-bottom: 2em;
 	margin-left: 1em;
+}
+
+.fields-help {
+	margin-bottom: 1em;
 }
 
 .section-header {
@@ -191,11 +196,9 @@ button:hover {
 
 .coordinates {
 	border-style: solid;
-	padding-left: 1em;
 	padding-right: 1em;
 
 	pointer-events: none;
-	background: var(--secondary-bg-color);
 }
 
 .control-label.required {
