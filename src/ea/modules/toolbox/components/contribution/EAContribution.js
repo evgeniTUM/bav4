@@ -13,6 +13,7 @@ const Update = 'update';
 const Reset = 'reset';
 const Update_Field = 'update_field';
 const Reset_Fields = 'reset_fields';
+const Postion_Change = 'position_change';
 
 const initialModel = {
 	mode: undefined,
@@ -77,6 +78,15 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 			case Reset_Fields:
 				return { ...model, categoryFields: {} };
+
+			case Postion_Change: {
+				if ((model.position === null) && data) {
+					this.shadowRoot.getElementById('coordinates').setCustomValidity('');
+					return { ...model, openSections: model.currentCategory ? model.openSections : 'step2' };
+				}
+
+				return model;
+			}
 		}
 	}
 
@@ -96,15 +106,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 	 * @override
 	 */
 	onInitialize() {
-
-		this.observe(state => state.contribution.position,
-			() => {
-				if (this.getModel().position === null) {
-					this.shadowRoot.getElementById('coordinates').setCustomValidity('');
-					this.signal(Update, { openSections: 'step2' });
-				}
-			}, false
-		);
+		this.observe(state => state.contribution.position, data => this.signal(Postion_Change, data), false);
 		this.observe(state => state.contribution, data => this.signal(Update, data));
 	}
 
@@ -249,7 +251,6 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 		};
 
-
 		const stepTitle = (text, subtext) => html`
 		<span style='color: var(--primary-color)'>${text}${subtext ? ':' : ''}</span>
 		<span style='font-style: italic'>${subtext}</span>`;
@@ -299,12 +300,12 @@ export class EAContribution extends AbstractMvuContentPanel {
 					<collapsable-content id='step3' .customCSS=${collapsableContentCss}
 						.title=${stepTitle('3. Angaben zum Objekt')} .open=${model.openSections.includes('step3')}
 						@toggle=${onToggle}>
-						<p>Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</p>
+						<div class='fields-help'>Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</div>
 
-	${isCorrection ? '' :
+${isCorrection ? '' :
 		html`<div class='category-fields'>
-				${categoryFields[model.currentCategory]}
-			</div>`
+			${categoryFields[model.currentCategory]}
+		</div>`
 }
 
 						<textarea placeholder=${isCorrection ? 'Bitte hier Korrektur eintragen*' : 'Zusätzliche Information'} 
@@ -316,7 +317,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 					<div class='step'>
 					<collapsable-content id='step4' .customCSS=${collapsableContentCss}
-						.title=${stepTitle('4. Ihre E-Mail Adresse')} .open=${model.openSections.includes('step4')} 
+						.title=${stepTitle('4. E-Mail Adresse')} .open=${model.openSections.includes('step4')} 
 						@toggle=${onToggle}>
 						<input id='email' placeholder='Ihre E-Mail-Adresse*' required  type='email' name="email" 
 							@input=${(e) => this.signal(Update, { email: e.target.value })}>
@@ -347,25 +348,22 @@ export class EAContribution extends AbstractMvuContentPanel {
 			});
 		};
 
-		const content = model.statusMessage !== undefined ?
-			html`
-			<div class='form-content'>
-				<div>${model.statusMessage}</div>
+		const completionForm = html`
+		<div>${model.statusMessage}</div>
 				<div class='form-buttons'>
 					<ba-button id="back" .label=${translate('ea_contribution_button_back')} 
 						.type=${'primary'} @click=${onClickBackButton} >
 						Senden
 					</button>
 				</div>
-			</div>` :
-			form;
+			</div>`;
 
 		return html`
 			<style>${css}</style>
 			<style>${model.showInvalidFields ? validationCss : nothing}</style>
 			<div class="container">
 
-				${content}
+				${model.statusMessage ? completionForm : form}
 			
 			</div>
 		`;
