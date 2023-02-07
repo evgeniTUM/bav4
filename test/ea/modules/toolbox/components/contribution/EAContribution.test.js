@@ -114,8 +114,7 @@ describe('EAContributon', () => {
 		});
 
 		it('resets position on activate', async () => {
-			setLocation([4, 2]);
-			await setup();
+			await setup({ contribution: { ...initialState, position: [4, 2] } });
 
 			expect(store.getState().contribution.position).toEqual(null);
 		});
@@ -269,7 +268,6 @@ describe('EAContributon', () => {
 
 			const element = await setup();
 
-
 			element.mode = MODUS.report;
 			element.categories = SAMPLE_JSON_SPEC;
 
@@ -280,6 +278,7 @@ describe('EAContributon', () => {
 
 			query('#category').value = expectedCategory;
 			query('#category').dispatchEvent(new Event('change'));
+			await TestUtils.timeout(10);
 
 			query('#email').value = expectedEmail;
 			query('#email').dispatchEvent(new Event('input'));
