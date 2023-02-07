@@ -262,7 +262,7 @@ describe('EAContributon', () => {
 		it('on submit, sends correct reportType for mode energy-reporting', async () => {
 			const expectedEmail = 'testicus@domainicus.com';
 			const expectedCoordinates = [4, 2];
-			const expectedCategory = 'Test2';
+			const expectedCategory = 'Test1';
 
 			const postSpy = spyOn(httpServiceMock, 'post').and.returnValue({ status: 200 });
 
@@ -278,7 +278,11 @@ describe('EAContributon', () => {
 
 			query('#category').value = expectedCategory;
 			query('#category').dispatchEvent(new Event('change'));
-			await TestUtils.timeout(10);
+
+			query('[name="field1"]').value = 'text1';
+			query('[name="field1"]').dispatchEvent(new Event('input'));
+			query('[name="field2"]').value = 'text2';
+			query('[name="field2"]').dispatchEvent(new Event('input'));
 
 			query('#email').value = expectedEmail;
 			query('#email').dispatchEvent(new Event('input'));
@@ -294,7 +298,7 @@ describe('EAContributon', () => {
 					additionalInfo: '',
 					email: expectedEmail,
 					category: expectedCategory,
-					categoryData: ''
+					categoryData: 'field1: text1\nfield2: text2'
 				}),
 				'application/json'
 			);
