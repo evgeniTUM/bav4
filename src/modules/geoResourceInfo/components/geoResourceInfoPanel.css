@@ -128,3 +128,10 @@ img[src=""] {
 	margin-left: 0.5em;
 	vertical-align: middle;
 }
+
+.legend {
+    display: flex;
+    align-items: normal;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
