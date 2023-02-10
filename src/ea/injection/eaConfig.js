@@ -9,6 +9,8 @@ import { WmsCapabilitiesService } from '../services/WmsCapabilitiesService';
 import { LayerVisibilityNotificationPlugin } from '../plugins/LayerVisibilityNotificationPlugin';
 import { GeoResourceInfoService } from '../../modules/geoResourceInfo/services/GeoResourceInfoService';
 import { loadEabGeoResourceDetailInfo } from '../services/provider/geoResourceDetailInfoResult.provider';
+import { InfoPopupPlugin } from '../plugins/InfoPopupPlugin';
+import { EaInfoPopupService } from '../services/EaInfoPopupService';
 
 export const eaConfig = () => {
 	$injector
@@ -18,7 +20,9 @@ export const eaConfig = () => {
 		.registerSingleton('ManageModulesPlugin', new ManageModulesPlugin())
 		.registerSingleton('LegendPlugin', new LegendPlugin())
 		.registerSingleton('WebAnalyticsPlugin', new WebAnalyticsPlugin())
+		.registerSingleton('InfoPopupPlugin', new InfoPopupPlugin())
 		.registerSingleton('LayerVisibilityNotificationPlugin', new LayerVisibilityNotificationPlugin())
+		.registerSingleton('EaInfoPopupService', new EaInfoPopupService())
 		.registerModule(eaMapModule);
 };
 

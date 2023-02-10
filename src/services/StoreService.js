@@ -101,7 +101,8 @@ export class StoreService {
 				LayerVisibilityNotificationPlugin: layerVisibilityNotificationPlugin,
 				SearchPlugin: searchPlugin,
 				ExportMfpPlugin: exportMfpPlugin,
-				HistoryStatePlugin: historyStatePlugin
+				HistoryStatePlugin: historyStatePlugin,
+				InfoPopupPlugin: infoPopupPlugin
 			}
 				= $injector.inject(
 					'TopicsPlugin',
@@ -123,7 +124,8 @@ export class StoreService {
 					'LayerVisibilityNotificationPlugin',
 					'SearchPlugin',
 					'ExportMfpPlugin',
-					'HistoryStatePlugin'
+					'HistoryStatePlugin',
+					'InfoPopupPlugin'
 				);
 
 			setTimeout(async () => {
@@ -144,6 +146,7 @@ export class StoreService {
 				await fnModulePlugin.register(this._store);
 				await legendPlugin.register(this._store);
 				await WebAnalyticsPlugin.register(this._store);
+				await infoPopupPlugin.register(this._store);
 				await layerVisibilityNotificationPlugin.register(this._store);
 				await searchPlugin.register(this._store);
 				await exportMfpPlugin.register(this._store);
