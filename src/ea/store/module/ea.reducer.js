@@ -10,7 +10,8 @@ export const CLEAR_PREVIEW_GEORESOURCE_ID = 'ea/legend/preview/clear';
 export const SET_MAP_RESOLUTION = 'ea/mapResolution/set';
 export const DEACTIVATE_WEBANALYTICS = 'ea/webanalytics/deactivate';
 export const ACTIVATE_WEBANALYTICS = 'ea/webanalytics/activate';
-
+export const DEACTIVATE_INFO_POPUP = 'ea/infopopup/deactivate';
+export const ACTIVATE_INFO_POPUP = 'ea/info_popup/activate';
 
 export const initialState = {
 
@@ -47,8 +48,12 @@ export const initialState = {
 	/**
 	 * @property {boolean}
 	 */
-	webAnalyticsActive: false
+	webAnalyticsActive: false,
 
+/**
+	 * @property {boolean}
+	 */
+	infoPopupActive: false
 };
 
 export const eaReducer = (state = initialState, action) => {
@@ -132,6 +137,18 @@ export const eaReducer = (state = initialState, action) => {
 			return {
 				...state,
 				webAnalyticsActive: false
+			};
+		}
+		case ACTIVATE_INFO_POPUP: {
+			return {
+				...state,
+				infoPopupActive: true
+			};
+		}
+		case DEACTIVATE_INFO_POPUP: {
+			return {
+				...state,
+				infoPopupActive: false
 			};
 		}
 	}

@@ -1,3 +1,4 @@
+import './modules/infoPopup';
 import './modules/common/components';
 import './modules/menu';
 import './modules/toolbox';

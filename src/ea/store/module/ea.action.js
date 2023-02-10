@@ -6,7 +6,7 @@ import { GeothermModuleContent } from '../../modules/toolbox/components/geotherm
 import { MixerModuleContent } from '../../modules/toolbox/components/mixer/MixerModuleContent';
 import { RedesignModuleContent } from '../../modules/toolbox/components/redesign/RedesignModuleContent';
 import { ResearchModuleContent } from '../../modules/toolbox/components/research/ResearchModuleContent';
-import { ACTIVATE_GEORESOURCE, ACTIVATE_LEGEND, ACTIVATE_WEBANALYTICS, CLEAR_PREVIEW_GEORESOURCE_ID, DEACTIVATE_ALL_GEORESOURCES, DEACTIVATE_GEORESOURCE, DEACTIVATE_LEGEND, DEACTIVATE_WEBANALYTICS, SET_CURRENT_MODULE, SET_LEGEND_ITEMS, SET_MAP_RESOLUTION, SET_PREVIEW_GEORESOURCE_ID } from './ea.reducer';
+import { ACTIVATE_GEORESOURCE, ACTIVATE_LEGEND, ACTIVATE_WEBANALYTICS, CLEAR_PREVIEW_GEORESOURCE_ID, DEACTIVATE_ALL_GEORESOURCES, DEACTIVATE_GEORESOURCE, DEACTIVATE_LEGEND, DEACTIVATE_WEBANALYTICS, SET_CURRENT_MODULE, SET_LEGEND_ITEMS, SET_MAP_RESOLUTION, SET_PREVIEW_GEORESOURCE_ID, ACTIVATE_INFO_POPUP, DEACTIVATE_INFO_POPUP } from './ea.reducer';
 
 /**
  * Available modules.
@@ -149,7 +149,7 @@ export const setMapResolution = (resolution) => {
 };
 
 /**
- * Activates the legend.
+ * Activates the web analytic.
  */
 export const activateWebAnalytics = () => {
 	getStore().dispatch({
@@ -159,7 +159,7 @@ export const activateWebAnalytics = () => {
 };
 
 /**
- * Deactivates the legend.
+ * Deactivates the web analytics.
  */
 export const deactivateWebAnalytics = () => {
 	getStore().dispatch({
@@ -168,3 +168,22 @@ export const deactivateWebAnalytics = () => {
 	});
 };
 
+/**
+ * Activates the display of InfoPopup after starting the App.
+ */
+export const activateInfoPopup = () => {
+	getStore().dispatch({
+		type: ACTIVATE_INFO_POPUP,
+		payload: null
+	});
+};
+
+/**
+ * Deactivates the showing InfoPopup next time.
+ */
+export const deactivateInfoPopup = () => {
+	getStore().dispatch({
+		type: DEACTIVATE_INFO_POPUP,
+		payload: null
+	});
+};
