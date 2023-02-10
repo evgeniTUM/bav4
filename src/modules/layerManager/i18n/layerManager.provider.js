@@ -18,6 +18,7 @@ export const provide = (lang) => {
 				layerManager_expand_all: 'expand all',
 				layerManager_collapse_all: 'collapse all',
 				layerManager_remove_all: 'remove all',
+				layerManager_deactivate_all: 'deactivate all',
 				layerManager_loading_hint: 'Loading'
 			};
 
@@ -38,6 +39,7 @@ export const provide = (lang) => {
 				layerManager_expand_all: 'Alle ausklappen',
 				layerManager_collapse_all: 'Alle einklappen',
 				layerManager_remove_all: 'Alle entfernen',
+				layerManager_deactivate_all: 'Alle deaktivieren',
 				layerManager_loading_hint: 'Wird geladen'
 			};
 

@@ -130,8 +130,8 @@ img[src=""] {
 }
 
 .legend {
-    display: flex;
-    align-items: normal;
-    flex-wrap: wrap;
-    justify-content: space-around;
+	display: flex;
+	align-items: normal;
+	flex-wrap: wrap;
+	justify-content: space-around;
 }
