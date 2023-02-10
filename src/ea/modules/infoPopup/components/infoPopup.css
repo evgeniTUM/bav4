@@ -93,14 +93,14 @@ a.info_popup__notification-link:hover {
 }
 
 iframe {
-	min-height: 50em;
+	min-height: 30em;
 	border: 0;
 	width: 100%;
 	min-width: 60em;
 }
 
-.is-portrait iframe {
-	height: 92em;
+iframe.is-portrait {
+	height: 70vh;
 	width: 100%;
 	min-width: auto;
 }

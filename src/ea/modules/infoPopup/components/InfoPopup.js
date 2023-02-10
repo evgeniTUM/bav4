@@ -8,6 +8,7 @@ export const INFO_POPUP_NOTIFICATION_DELAY_TIME = 3000;
 
 const Update_MsgKey = 'update_key';
 const Update_MsgUrl = 'update_url';
+const Update_IsPortrait_HasMinWidth = 'update_isPortrait_hasMinWidth';
 
 /**
  * @class
@@ -33,6 +34,7 @@ export class InfoPopup extends MvuElement {
 
 		this._environmentService = environmentService;
 		this._translationService = translationService;
+		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
 	}
 
 
@@ -45,6 +47,9 @@ export class InfoPopup extends MvuElement {
 				return { ...model, msgKey: data };
 			case Update_MsgUrl:
 				return { ...model, msgUrl: data };
+			case Update_IsPortrait_HasMinWidth:
+				return { ...model, ...data };
+
 		}
 	}
 
@@ -60,11 +65,19 @@ export class InfoPopup extends MvuElement {
 	 * @override
 	 */
 	createView(model) {
-		const { msgKey, msgUrl } = model;
+		const { isPortrait, hasMinWidth, msgKey, msgUrl } = model;
 		const translate = (key) => this._translationService.translate(key);
 		const label = translate('help_infoPopup_check_label');
 		const checkbox_title = translate('help_infoPopup_check_title');
 		const checked = false;
+
+		const getOrientationClass = () => {
+			return isPortrait ? 'is-portrait' : 'is-landscape';
+		};
+
+		const getMinWidthClass = () => {
+			return hasMinWidth ? 'is-desktop' : 'is-tablet';
+		};
 
 		const onToggle = (event) => {
 			if (event.detail.checked) {
@@ -75,8 +88,8 @@ export class InfoPopup extends MvuElement {
 			}
 		};
 
-		return html`<style>${css}</style><iframe title=${translate('help_infoPopup_notification_info_popup')}
-				 src=${msgUrl} allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe> 
+		return html`<style>${css}</style><iframe class='${getOrientationClass()} ${getMinWidthClass()}' title=${translate('help_infoPopup_notification_info_popup')}
+				src=${msgUrl} allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe> 
 				<ba-checkbox class="ba-list-item__text" @toggle=${onToggle} .checked=${checked} tabindex='0' .title=${checkbox_title}><span>${label}</span></ba-checkbox>`;
 	}
 
