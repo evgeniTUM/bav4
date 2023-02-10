@@ -6,7 +6,7 @@ import { createUniqueId } from './numberUtils';
  * @param {object} store The redux store
  * @param {function(state)} extract A function that extract a portion (single value or a object) from the current state which will be observed for comparison
  * @param {function(observedPartOfState, state)} onChange A function that will be called when the observed state has changed
- * @param {boolean|true} ignoreInitialState A boolean which indicate, if the callback should be initially called with the current state immediately after the observer has been registered
+ * @param {boolean|true} ignoreInitialState A boolean which indicate, if the callback should be initially called with the current state immediately after the observer has been registered. Default is `true`
  * @returns  A function that unsubscribes the observer
  */
 export const observe = (store, extract, onChange, ignoreInitialState = true) => {
@@ -30,8 +30,8 @@ export const observe = (store, extract, onChange, ignoreInitialState = true) => 
 };
 
 /**
- * Returns the result of a comparision between two values. If both values are objects,
- * a deep comparision is done, otherwise a shallow one.
+ * Returns the result of a comparison between two values. If both values are objects,
+ * a deep comparison is done, otherwise a shallow one.
  * @function
  * @param {object|string|number} value0
  * @param {object|string|number} value1

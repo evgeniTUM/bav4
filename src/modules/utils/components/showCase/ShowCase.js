@@ -12,6 +12,7 @@ import css from './showCase.css';
 import { observe } from '../../../../utils/storeUtils';
 import { MenuTypes } from '../../../commons/components/overflowMenu/OverflowMenu';
 import { closeBottomSheet, openBottomSheet } from '../../../../store/bottomSheet/bottomSheet.action';
+import { closeProfile, openProfile } from '../../../../store/elevationProfile/elevationProfile.action';
 
 /**
  * Displays a showcase of common and reusable components or
@@ -151,6 +152,16 @@ export class ShowCase extends BaElement {
 			emitNotification('This is a Error! Oh no...something went wrong. (' + new Date() + ')', LevelTypes.ERROR);
 		};
 
+		const onClickOpenProfile = () => {
+			if (this._storeService.getStore().getState().elevationProfile.active) {
+				closeProfile();
+			}
+			else {
+				closeModal();
+				openProfile([[1328315.0062647895, 6089975.78297438], [1310581.6157026286, 6045336.558455837]]);
+			}
+		};
+
 		let version = 1;
 		const onClickOpenBottomSheet = () => {
 
@@ -215,6 +226,11 @@ export class ShowCase extends BaElement {
 			<div class='example'>
 				<div class='theme-toggle' style="display: flex;justify-content: flex-start;"><ba-theme-toggle></ba-theme-toggle></div>
 			</div>	
+
+			<h3>Profile</h3>
+			<div class='example row'>
+			<ba-button id='button1' .label=${'Show/Hide elevation profile'} .type=${'primary'} @click=${onClickOpenProfile}></ba-button>
+			</div>
 						
 			<h3>Measure Distance</h3>
 			<div class='example row'>
@@ -254,12 +270,21 @@ export class ShowCase extends BaElement {
 			<div class='section' >
 
 			<h3>ba-buttons</h3>
-			<div class='example row'>		
-			<ba-button id='button0' .label=${'primary style'} .type=${'primary'} @click=${onClick0}></ba-button>
-			<ba-button id='button1' .label=${'secondary style'} @click=${onClick1}></ba-button>
-			<ba-button id='button2' .label=${'disabled'} .type=${'primary'} .disabled=${true} ></ba-button>
-			<ba-button id='button3' .label=${'disabled'} .disabled=${true}></ba-button>
-			<ba-button id='button3' .label=${'loading style'} .type=${'loading'}></ba-button>
+			<div class='example'>		
+				<div class='row'>		
+				<ba-button id='button0' .label=${'primary style'} .type=${'primary'} @click=${onClick0}></ba-button>
+				<ba-button id='button1' .label=${'secondary style'} @click=${onClick1}></ba-button>
+				<ba-button id='button2' .label=${'disabled'} .type=${'primary'} .disabled=${true} ></ba-button>
+				<ba-button id='button3' .label=${'disabled'} .disabled=${true}></ba-button>
+				<ba-button id='button3' .label=${'loading style'} .type=${'loading'}></ba-button>
+				</div>
+				<div class='row'style='margin-top:2em'>		
+				<ba-button id='button0' .label=${'primary style'} .icon=${arrowUpSvg} .type=${'primary'} @click=${onClick0}></ba-button>
+				<ba-button id='button1' .label=${'secondary style'} .icon=${arrowUpSvg} @click=${onClick1}></ba-button>
+				<ba-button id='button2' .label=${'disabled'} .icon=${arrowUpSvg} .type=${'primary'} .disabled=${true} ></ba-button>
+				<ba-button id='button3' .label=${'disabled'} .icon=${arrowUpSvg} .disabled=${true}></ba-button>
+				<ba-button id='button3' .label=${'loading style'} .icon=${arrowUpSvg} .type=${'loading'}></ba-button>
+				</div>
 			</div>
 
 			<h3>ba-icons</h3>
@@ -347,11 +372,6 @@ export class ShowCase extends BaElement {
 			<div>Hint: Demo Credentials are foo/bar</div>
 			</div>
 
-			<h3>Profile</h3>
-			<div class='example row'>
-			<ba-profile></ba-profile>
-			</div>
-				
 			</div>	
 		</div > `;
 	}

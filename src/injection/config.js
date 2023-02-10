@@ -8,7 +8,6 @@ import { TranslationService } from '../services/TranslationService';
 import { ShareService } from '../services/ShareService';
 import { UnitsService } from '../services/UnitsService';
 import { GeoResourceService } from '../services/GeoResourceService';
-import { AltitudeService } from '../services/AltitudeService';
 import { UrlService } from '../services/UrlService';
 import { IconService } from '../services/IconService';
 import { MapService } from '../services/MapService';
@@ -20,6 +19,7 @@ import { BvvFileStorageService } from '../services/FileStorageService';
 import { LayersPlugin } from '../plugins/LayersPlugin';
 import { PositionPlugin } from '../plugins/PositionPlugin';
 import { TopicsPlugin } from '../plugins/TopicsPlugin';
+import { ChipsPlugin } from '../plugins/ChipsPlugin';
 import { HighlightPlugin } from '../plugins/HighlightPlugin';
 import { SearchResultService } from '../modules/search/services/SearchResultService';
 import { MediaPlugin } from '../plugins/MediaPlugin';
@@ -40,9 +40,12 @@ import { BaaCredentialService } from '../services/BaaCredentialService';
 import { SearchPlugin } from '../plugins/SearchPlugin';
 import { HistoryStatePlugin } from '../plugins/HistoryStatePlugin';
 import { BvvMfpService } from '../services/MfpService';
+import { ChipsConfigurationService } from '../services/ChipsConfigurationService';
 import { ExportMfpPlugin } from '../plugins/ExportMfpPlugin';
 import { Proj4JsService } from '../services/Proj4JsService';
 import { BvvMfp3Encoder } from '../modules/olMap/services/Mfp3Encoder';
+import { ElevationProfilePlugin } from '../plugins/ElevationProfilePlugin';
+import { ElevationService } from '../services/ElevationService';
 
 import { eaConfig } from '../ea/injection/eaConfig';
 
@@ -57,7 +60,7 @@ $injector
 	.registerSingleton('StoreService', new StoreService())
 	.registerSingleton('GeoResourceService', new GeoResourceService())
 	.registerSingleton('TopicsService', new TopicsService())
-	.register('AltitudeService', AltitudeService)
+	.register('ElevationService', ElevationService)
 	.register('SearchResultService', SearchResultService)
 	.register('ShareService', ShareService)
 	.register('UnitsService', UnitsService)
@@ -74,9 +77,11 @@ $injector
 	.registerSingleton('SecurityService', new SecurityService())
 	.registerSingleton('BaaCredentialService', new BaaCredentialService())
 	.registerSingleton('MfpService', new BvvMfpService())
+	.registerSingleton('ChipsConfigurationService', new ChipsConfigurationService())
 
 	.registerSingleton('DrawPlugin', new DrawPlugin())
 	.registerSingleton('TopicsPlugin', new TopicsPlugin())
+	.registerSingleton('ChipsPlugin', new ChipsPlugin())
 	.registerSingleton('LayersPlugin', new LayersPlugin())
 	.registerSingleton('PositionPlugin', new PositionPlugin())
 	.registerSingleton('HighlightPlugin', new HighlightPlugin())
@@ -89,6 +94,7 @@ $injector
 	.registerSingleton('ImportPlugin', new ImportPlugin())
 	.registerSingleton('SearchPlugin', new SearchPlugin())
 	.registerSingleton('ExportMfpPlugin', new ExportMfpPlugin())
+	.registerSingleton('ElevationProfilePlugin', new ElevationProfilePlugin())
 	.registerSingleton('HistoryStatePlugin', new HistoryStatePlugin())
 	.registerModule(mapModule)
 	.registerModule(topicsModule);

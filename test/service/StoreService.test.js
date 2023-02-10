@@ -67,6 +67,12 @@ describe('StoreService', () => {
 		const legendPluginMock = {
 			register() {}
 		};
+		const chipsPlugin = {
+			register() { }
+		};
+		const elevationProfilePluginMock = {
+			register() { }
+		};
 
 		const layerVisibilityNotificationPluginMock = {
 			register() {}
@@ -104,7 +110,9 @@ describe('StoreService', () => {
 				.registerSingleton('LayerVisibilityNotificationPlugin', layerVisibilityNotificationPluginMock)
 				.registerSingleton('SearchPlugin', searchPluginMock)
 				.registerSingleton('ExportMfpPlugin', exportMfpPluginMock)
+				.registerSingleton('ElevationProfilePlugin', elevationProfilePluginMock)
 				.registerSingleton('HistoryStatePlugin', historyStatePluginMock)
+				.registerSingleton('ChipsPlugin', chipsPlugin)
 
 				.ready();
 		};
@@ -146,7 +154,8 @@ describe('StoreService', () => {
 			expect(reducerKeys.includes('ea')).toBeTrue();
 			expect(reducerKeys.includes('mfp')).toBeTrue();
 			expect(reducerKeys.includes('bottomSheet')).toBeTrue();
-			expect(reducerKeys.includes('altitudeProfile')).toBeTrue();
+			expect(reducerKeys.includes('elevationProfile')).toBeTrue();
+			expect(reducerKeys.includes('chips')).toBeTrue();
 		});
 
 		it('registers all plugins', async () => {
@@ -171,6 +180,7 @@ describe('StoreService', () => {
 			const layerVisibilityNotificationPluginSpy = spyOn(layerVisibilityNotificationPluginMock, 'register');
 			const searchPluginSpy = spyOn(searchPluginMock, 'register');
 			const exportMfpPluginSpy = spyOn(exportMfpPluginMock, 'register');
+			const elevationProfilePluginSpy = spyOn(elevationProfilePluginMock, 'register');
 			const historyStatePluginSpy = spyOn(historyStatePluginMock, 'register');
 			const instanceUnderTest = new StoreService();
 
@@ -201,6 +211,7 @@ describe('StoreService', () => {
 			expect(layerVisibilityNotificationPluginSpy).toHaveBeenCalledWith(store);
 			expect(searchPluginSpy).toHaveBeenCalledWith(store);
 			expect(exportMfpPluginSpy).toHaveBeenCalledWith(store);
+			expect(elevationProfilePluginSpy).toHaveBeenCalledWith(store);
 			expect(historyStatePluginSpy).toHaveBeenCalledWith(store);
 		});
 	});

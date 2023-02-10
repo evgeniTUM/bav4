@@ -1,16 +1,19 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../injection';
 import { AbstractToolContent } from '../toolContainer/AbstractToolContent';
-import { cancelJob, requestJob, setId, setPrintLegend, setScale } from '../../../../store/mfp/mfp.action';
+import { cancelJob, requestJob, setId, setPrinteLegend, setScale, setShowGrid } from '../../../../store/mfp/mfp.action';
 import css from './exportMfpToolContent.css';
 import plus from './assets/plus.svg';
 import minus from './assets/minus.svg';
 
+
 const Update = 'update';
 const Update_Scale = 'update_scale';
 const Update_Id = 'update_id';
+const Update_Show_Grid = 'update_show_grid';
 const Update_Job_Started = 'update_job_started';
 const Update_PrintLegend = 'update_print_legend';
+const Update_IsPortrait = 'update_isPortrait';
 
 /**
  * @class
@@ -21,8 +24,10 @@ export class ExportMfpToolContent extends AbstractToolContent {
 		super({
 			id: null,
 			scale: null,
+			printLegend: false,
+			showGrid: false,
 			isJobStarted: false,
-			printLegend: false
+			isPortrait: false
 		});
 
 		const { TranslationService: translationService, MfpService: mfpService } = $injector.inject('TranslationService', 'MfpService');
@@ -32,8 +37,10 @@ export class ExportMfpToolContent extends AbstractToolContent {
 
 	onInitialize() {
 		this.observe(state => state.mfp.current, data => this.signal(Update, data));
+		this.observe(state => state.mfp.showGrid, data => this.signal(Update_Show_Grid, data));
 		this.observe(state => state.mfp.jobSpec, data => this.signal(Update_Job_Started, data));
 		this.observe(state => state.mfp.printLegend, data => this.signal(Update_PrintLegend, data));
+		this.observe(state => state.media, data => this.signal(Update_IsPortrait, data.portrait));
 	}
 
 	update(type, data, model) {
@@ -44,6 +51,10 @@ export class ExportMfpToolContent extends AbstractToolContent {
 				return { ...model, scale: data };
 			case Update_Id:
 				return { ...model, id: data };
+			case Update_Show_Grid:
+				return { ...model, showGrid: data };
+			case Update_IsPortrait:
+				return { ...model, isPortrait: data };
 			case Update_Job_Started:
 				return { ...model, isJobStarted: !!data?.payload };
 			case Update_PrintLegend:
@@ -52,7 +63,7 @@ export class ExportMfpToolContent extends AbstractToolContent {
 	}
 
 	createView(model) {
-		const { id, scale, isJobStarted, printLegend } = model;
+		const { id, scale, isJobStarted, printLegend, showGrid, isPortrait } = model;
 		const translate = (key) => this._translationService.translate(key);
 		const capabilities = this._mfpService.getCapabilities();
 
@@ -60,16 +71,15 @@ export class ExportMfpToolContent extends AbstractToolContent {
 		const btnLabel = isJobStarted ? translate('toolbox_exportMfp_cancel') : translate('toolbox_exportMfp_submit');
 		const btnType = isJobStarted ? 'loading' : 'primary';
 		const btnId = isJobStarted ? 'btn_cancel' : 'btn_submit';
-
 		const areSettingsComplete = (capabilities && scale && id);
 		return html`
 		<style>${css}</style>
-        <div class="ba-tool-container">
+        <div class='ba-tool-container' ?data-register-for-viewport-calc=${isPortrait} >
 			<div class="ba-tool-container__title">
 				${translate('toolbox_exportMfp_header')}
 			</div>
 			<div class='ba-tool-container__content'>
-				${areSettingsComplete ? this._getContent(id, scale, capabilities.layouts, printLegend) : this._getSpinner()}				
+				${areSettingsComplete ? this._getContent(id, scale, capabilities.layouts, printeLegend, showGrid) : this._getSpinner()}				
 			</div>
 			<div class="ba-tool-container__actions"> 
 				<ba-button id='${btnId}' class="tool-container__button preview_button" .label=${btnLabel} @click=${onClickAction} .type=${btnType} .disabled=${!areSettingsComplete}></ba-button>
@@ -81,7 +91,7 @@ export class ExportMfpToolContent extends AbstractToolContent {
 		return html`<ba-spinner></ba-spinner>`;
 	}
 
-	_getContent(id, scale, layouts, printLegend) {
+	_getContent(id, scale, layouts, printeLegend, showGrid) {
 		const translate = (key) => this._translationService.translate(key);
 
 		const layoutItems = layouts.map(capability => {
@@ -142,33 +152,39 @@ export class ExportMfpToolContent extends AbstractToolContent {
 			this.signal(Update_PrintLegend, value);
 		};
 
+		const onChangeShowGrid = (event) => {
+			setShowGrid(event.detail.checked);
+		};
+
 		return html`
 				<div class='tool-section'>
 					<div class='tool-sub-header'>			
 						${translate('toolbox_exportMfp_layout')}				
 					</div>
-						<div class='button-container'>
-							${getLayoutOptions(layoutItems, id)}
-						</div>
-					</div>
-					<div class='tool-section' style='margin-top:1em'>
-						<div class='tool-sub-header'>	
-							${translate('toolbox_exportMfp_scale')}	
-						</div>
-						<div style='display: flex; justify-content: center'>	
-							<ba-icon id='decrease' .icon='${minus}' .color=${'var(--primary-color)'} .size=${2.2} .title=${translate('toolbox_exportMfp_scale_decrease')} @click=${decreaseScale}></ba-icon>                    				
-							<select id='select_scale' @change=${onChangeScale}>							
-							${getScaleOptions(scales, scale)}
-							</select>
-							<ba-icon id='increase' .icon='${plus}' .color=${'var(--primary-color)'} .size=${2.2} .title=${translate('toolbox_exportMfp_scale_increase')} @click=${increaseScale}></ba-icon>                    									
-						<div>
+					<div class='button-container'>
+						${getLayoutOptions(layoutItems, id)}
 					</div>
 				</div>
-
 				<div class='tool-section' style='margin-top:1em'>
+					<div class='tool-sub-header'>	
+						${translate('toolbox_exportMfp_scale')}	
+					</div>
+
 					<div class='tool-sub-header' style='width: 12em'>	
 						<ba-toggle id='print-legend' .checked=${printLegend} .title="${translate('toolbox_exportMfp_print_legend')}" @toggle=${onChangePrintLegend}>${translate('toolbox_exportMfp_print_legend')}</ba-toggle>
 					</div>
+
+					<div style='display: flex; justify-content: center'>	
+						<ba-icon id='decrease' .icon='${plus}' .color=${'var(--primary-color)'} .size=${2.2} .title=${translate('toolbox_exportMfp_scale_decrease')} @click=${decreaseScale}></ba-icon>                    				
+						<select id='select_scale' @change=${onChangeScale}>							
+						${getScaleOptions(scales, scale)}
+						</select>
+						<ba-icon id='increase' .icon='${minus}' .color=${'var(--primary-color)'} .size=${2.2} .title=${translate('toolbox_exportMfp_scale_increase')} @click=${increaseScale}></ba-icon>                    									
+					<div>
+					</div>					
+				</div>				
+				<div class='tool-section separator' style='margin-top:1em'>
+					<div  class='tool-section' style='margin-top:1em'><ba-checkbox id='showgrid' .checked=${showGrid} .title=${translate('toolbox_exportMfp_show_grid_title')} @toggle=${onChangeShowGrid} ><span>${translate('toolbox_exportMfp_show_grid')}</span></ba-checkbox></div>
 				</div>`;
 	}
 

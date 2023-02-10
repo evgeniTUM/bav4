@@ -28,7 +28,8 @@ import { contributionReducer } from '../ea/store/contribution/contribution.reduc
 import { geofeatureReducer } from '../ea/store/geofeature/geofeature.reducer';
 import { mapclickReducer } from '../ea/store/mapclick/mapclick.reducer';
 import { bottomSheetReducer } from '../store/bottomSheet/bottomSheet.reducer';
-import { altitudeProfileReducer } from '../store/altitudeProfile/altitudeProfile.reducer';
+import { elevationProfileReducer } from '../store/elevationProfile/elevationProfile.reducer';
+import { chipsReducer } from '../store/chips/chips.reducer';
 
 
 
@@ -74,7 +75,8 @@ export class StoreService {
 			import: importReducer,
 			mfp: mfpReducer,
 			bottomSheet: bottomSheetReducer,
-			altitudeProfile: altitudeProfileReducer
+			elevationProfile: elevationProfileReducer,
+			chips: chipsReducer
 		});
 
 		this._store = createStore(rootReducer);
@@ -84,6 +86,7 @@ export class StoreService {
 			const {
 				LayersPlugin: layersPlugin,
 				TopicsPlugin: topicsPlugin,
+				ChipsPlugin: chipsPlugin,
 				GeolocationPlugin: geolocationPlugin,
 				MeasurementPlugin: measurementPlugin,
 				DrawPlugin: drawPlugin,
@@ -101,11 +104,13 @@ export class StoreService {
 				LayerVisibilityNotificationPlugin: layerVisibilityNotificationPlugin,
 				SearchPlugin: searchPlugin,
 				ExportMfpPlugin: exportMfpPlugin,
+				ElevationProfilePlugin: elevationProfilePlugin,
 				HistoryStatePlugin: historyStatePlugin,
 				InfoPopupPlugin: infoPopupPlugin
 			}
 				= $injector.inject(
 					'TopicsPlugin',
+					'ChipsPlugin',
 					'LayersPlugin',
 					'GeolocationPlugin',
 					'MeasurementPlugin',
@@ -124,6 +129,7 @@ export class StoreService {
 					'LayerVisibilityNotificationPlugin',
 					'SearchPlugin',
 					'ExportMfpPlugin',
+					'ElevationProfilePlugin',
 					'HistoryStatePlugin',
 					'InfoPopupPlugin'
 				);
@@ -132,6 +138,7 @@ export class StoreService {
 				//register plugins
 				await mediaPlugin.register(this._store);
 				await topicsPlugin.register(this._store);
+				await chipsPlugin.register(this._store);
 				await layersPlugin.register(this._store);
 				await positionPlugin.register(this._store);
 				await measurementPlugin.register(this._store);
@@ -150,6 +157,7 @@ export class StoreService {
 				await layerVisibilityNotificationPlugin.register(this._store);
 				await searchPlugin.register(this._store);
 				await exportMfpPlugin.register(this._store);
+				await elevationProfilePlugin.register(this._store);
 				await historyStatePlugin.register(this._store); // should be registered as last plugin
 			});
 		});

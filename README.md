@@ -4,7 +4,7 @@
 <h1 align="center">
    BayernAtlas v4 <br><br>
 
-   [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ldbv-by/bav4-nomigration/Node.js%20CI?style=for-the-badge)](https://github.com/ldbv-by/bav4-nomigration/actions/workflows/node.js.yml?query=branch%3Amaster)
+   [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ldbv-by/bav4-nomigration/node.js.yml?branch=master&style=for-the-badge)](https://github.com/ldbv-by/bav4-nomigration/actions/workflows/node.js.yml?query=branch%3Amaster)
 [![Coveralls branch](https://img.shields.io/coveralls/github/ldbv-by/bav4-nomigration/master?style=for-the-badge)](https://coveralls.io/github/ldbv-by/bav4-nomigration?branch=master)
 [![GitHub](https://img.shields.io/github/license/ldbv-by/bav4-nomigration?color=blue&style=for-the-badge)](http://www.apache.org/licenses/LICENSE-2.0)
 </h1>
@@ -96,6 +96,14 @@ To enable the showcase component, the `SOFTWARE_INFO` property must be set.
 | `npm run doc` | Generates jsdoc files (see:  `./docs`) |
 | `npm run es-check` | Checks if source files use only allowed es-version language features|
 | `npm run analyze-bundle` | Visualize the size of webpack output files with an interactive zoomable treemap |
+
+### Available Pages
+
+| Path | |
+|----|----|
+| `/`  `/index.html` | Serves the default page |
+| `/embed.html` | Serves a page that can be embedded via an iframe   |
+| `/embed/wrapper` | Serves a wrapper page for the embed.html. Useful for dev and testing purposes (passes its query parameters to embed.html)|
 
 ## Structure
 
@@ -200,7 +208,6 @@ For example, they could be responsible for setting an initial state or reacting 
 ### Various topics relating web components
 - Introduction to custom elements and web components: https://javascript.info/web-components
 - https://www.thinktecture.com/de/articles/web-components/
-- https://alligator.io/web-components/attributes-properties/
 - https://itnext.io/handling-data-with-web-components-9e7e4a452e6e
 
 ### CSS

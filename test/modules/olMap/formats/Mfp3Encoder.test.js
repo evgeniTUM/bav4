@@ -1,5 +1,5 @@
 
-import { LineString, MultiPolygon, Point, Polygon } from 'ol/geom';
+import { GeometryCollection, LineString, MultiLineString, MultiPoint, MultiPolygon, Point, Polygon } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 
@@ -27,7 +27,7 @@ import { MeasurementOverlayTypes } from '../../../../src/modules/olMap/component
 
 describe('BvvMfp3Encoder', () => {
 
-	const viewMock = { getCenter: () => [50, 50], calculateExtent: () => [0, 0, 100, 100], getResolution: () => 10 };
+	const viewMock = { getCenter: () => [50, 50], calculateExtent: () => [0, 0, 100, 100], getResolution: () => 10, getZoomForResolution: () => 21 };
 	const mapMock = {
 		getSize: () => [100, 100],
 		getCoordinateFromPixel: (p) => p,
@@ -40,7 +40,7 @@ describe('BvvMfp3Encoder', () => {
 		}
 	};
 
-	const layerSpecMock = { specs: [], dataOwners: [], thirdPartyDataOwners: [] };
+	const layerSpecMock = { specs: [], dataOwners: [] };
 
 	const geoResourceServiceMock = { byId: () => { } };
 
@@ -98,6 +98,25 @@ describe('BvvMfp3Encoder', () => {
 		encoder._mfpProjection = 'EPSG:25832';
 		return encoder;
 	};
+
+	class TestGeoResource extends GeoResource {
+		constructor(type, label) {
+			super(`test_${label}`);
+			this._type = type;
+		}
+
+		/**
+		* @override
+		*/
+		getType() {
+			return this._type;
+		}
+
+		get url() {
+			return '';
+		}
+	}
+
 	describe('constructor', () => {
 		it('initialize with default properties', () => {
 			const classUnderTest = new BvvMfp3Encoder();
@@ -115,30 +134,11 @@ describe('BvvMfp3Encoder', () => {
 			return { ...defaultProperties, ...initProperties };
 		};
 
-
-
-		class TestGeoResource extends GeoResource {
-			constructor(type, label) {
-				super(`test_${label}`);
-				this._type = type;
-			}
-
-			/**
-			* @override
-			*/
-			getType() {
-				return this._type;
-			}
-
-			get url() {
-				return '';
-			}
-		}
-
 		it('encodes with TargetSRID as mfpProjection', async () => {
 			const encodingProperties = getProperties({ ...defaultProperties, targetSRID: '25832' });
 
 			const encoder = new BvvMfp3Encoder();
+			spyOn(encoder, '_getCopyrights').and.callFake(() => [{}]);
 			spyOn(encoder, '_encode').and.callFake(() => layerSpecMock);
 
 			await encoder.encode(mapMock, encodingProperties);
@@ -150,6 +150,7 @@ describe('BvvMfp3Encoder', () => {
 		it('requests a ShortUrl and QrCode from urlService', async () => {
 			const encoder = new BvvMfp3Encoder();
 			spyOn(encoder, '_encode').and.callFake(() => layerSpecMock);
+			spyOn(encoder, '_getCopyrights').and.callFake(() => [{}]);
 			const shortenerSpy = spyOn(encoder, '_generateShortUrl').and.resolveTo('foo');
 			const qrCodeSpy = spyOn(encoder, '_generateQrCode').withArgs('foo').and.returnValue('bar');
 
@@ -157,6 +158,20 @@ describe('BvvMfp3Encoder', () => {
 
 			expect(shortenerSpy).toHaveBeenCalled();
 			expect(qrCodeSpy).toHaveBeenCalled();
+		});
+
+		it('encodes with optional grid', async () => {
+			const expectedScale = 1000;
+			const encodingProperties = getProperties({ ...defaultProperties, showGrid: true, scale: expectedScale });
+			const encoder = new BvvMfp3Encoder();
+			spyOn(encoder, '_getCopyrights').and.callFake(() => [{}]);
+			spyOn(encoder, '_encode').and.callFake(() => layerSpecMock);
+			const gridSpy = spyOn(encoder, '_encodeGridLayer').withArgs(expectedScale).and.callThrough();
+
+
+			await encoder.encode(mapMock, encodingProperties);
+
+			expect(gridSpy).toHaveBeenCalled();
 		});
 
 		it('fails to encode for invalid properties', async () => {
@@ -173,6 +188,7 @@ describe('BvvMfp3Encoder', () => {
 			const pageCenter = new Point(fromLonLat([11.57245, 48.14021]));
 			const mapCenterSpy = spyOn(viewMock, 'getCenter').and.callThrough();
 			const encoder = new BvvMfp3Encoder();
+			spyOn(encoder, '_getCopyrights').and.callFake(() => [{}]);
 
 			const actualSpec = await encoder.encode(mapMock, getProperties({ pageCenter: pageCenter }));
 
@@ -184,7 +200,7 @@ describe('BvvMfp3Encoder', () => {
 		it('uses the provided pageExtent for the specs', async () => {
 			const mapExtentSpy = spyOn(viewMock, 'calculateExtent').and.callThrough();
 			const encoder = new BvvMfp3Encoder();
-
+			spyOn(encoder, '_getCopyrights').and.callFake(() => [{}]);
 			await encoder.encode(mapMock, getProperties({ pageExtent: [0, 0, 42, 21] }));
 
 			expect(mapExtentSpy).not.toHaveBeenCalled();
@@ -204,6 +220,7 @@ describe('BvvMfp3Encoder', () => {
 			const encoder = new BvvMfp3Encoder();
 			const groupLayer = new LayerGroup('foo');
 			const layerMock = { get: () => 'foo' };
+			spyOn(encoder, '_getCopyrights').and.callFake(() => [{}]);
 			spyOn(groupLayer, 'getLayers').and.callFake(() => {
 				return { getArray: () => [layerMock, layerMock, layerMock] };
 			});
@@ -231,8 +248,32 @@ describe('BvvMfp3Encoder', () => {
 			expect(encodingSpy).toHaveBeenCalled();
 		});
 
-		it('encodes a WMTS layer', async () => {
-			spyOn(geoResourceServiceMock, 'byId').withArgs('foo').and.callFake(() => new TestGeoResource(GeoResourceTypes.XYZ, 'xyz'));
+		it('encodes a WMTS layer with XYZ GeoResource', async () => {
+			spyOn(geoResourceServiceMock, 'byId').and.callFake(() => new TestGeoResource(GeoResourceTypes.XYZ, 'xyz'));
+			const encoder = new BvvMfp3Encoder();
+			const encodingSpy = spyOn(encoder, '_encodeWMTS').and.callFake(() => {
+				return {};
+			});
+
+			await encoder.encode(mapMock, getProperties());
+
+			expect(encodingSpy).toHaveBeenCalled();
+		});
+
+		it('encodes a WMTS layer with WMTS GeoResource', async () => {
+			spyOn(geoResourceServiceMock, 'byId').and.callFake(() => new TestGeoResource(GeoResourceTypes.WMTS, 'wmts'));
+			const encoder = new BvvMfp3Encoder();
+			const encodingSpy = spyOn(encoder, '_encodeWMTS').and.callFake(() => {
+				return {};
+			});
+
+			await encoder.encode(mapMock, getProperties());
+
+			expect(encodingSpy).toHaveBeenCalled();
+		});
+
+		it('encodes a WMTS layer with vectortile GeoResource', async () => {
+			spyOn(geoResourceServiceMock, 'byId').and.callFake(() => new TestGeoResource(GeoResourceTypes.VT, 'vectortile'));
 			const encoder = new BvvMfp3Encoder();
 			const encodingSpy = spyOn(encoder, '_encodeWMTS').and.callFake(() => {
 				return {};
@@ -249,7 +290,7 @@ describe('BvvMfp3Encoder', () => {
 			const encodingSpy = spyOn(encoder, '_encodeOverlays').and.callFake(() => {
 				return {};
 			});
-
+			spyOn(encoder, '_getCopyrights').and.callFake(() => [{}]);
 			await encoder.encode(mapMock, getProperties());
 
 			expect(encodingSpy).toHaveBeenCalled();
@@ -272,6 +313,7 @@ describe('BvvMfp3Encoder', () => {
 			const encoder = new BvvMfp3Encoder();
 			const invisibleLayerMock = { get: () => 'foo', getExtent: () => [20, 20, 50, 50], getVisible: () => false };
 			const visibleLayerMock = { get: () => 'foo', getExtent: () => [20, 20, 50, 50], getVisible: () => true };
+			spyOn(encoder, '_getCopyrights').and.callFake(() => [{}]);
 			spyOn(mapMock, 'getLayers').and.callFake(() => {
 				return { getArray: () => [invisibleLayerMock, visibleLayerMock] };
 			});
@@ -289,6 +331,8 @@ describe('BvvMfp3Encoder', () => {
 			spyOn(mapMock, 'getLayers').and.callFake(() => {
 				return { getArray: () => [invisibleLayerMock, visibleLayerMock] };
 			});
+
+			spyOn(encoder, '_getCopyrights').and.callFake(() => [{}]);
 			const encodingSpy = spyOn(encoder, '_encode').and.callFake(() => layerSpecMock);
 
 			await encoder.encode(mapMock, getProperties());
@@ -343,7 +387,6 @@ describe('BvvMfp3Encoder', () => {
 						rotation: null
 					},
 					dataOwner: 'Foo CopyRight,Bar CopyRight',
-					thirdPartyDataOwner: '',
 					shortLink: 'http://url.to/shorten',
 					qrcodeurl: 'http://url.to/shorten.png',
 					legend: jasmine.any(Object),
@@ -389,7 +432,6 @@ describe('BvvMfp3Encoder', () => {
 						rotation: null
 					},
 					dataOwner: 'Bar CopyRight',
-					thirdPartyDataOwner: 'Foo CopyRight',
 					shortLink: 'http://url.to/shorten',
 					qrcodeurl: 'http://url.to/shorten.png',
 					legend: jasmine.any(Object),
@@ -434,8 +476,7 @@ describe('BvvMfp3Encoder', () => {
 						dpi: jasmine.any(Number),
 						rotation: null
 					},
-					dataOwner: '',
-					thirdPartyDataOwner: 'Foo CopyRight,Bar CopyRight',
+					dataOwner: 'Bar CopyRight,Foo CopyRight',
 					shortLink: 'http://url.to/shorten',
 					qrcodeurl: 'http://url.to/shorten.png',
 					legend: jasmine.any(Object),
@@ -453,7 +494,7 @@ describe('BvvMfp3Encoder', () => {
 				getUrls: () => ['https://some.url/to/foo/{z}/{x}/{y}'],
 				getParams: () => []
 			};
-			const geoResourceFoo = new TestGeoResource(GeoResourceTypes.WMS).setAttribution({ copyright: { label: 'Foo CopyRight' } }).setImportedByUser(true);
+			const geoResourceFoo = new TestGeoResource(GeoResourceTypes.WMS).setAttribution({ copyright: { label: 'Foo CopyRight' } });
 			const geoResourceBar = new TestGeoResource(GeoResourceTypes.WMS).setAttribution([{ copyright: { label: 'Bar CopyRight' } }, { copyright: { label: 'Baz CopyRight' } }]);
 			spyOn(geoResourceServiceMock, 'byId')
 				.withArgs('foo').and.callFake(() => geoResourceFoo)
@@ -480,8 +521,7 @@ describe('BvvMfp3Encoder', () => {
 						dpi: jasmine.any(Number),
 						rotation: null
 					},
-					dataOwner: 'Bar CopyRight,Baz CopyRight',
-					thirdPartyDataOwner: 'Foo CopyRight',
+					dataOwner: 'Baz CopyRight,Bar CopyRight,Foo CopyRight',
 					shortLink: 'http://url.to/shorten',
 					qrcodeurl: 'http://url.to/shorten.png',
 					legend: jasmine.any(Object),
@@ -527,7 +567,6 @@ describe('BvvMfp3Encoder', () => {
 						rotation: null
 					},
 					dataOwner: 'Foo CopyRight',
-					thirdPartyDataOwner: '',
 					shortLink: 'http://url.to/shorten',
 					qrcodeurl: 'http://url.to/shorten.png',
 					legend: jasmine.any(Object),
@@ -618,9 +657,7 @@ describe('BvvMfp3Encoder', () => {
 				requestEncoding: 'REST',
 				matrixSet: 'EPSG:25832',
 				matrices: jasmine.any(Object),
-				baseURL: 'https://some.url/to/wmts/bar/{TileMatrix}/{TileCol}/{TileRow}',
-				attribution: null,
-				thirdPartyAttribution: null
+				baseURL: 'https://some.url/to/wmts/bar/{TileMatrix}/{TileCol}/{TileRow}'
 			});
 		});
 
@@ -651,9 +688,7 @@ describe('BvvMfp3Encoder', () => {
 				requestEncoding: 'REST',
 				matrixSet: 'EPSG:25832',
 				matrices: jasmine.any(Object),
-				baseURL: 'https://some.url/to/wmts/bar/{TileMatrix}/{TileCol}/{TileRow}',
-				attribution: null,
-				thirdPartyAttribution: null
+				baseURL: 'https://some.url/to/wmts/bar/{TileMatrix}/{TileCol}/{TileRow}'
 			});
 		});
 
@@ -684,9 +719,7 @@ describe('BvvMfp3Encoder', () => {
 				requestEncoding: 'REST',
 				matrixSet: 'EPSG:25832',
 				matrices: jasmine.any(Object),
-				baseURL: 'https://some.url/to/wmts/bar/{TileMatrix}/{TileCol}/{TileRow}',
-				attribution: null,
-				thirdPartyAttribution: null
+				baseURL: 'https://some.url/to/wmts/bar/{TileMatrix}/{TileCol}/{TileRow}'
 			});
 		});
 
@@ -717,9 +750,7 @@ describe('BvvMfp3Encoder', () => {
 			const wmsLayerMock = { get: () => 'foo', getSource: () => sourceMock, getOpacity: () => 1 };
 
 			const wmsGeoResourceMock = {
-				id: 'foo', format: 'image/png', get attribution() {
-					return { copyright: { label: 'Foo CopyRight' } };
-				}, importedByUser: false
+				id: 'foo', format: 'image/png', importedByUser: false
 			};
 			const encoder = setup();
 			const actualSpec = encoder._encodeWMS(wmsLayerMock, wmsGeoResourceMock);
@@ -732,9 +763,7 @@ describe('BvvMfp3Encoder', () => {
 				baseURL: 'https://some.url/to/wms',
 				layers: ['foo', 'bar'],
 				styles: ['baz'],
-				customParams: { transparent: true },
-				attribution: { copyright: { label: 'Foo CopyRight' } },
-				thirdPartyAttribution: null
+				customParams: { transparent: true }
 			});
 		});
 
@@ -869,9 +898,7 @@ describe('BvvMfp3Encoder', () => {
 
 			const getGeoResourceMock = () => {
 				return {
-					id: 'foo', get attribution() {
-						return { copyright: { label: 'Foo CopyRight' } };
-					}, importedByUser: false
+					id: 'foo', importedByUser: false
 				};
 			};
 
@@ -892,8 +919,6 @@ describe('BvvMfp3Encoder', () => {
 					opacity: 1,
 					type: 'geojson',
 					name: 'foo',
-					attribution: { copyright: { label: 'Foo CopyRight' } },
-					thirdPartyAttribution: null,
 					geoJson: {
 						features: [{
 							type: 'Feature',
@@ -929,8 +954,6 @@ describe('BvvMfp3Encoder', () => {
 					opacity: 1,
 					type: 'geojson',
 					name: 'foo',
-					attribution: { copyright: { label: 'Foo CopyRight' } },
-					thirdPartyAttribution: null,
 					geoJson: {
 						features: [{
 							type: 'Feature',
@@ -984,8 +1007,6 @@ describe('BvvMfp3Encoder', () => {
 					opacity: 1,
 					type: 'geojson',
 					name: 'foo',
-					attribution: { copyright: { label: 'Foo CopyRight' } },
-					thirdPartyAttribution: null,
 					geoJson: {
 						features: [{
 							type: 'Feature',
@@ -1038,8 +1059,6 @@ describe('BvvMfp3Encoder', () => {
 					opacity: 1,
 					type: 'geojson',
 					name: 'foo',
-					attribution: { copyright: { label: 'Foo CopyRight' } },
-					thirdPartyAttribution: null,
 					geoJson: {
 						features: [{
 							type: 'Feature',
@@ -1092,8 +1111,6 @@ describe('BvvMfp3Encoder', () => {
 					opacity: 1,
 					type: 'geojson',
 					name: 'foo',
-					attribution: { copyright: { label: 'Foo CopyRight' } },
-					thirdPartyAttribution: null,
 					geoJson: {
 						features: [{
 							type: 'Feature',
@@ -1141,8 +1158,6 @@ describe('BvvMfp3Encoder', () => {
 					opacity: 1,
 					type: 'geojson',
 					name: 'foo',
-					attribution: { copyright: { label: 'Foo CopyRight' } },
-					thirdPartyAttribution: null,
 					geoJson: {
 						features: [{
 							type: 'Feature',
@@ -1170,8 +1185,6 @@ describe('BvvMfp3Encoder', () => {
 								graphicHeight: 56.25,
 								pointRadius: 5,
 								label: 'FooBarBaz',
-								labelXOffset: 0,
-								labelYOffset: 0,
 								labelAlign: 'cm',
 								fontColor: '#000000',
 								fontFamily: 'SANS-SERIF',
@@ -1199,8 +1212,6 @@ describe('BvvMfp3Encoder', () => {
 					opacity: 1,
 					type: 'geojson',
 					name: 'foo',
-					attribution: { copyright: { label: 'Foo CopyRight' } },
-					thirdPartyAttribution: null,
 					geoJson: {
 						features: [{
 							type: 'Feature',
@@ -1228,9 +1239,61 @@ describe('BvvMfp3Encoder', () => {
 								graphicHeight: 56.25,
 								pointRadius: 5,
 								label: 'FooBarBaz',
-								labelXOffset: 0,
-								labelYOffset: 0,
 								labelAlign: 'lt',
+								fontColor: '#000000',
+								fontFamily: 'SANS-SERIF',
+								fontSize: 10,
+								fontWeight: 'normal'
+							}]
+						}
+					}
+				});
+			});
+
+			it('writes a point feature with feature style (text) and alignment (bottom)', () => {
+				const featureWithStyle = new Feature({ geometry: new Point([30, 30]) });
+				featureWithStyle.setStyle(getTextStyle('left', 'bottom'));
+				const vectorSource = new VectorSource({ wrapX: false, features: [featureWithStyle] });
+				const vectorLayer = new VectorLayer({ id: 'foo', source: vectorSource, style: null });
+				spyOn(vectorLayer, 'getExtent').and.callFake(() => [20, 20, 50, 50]);
+				const geoResourceMock = getGeoResourceMock();
+				spyOn(geoResourceServiceMock, 'byId').and.callFake(() => geoResourceMock);
+				const encoder = setup();
+				encoder._pageExtent = [20, 20, 50, 50];
+				const actualSpec = encoder._encodeVector(vectorLayer, geoResourceMock);
+
+				expect(actualSpec).toEqual({
+					opacity: 1,
+					type: 'geojson',
+					name: 'foo',
+					geoJson: {
+						features: [{
+							type: 'Feature',
+							geometry: {
+								type: 'Point',
+								coordinates: jasmine.any(Array)
+							},
+							properties: {
+								_gx_style: 0
+							}
+						}],
+						type: 'FeatureCollection'
+					},
+					style: {
+						version: '2',
+						'[_gx_style = 0]': {
+							symbolizers: [{
+								type: 'text',
+								zIndex: 0,
+								rotation: 0,
+								fillOpacity: 0.4,
+								fillColor: '#ffffff',
+								strokeOpacity: 0,
+								graphicWidth: 56.25,
+								graphicHeight: 56.25,
+								pointRadius: 5,
+								label: 'FooBarBaz',
+								labelAlign: 'lb',
 								fontColor: '#000000',
 								fontFamily: 'SANS-SERIF',
 								fontSize: 10,
@@ -1257,8 +1320,6 @@ describe('BvvMfp3Encoder', () => {
 					opacity: 1,
 					type: 'geojson',
 					name: 'foo',
-					attribution: { copyright: { label: 'Foo CopyRight' } },
-					thirdPartyAttribution: null,
 					geoJson: {
 						features: [{
 							type: 'Feature',
@@ -1297,8 +1358,6 @@ describe('BvvMfp3Encoder', () => {
 					opacity: 1,
 					type: 'geojson',
 					name: 'foo',
-					attribution: { copyright: { label: 'Foo CopyRight' } },
-					thirdPartyAttribution: null,
 					geoJson: {
 						features: [{
 							type: 'Feature',
@@ -1335,13 +1394,125 @@ describe('BvvMfp3Encoder', () => {
 				});
 			});
 
+			it('writes a multiPoint feature with feature style function', () => {
+				const featureWithStyle = new Feature({ geometry: new MultiPoint([[30, 30], [30, 40]]) });
+				featureWithStyle.setStyle(getStyle());
+				const vectorSource = new VectorSource({ wrapX: false, features: [featureWithStyle] });
+				const vectorLayer = new VectorLayer({ id: 'foo', source: vectorSource, style: null });
+				spyOn(vectorLayer, 'getExtent').and.callFake(() => [20, 20, 50, 50]);
+				const geoResourceMock = getGeoResourceMock();
+				spyOn(geoResourceServiceMock, 'byId').and.callFake(() => geoResourceMock);
+				const encoder = setup();
+				encoder._pageExtent = [20, 20, 50, 50];
+				const actualSpec = encoder._encodeVector(vectorLayer, geoResourceMock);
+
+				expect(actualSpec).toEqual({
+					opacity: 1,
+					type: 'geojson',
+					name: 'foo',
+					geoJson: {
+						features: [{
+							type: 'Feature',
+							geometry: {
+								type: 'MultiPoint',
+								coordinates: jasmine.any(Array)
+							},
+							properties: {
+								_gx_style: 0
+							}
+						}],
+						type: 'FeatureCollection'
+					},
+					style: {
+						version: '2',
+						'[_gx_style = 0]': {
+							symbolizers: [{
+								type: 'point',
+								zIndex: 0,
+								rotation: 0,
+								graphicWidth: 56.25,
+								graphicHeight: 56.25,
+								pointRadius: 5,
+								fillColor: '#ffffff',
+								fillOpacity: 0.4,
+								strokeWidth: 2.6785714285714284,
+								strokeColor: '#3399cc',
+								strokeOpacity: 1,
+								strokeLinecap: 'round',
+								strokeLineJoin: 'round'
+							}]
+						}
+					}
+				});
+			});
+
+			describe('when the map is rotated', () => {
+				it('writes a point feature (text) with a label relative to map rotation', () => {
+					const mapRotation = 42;
+					const expectedLabelRotation = (360 - mapRotation) % 360;
+
+					const featureWithStyle = new Feature({ geometry: new Point([30, 30]) });
+					featureWithStyle.setStyle(getTextStyle());
+					const vectorSource = new VectorSource({ wrapX: false, features: [featureWithStyle] });
+					const vectorLayer = new VectorLayer({ id: 'foo', source: vectorSource, style: null });
+					spyOn(vectorLayer, 'getExtent').and.callFake(() => [20, 20, 50, 50]);
+					const geoResourceMock = getGeoResourceMock();
+					spyOn(geoResourceServiceMock, 'byId').and.callFake(() => geoResourceMock);
+					const encoder = setup({ rotation: mapRotation });
+					encoder._pageExtent = [20, 20, 50, 50];
+					const actualSpec = encoder._encodeVector(vectorLayer, geoResourceMock);
+
+					expect(actualSpec).toEqual({
+						opacity: 1,
+						type: 'geojson',
+						name: 'foo',
+						geoJson: {
+							features: [{
+								type: 'Feature',
+								geometry: {
+									type: 'Point',
+									coordinates: jasmine.any(Array)
+								},
+								properties: {
+									_gx_style: 0
+								}
+							}],
+							type: 'FeatureCollection'
+						},
+						style: {
+							version: '2',
+							'[_gx_style = 0]': {
+								symbolizers: [{
+									type: 'text',
+									zIndex: 0,
+									rotation: 0,
+									fillOpacity: 0.4,
+									fillColor: '#ffffff',
+									strokeOpacity: 0,
+									graphicWidth: 56.25,
+									graphicHeight: 56.25,
+									pointRadius: 5,
+									label: 'FooBarBaz',
+									labelAlign: 'cm',
+									labelRotation: expectedLabelRotation,
+									fontColor: '#000000',
+									fontFamily: 'SANS-SERIF',
+									fontSize: 10,
+									fontWeight: 'normal'
+								}]
+							}
+						}
+					});
+				});
+			});
+
 			it('does NOT writes a point feature without any style', () => {
 				const featureWithStyle = new Feature({ geometry: new Point([30, 30]) });
 				featureWithStyle.setStyle(getImageStyle());
 				const featureWithoutStyle = new Feature({ geometry: new Point([30, 30]) });
 				const vectorSource = new VectorSource({ wrapX: false, features: [featureWithStyle, featureWithoutStyle] });
-
 				const vectorLayer = new VectorLayer({ id: 'foo', source: vectorSource, style: null });
+				const warnSpy = spyOn(console, 'warn');
 
 				spyOn(vectorLayer, 'getExtent').and.callFake(() => [20, 20, 50, 50]);
 				const geoResourceMock = getGeoResourceMock();
@@ -1350,6 +1521,28 @@ describe('BvvMfp3Encoder', () => {
 				encoder._pageExtent = [20, 20, 50, 50];
 				const actualSpec = encoder._encodeVector(vectorLayer, geoResourceMock);
 
+				expect(warnSpy).toHaveBeenCalledWith('cannot style feature', jasmine.any(Feature));
+				expect(actualSpec.geoJson.features).toHaveSize(1);
+			});
+
+			it('does NOT writes a feature with unsupported geometry', () => {
+				const unsupportedGeometry = new GeometryCollection([new Point([30, 30]), new LineString([[30, 30], [40, 40]])]);
+				const featureWithGeometry = new Feature({ geometry: new Point([30, 30]) });
+				const featureWithInvalidGeometry = new Feature({ geometry: unsupportedGeometry });
+				featureWithGeometry.setStyle(getImageStyle());
+				featureWithInvalidGeometry.setStyle(getImageStyle());
+				const vectorSource = new VectorSource({ wrapX: false, features: [featureWithGeometry, featureWithInvalidGeometry] });
+				const vectorLayer = new VectorLayer({ id: 'foo', source: vectorSource, style: null });
+				const warnSpy = spyOn(console, 'warn');
+
+				spyOn(vectorLayer, 'getExtent').and.callFake(() => [20, 20, 50, 50]);
+				const geoResourceMock = getGeoResourceMock();
+				spyOn(geoResourceServiceMock, 'byId').and.callFake(() => geoResourceMock);
+				const encoder = setup();
+				encoder._pageExtent = [20, 20, 50, 50];
+				const actualSpec = encoder._encodeVector(vectorLayer, geoResourceMock);
+
+				expect(warnSpy).toHaveBeenCalledWith('feature not encodable', jasmine.any(Feature));
 				expect(actualSpec.geoJson.features).toHaveSize(1);
 			});
 
@@ -1386,13 +1579,58 @@ describe('BvvMfp3Encoder', () => {
 					opacity: 1,
 					type: 'geojson',
 					name: 'foo',
-					attribution: { copyright: { label: 'Foo CopyRight' } },
-					thirdPartyAttribution: null,
 					geoJson: {
 						features: [{
 							type: 'Feature',
 							geometry: {
 								type: 'LineString',
+								coordinates: jasmine.any(Array)
+							},
+							properties: {
+								_gx_style: 0
+							}
+						}],
+						type: 'FeatureCollection'
+					},
+					style: {
+						version: '2',
+						'[_gx_style = 0]': {
+							symbolizers: [{
+								type: 'line',
+								zIndex: 0,
+								fillOpacity: 0,
+								strokeWidth: 2.6785714285714284,
+								strokeColor: '#3399cc',
+								strokeOpacity: 1,
+								strokeLinecap: 'round',
+								strokeLineJoin: 'round'
+							}]
+						}
+					}
+				});
+			});
+
+			it('writes a multiline feature with stroke style', () => {
+				const featureWithStyle = new Feature({ geometry: new MultiLineString([[[30, 30], [40, 40]], [[40, 40], [35, 350]]]) });
+				featureWithStyle.setStyle(getStrokeStyle());
+				const vectorSource = new VectorSource({ wrapX: false, features: [featureWithStyle] });
+				const vectorLayer = new VectorLayer({ id: 'foo', source: vectorSource, style: null });
+				spyOn(vectorLayer, 'getExtent').and.callFake(() => [20, 20, 50, 50]);
+				const geoResourceMock = getGeoResourceMock();
+				spyOn(geoResourceServiceMock, 'byId').and.callFake(() => geoResourceMock);
+				const encoder = setup();
+				encoder._pageExtent = [20, 20, 50, 50];
+				const actualSpec = encoder._encodeVector(vectorLayer, geoResourceMock);
+
+				expect(actualSpec).toEqual({
+					opacity: 1,
+					type: 'geojson',
+					name: 'foo',
+					geoJson: {
+						features: [{
+							type: 'Feature',
+							geometry: {
+								type: 'MultiLineString',
 								coordinates: jasmine.any(Array)
 							},
 							properties: {
@@ -1440,8 +1678,6 @@ describe('BvvMfp3Encoder', () => {
 					opacity: 1,
 					type: 'geojson',
 					name: 'foo',
-					attribution: { copyright: { label: 'Foo CopyRight' } },
-					thirdPartyAttribution: null,
 					geoJson: {
 						features: [jasmine.any(Object), jasmine.any(Object), jasmine.any(Object)],
 						type: 'FeatureCollection'
@@ -1494,8 +1730,6 @@ describe('BvvMfp3Encoder', () => {
 					opacity: 1,
 					type: 'geojson',
 					name: 'foo',
-					attribution: { copyright: { label: 'Foo CopyRight' } },
-					thirdPartyAttribution: null,
 					geoJson: {
 						features: [{
 							type: 'Feature',
@@ -1541,8 +1775,6 @@ describe('BvvMfp3Encoder', () => {
 					opacity: 1,
 					type: 'geojson',
 					name: 'foo',
-					attribution: { copyright: { label: 'Foo CopyRight' } },
-					thirdPartyAttribution: null,
 					geoJson: {
 						features: [{
 							type: 'Feature',
@@ -1588,8 +1820,6 @@ describe('BvvMfp3Encoder', () => {
 					opacity: 1,
 					type: 'geojson',
 					name: 'foo',
-					attribution: { copyright: { label: 'Foo CopyRight' } },
-					thirdPartyAttribution: null,
 					geoJson: {
 						features: [{
 							type: 'Feature',
@@ -1655,8 +1885,6 @@ describe('BvvMfp3Encoder', () => {
 					opacity: 1,
 					type: 'geojson',
 					name: 'foo',
-					attribution: { copyright: { label: 'Foo CopyRight' } },
-					thirdPartyAttribution: null,
 					geoJson: {
 						features: [{
 							type: 'Feature',
@@ -1722,8 +1950,6 @@ describe('BvvMfp3Encoder', () => {
 					opacity: 1,
 					type: 'geojson',
 					name: 'foo',
-					attribution: { copyright: { label: 'Foo CopyRight' } },
-					thirdPartyAttribution: null,
 					geoJson: {
 						features: [{
 							type: 'Feature',
@@ -1935,7 +2161,7 @@ describe('BvvMfp3Encoder', () => {
 			};
 			const encoder = setup();
 			const specs = encoder._encodeOverlays([overlayMock]);
-			expect(specs.geoJson.features).toHaveSize(0);
+			expect(specs).toHaveSize(0);
 		});
 
 		it('encodes openlayers geometryType to mfp symbolizer type', () => {
@@ -1948,6 +2174,85 @@ describe('BvvMfp3Encoder', () => {
 			expect(encoder._encodeGeometryType('123')).toBe('123');
 			expect(encoder._encodeGeometryType('AbC')).toBe('abc');
 		});
+	});
+
+	describe('_getCopyrights', () => {
+		const zoomLevel = 42;
+		const viewMock = { getZoomForResolution: () => zoomLevel };
+		const mapMock = { getView: () => viewMock };
+		it('requests the zoomlevel for the specified scale property', () => {
+			const encodingProperties = { scale: 1000 };
+			const classUnderTest = setup(encodingProperties);
+
+			const layersMock = [
+				{ get: () => 'foo' },
+				{ get: () => 'foo' }
+			];
+			const geoResource = new TestGeoResource(null, 'something', 'something');
+			const attribution = {
+				copyright: { label: 'foo' }
+			};
+			const attributionSpy = spyOn(geoResource, 'getAttribution').and.callFake(() => attribution);
+			const zoomForResolutionSpy = spyOn(viewMock, 'getZoomForResolution').and.callThrough();
+			spyOn(geoResourceServiceMock, 'byId').withArgs('foo').and.callFake(() => geoResource);
+
+			classUnderTest._getCopyrights(mapMock, layersMock);
+
+			expect(attributionSpy).toHaveBeenCalledWith(zoomLevel);
+			expect(zoomForResolutionSpy).toHaveBeenCalled();
+		});
+
+		it('resolves a layergroup', () => {
+			const encodingProperties = { scale: 1000 };
+			const classUnderTest = setup(encodingProperties);
+			const groupLayer = new LayerGroup('foo');
+			const layersMock = [
+				{ get: () => 'foo' },
+				{ get: () => 'foo' }
+			];
+			const spy = spyOn(groupLayer, 'getLayers').and.callFake(() => {
+				return { getArray: () => layersMock };
+			});
+
+			const geoResource = new TestGeoResource(null, 'something', 'something');
+			const attribution = { copyright: { label: 'foo' } };
+			spyOn(geoResource, 'getAttribution').and.callFake(() => attribution);
+			spyOn(geoResourceServiceMock, 'byId').withArgs('foo').and.callFake(() => geoResource);
+
+			classUnderTest._getCopyrights(mapMock, [groupLayer]);
+
+			expect(spy).toHaveBeenCalled();
+		});
+
+		it('replace wmts geoResource with the related substitution', () => {
+			const encodingProperties = { scale: 1000 };
+			const classUnderTest = setup(encodingProperties);
+			const layersMock = [
+				{ get: () => 'test_xyz' },
+				{ get: () => 'no_geoResource' }
+			];
+			const geoResource = new TestGeoResource(GeoResourceTypes.XYZ, 'xyz', 'something');
+			const substitutionGeoResource = new TestGeoResource(GeoResourceTypes.XYZ, 'xyz_substitution', 'something');
+			const attribution = {
+				copyright: { label: 'foo' }
+			};
+			spyOn(geoResource, 'getAttribution').and.callFake(() => attribution);
+			const spy = spyOn(geoResourceServiceMock, 'byId').and.callFake((id) => {
+				if (id === 'test_xyz') {
+					return geoResource;
+				}
+				if (id === 'no_geoResource') {
+					return null;
+				}
+				return substitutionGeoResource;
+			});
+
+			classUnderTest._getCopyrights(mapMock, layersMock);
+
+			expect(spy).toHaveBeenCalledWith('test_xyz');
+			expect(spy).toHaveBeenCalledWith('wmts_print');
+		});
+
 	});
 
 	describe('_generateShortUrl', () => {
@@ -2031,4 +2336,38 @@ describe('BvvMfp3Encoder', () => {
 	});
 
 
+	describe('_encodeGridLayer', () => {
+		it('uses the appropriate spacing for defined scale', () => {
+			const validScales = [2000000, 1000000, 500000, 200000, 100000, 50000, 25000, 10000, 5000, 2500, 1250, 1000, 500];
+			const expectedSpacings = [100000, 100000, 50000, 20000, 10000, 5000, 2000, 1000, 500, 200, 100, 100, 50];
+			const classUnderTest = setup();
+
+
+			// act & assert
+			validScales.forEach((validScale, index) => {
+				const actualGridLayerSpec = classUnderTest._encodeGridLayer(validScale);
+				const expectedSpacing = expectedSpacings[index];
+				expect(actualGridLayerSpec.spacing).toEqual([expectedSpacing, expectedSpacing]);
+			});
+		});
+
+		it('uses the default spacing for a unknown scale', () => {
+			const unknownScale = 42;
+			const expectedSpacing = 1000;
+			const classUnderTest = setup();
+
+			const actualGridLayerSpec = classUnderTest._encodeGridLayer(unknownScale);
+
+			expect(actualGridLayerSpec.spacing).toEqual([expectedSpacing, expectedSpacing]);
+		});
+	});
+
+	describe('adjustDistance', () => {
+		const dpi = 72;
+		it('adjusts only valid distances', () => {
+			expect(BvvMfp3Encoder.adjustDistance(null, dpi)).toBeNull();
+			expect(BvvMfp3Encoder.adjustDistance(100, dpi)).toBe(125);
+		});
+
+	});
 });

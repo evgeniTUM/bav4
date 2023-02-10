@@ -13,6 +13,7 @@ describe('QueryParameters', () => {
 		expect(QueryParameters.LAYER_OPACITY).toBe('l_o');
 		expect(QueryParameters.TOPIC).toBe('t');
 		expect(QueryParameters.QUERY).toBe('q');
+		expect(QueryParameters.CHIP_ID).toBe('chid');
 		expect(QueryParameters.MENU_ID).toBe('mid');
 		expect(QueryParameters.EA_MODULE).toBe('comp');
 

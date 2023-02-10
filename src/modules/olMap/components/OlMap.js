@@ -60,6 +60,7 @@ export class OlMap extends MvuElement {
 		this._geoResourceService = georesourceService;
 		this._layerHandler = new Map([[measurementHandler.id, measurementHandler], [geolocationHandler.id, geolocationHandler], [olHighlightLayerHandler.id, olHighlightLayerHandler], [olDrawHandler.id, olDrawHandler], [olMfpHandler.id, olMfpHandler]]);
 		this._mapHandler = new Map([[olFeatureInfoHandler.id, olFeatureInfoHandler]]);
+		this._unsubscribers = [];
 	}
 
 	/**
@@ -89,9 +90,11 @@ export class OlMap extends MvuElement {
 	 */
 	onInitialize() {
 		//observe global state (position, active layers, orientation)
-		this.observe(state => state.position, data => this.signal(Update_Position, data));
-		this.observe(state => state.layers.active, data => this.signal(Update_Layers, data));
-		this.observe(state => state.media.portrait, () => this._map.updateSize(), false);
+		this._unsubscribers = [
+			this.observe(state => state.position, data => this.signal(Update_Position, data)),
+			this.observe(state => state.layers.active, data => this.signal(Update_Layers, data)),
+			this.observe(state => state.media.portrait, () => this._map.updateSize(), false)
+		];
 
 		const { zoom, center, rotation } = this.getModel();
 
@@ -195,7 +198,7 @@ export class OlMap extends MvuElement {
 			handler.register(this._map);
 		});
 
-		//register particular obeservers on our Model
+		//register particular observers on our model
 		//handle fitRequest
 		this.observeModel(['fitRequest', 'fitLayerRequest'], eventLike => this._fitToExtent(eventLike));
 		//sync layers
@@ -208,6 +211,10 @@ export class OlMap extends MvuElement {
 	 * @override
 	 */
 	onDisconnect() {
+		while (this._unsubscribers.length > 0) {
+			this._unsubscribers.shift()();
+		}
+		this._map?.setTarget(null);
 		this._map = null;
 		this._view = null;
 	}
@@ -230,15 +237,12 @@ export class OlMap extends MvuElement {
 	_syncView() {
 		const { zoom, center, rotation } = this.getModel();
 
-		if (!this._viewSyncBlocked) {
-
-			this._view.animate({
-				zoom: zoom,
-				center: center,
-				rotation: rotation,
-				duration: 200
-			});
-		}
+		this._view.animate({
+			zoom: zoom,
+			center: center,
+			rotation: rotation,
+			duration: 200
+		});
 	}
 
 	_syncLayers() {
@@ -330,7 +334,6 @@ export class OlMap extends MvuElement {
 
 	_fitToExtent(eventLike) {
 		const onAfterFit = () => {
-			this._viewSyncBlocked = false;
 			this._syncStore();
 		};
 
@@ -338,7 +341,6 @@ export class OlMap extends MvuElement {
 			const extent = getLayerById(this._map, eventLike.payload.id)?.getSource?.()?.getExtent?.() ?? eventLike.payload.extent;
 
 			if (extent) {
-				this._viewSyncBlocked = true;
 				const maxZoom = eventLike.payload.options.maxZoom ?? this._view.getMaxZoom();
 				const viewportPadding = this._mapService.getVisibleViewport(this._map.getTarget());
 				const padding = eventLike.payload.options.useVisibleViewport

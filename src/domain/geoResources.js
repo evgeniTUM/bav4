@@ -1,11 +1,12 @@
 import { $injector } from '../injection';
 import { getDefaultAttribution } from '../services/provider/attribution.provider';
+import { isHttpUrl } from '../utils/checks';
 
 /**
  * Attribution data of a GeoResource.
- * It contains at least a copyright label.
+ * Usually it contains at least a copyright label.
  * @typedef Attribution
- * @property {Copyright|Array<Copyright>} copyright
+ * @property {Copyright|Array<Copyright>|null} copyright
  * @property {string} [description] description
  */
 
@@ -64,7 +65,6 @@ export class GeoResource {
 		this._attribution = null;
 		this._attributionProvider = getDefaultAttribution;
 		this._authenticationType = null;
-		this._importedByUser = false;
 		this._queryable = true;
 		this._exportable = true;
 	}
@@ -112,10 +112,6 @@ export class GeoResource {
 		return this._authenticationType;
 	}
 
-	get importedByUser() {
-		return this._importedByUser;
-	}
-
 	get queryable() {
 		return this._queryable;
 	}
@@ -151,7 +147,7 @@ export class GeoResource {
 
 	/**
 	 * Sets the attribution for this GeoResource.
-	 * @param {Attribution|string|null} attribution
+	 * @param {Attribution|Array<Attribution>|string|null} attribution
 	 * @returns `this` for chaining
 	 */
 	setAttribution(attribution) {
@@ -174,11 +170,6 @@ export class GeoResource {
 		return this;
 	}
 
-	setImportedByUser(userImported) {
-		this._importedByUser = userImported;
-		return this;
-	}
-
 	setQueryable(queryable) {
 		this._queryable = queryable;
 		return this;
@@ -195,6 +186,14 @@ export class GeoResource {
 	 */
 	hasLabel() {
 		return !!this._label;
+	}
+
+	/**
+	 * Checks if this GeoResource has an HTTP based id
+	 * which means it denotes an (imported) external resource.
+	 */
+	isExternal() {
+		return isHttpUrl(this.id.split('||')[0]);
 	}
 
 	/**

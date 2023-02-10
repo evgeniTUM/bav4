@@ -12,7 +12,8 @@ describe('HistoryState', () => {
 		encodeState() { }
 	};
 	const environmentService = {
-		getWindow: () => { }
+		getWindow: () => { },
+		isEmbedded: () => { }
 	};
 	const mapService = {
 		getMaxZoomLevel: () => 1,
@@ -42,10 +43,11 @@ describe('HistoryState', () => {
 
 	it('registers postion.zoom change listeners and updates the window history state', async () => {
 		const expectedEncodedState = 'foo';
-		const mockHistory = { replaceState: () => {} };
+		const mockHistory = { replaceState: () => { } };
 		const historySpy = spyOn(mockHistory, 'replaceState');
 		const mockWindow = { history: mockHistory };
 		spyOn(environmentService, 'getWindow').and.returnValue(mockWindow);
+		spyOn(environmentService, 'isEmbedded').and.returnValue(false);
 		spyOn(shareService, 'encodeState').and.returnValue(expectedEncodedState);
 		const store = setup();
 		const instanceUnderTest = new HistoryStatePlugin();
@@ -59,10 +61,11 @@ describe('HistoryState', () => {
 
 	it('registers postion.center change listeners and updates the window history state', async () => {
 		const expectedEncodedState = 'foo';
-		const mockHistory = { replaceState: () => {} };
+		const mockHistory = { replaceState: () => { } };
 		const historySpy = spyOn(mockHistory, 'replaceState');
 		const mockWindow = { history: mockHistory };
 		spyOn(environmentService, 'getWindow').and.returnValue(mockWindow);
+		spyOn(environmentService, 'isEmbedded').and.returnValue(false);
 		spyOn(shareService, 'encodeState').and.returnValue(expectedEncodedState);
 		const store = setup();
 		const instanceUnderTest = new HistoryStatePlugin();
@@ -77,10 +80,11 @@ describe('HistoryState', () => {
 
 	it('registers postion.rotation change listeners and updates the window history state', async () => {
 		const expectedEncodedState = 'foo';
-		const mockHistory = { replaceState: () => {} };
+		const mockHistory = { replaceState: () => { } };
 		const historySpy = spyOn(mockHistory, 'replaceState');
 		const mockWindow = { history: mockHistory };
 		spyOn(environmentService, 'getWindow').and.returnValue(mockWindow);
+		spyOn(environmentService, 'isEmbedded').and.returnValue(false);
 		spyOn(shareService, 'encodeState').and.returnValue(expectedEncodedState);
 		const store = setup();
 		const instanceUnderTest = new HistoryStatePlugin();
@@ -94,10 +98,11 @@ describe('HistoryState', () => {
 
 	it('registers layers.active change listeners and updates the window history state', async () => {
 		const expectedEncodedState = 'foo';
-		const mockHistory = { replaceState: () => {} };
+		const mockHistory = { replaceState: () => { } };
 		const historySpy = spyOn(mockHistory, 'replaceState');
 		const mockWindow = { history: mockHistory };
 		spyOn(environmentService, 'getWindow').and.returnValue(mockWindow);
+		spyOn(environmentService, 'isEmbedded').and.returnValue(false);
 		spyOn(shareService, 'encodeState').and.returnValue(expectedEncodedState);
 		const store = setup();
 		const instanceUnderTest = new HistoryStatePlugin();
@@ -111,17 +116,52 @@ describe('HistoryState', () => {
 
 	it('updates the window history state in an asynchronous manner after plugin registration is done', async () => {
 		const expectedEncodedState = 'foo';
-		const mockHistory = { replaceState: () => {} };
+		const mockHistory = { replaceState: () => { } };
 		const historySpy = spyOn(mockHistory, 'replaceState');
 		const mockWindow = { history: mockHistory };
 		spyOn(environmentService, 'getWindow').and.returnValue(mockWindow);
+		spyOn(environmentService, 'isEmbedded').and.returnValue(false);
 		spyOn(shareService, 'encodeState').and.returnValue(expectedEncodedState);
 		const store = setup();
 		const instanceUnderTest = new HistoryStatePlugin();
 		await instanceUnderTest.register(store);
 
-
 		await TestUtils.timeout(0);
 		expect(historySpy).toHaveBeenCalledWith(null, '', expectedEncodedState);
+	});
+
+	it('does nothing when encoded state has\'nt changed', async () => {
+		const expectedEncodedState = 'foo';
+		const mockHistory = { replaceState: () => { } };
+		const historySpy = spyOn(mockHistory, 'replaceState');
+		const mockWindow = { history: mockHistory };
+		spyOn(environmentService, 'getWindow').and.returnValue(mockWindow);
+		spyOn(environmentService, 'isEmbedded').and.returnValue(false);
+		spyOn(shareService, 'encodeState').and.returnValue(expectedEncodedState);
+		const store = setup();
+		const instanceUnderTest = new HistoryStatePlugin();
+		await instanceUnderTest.register(store);
+		await TestUtils.timeout(0);
+
+		// Let's trigger one observer multiple times
+		changeCenter([1, 1]);
+		changeCenter([1, 2]);
+		changeCenter([1, 3]);
+		changeCenter([1, 4]);
+
+		// We always return the same encoded state from the ShareService,
+		// so the history API should be called only once
+		expect(historySpy).toHaveBeenCalledOnceWith(null, '', expectedEncodedState);
+	});
+
+	it('does nothing when we are in \'embed\' mode', async () => {
+		spyOn(environmentService, 'isEmbedded').and.returnValue(true);
+		const store = setup();
+		const instanceUnderTest = new HistoryStatePlugin();
+		const updateHistorySpy = spyOn(instanceUnderTest, '_updateHistory');
+		await instanceUnderTest.register(store);
+
+		await TestUtils.timeout(0);
+		expect(updateHistorySpy).not.toHaveBeenCalled();
 	});
 });
