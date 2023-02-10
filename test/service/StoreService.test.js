@@ -76,6 +76,9 @@ describe('StoreService', () => {
 			register() {}
 		};
 
+		const InfoPopupPluginMock = {
+			register() {}
+		};
 		const setupInjector = () => {
 			$injector
 				.reset()
@@ -97,6 +100,7 @@ describe('StoreService', () => {
 				.registerSingleton('ManageModulesPlugin', manageModulesPluginMock)
 				.registerSingleton('LegendPlugin', legendPluginMock)
 				.registerSingleton('WebAnalyticsPlugin', WebAnalyticsPluginMock)
+				.registerSingleton('InfoPopupPlugin', InfoPopupPluginMock)
 				.registerSingleton('LayerVisibilityNotificationPlugin', layerVisibilityNotificationPluginMock)
 				.registerSingleton('SearchPlugin', searchPluginMock)
 				.registerSingleton('ExportMfpPlugin', exportMfpPluginMock)
@@ -163,6 +167,7 @@ describe('StoreService', () => {
 			const manageModulesPlugingSpy = spyOn(manageModulesPluginMock, 'register');
 			const legendPluginSpy = spyOn(legendPluginMock, 'register');
 			const WebAnalyticsPluginSpy = spyOn(WebAnalyticsPluginMock, 'register');
+			const InfoPopupPluginSpy = spyOn(InfoPopupPluginMock, 'register');
 			const layerVisibilityNotificationPluginSpy = spyOn(layerVisibilityNotificationPluginMock, 'register');
 			const searchPluginSpy = spyOn(searchPluginMock, 'register');
 			const exportMfpPluginSpy = spyOn(exportMfpPluginMock, 'register');
@@ -191,6 +196,7 @@ describe('StoreService', () => {
 			expect(fnModulePluginSpy).toHaveBeenCalledWith(store);
 			expect(manageModulesPlugingSpy).toHaveBeenCalledWith(store);
 			expect(legendPluginSpy).toHaveBeenCalledWith(store);
+			expect(InfoPopupPluginSpy).toHaveBeenCalledWith(store);
 			expect(WebAnalyticsPluginSpy).toHaveBeenCalledWith(store);
 			expect(layerVisibilityNotificationPluginSpy).toHaveBeenCalledWith(store);
 			expect(searchPluginSpy).toHaveBeenCalledWith(store);
