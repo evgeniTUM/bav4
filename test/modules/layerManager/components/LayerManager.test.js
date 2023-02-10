@@ -581,6 +581,25 @@ describe('LayerManager', () => {
 			expect(store.getState().layers.active.length).toBe(0);
 		});
 
+		it('updates draggableItems, when button for \'disable all\' is clicked', async () => {
+			const layers = ['id0', 'id1', 'id2']
+				.map(id => ({ ...createDefaultLayerProperties(), id, visible: true }));
+
+			const state = {
+				layers: {
+					active: layers,
+					background: 'bg0'
+				}
+			};
+
+			const element = await setup(state);
+			const buttonDisableAll = element.shadowRoot.querySelector('#button_disable_all');
+			buttonDisableAll.click();
+
+			expect(store.getState().layers.active.map(l => l.visible))
+				.toEqual([false, false, false]);
+		});
+
 	});
 
 

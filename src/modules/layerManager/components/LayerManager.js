@@ -212,9 +212,16 @@ export class LayerManager extends MvuElement {
 		const expandOrCollapseLabel = draggableItemsExpandable ? translate('layerManager_expand_all') : translate('layerManager_collapse_all');
 		const expandOrCollapseAction = draggableItemsExpandable ? expandAll : collapseAll;
 
+		const deactivateAll = () => {
+			draggableItems
+				.filter(i => !i.isPlaceholder)
+				.forEach(layer => modifyLayer(layer.id, { visible: false }));
+		};
+
 		return draggableItems.filter(i => !i.isPlaceholder).length > 0
 			? html`<div class='layermanager__actions'>					
 					<ba-button id='button_expand_or_collapse' class='layermanager__expandOrCollapse' .label=${expandOrCollapseLabel} .type=${'secondary'} @click=${expandOrCollapseAction} style='border-right: 1px dotted var(--header-background-color);' ></ba-button>							
+					<ba-button id='button_disable_all' .label=${translate('layerManager_deactivate_all')} .type=${'secondary'} @click=${deactivateAll} style='border-right: 1px dotted var(--header-background-color);' ></ba-button>							
 					<ba-button id='button_remove_all' .label=${translate('layerManager_remove_all')} .type=${'secondary'} @click=${removeAll}></ba-button>	
 					<div>`
 			: nothing;
