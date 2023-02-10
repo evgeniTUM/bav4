@@ -50,7 +50,7 @@ export const initialState = {
 	 */
 	webAnalyticsActive: false,
 
-/**
+	/**
 	 * @property {boolean}
 	 */
 	infoPopupActive: false

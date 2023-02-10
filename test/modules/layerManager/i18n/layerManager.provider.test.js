@@ -20,6 +20,7 @@ describe('i18n for layer-manager', () => {
 		expect(map.layerManager_expand_all).toBe('Alle ausklappen');
 		expect(map.layerManager_collapse_all).toBe('Alle einklappen');
 		expect(map.layerManager_remove_all).toBe('Alle entfernen');
+		expect(map.layerManager_deactivate_all).toBe('Alle deaktivieren');
 		expect(map.layerManager_loading_hint).toBe('Wird geladen');
 	});
 
@@ -41,11 +42,12 @@ describe('i18n for layer-manager', () => {
 		expect(map.layerManager_expand_all).toBe('expand all');
 		expect(map.layerManager_collapse_all).toBe('collapse all');
 		expect(map.layerManager_remove_all).toBe('remove all');
+		expect(map.layerManager_deactivate_all).toBe('deactivate all');
 		expect(map.layerManager_loading_hint).toBe('Loading');
 	});
 
 	it('have the expected amount of translations', () => {
-		const expectedSize = 15;
+		const expectedSize = 16;
 		const deMap = provide('de');
 		const enMap = provide('en');
 

@@ -17,7 +17,7 @@ import { TestUtils } from '../../../../test-utils';
 import { register } from 'ol/proj/proj4';
 import { setLegendItems } from '../../../../../src/ea/store/module/ea.action';
 import { Polygon, Point, Geometry } from 'ol/geom';
-import { requestJob, setCurrent } from '../../../../../src/store/mfp/mfp.action';
+import { requestJob, setCurrent, setPrintLegend } from '../../../../../src/store/mfp/mfp.action';
 import { changeCenter, changeLiveZoom } from '../../../../../src/store/position/position.action';
 import proj4 from 'proj4';
 import RenderEvent from 'ol/render/Event';
@@ -179,7 +179,7 @@ describe('OlMfpHandler', () => {
 			const actualLayer = handler.activate(map);
 
 			expect(actualLayer).toBeTruthy();
-			expect(handler._registeredObservers).toHaveSize(8);
+			expect(handler._registeredObservers).toHaveSize(9);
 			expect(handler._mapListener).toEqual(jasmine.any(Object));
 		});
 

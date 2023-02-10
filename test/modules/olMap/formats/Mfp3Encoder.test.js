@@ -596,7 +596,6 @@ describe('BvvMfp3Encoder', () => {
 				attributes: {
 					map: jasmine.any(Object),
 					dataOwner: jasmine.any(String),
-					thirdPartyDataOwner: jasmine.any(String),
 					shortLink: jasmine.any(String),
 					qrcodeurl: jasmine.any(String),
 					legend: {

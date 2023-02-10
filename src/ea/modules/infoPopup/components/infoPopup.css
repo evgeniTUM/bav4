@@ -60,7 +60,7 @@
 	width: 6.8em;
 	background: #fff;
 	background: var(--primary-color);
-/*	mask: url('assets/chatdots.svg');
+	/*	mask: url('assets/chatdots.svg');
 	-webkit-mask-image: url('assets/chatdots.svg');
 	mask-size: cover;
 	-webkit-mask-size: cover;*/

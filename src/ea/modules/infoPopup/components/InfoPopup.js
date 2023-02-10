@@ -27,7 +27,7 @@ export class InfoPopup extends MvuElement {
 
 		const {
 			EnvironmentService: environmentService,
-			TranslationService: translationService,
+			TranslationService: translationService
 		}
 			= $injector.inject('EnvironmentService', 'TranslationService');
 

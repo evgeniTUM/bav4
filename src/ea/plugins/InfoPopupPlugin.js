@@ -32,7 +32,7 @@ export class InfoPopupPlugin extends BaPlugin {
 				window.setTimeout(() => openModalInfoPopup(this._infoPopupResult), INFO_POPUP_NOTIFICATION_DELAY_TIME);
 			}
 			return result;
-		}
+		};
 
 		const hasBeenVisible = false; //depence on cookie
 

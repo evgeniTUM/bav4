@@ -271,7 +271,7 @@ describe('bvvCapabilitiesProvider', () => {
 			}
 		};
 		spyOn(configService, 'getValueAsPath').withArgs('BACKEND_URL').and.returnValue('BACKEND_URL/');
-		spyOn(httpService, 'post').withArgs('BACKEND_URL/wms/getCapabilities', JSON.stringify({ url: url }), MediaType.JSON).and.resolveTo(responseMock);
+		spyOn(httpService, 'post').withArgs('BACKEND_URL/wms/getCapabilities', JSON.stringify({ url: url }), MediaType.JSON, { timeout: 5000 }).and.resolveTo(responseMock);
 
 
 		const wmsGeoResources = await bvvCapabilitiesProvider(url, { sourceType: sourceType, isAuthenticated: false, ids: [], layers: [layerName] });
