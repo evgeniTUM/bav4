@@ -50,10 +50,16 @@ export class WmsCapabilitiesService {
 
 			let capabilities = [];
 			try {
-				const sourceType = new SourceType(SourceTypeName.WMS, '1.1.1');
-				capabilities = await this._wmsCapabilitiesProvider(georesource._url, sourceType, isAuthenticated);
+				const options = {
+					isAuthenticated,
+					sourceType: new SourceType(SourceTypeName.WMS, '1.1.1'),
+					layers: [],
+					ids: []
+				};
+				capabilities = await this._wmsCapabilitiesProvider(georesource._url, options);
 			}
 			catch (e) {
+				console.warn(e);
 				console.warn('could not load capabilities for URL ' + georesource._url);
 			}
 			finally {
