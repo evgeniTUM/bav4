@@ -53,7 +53,12 @@ export const initialState = {
 	/**
 	 * @property {boolean}
 	 */
-	infoPopupActive: false
+	infoPopupActive: false,
+
+	/**
+	 * @property {String|null}
+	 */
+	infoPopupId: null
 };
 
 export const eaReducer = (state = initialState, action) => {
@@ -142,13 +147,15 @@ export const eaReducer = (state = initialState, action) => {
 		case ACTIVATE_INFO_POPUP: {
 			return {
 				...state,
-				infoPopupActive: true
+				infoPopupId: payload,
+				infoPopupActive: false
 			};
 		}
 		case DEACTIVATE_INFO_POPUP: {
 			return {
 				...state,
-				infoPopupActive: false
+				infoPopupId: payload,
+				infoPopupActive: true
 			};
 		}
 	}

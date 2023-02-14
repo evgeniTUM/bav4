@@ -2,7 +2,7 @@ import { html } from 'lit-html';
 import { $injector } from '../../../../injection';
 import css from './infoPopup.css';
 import { MvuElement } from '../../../../modules/MvuElement';
-import { QueryParameters } from '../../../../domain/queryParameters';
+import { activateInfoPopup, deactivateInfoPopup } from '../../../store/module/ea.action';
 
 export const INFO_POPUP_NOTIFICATION_DELAY_TIME = 3000;
 
@@ -81,10 +81,11 @@ export class InfoPopup extends MvuElement {
 
 		const onToggle = (event) => {
 			if (event.detail.checked) {
-				window.console.log('add Cookie ' + msgKey);
+				window.console.log('deactivateInfoPopup ' + msgKey);
+				deactivateInfoPopup(msgKey);
 			}
 			else {
-				window.console.log('remove Cookie ' + msgKey);
+				activateInfoPopup(msgKey);
 			}
 		};
 

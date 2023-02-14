@@ -171,19 +171,19 @@ export const deactivateWebAnalytics = () => {
 /**
  * Activates the display of InfoPopup after starting the App.
  */
-export const activateInfoPopup = () => {
+export const activateInfoPopup = (msgId) => {
 	getStore().dispatch({
 		type: ACTIVATE_INFO_POPUP,
-		payload: null
+		payload: msgId
 	});
 };
 
 /**
  * Deactivates the showing InfoPopup next time.
  */
-export const deactivateInfoPopup = () => {
+export const deactivateInfoPopup = (msgId) => {	
 	getStore().dispatch({
 		type: DEACTIVATE_INFO_POPUP,
-		payload: null
+		payload: msgId
 	});
 };
