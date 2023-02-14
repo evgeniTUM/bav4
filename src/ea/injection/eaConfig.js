@@ -11,6 +11,7 @@ import { GeoResourceInfoService } from '../../modules/geoResourceInfo/services/G
 import { loadEabGeoResourceDetailInfo } from '../services/provider/geoResourceDetailInfoResult.provider';
 import { InfoPopupPlugin } from '../plugins/InfoPopupPlugin';
 import { EaInfoPopupService } from '../services/EaInfoPopupService';
+import { CookieService } from '../services/CookieService';
 
 export const eaConfig = () => {
 	$injector
@@ -23,6 +24,7 @@ export const eaConfig = () => {
 		.registerSingleton('InfoPopupPlugin', new InfoPopupPlugin())
 		.registerSingleton('LayerVisibilityNotificationPlugin', new LayerVisibilityNotificationPlugin())
 		.registerSingleton('EaInfoPopupService', new EaInfoPopupService())
+		.register('CookieService', CookieService)
 		.registerModule(eaMapModule);
 };
 
