@@ -386,96 +386,6 @@ describe('BvvMfp3Encoder', () => {
 						dpi: jasmine.any(Number),
 						rotation: null
 					},
-					dataOwner: 'Foo CopyRight,Bar CopyRight',
-					shortLink: 'http://url.to/shorten',
-					qrcodeurl: 'http://url.to/shorten.png',
-					legend: jasmine.any(Object),
-					printLegend: jasmine.any(Boolean)
-				}
-			});
-		});
-
-		it('encodes layers with third party attributions', async () => {
-			const tileGrid = {
-				getTileSize: () => 42
-			};
-			const sourceMock = {
-				getTileGrid: () => tileGrid,
-				getUrls: () => ['https://some.url/to/foo/{z}/{x}/{y}'],
-				getParams: () => []
-			};
-			const geoResourceFoo = new TestGeoResource(GeoResourceTypes.WMS).setAttribution({ copyright: { label: 'Foo CopyRight' } }).setImportedByUser(true);
-			const geoResourceBar = new TestGeoResource(GeoResourceTypes.WMS).setAttribution({ copyright: { label: 'Bar CopyRight' } });
-			spyOn(geoResourceServiceMock, 'byId')
-				.withArgs('foo').and.callFake(() => geoResourceFoo)
-				.withArgs('bar').and.callFake(() => geoResourceBar);
-			const encoder = new BvvMfp3Encoder();
-
-			spyOn(mapMock, 'getLayers').and.callFake(() => {
-				return {
-					getArray: () => [
-						{ get: () => 'foo', getExtent: () => [20, 20, 50, 50], getSource: () => sourceMock, getOpacity: () => 1, getVisible: () => true },
-						{ get: () => 'bar', getExtent: () => [20, 20, 50, 50], getSource: () => sourceMock, getOpacity: () => 1, getVisible: () => true }]
-				};
-			});
-			const actualSpec = await encoder.encode(mapMock, getProperties());
-
-			expect(actualSpec).toEqual({
-				layout: 'foo',
-				attributes: {
-					map: {
-						layers: jasmine.any(Array),
-						center: jasmine.any(Array),
-						scale: jasmine.any(Number),
-						projection: 'EPSG:25832',
-						dpi: jasmine.any(Number),
-						rotation: null
-					},
-					dataOwner: 'Bar CopyRight',
-					shortLink: 'http://url.to/shorten',
-					qrcodeurl: 'http://url.to/shorten.png',
-					legend: jasmine.any(Object),
-					printLegend: jasmine.any(Boolean)
-				}
-			});
-		});
-
-		it('encodes layers with third party attributions only', async () => {
-			const tileGrid = {
-				getTileSize: () => 42
-			};
-			const sourceMock = {
-				getTileGrid: () => tileGrid,
-				getUrls: () => ['https://some.url/to/foo/{z}/{x}/{y}'],
-				getParams: () => []
-			};
-			const geoResourceFoo = new TestGeoResource(GeoResourceTypes.WMS).setAttribution({ copyright: { label: 'Foo CopyRight' } }).setImportedByUser(true);
-			const geoResourceBar = new TestGeoResource(GeoResourceTypes.WMS).setAttribution({ copyright: { label: 'Bar CopyRight' } }).setImportedByUser(true);
-			spyOn(geoResourceServiceMock, 'byId')
-				.withArgs('foo').and.callFake(() => geoResourceFoo)
-				.withArgs('bar').and.callFake(() => geoResourceBar);
-			const encoder = new BvvMfp3Encoder();
-
-			spyOn(mapMock, 'getLayers').and.callFake(() => {
-				return {
-					getArray: () => [
-						{ get: () => 'foo', getExtent: () => [20, 20, 50, 50], getSource: () => sourceMock, getOpacity: () => 1, getVisible: () => true },
-						{ get: () => 'bar', getExtent: () => [20, 20, 50, 50], getSource: () => sourceMock, getOpacity: () => 1, getVisible: () => true }]
-				};
-			});
-			const actualSpec = await encoder.encode(mapMock, getProperties());
-
-			expect(actualSpec).toEqual({
-				layout: 'foo',
-				attributes: {
-					map: {
-						layers: jasmine.any(Array),
-						center: jasmine.any(Array),
-						scale: jasmine.any(Number),
-						projection: 'EPSG:25832',
-						dpi: jasmine.any(Number),
-						rotation: null
-					},
 					dataOwner: 'Bar CopyRight,Foo CopyRight',
 					shortLink: 'http://url.to/shorten',
 					qrcodeurl: 'http://url.to/shorten.png',
@@ -572,60 +482,6 @@ describe('BvvMfp3Encoder', () => {
 					legend: jasmine.any(Object),
 					printLegend: jasmine.any(Boolean)
 				}
-			});
-		});
-
-		it('encodes legend items by print resolution', async () => {
-			const UnitsRatio = 39.37; //inches per meter
-			const PointsPerInch = 72; // PostScript points 1/72"
-			const resolution = 1 / UnitsRatio / PointsPerInch;
-
-			const encoder = new BvvMfp3Encoder();
-
-			const properties = { ...getProperties(),
-				legendItems: [
-					{ title: 't1', legendUrl: 'url1', minResolution: 100, maxResolution: 0 },
-					{ title: 't2', legendUrl: 'url2', minResolution: 100, maxResolution: resolution - 1 },
-					{ title: 'not encoded', legendUrl: 'url not used', minResolution: 100, maxResolution: resolution + 1 }
-				] };
-
-			const actualSpec = await encoder.encode(mapMock, properties);
-
-			expect(actualSpec).toEqual({
-				layout: 'foo',
-				attributes: {
-					map: jasmine.any(Object),
-					dataOwner: jasmine.any(String),
-					shortLink: jasmine.any(String),
-					qrcodeurl: jasmine.any(String),
-					legend: {
-						name: '', classes: [
-
-							{ name: 't1:DELIMITER:url1', icons: ['url1'] },
-							{ name: 't2:DELIMITER:url2', icons: ['url2'] }
-						]
-					},
-					printLegend: true
-				}
-			});
-		});
-
-		it('encodes printLegend to false when no legend items', async () => {
-			const encoder = new BvvMfp3Encoder();
-
-			const properties = { ...getProperties(),
-				legendItems: [] };
-
-			const actualSpec = await encoder.encode(mapMock, properties);
-
-			expect(actualSpec).toEqual({
-				layout: 'foo',
-				attributes: jasmine.objectContaining({
-					legend: {
-						name: '', classes: []
-					},
-					printLegend: false
-				})
 			});
 		});
 
@@ -2333,7 +2189,6 @@ describe('BvvMfp3Encoder', () => {
 			expect(tileMatrixSet[15].matrixSize).toEqual([32768, 32768]);
 		});
 	});
-
 
 	describe('_encodeGridLayer', () => {
 		it('uses the appropriate spacing for defined scale', () => {
