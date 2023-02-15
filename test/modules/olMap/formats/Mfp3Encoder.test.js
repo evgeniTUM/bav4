@@ -485,6 +485,60 @@ describe('BvvMfp3Encoder', () => {
 			});
 		});
 
+		it('encodes legend items by print resolution', async () => {
+			const UnitsRatio = 39.37; //inches per meter
+			const PointsPerInch = 72; // PostScript points 1/72"
+			const resolution = 1 / UnitsRatio / PointsPerInch;
+
+			const encoder = new BvvMfp3Encoder();
+
+			const properties = { ...getProperties(),
+				legendItems: [
+					{ title: 't1', legendUrl: 'url1', minResolution: 100, maxResolution: 0 },
+					{ title: 't2', legendUrl: 'url2', minResolution: 100, maxResolution: resolution - 1 },
+					{ title: 'not encoded', legendUrl: 'url not used', minResolution: 100, maxResolution: resolution + 1 }
+				] };
+
+			const actualSpec = await encoder.encode(mapMock, properties);
+
+			expect(actualSpec).toEqual({
+				layout: 'foo',
+				attributes: {
+					map: jasmine.any(Object),
+					dataOwner: jasmine.any(String),
+					shortLink: jasmine.any(String),
+					qrcodeurl: jasmine.any(String),
+					legend: {
+						name: '', classes: [
+
+							{ name: 't1:DELIMITER:url1', icons: ['url1'] },
+							{ name: 't2:DELIMITER:url2', icons: ['url2'] }
+						]
+					},
+					printLegend: true
+				}
+			});
+		});
+
+		it('encodes printLegend to false when no legend items', async () => {
+			const encoder = new BvvMfp3Encoder();
+
+			const properties = { ...getProperties(),
+				legendItems: [] };
+
+			const actualSpec = await encoder.encode(mapMock, properties);
+
+			expect(actualSpec).toEqual({
+				layout: 'foo',
+				attributes: jasmine.objectContaining({
+					legend: {
+						name: '', classes: []
+					},
+					printLegend: false
+				})
+			});
+		});
+
 		it('resolves wmts layer with wmts-source to a mfp \'wmts\' spec', () => {
 			const wmtsLayerMock = { get: () => 'foo', getOpacity: () => 1, id: 'wmts' };
 
