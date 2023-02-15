@@ -1,5 +1,6 @@
 import { parse, serialize } from 'cookie';
 import { InfoPopupPlugin } from '../../../src/ea/plugins/InfoPopupPlugin.js';
+import { CookieService } from '../../../src/ea/services/CookieService';
 import { activateInfoPopup, deactivateInfoPopup } from '../../../src/ea/store/module/ea.action.js';
 import { eaReducer } from '../../../src/ea/store/module/ea.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
@@ -13,22 +14,8 @@ describe('InfoPopupPlugin', () => {
 			key: { v }
 		})
 	};
-	const cookieId = 'testv4';
 
-	const FreshCookie = serialize(cookieId, 'show', {
-		expires: new Date(),
-		sameSite: 'lax',
-		path: '/',
-		domain: 'localhost'
-	});
-
-	let myCookie;
-
-	const cookieResourceServiceMock = {
-		setCookie: (name, settings, exdays) => { myCookie = FreshCookie;},
-		getCookie: (name) => { return myCookie;},
-		deleteCookie: (name) => { myCookie = undefined;}
-	};
+	const cookieService = new CookieService();
 
 	const setup = async (state) => {
 
@@ -39,7 +26,7 @@ describe('InfoPopupPlugin', () => {
 		$injector
 			.registerSingleton('EaInfoPopupService', infoPopupServiceMock);
 		$injector
-			.registerSingleton('CookieService', cookieResourceServiceMock);
+			.registerSingleton('CookieService', cookieService);
 
 		const instanceUnderTest = new InfoPopupPlugin();
 		await instanceUnderTest.register(store);
@@ -48,29 +35,23 @@ describe('InfoPopupPlugin', () => {
 	};
 
 	describe('confirmInfo/resetInfoState', () => {
-
-		beforeEach(async () => {
-			cookieResourceServiceMock.deleteCookie(cookieId);
-		});
+		const cookieId = 'CookieId';
 
 		it('create Cookie ', async () => {
 
-			cookieResourceServiceMock.deleteCookie(cookieId);
+			cookieService.deleteCookie(cookieId);
 
 			await setup();
+
 			deactivateInfoPopup(cookieId);
-			let cookie = cookieResourceServiceMock.getCookie(cookieId);
+			let cookie = cookieService.getCookie(cookieId);
 			expect(cookie).toBeDefined();
-			expect(cookie).toEqual(FreshCookie);
-		});
-		it('remove Cookie after creating', async () => {
-			await setup();
-			deactivateInfoPopup(cookieId);
+			expect(cookie).toEqual('show');
+
 			activateInfoPopup(cookieId);
-			let cookie = cookieResourceServiceMock.getCookie(cookieId);
+			cookie = cookieService.getCookie(cookieId);
 			expect(cookie).toBeUndefined();
 		});
-
 	});
 
 });
