@@ -4,10 +4,8 @@ import { geofeatureReducer } from '../../../../../../src/ea/store/geofeature/geo
 import { $injector } from '../../../../../../src/injection';
 import { TestUtils } from '../../../../../test-utils';
 
-
 class ConcreteModuleContent extends AbstractModuleContent {
 	getConfig() {
-
 		return {
 			iframe: 'iframe',
 			module: 'concrete_module',
@@ -23,13 +21,11 @@ class ConcreteModuleContent extends AbstractModuleContent {
 
 window.customElements.define(ConcreteModuleContent.tag, ConcreteModuleContent);
 
-
 /**
  * Test if we save the frame in the global window variable.
  * This has to be a separate test as other tests will asynchronously also change the global variable.
  */
 describe('ModuleContent, when loaded', () => {
-
 	const storeActions = [];
 
 	const configServiceMock = {
@@ -44,9 +40,7 @@ describe('ModuleContent, when loaded', () => {
 			geofeature: geofeatureReducer,
 			fnModuleComm: fnModuleCommReducer
 		});
-		$injector
-			.registerSingleton('TranslationService', { translate: (key) => key })
-			.registerSingleton('ConfigService', configServiceMock);
+		$injector.registerSingleton('TranslationService', { translate: (key) => key }).registerSingleton('ConfigService', configServiceMock);
 		return TestUtils.render(ConcreteModuleContent.tag);
 	};
 
@@ -62,5 +56,4 @@ describe('ModuleContent, when loaded', () => {
 		expect(window.ea_moduleWindow).toHaveSize(1);
 		expect(window.ea_moduleWindow[element.getConfig().module]).toEqual(iframeWindow);
 	});
-
 });

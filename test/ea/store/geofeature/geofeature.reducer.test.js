@@ -1,10 +1,15 @@
-import { addGeoFeatureLayer, addGeoFeatures, clearLayer, clearMap, removeGeoFeatureLayer, removeGeoFeatures } from '../../../../src/ea/store/geofeature/geofeature.action';
+import {
+	addGeoFeatureLayer,
+	addGeoFeatures,
+	clearLayer,
+	clearMap,
+	removeGeoFeatureLayer,
+	removeGeoFeatures
+} from '../../../../src/ea/store/geofeature/geofeature.action';
 import { geofeatureReducer, initialState } from '../../../../src/ea/store/geofeature/geofeature.reducer';
 import { TestUtils } from '../../../test-utils';
 
-
 describe('geofeatureReducer', () => {
-
 	const setup = (state) => {
 		return TestUtils.setupStoreAndDi(state, {
 			geofeature: geofeatureReducer
@@ -41,7 +46,6 @@ describe('geofeatureReducer', () => {
 		expect(geofeature.layers[0].draggable).toBeTrue();
 		expect(geofeature.active).toBeTrue();
 	});
-
 
 	it('removes a layer', () => {
 		const store = setup();
@@ -90,7 +94,7 @@ describe('geofeatureReducer', () => {
 		clearLayer(42);
 
 		expect(store.getState().geofeature.layers).toHaveSize(2);
-		const layer42 = store.getState().geofeature.layers.filter(l => l.id === 42)[0];
+		const layer42 = store.getState().geofeature.layers.filter((l) => l.id === 42)[0];
 		expect(layer42.features).toHaveSize(0);
 	});
 
@@ -105,8 +109,4 @@ describe('geofeatureReducer', () => {
 
 		expect(store.getState().geofeature).toEqual(initialState);
 	});
-
-
-
-
 });

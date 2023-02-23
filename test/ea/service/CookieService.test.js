@@ -6,9 +6,7 @@ import { eaReducer } from '../../../src/ea/store/module/ea.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
 import { TestUtils } from '../../test-utils.js';
 
-
 describe('InfoPopupPlugin', () => {
-
 	const infoPopupServiceMock = {
 		loadInfoPopupResult: (v) => ({
 			key: { v }
@@ -18,15 +16,12 @@ describe('InfoPopupPlugin', () => {
 	const cookieService = new CookieService();
 
 	const setup = async (state) => {
-
 		const store = TestUtils.setupStoreAndDi(state, {
 			ea: eaReducer
 		});
 
-		$injector
-			.registerSingleton('EaInfoPopupService', infoPopupServiceMock);
-		$injector
-			.registerSingleton('CookieService', cookieService);
+		$injector.registerSingleton('EaInfoPopupService', infoPopupServiceMock);
+		$injector.registerSingleton('CookieService', cookieService);
 
 		const instanceUnderTest = new InfoPopupPlugin();
 		await instanceUnderTest.register(store);
@@ -38,7 +33,6 @@ describe('InfoPopupPlugin', () => {
 		const cookieId = 'CookieId';
 
 		it('create Cookie ', async () => {
-
 			cookieService.deleteCookie(cookieId);
 
 			await setup();
@@ -53,5 +47,4 @@ describe('InfoPopupPlugin', () => {
 			expect(cookie).toBeUndefined();
 		});
 	});
-
 });

@@ -2,7 +2,6 @@
 import { debounced, throttled } from '../../src/utils/timer.js';
 
 describe('Unit test functions from asyncs.js', () => {
-
 	beforeEach(function () {
 		jasmine.clock().install();
 	});
@@ -10,7 +9,6 @@ describe('Unit test functions from asyncs.js', () => {
 	afterEach(function () {
 		jasmine.clock().uninstall();
 	});
-
 
 	it('debounces a function call', () => {
 		const myFunction = jasmine.createSpy();
@@ -27,7 +25,6 @@ describe('Unit test functions from asyncs.js', () => {
 
 		expect(myFunction).toHaveBeenCalledTimes(2);
 	});
-
 
 	it('throttles a function call', () => {
 		//throttled is based on Date

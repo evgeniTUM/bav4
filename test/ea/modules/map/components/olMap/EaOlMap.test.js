@@ -19,18 +19,15 @@ import { changeZoom } from '../../../../../../src/store/position/position.action
 import { positionReducer } from '../../../../../../src/store/position/position.reducer';
 import { TestUtils } from '../../../../../test-utils';
 
-
 window.customElements.define(EaOlMap.tag, EaOlMap);
 
-
 describe('EaOlMap', () => {
-
 	const minZoomLevel = 5;
 	const maxZoomLevel = 21;
 
 	const mapServiceStub = {
 		getMinimalRotation() {
-			return .05;
+			return 0.05;
 		},
 		getMinZoomLevel() {
 			return minZoomLevel;
@@ -38,9 +35,8 @@ describe('EaOlMap', () => {
 		getMaxZoomLevel() {
 			return maxZoomLevel;
 		},
-		getScaleLineContainer() { }
+		getScaleLineContainer() {}
 	};
-
 
 	const geoResourceServiceStub = {
 		byId(id) {
@@ -52,20 +48,20 @@ describe('EaOlMap', () => {
 			}
 			return null;
 		},
-		addOrReplace() { }
+		addOrReplace() {}
 	};
 
 	const layerServiceMock = {
-		toOlLayer() { }
+		toOlLayer() {}
 	};
 
 	const environmentServiceMock = {
-		isTouch() { }
+		isTouch() {}
 	};
 
 	const measurementLayerHandlerMock = {
-		activate() { },
-		deactivate() { },
+		activate() {},
+		deactivate() {},
 		get id() {
 			return 'measurementLayerHandlerMockId';
 		},
@@ -77,8 +73,8 @@ describe('EaOlMap', () => {
 		}
 	};
 	const drawLayerHandlerMock = {
-		activate() { },
-		deactivate() { },
+		activate() {},
+		deactivate() {},
 		get id() {
 			return 'drawLayerHandlerMockId';
 		},
@@ -87,8 +83,8 @@ describe('EaOlMap', () => {
 		}
 	};
 	const geolocationLayerHandlerMock = {
-		activate() { },
-		deactivate() { },
+		activate() {},
+		deactivate() {},
 		get id() {
 			return 'geolocationLayerHandlerMockId';
 		},
@@ -97,8 +93,7 @@ describe('EaOlMap', () => {
 		}
 	};
 	const highlightLayerHandlerMock = {
-
-		deactivate() { },
+		deactivate() {},
 		get id() {
 			return 'highlightLayerHandlerMockId';
 		},
@@ -110,15 +105,15 @@ describe('EaOlMap', () => {
 		}
 	};
 	const featureInfoHandlerMock = {
-		register() { },
+		register() {},
 		get id() {
 			return 'featureInfoHandlerMockId';
 		}
 	};
 
 	const geoFeatureLayerHandlerMock = {
-		activate() { },
-		deactivate() { },
+		activate() {},
+		deactivate() {},
 		get id() {
 			return 'geofeatureLayerHandlerMockId';
 		},
@@ -128,8 +123,8 @@ describe('EaOlMap', () => {
 	};
 
 	const selectLocationLayerHandlerMock = {
-		activate() { },
-		deactivate() { },
+		activate() {},
+		deactivate() {},
 		get id() {
 			return 'selectLocationLayerHandlerMockId';
 		},
@@ -139,8 +134,8 @@ describe('EaOlMap', () => {
 	};
 
 	const mfpHandlerMock = {
-		activate() { },
-		deactivate() { },
+		activate() {},
+		deactivate() {},
 		get id() {
 			return 'mfpLayerHandlerMockId';
 		},
@@ -156,7 +151,8 @@ describe('EaOlMap', () => {
 		const defaultState = {
 			position: {
 				fitRequest: null
-			}, media: {
+			},
+			media: {
 				portrait: false,
 				observeResponsiveParameter: true
 			}
@@ -181,7 +177,6 @@ describe('EaOlMap', () => {
 			ea: eaReducer
 		});
 
-
 		$injector
 			.registerSingleton('MapService', mapServiceStub)
 			.registerSingleton('GeoResourceService', geoResourceServiceStub)
@@ -202,7 +197,6 @@ describe('EaOlMap', () => {
 	};
 
 	describe('when initialized', () => {
-
 		describe('select_location handler', () => {
 			it('registers the handler', async () => {
 				const element = await setup();
@@ -279,7 +273,6 @@ describe('EaOlMap', () => {
 
 			expect(element._cursorStyle).toEqual('crosshair');
 			expect(renderSpy).toHaveBeenCalled();
-
 		});
 	});
 });

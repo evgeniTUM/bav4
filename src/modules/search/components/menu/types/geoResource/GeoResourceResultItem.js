@@ -29,7 +29,6 @@ export const LOADING_PREVIEW_DELAY_MS = 500;
  * @author taulinger
  */
 export class GeoResourceResultItem extends MvuElement {
-
 	constructor() {
 		super({
 			geoResourceSearchResult: null,
@@ -37,8 +36,7 @@ export class GeoResourceResultItem extends MvuElement {
 			loadingPreview: false
 		});
 
-		const { GeoResourceService: geoResourceService }
-			= $injector.inject('GeoResourceService');
+		const { GeoResourceService: geoResourceService } = $injector.inject('GeoResourceService');
 		this._geoResourceService = geoResourceService;
 		this._timeoutId = null;
 	}
@@ -55,7 +53,10 @@ export class GeoResourceResultItem extends MvuElement {
 	}
 
 	onInitialize() {
-		this.observe(state => state.media, media => this.signal(Update_IsPortrait, media.portrait));
+		this.observe(
+			(state) => state.media,
+			(media) => this.signal(Update_IsPortrait, media.portrait)
+		);
 	}
 
 	set data(geoResourceSearchResult) {
@@ -76,10 +77,7 @@ export class GeoResourceResultItem extends MvuElement {
 			const id = GeoResourceResultItem._tmpLayerId(result.geoResourceId);
 			//add a preview layer
 			this._timeoutId = setTimeout(() => {
-
-
-				addLayer(id,
-					{ geoResourceId: result.geoResourceId, constraints: { hidden: true } });
+				addLayer(id, { geoResourceId: result.geoResourceId, constraints: { hidden: true } });
 
 				setPreviewGeoresourceId(result.geoResourceId);
 
@@ -114,33 +112,37 @@ export class GeoResourceResultItem extends MvuElement {
 			if (isPortrait) {
 				//close the main menu
 				closeMainMenu();
-			}
-			else {
+			} else {
 				//switch to "maps" tab in main menu
 				setTab(TabId.MAPS);
 			}
 		};
 		const getActiveClass = () => {
-			return (loadingPreview) ? 'loading' : '';
+			return loadingPreview ? 'loading' : '';
 		};
 
 		if (geoResourceSearchResult) {
-
 			return html`
-				<style>${css}</style>
-                <li class="ba-list-item ${getActiveClass()}"  tabindex="0"
-					@click=${() => onClick(geoResourceSearchResult)} 
-					@mouseenter=${() => onMouseEnter(geoResourceSearchResult)} 
-					@mouseleave=${() => onMouseLeave(geoResourceSearchResult)}>
-						<span class="ba-list-item__pre ">
-							<span class="ba-list-item__icon">
-							</span>
-						</span>
-						<span class="ba-list-item__text ">
-							${loadingPreview ? html`<ba-spinner .label=${geoResourceSearchResult.labelFormatted}></ba-spinner>` : html`${unsafeHTML(geoResourceSearchResult.labelFormatted)}`}   
-						</span>
-				</li>				
-            `;
+				<style>
+					${css}
+				</style>
+				<li
+					class="ba-list-item ${getActiveClass()}"
+					tabindex="0"
+					@click=${() => onClick(geoResourceSearchResult)}
+					@mouseenter=${() => onMouseEnter(geoResourceSearchResult)}
+					@mouseleave=${() => onMouseLeave(geoResourceSearchResult)}
+				>
+					<span class="ba-list-item__pre ">
+						<span class="ba-list-item__icon"> </span>
+					</span>
+					<span class="ba-list-item__text ">
+						${loadingPreview
+							? html`<ba-spinner .label=${geoResourceSearchResult.labelFormatted}></ba-spinner>`
+							: html`${unsafeHTML(geoResourceSearchResult.labelFormatted)}`}
+					</span>
+				</li>
+			`;
 		}
 		return nothing;
 	}

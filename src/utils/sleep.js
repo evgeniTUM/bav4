@@ -4,5 +4,5 @@
  * @returns {Promise}
  */
 export const sleep = async (milliseconds) => {
-	return await new Promise(resolve => setTimeout(resolve, milliseconds));
+	return await new Promise((resolve) => setTimeout(resolve, milliseconds));
 };

@@ -7,9 +7,11 @@ import { GeoResourceInfoResult } from '../../../modules/geoResourceInfo/services
  * @returns {Promise<GeoResourceInfoResult>}
  */
 export const loadEabGeoResourceDetailInfo = async (geoResourceId) => {
-	const { HttpService: httpService,
+	const {
+		HttpService: httpService,
 		ConfigService: configService,
-		GeoResourceService: geoResourceService } = $injector.inject('HttpService', 'ConfigService', 'GeoResourceService');
+		GeoResourceService: geoResourceService
+	} = $injector.inject('HttpService', 'ConfigService', 'GeoResourceService');
 
 	const loadInternal = async (geoResource) => {
 		const url = `${configService.getValueAsPath('BACKEND_URL')}georesource/info/detail/${geoResource.id}`;

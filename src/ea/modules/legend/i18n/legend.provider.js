@@ -1,6 +1,5 @@
 export const provide = (lang) => {
 	switch (lang) {
-
 		case 'en':
 			return {
 				ea_legend_title: 'Legend'

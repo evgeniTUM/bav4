@@ -12,11 +12,9 @@ import { highlightCoordinateFeatureStyleFunction } from '../../../../../../../mo
 import { OlLayerHandler } from '../../../../../../../modules/olMap/handler/OlLayerHandler';
 import { setMapCursorStyle } from '../../../../../../store/mapclick/mapclick.action';
 
-
 export const SELECT_LOCATION_LAYER_ID = 'select_location_layer_id';
 
 export class OlSelectLocationHandler extends OlLayerHandler {
-
 	constructor() {
 		super(SELECT_LOCATION_LAYER_ID);
 		const { StoreService } = $injector.inject('StoreService');
@@ -28,7 +26,6 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 
 		this._listeners = [];
 	}
-
 
 	/**
 	 * Activates the Handler.
@@ -53,19 +50,17 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 	 *  @override
 	 *  @param {Map} olMap
 	 */
-	onDeactivate(/*eslint-disable no-unused-vars */olMap) {
+	onDeactivate(/*eslint-disable no-unused-vars */ olMap) {
 		this._layer = null;
 		this._map = null;
 		this._helpTooltip.deactivate();
 		this._positionFeature = new Feature();
-		this._unregisterList.forEach(unregister => unregister());
+		this._unregisterList.forEach((unregister) => unregister());
 		unByKey(this._listeners);
 	}
 
 	_register(store) {
-
 		let tagging = false;
-
 
 		const onClick = (event) => {
 			const position = event.coordinate;
@@ -92,32 +87,28 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 				setMapCursorStyle('crosshair');
 				this._helpTooltip.activate(this._map);
 				tagging = true;
-			}
-			else {
+			} else {
 				setMapCursorStyle('auto');
 				this._helpTooltip.deactivate();
 				tagging = false;
 			}
 		};
 
-
 		const onPositionChanged = (position) => {
 			if (!position) {
 				this._positionFeature.setStyle(null);
 				this._positionFeature.setGeometry(new Point([0, 0]));
-			}
-			else {
+			} else {
 				this._positionFeature.setStyle(highlightCoordinateFeatureStyleFunction);
 				this._positionFeature.setGeometry(new Point(position));
 			}
-
 
 			this._map.renderSync();
 		};
 
 		return [
-			observe(store, state => state.contribution.position, onPositionChanged, false),
-			observe(store, state => state.contribution.tagging, onTaggingChanged, false)
+			observe(store, (state) => state.contribution.position, onPositionChanged, false),
+			observe(store, (state) => state.contribution.tagging, onTaggingChanged, false)
 		];
 	}
 }

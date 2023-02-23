@@ -1,10 +1,20 @@
-import { activate, cancelJob, deactivate, requestJob, setCurrent, setId, setPrintLegend, setScale, setShowGrid, startJob } from '../../../src/store/mfp/mfp.action';
+import {
+	activate,
+	cancelJob,
+	deactivate,
+	requestJob,
+	setCurrent,
+	setId,
+	setPrintLegend,
+	setScale,
+	setShowGrid,
+	startJob
+} from '../../../src/store/mfp/mfp.action';
 import { mfpReducer } from '../../../src/store/mfp/mfp.reducer';
 import { EventLike } from '../../../src/utils/storeUtils';
 import { TestUtils } from '../../test-utils';
 
 describe('mfpReducer', () => {
-
 	const setup = (state) => {
 		return TestUtils.setupStoreAndDi(state, {
 			mfp: mfpReducer

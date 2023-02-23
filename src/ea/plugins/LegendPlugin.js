@@ -11,16 +11,14 @@ export class LegendPlugin extends BaPlugin {
 		this._wmsCapabilitiesService = WmsCapabilitiesService;
 	}
 
-
 	/**
 	 * @override
 	 * @param {Store} store
 	 */
 	async register(store) {
 		const updateLegendItems = (activeLayers, previewLayers) => {
-
-			const previewLayersTitles = previewLayers.map(l => l.title);
-			activeLayers = activeLayers.filter(l => !previewLayersTitles.includes(l.title));
+			const previewLayersTitles = previewLayers.map((l) => l.title);
+			activeLayers = activeLayers.filter((l) => !previewLayersTitles.includes(l.title));
 
 			const sortedActiveLayers = activeLayers.sort((a, b) => a.title.localeCompare(b.title));
 			setLegendItems([...previewLayers, ...sortedActiveLayers]);
@@ -29,7 +27,6 @@ export class LegendPlugin extends BaPlugin {
 		let activeLayers = [];
 		let previewLayers = [];
 		let legendActive = false;
-
 
 		// A synchronization object:
 		// Make sure that the last action always takes precedence.
@@ -44,10 +41,7 @@ export class LegendPlugin extends BaPlugin {
 			// save current parameters in global state
 			syncObject.onActiveLayersChange = layers;
 
-			const wmsLayers = await Promise.all(
-				layers
-					.filter(l => l.visible)
-					.map(l => this._wmsCapabilitiesService.getWmsLayers(l.geoResourceId)));
+			const wmsLayers = await Promise.all(layers.filter((l) => l.visible).map((l) => this._wmsCapabilitiesService.getWmsLayers(l.geoResourceId)));
 
 			// check if another event was triggered => current run is obsolete => abort
 			if (syncObject.onActiveLayersChange !== layers) {
@@ -79,8 +73,12 @@ export class LegendPlugin extends BaPlugin {
 			updateLegendItems(activeLayers, previewLayers);
 		};
 
-		observe(store, state => state.ea.legendActive, value => legendActive = value);
-		observe(store, state => state.layers.active, onActiveLayersChange);
-		observe(store, state => state.ea.legendGeoresourceId, onPreviewIdChange);
+		observe(
+			store,
+			(state) => state.ea.legendActive,
+			(value) => (legendActive = value)
+		);
+		observe(store, (state) => state.layers.active, onActiveLayersChange);
+		observe(store, (state) => state.ea.legendGeoresourceId, onPreviewIdChange);
 	}
 }

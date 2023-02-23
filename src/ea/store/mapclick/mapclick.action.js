@@ -6,7 +6,6 @@ import { $injector } from '../../../injection';
 import { EventLike } from '../../../utils/storeUtils';
 import { MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE, MAPCLICK_REQUEST, SET_CURSOR_STYLE } from './mapclick.reducer';
 
-
 /**
  * Contains value for activation litening at map click
  * @typedef {boolean} active
@@ -19,24 +18,22 @@ import { MAPCLICK_ACTIVATE, MAPCLICK_DEACTIVATE, MAPCLICK_REQUEST, SET_CURSOR_ST
  * @property {Coordinate}
  */
 
-
 const getStore = () => {
 	const { StoreService: storeService } = $injector.inject('StoreService');
 	return storeService.getStore();
 };
 
 /**
-* Activate map for click events to get geo coordinate of the position {@link Coordinate}.
-* @param {Array.<GeoFeature>|GeoFeature} features
-* @function
-*/
+ * Activate map for click events to get geo coordinate of the position {@link Coordinate}.
+ * @param {Array.<GeoFeature>|GeoFeature} features
+ * @function
+ */
 export const activateMapClick = (id) => {
 	getStore().dispatch({
 		type: MAPCLICK_ACTIVATE,
 		payload: id
 	});
 };
-
 
 export const deactivateMapClick = () => {
 	getStore().dispatch({

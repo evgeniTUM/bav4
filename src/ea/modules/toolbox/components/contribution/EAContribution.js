@@ -22,7 +22,7 @@ const initialModel = {
 	showInvalidFields: false,
 	currentCategory: undefined,
 	position: undefined,
-	categoryFields: { },
+	categoryFields: {},
 	additionalInfo: '',
 	email: '',
 	categoriesSpecification: [],
@@ -31,7 +31,6 @@ const initialModel = {
 };
 
 export class EAContribution extends AbstractMvuContentPanel {
-
 	constructor() {
 		super(initialModel);
 
@@ -41,14 +40,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			CoordinateService: coordinateService,
 			ConfigService: configService,
 			HttpService: httpService
-		}
-			= $injector.inject(
-				'EnvironmentService',
-				'TranslationService',
-				'CoordinateService',
-				'ConfigService',
-				'HttpService'
-			);
+		} = $injector.inject('EnvironmentService', 'TranslationService', 'CoordinateService', 'ConfigService', 'HttpService');
 
 		this._environmentService = environmentService;
 		this._translationService = translationService;
@@ -56,7 +48,6 @@ export class EAContribution extends AbstractMvuContentPanel {
 		this._configService = configService;
 		this._httpService = httpService;
 	}
-
 
 	/**
 	 * @override
@@ -80,7 +71,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 				return { ...model, categoryFields: {} };
 
 			case Position_Change: {
-				if ((model.position === null) && data) {
+				if (model.position === null && data) {
 					this.shadowRoot.getElementById('coordinates').setCustomValidity('');
 					return { ...model, openSections: model.currentCategory ? model.openSections : 'step2' };
 				}
@@ -106,8 +97,15 @@ export class EAContribution extends AbstractMvuContentPanel {
 	 * @override
 	 */
 	onInitialize() {
-		this.observe(state => state.contribution.position, data => this.signal(Position_Change, data), false);
-		this.observe(state => state.contribution, data => this.signal(Update, data));
+		this.observe(
+			(state) => state.contribution.position,
+			(data) => this.signal(Position_Change, data),
+			false
+		);
+		this.observe(
+			(state) => state.contribution,
+			(data) => this.signal(Update, data)
+		);
 	}
 
 	/**
@@ -125,22 +123,22 @@ export class EAContribution extends AbstractMvuContentPanel {
 			setCurrentModule(ResearchModuleContent.name);
 		};
 
-
 		const getCoordinatesString = () => {
 			return model.position ? this._coordinateService.stringify(this._coordinateService.toLonLat(model.position), 4326, { digits: 5 }) : '';
 		};
 
-		const completionMessage = html`
-		<div id='completion-message'>
+		const completionMessage = html` <div id="completion-message">
 			<h2>Vielen Dank!</h2>
-			<p>Ihre Meldung wurde erfolgreich versendet. Damit leisten Sie einen wertvollen Beitrag, die Datenbasis in unserem Portal fortlaufend zu verbessern.</p>
+			<p>
+				Ihre Meldung wurde erfolgreich versendet. Damit leisten Sie einen wertvollen Beitrag, die Datenbasis in unserem Portal fortlaufend zu
+				verbessern.
+			</p>
 			<p>Nach Prüfung der Angaben werden wir das gemeldete Objekt oder die Korrektur übernehmen. Bei Rückfragen kommen wir auf Sie zu.</p>
 			<p>Ihr Energie-Atlas Bayern-Team</p>
 		</div>`;
 
-		const failureMessage = html`
-		<div id='failure-message'>
-			<h2 class='error'>Bei der Verarbeitung ist ein Fehler aufgetreten</h2>
+		const failureMessage = html` <div id="failure-message">
+			<h2 class="error">Bei der Verarbeitung ist ein Fehler aufgetreten</h2>
 			<p>Bitte versuchen sie es zu einem späteren Zeitpunkt noch einmal</p>
 		</div>`;
 
@@ -148,7 +146,9 @@ export class EAContribution extends AbstractMvuContentPanel {
 			setTaggingMode(false);
 
 			const url = this._configService.getValueAsPath('BACKEND_URL') + 'report/message';
-			const fieldData = Object.entries(model.categoryFields).map(f => `${f[0]}: ${f[1]}`).join('\n');
+			const fieldData = Object.entries(model.categoryFields)
+				.map((f) => `${f[0]}: ${f[1]}`)
+				.join('\n');
 
 			const json = {
 				reportType: model.mode,
@@ -166,94 +166,109 @@ export class EAContribution extends AbstractMvuContentPanel {
 			this.signal(Update, { statusMessage });
 		};
 
-
 		const createField = (name, optional, type = 'text') => {
 			return html`
-				<div id=${name} title=${name}>								
-					<input placeholder=${name + (optional ? '' : '*')}  ?required=${!optional}  type=${type} name="${name}" .value="" 
-						@input=${(e) => this.signal(Update_Field, { name: e.target.name, value: e.target.value })} >
-				</div> `;
+				<div id=${name} title=${name}>
+					<input
+						placeholder=${name + (optional ? '' : '*')}
+						?required=${!optional}
+						type=${type}
+						name="${name}"
+						.value=""
+						@input=${(e) => this.signal(Update_Field, { name: e.target.name, value: e.target.value })}
+					/>
+				</div>
+			`;
 		};
 
 		const onSelectionChanged = (e) => {
 			this.signal(Update, { currentCategory: e.target.value });
 			model.categoryFields = {};
-			this.shadowRoot.querySelectorAll('.category-fields input').forEach(i => i.value = '');
+			this.shadowRoot.querySelectorAll('.category-fields input').forEach((i) => (i.value = ''));
 			this.signal(Update, { openSections: 'step3' });
 		};
 
 		const categoryFields = {};
-		model.categoriesSpecification.forEach(e => {
-			categoryFields[e['ee-name']] = e['ee-angaben'].map(e => createField(e.name, e.optional));
+		model.categoriesSpecification.forEach((e) => {
+			categoryFields[e['ee-name']] = e['ee-angaben'].map((e) => createField(e.name, e.optional));
 		});
 
 		const energyMarketMode = model.mode === MODUS.market;
 		const isCorrection = model.mode === MODUS.correction;
 
-		const introduction = energyMarketMode ?
-			html`<div class='introduction'>Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die Daten-Recherche.</div>` :
-			html`<div class='introduction'>Melden Sie bisher nicht dargestellte Objekte (z. B. EEG-Anlagen, Wärmenetze) und ergänzen oder korrigieren Sie Angaben zu bestehenden Objekten.</div>`;
+		const introduction = energyMarketMode
+			? html`<div class="introduction">
+					Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die
+					Daten-Recherche.
+			  </div>`
+			: html`<div class="introduction">
+					Melden Sie bisher nicht dargestellte Objekte (z. B. EEG-Anlagen, Wärmenetze) und ergänzen oder korrigieren Sie Angaben zu bestehenden
+					Objekten.
+			  </div>`;
 
-		const buttonHeaders = energyMarketMode ?
-			html`<div class='button-header'>Meldung neuer Einträge</div>
-				<div class='button-header'>Bestehende Einträge durchsuchen</div>
-				<div class='arrow-down'></div>
-				<div class='arrow-down'></div>` :
-			'';
+		const buttonHeaders = energyMarketMode
+			? html`<div class="button-header">Meldung neuer Einträge</div>
+					<div class="button-header">Bestehende Einträge durchsuchen</div>
+					<div class="arrow-down"></div>
+					<div class="arrow-down"></div>`
+			: '';
 
-		const firstButtonClass = model.tagging ?
-			energyMarketMode || !isCorrection ?
-				'active' : 'inactive'
-			: 'unselected';
-		const secondButtonClass = model.tagging ?
-			energyMarketMode || isCorrection ?
-				'active' : 'inactive'
-			: 'unselected';
+		const firstButtonClass = model.tagging ? (energyMarketMode || !isCorrection ? 'active' : 'inactive') : 'unselected';
+		const secondButtonClass = model.tagging ? (energyMarketMode || isCorrection ? 'active' : 'inactive') : 'unselected';
 
 		const firstButton = html`
-			<button id="tag" type='button' class=${firstButtonClass} 
-				@click=${onClickTagButton(energyMarketMode ? MODUS.market : MODUS.report)} 
-				title=${translate('ea_contribution_button_tag_tooltip')}>
-					<div class='button-icon tag-icon'></div>
-					${translate('ea_contribution_button_tag_title')}
-					<div class='subtext'>${translate('ea_contribution_button_tag_subtext')}</div>
+			<button
+				id="tag"
+				type="button"
+				class=${firstButtonClass}
+				@click=${onClickTagButton(energyMarketMode ? MODUS.market : MODUS.report)}
+				title=${translate('ea_contribution_button_tag_tooltip')}
+			>
+				<div class="button-icon tag-icon"></div>
+				${translate('ea_contribution_button_tag_title')}
+				<div class="subtext">${translate('ea_contribution_button_tag_subtext')}</div>
 			</button>
-			`;
-		const secondButton = energyMarketMode ?
-			html`<button id="search" type='button' class='unselected' 
-				@click=${onClickFindButton} title=${translate('ea_contribution_button_find_tooltip')}>
-					<div class='button-icon search-icon'></div>
+		`;
+		const secondButton = energyMarketMode
+			? html`<button
+					id="search"
+					type="button"
+					class="unselected"
+					@click=${onClickFindButton}
+					title=${translate('ea_contribution_button_find_tooltip')}
+			  >
+					<div class="button-icon search-icon"></div>
 					${translate('ea_contribution_button_find_title')}
-					<div class='subtext'>${translate('ea_contribution_button_find_text')}</div>
-			</button>` :
-			html`<button id="correction" type='button' class=${secondButtonClass}
-				@click=${onClickTagButton(MODUS.correction)} 
-				title=${translate('ea_contribution_button_correction_tooltip')}>
-					<div class='button-icon correction-icon'></div>
+					<div class="subtext">${translate('ea_contribution_button_find_text')}</div>
+			  </button>`
+			: html`<button
+					id="correction"
+					type="button"
+					class=${secondButtonClass}
+					@click=${onClickTagButton(MODUS.correction)}
+					title=${translate('ea_contribution_button_correction_tooltip')}
+			  >
+					<div class="button-icon correction-icon"></div>
 					${translate('ea_contribution_button_correction_title')}
-					<div class='subtext'>${translate('ea_contribution_button_tag_subtext')}</div>
-				</button>`;
+					<div class="subtext">${translate('ea_contribution_button_tag_subtext')}</div>
+			  </button>`;
 
 		const onToggle = (e) => {
 			this.signal(Update, { openSections: [e.target.id] });
 		};
-
 
 		const onClickSendButton = () => {
 			const form = this.shadowRoot.getElementById('report');
 			if (!form.checkValidity()) {
 				this.signal(Update, { openSections: ['step1', 'step2', 'step3', 'step4'], showInvalidFields: true });
 				form.reportValidity();
-			}
-			else {
+			} else {
 				submit();
 			}
-
 		};
 
-		const stepTitle = (text, subtext) => html`
-		<span style='color: var(--primary-color)'>${text}${subtext ? ':' : ''}</span>
-		<span style='font-style: italic'>${subtext}</span>`;
+		const stepTitle = (text, subtext) => html` <span style="color: var(--primary-color)">${text}${subtext ? ':' : ''}</span>
+			<span style="font-style: italic">${subtext}</span>`;
 
 		const form = html`
 			<form id='report' class='form-content' action="#">
@@ -290,7 +305,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 						.open=${model.openSections.includes('step2')} @toggle=${onToggle} >
 						<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}" required>
 							<option value="" selected disabled>Bitte wählen ... </option>
-							${model.categoriesSpecification.map(e => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
+							${model.categoriesSpecification.map((e) => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
 							<label for="category">Category</label>
 						</select>
 					</collapsable-content>
@@ -302,11 +317,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 						@toggle=${onToggle}>
 						<div class='fields-help'>Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</div>
 
-${isCorrection ? '' :
-		html`<div class='category-fields'>
-			${categoryFields[model.currentCategory]}
-		</div>`
-}
+${isCorrection ? '' : html`<div class="category-fields">${categoryFields[model.currentCategory]}</div>`}
 
 						<textarea placeholder=${isCorrection ? 'Bitte hier Korrektur eintragen*' : 'Zusätzliche Information'} 
 							id="additional-info" name='additionalInfo' value=${model.description} ?required=${isCorrection}
@@ -359,15 +370,14 @@ ${isCorrection ? '' :
 			</div>`;
 
 		return html`
-			<style>${css}</style>
-			<style>${model.showInvalidFields ? validationCss : nothing}</style>
-			<div class="container">
-
-				${model.statusMessage ? completionForm : form}
-			
-			</div>
+			<style>
+				${css}
+			</style>
+			<style>
+				${model.showInvalidFields ? validationCss : nothing}
+			</style>
+			<div class="container">${model.statusMessage ? completionForm : form}</div>
 		`;
-
 	}
 
 	isRenderingSkipped() {

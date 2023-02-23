@@ -13,7 +13,6 @@ import { fromLonLat } from 'ol/proj.js';
 window.customElements.define(ElevationProfile.tag, ElevationProfile);
 
 describe('ElevationProfile', () => {
-
 	const sumUp = 1480.8;
 	const sumDown = 1668.6;
 	const verticalHeight = 50;
@@ -152,28 +151,28 @@ describe('ElevationProfile', () => {
 	};
 
 	const coordinateServiceMock = {
-		stringify() { },
-		toLonLat() { }
+		stringify() {},
+		toLonLat() {}
 	};
 
 	const elevationServiceMock = {
-		getProfile() { }
+		getProfile() {}
 	};
 
 	const configService = {
-		getValueAsPath: () => { }
+		getValueAsPath: () => {}
 	};
 
 	const chart = {
 		ctx: {
 			createLinearGradient: () => {
-				return { addColorStop: () => { } };
+				return { addColorStop: () => {} };
 			}
-		}, chartArea: { left: 0, right: 100, width: 200 }
+		},
+		chartArea: { left: 0, right: 100, width: 200 }
 	};
 	const altitudeData = profileSlopeSteep();
 	const context = { chart };
-
 
 	let store;
 
@@ -227,7 +226,16 @@ describe('ElevationProfile', () => {
 
 			// assert
 			const initialModel = altitudeProfile.getModel();
-			expect(initialModel).toEqual({ profile: null, labels: null, data: null, selectedAttribute: null, darkSchema: null, distUnit: null, portrait: false, minWidth: false });
+			expect(initialModel).toEqual({
+				profile: null,
+				labels: null,
+				data: null,
+				selectedAttribute: null,
+				darkSchema: null,
+				distUnit: null,
+				portrait: false,
+				minWidth: false
+			});
 		});
 	});
 
@@ -353,7 +361,8 @@ describe('ElevationProfile', () => {
 			expect(slopeGradientSpy).toHaveBeenCalled();
 		});
 
-		it('returns a gradient that ends in steep ', async () => {// todo check
+		it('returns a gradient that ends in steep ', async () => {
+			// todo check
 			// arrange
 			const coordinates = [
 				[0, 1],
@@ -475,7 +484,6 @@ describe('ElevationProfile', () => {
 
 	describe('when coordinates (slice-of-state) changes (from no coordinates)', () => {
 		it('calls _getAltitudeProfile with coordinates', async () => {
-
 			// arrange
 			const coordinates = [
 				[0, 1],
@@ -595,8 +603,7 @@ describe('ElevationProfile', () => {
 						n: 52
 					}
 				],
-				attrs: [
-				]
+				attrs: []
 			};
 			await setup({
 				altitudeProfile
@@ -615,7 +622,6 @@ describe('ElevationProfile', () => {
 
 	describe('SlopeType', () => {
 		it('provides an enum of all available types', () => {
-
 			expect(Object.keys(SlopeType).length).toBe(2);
 			expect(SlopeType.FLAT).toBe('flat');
 			expect(SlopeType.STEEP).toBe('steep');
@@ -656,13 +662,10 @@ describe('ElevationProfile', () => {
 		});
 	});
 
-
 	describe('events', () => {
-
 		const chartJsTimeoutInMs = 100;
 
 		describe('on pointermove', () => {
-
 			it('places a highlight feature within the store', async () => {
 				// arrange
 				const coordinates = fromLonLat([11, 48]);
@@ -696,7 +699,6 @@ describe('ElevationProfile', () => {
 		});
 
 		describe('on mouseout', () => {
-
 			it('removes the highlight feature from the store', async () => {
 				// arrange
 				const coordinates = fromLonLat([11, 48]);
@@ -723,7 +725,6 @@ describe('ElevationProfile', () => {
 		});
 
 		describe('on pointerup', () => {
-
 			it('removes the highlight feature from the store', async () => {
 				// arrange
 				const coordinates = fromLonLat([11, 48]);
@@ -748,13 +749,10 @@ describe('ElevationProfile', () => {
 				expect(store.getState().highlight.features).toHaveSize(0);
 			});
 		});
-
 	});
 
 	describe('responsive layout ', () => {
-
 		it('layouts for landscape', async () => {
-
 			const coordinates = [
 				[0, 1],
 				[2, 3]
@@ -774,7 +772,6 @@ describe('ElevationProfile', () => {
 		});
 
 		it('layouts for portrait', async () => {
-
 			const coordinates = [
 				[0, 1],
 				[2, 3]
@@ -791,11 +788,9 @@ describe('ElevationProfile', () => {
 			});
 			expect(element.shadowRoot.querySelectorAll('.is-landscape')).toHaveSize(0);
 			expect(element.shadowRoot.querySelectorAll('.is-portrait')).toHaveSize(1);
-
 		});
 
 		it('layouts for desktop', async () => {
-
 			const coordinates = [
 				[0, 1],
 				[2, 3]
@@ -815,7 +810,6 @@ describe('ElevationProfile', () => {
 		});
 
 		it('layouts for tablet', async () => {
-
 			const coordinates = [
 				[0, 1],
 				[2, 3]
@@ -834,7 +828,6 @@ describe('ElevationProfile', () => {
 			expect(element.shadowRoot.querySelectorAll('.is-desktop')).toHaveSize(0);
 		});
 	});
-
 
 	describe('when disconnected', () => {
 		it('removes all observers', async () => {

@@ -9,7 +9,6 @@ const Update_legend_items = 'update_legend_items';
 const Update_IsPortrait_HasMinWidth = 'update_isPortrait';
 
 export class LegendContent extends MvuElement {
-
 	constructor() {
 		super({
 			legendActive: true,
@@ -19,8 +18,7 @@ export class LegendContent extends MvuElement {
 			hasMinWidth: false
 		});
 
-		const { StoreService, TranslationService, EnvironmentService } = $injector
-			.inject('StoreService', 'TranslationService', 'EnvironmentService');
+		const { StoreService, TranslationService, EnvironmentService } = $injector.inject('StoreService', 'TranslationService', 'EnvironmentService');
 		this._storeService = StoreService;
 		this._translationService = TranslationService;
 		this._environmentService = EnvironmentService;
@@ -49,10 +47,22 @@ export class LegendContent extends MvuElement {
 	 * @override
 	 */
 	onInitialize() {
-		this.observe(state => state.ea.legendActive, active => this.signal(Update_legend_active, active));
-		this.observe(state => state.ea.legendItems, items => this.signal(Update_legend_items, items));
-		this.observe(state => state.ea.mapResolution, resolution => this.signal(Update_resolution, resolution));
-		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
+		this.observe(
+			(state) => state.ea.legendActive,
+			(active) => this.signal(Update_legend_active, active)
+		);
+		this.observe(
+			(state) => state.ea.legendItems,
+			(items) => this.signal(Update_legend_items, items)
+		);
+		this.observe(
+			(state) => state.ea.mapResolution,
+			(resolution) => this.signal(Update_resolution, resolution)
+		);
+		this.observe(
+			(state) => state.media,
+			(media) => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth })
+		);
 	}
 
 	createView(model) {
@@ -63,29 +73,29 @@ export class LegendContent extends MvuElement {
 		const translate = (key) => this._translationService.translate(key);
 
 		const resolution = model.resolution;
-		const visibleLayers = model.legendItems
-			.filter(l => resolution > l.maxResolution && resolution < l.minResolution);
+		const visibleLayers = model.legendItems.filter((l) => resolution > l.maxResolution && resolution < l.minResolution);
 
-		const uniqueVisibleLayers = [...new Map(visibleLayers.map(item =>
-			[item.title, item])).values()];
+		const uniqueVisibleLayers = [...new Map(visibleLayers.map((item) => [item.title, item])).values()];
 
-		const content = uniqueVisibleLayers.map(l => html`
+		const content = uniqueVisibleLayers.map(
+			(l) => html`
 			<div class="ea-legend-item__title">${l.title}</div>
 			<img src="${l.legendUrl}" @dragstart=${(e) => e.preventDefault()}></img>
-		`);
+		`
+		);
 
 		return html`
-        <style>${css}</style>
-            <div class="ea-legend-container ${model.isPortrait ? 'portrait-mode' : ''}">
+			<style>
+				${css}
+			</style>
+			<div class="ea-legend-container ${model.isPortrait ? 'portrait-mode' : ''}">
 				<div class="ea-legend-filler"></div>
 				<div class="ea-legend-content">
-					<div class="ea-legend__title">
-						${translate('ea_legend_title')}
-					</div>
+					<div class="ea-legend__title">${translate('ea_legend_title')}</div>
 					${content}
 				</div>
 			</div>
-        `;
+		`;
 	}
 
 	static get tag() {

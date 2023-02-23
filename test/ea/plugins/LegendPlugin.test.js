@@ -6,10 +6,8 @@ import { addLayer, modifyLayer, removeLayer } from '../../../src/store/layers/la
 import { layersReducer } from '../../../src/store/layers/layers.reducer.js';
 import { TestUtils } from '../../test-utils.js';
 
-
 describe('LegendPlugin', () => {
-
-	const wmsCapabilitiesServiceMock = { getWmsLayers: () => ([]) };
+	const wmsCapabilitiesServiceMock = { getWmsLayers: () => [] };
 
 	const storeActions = [];
 
@@ -35,7 +33,6 @@ describe('LegendPlugin', () => {
 	};
 
 	const setup = async (state) => {
-
 		storeActions.length = 0;
 
 		const store = TestUtils.setupStoreAndDi(state, {
@@ -43,23 +40,23 @@ describe('LegendPlugin', () => {
 			ea: eaReducer
 		});
 
-		$injector
-			.registerSingleton('WmsCapabilitiesService', wmsCapabilitiesServiceMock);
+		$injector.registerSingleton('WmsCapabilitiesService', wmsCapabilitiesServiceMock);
 
 		const instanceUnderTest = new LegendPlugin();
 		await instanceUnderTest.register(store);
 
 		spyOn(wmsCapabilitiesServiceMock, 'getWmsLayers')
-			.withArgs('id1').and.returnValue([layerItem1])
-			.withArgs('id2').and.returnValue([layerItem2])
-			.withArgs('id3').and.returnValue([layerItem3]);
-
+			.withArgs('id1')
+			.and.returnValue([layerItem1])
+			.withArgs('id2')
+			.and.returnValue([layerItem2])
+			.withArgs('id3')
+			.and.returnValue([layerItem3]);
 
 		return store;
 	};
 
 	describe('when legendActive is true, ', () => {
-
 		it('creates legend items on active layer change', async () => {
 			const store = await setup();
 			activateLegend();
@@ -70,7 +67,6 @@ describe('LegendPlugin', () => {
 			await TestUtils.timeout();
 			expect(store.getState().ea.legendItems).toEqual([layerItem1, layerItem2]);
 		});
-
 
 		it('show legend only for visible layers', async () => {
 			const store = await setup();
@@ -108,7 +104,6 @@ describe('LegendPlugin', () => {
 			await TestUtils.timeout();
 			expect(store.getState().ea.legendItems).toEqual([layerItem1, layerItem2, layerItem3]);
 		});
-
 
 		it('show preview layer only once if already active', async () => {
 			const store = await setup();
@@ -158,7 +153,6 @@ describe('LegendPlugin', () => {
 			expect(store.getState().ea.legendItems).toEqual([]);
 		});
 
-
 		it('handles several incoming active layers changes correctly', async () => {
 			const store = await setup();
 			activateLegend();
@@ -176,7 +170,6 @@ describe('LegendPlugin', () => {
 	});
 
 	describe('when legendActive is false, ', () => {
-
 		it('updates active layers even if legendActive is false', async () => {
 			const store = await setup();
 			deactivateLegend();

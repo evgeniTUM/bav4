@@ -1,4 +1,3 @@
-
 import { LegendContent } from './LegendContent';
 
 if (!window.customElements.get(LegendContent.tag)) {

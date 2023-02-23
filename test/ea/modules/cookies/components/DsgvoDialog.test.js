@@ -9,17 +9,14 @@ import { TestUtils } from '../../../../test-utils';
 window.customElements.define(DsgvoDialog.tag, DsgvoDialog);
 
 describe('DsgvoDialog', () => {
-
 	let store;
 
 	const setup = async (state = {}) => {
-
 		store = TestUtils.setupStoreAndDi(state, {
 			ea: eaReducer,
 			modal: modalReducer
 		});
-		$injector
-			.registerSingleton('TranslationService', { translate: (key) => key });
+		$injector.registerSingleton('TranslationService', { translate: (key) => key });
 
 		return await TestUtils.render(DsgvoDialog.tag);
 	};
@@ -54,7 +51,7 @@ describe('DsgvoDialog', () => {
 		document.cookie = serialize('eab', {}, { maxAge: 0 });
 
 		let actualCookie;
-		spyOnProperty(document, 'cookie', 'set').and.callFake(c => {
+		spyOnProperty(document, 'cookie', 'set').and.callFake((c) => {
 			actualCookie = c;
 			return c;
 		});
@@ -125,7 +122,6 @@ describe('DsgvoDialog', () => {
 			expect(JSON.parse(parse(document.cookie).eab)).toEqual({ base: true, webanalyse: false });
 			expect(element.shadowRoot.children.length).toBe(0);
 		});
-
 	});
 
 	describe('modal dialog,', () => {
@@ -148,7 +144,6 @@ describe('DsgvoDialog', () => {
 
 			expect(store.getState().modal.data).toBeNull();
 		});
-
 
 		it('closes modal dialog on "reject all" button click', async () => {
 			document.cookie = serialize('eab', {}, { maxAge: 0 });

@@ -15,7 +15,6 @@ const Update_IsPortrait_HasMinWidth = 'update_isPortrait_hasMinWidth';
  * @author kun
  */
 export class InfoPopup extends MvuElement {
-
 	constructor() {
 		super({
 			isPortrait: false,
@@ -26,17 +25,18 @@ export class InfoPopup extends MvuElement {
 			msgUrl: null
 		});
 
-		const {
-			EnvironmentService: environmentService,
-			TranslationService: translationService
-		}
-			= $injector.inject('EnvironmentService', 'TranslationService');
+		const { EnvironmentService: environmentService, TranslationService: translationService } = $injector.inject(
+			'EnvironmentService',
+			'TranslationService'
+		);
 
 		this._environmentService = environmentService;
 		this._translationService = translationService;
-		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
+		this.observe(
+			(state) => state.media,
+			(media) => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth })
+		);
 	}
-
 
 	/**
 	 * @override
@@ -49,17 +49,13 @@ export class InfoPopup extends MvuElement {
 				return { ...model, msgUrl: data };
 			case Update_IsPortrait_HasMinWidth:
 				return { ...model, ...data };
-
 		}
 	}
 
 	/**
 	 * @override
 	 */
-	onInitialize() {
-	}
-
-
+	onInitialize() {}
 
 	/**
 	 * @override
@@ -83,15 +79,24 @@ export class InfoPopup extends MvuElement {
 			if (event.detail.checked) {
 				window.console.log('deactivateInfoPopup ' + msgKey);
 				deactivateInfoPopup(msgKey);
-			}
-			else {
+			} else {
 				activateInfoPopup(msgKey);
 			}
 		};
 
-		return html`<style>${css}</style><iframe class='${getOrientationClass()} ${getMinWidthClass()}' title=${translate('help_infoPopup_notification_info_popup')}
-				src=${msgUrl} allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe> 
-				<ba-checkbox class="ba-list-item__text" @toggle=${onToggle} .checked=${checked} tabindex='0' .title=${checkbox_title}><span>${label}</span></ba-checkbox>`;
+		return html`<style>
+				${css}</style
+			><iframe
+				class="${getOrientationClass()} ${getMinWidthClass()}"
+				title=${translate('help_infoPopup_notification_info_popup')}
+				src=${msgUrl}
+				allowfullscreen="true"
+				webkitallowfullscreen="true"
+				mozallowfullscreen="true"
+			></iframe>
+			<ba-checkbox class="ba-list-item__text" @toggle=${onToggle} .checked=${checked} tabindex="0" .title=${checkbox_title}
+				><span>${label}</span></ba-checkbox
+			>`;
 	}
 
 	isRenderingSkipped() {
@@ -123,5 +128,4 @@ export class InfoPopup extends MvuElement {
 	get msgKey() {
 		return this.getModel().msgKey;
 	}
-
 }

@@ -6,7 +6,6 @@ import csvContent from './assets/energyPlantCategories.csv';
 import css from './container.css';
 
 export class EnergyReportingModuleContent extends MvuElement {
-
 	constructor() {
 		super({
 			description: '',
@@ -14,38 +13,35 @@ export class EnergyReportingModuleContent extends MvuElement {
 			hasMinWidth: false
 		});
 
-		const {
-			EnvironmentService: environmentService,
-			TranslationService: translationService
-		}
-			= $injector.inject('EnvironmentService', 'TranslationService');
+		const { EnvironmentService: environmentService, TranslationService: translationService } = $injector.inject(
+			'EnvironmentService',
+			'TranslationService'
+		);
 
 		this._environmentService = environmentService;
 		this._translationService = translationService;
 	}
 
-
 	/**
 	 * @override
 	 */
 	createView() {
-
 		const translate = (key) => this._translationService.translate(key);
 
 		const json = csv2json(csvContent);
 		const categories = generateJsonCategorySpecFromCSV(json);
 
 		return html`
-			<style>${css}</style>
-			<div class='container'>
-				<div class='header'> 
-					${translate('ea_menu_energy_reporting')}
-				</div>
-				<div class='content'>
+			<style>
+				${css}
+			</style>
+			<div class="container">
+				<div class="header">${translate('ea_menu_energy_reporting')}</div>
+				<div class="content">
 					<ea-feature-contribution .categories=${categories}></ea-feature-contribution>
 				</div>
 			</div>
-			`;
+		`;
 	}
 
 	isRenderingSkipped() {

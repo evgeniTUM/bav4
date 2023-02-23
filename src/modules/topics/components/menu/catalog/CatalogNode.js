@@ -9,7 +9,6 @@ import css from './catalogNode.css';
  * @author alsturm
  */
 export class CatalogNode extends AbstractContentPanel {
-
 	constructor() {
 		super();
 
@@ -25,7 +24,6 @@ export class CatalogNode extends AbstractContentPanel {
 		this.render();
 	}
 
-
 	initialize() {
 		this._level = this.getAttribute('level') ? parseInt(this.getAttribute('level')) : 0;
 	}
@@ -35,7 +33,6 @@ export class CatalogNode extends AbstractContentPanel {
 	}
 
 	createView() {
-
 		const toggleCollapse = () => {
 			this._isCollapsed = !this._isCollapsed;
 			this.render();
@@ -51,10 +48,10 @@ export class CatalogNode extends AbstractContentPanel {
 
 		if (this._catalogPart) {
 			const { label, children } = this._catalogPart;
-			const childElements = children.map(child => {
+			const childElements = children.map((child) => {
 				//node
 				if (child.children) {
-					return html`<div> <ba-catalog-node .data=${child} level=${(this._level + 1)}></ba-catalog-node></div>`;
+					return html`<div><ba-catalog-node .data=${child} level=${this._level + 1}></ba-catalog-node></div>`;
 				}
 				//leaf
 				return html`<div><ba-catalog-leaf .data=${child}></ba-catalog-leaf></div>`;
@@ -62,39 +59,34 @@ export class CatalogNode extends AbstractContentPanel {
 
 			if (this._level === 0) {
 				return html`
-				<style>
-				${css}
-				</style>
-			<div class='ba-section divider'>
-				<button id='list-item-button' data-test-id class="ba-list-item ba-list-item__header" @click="${toggleCollapse}">
-					<span class="ba-list-item__text  ba-list-item__primary-text" >${label}</span>
-					<span class="ba-list-item__after">
-						<i class='icon icon-rotate-90 chevron ${classMap(iconCollapseClass)}'></i>
-					</span>
-				</button>		
-				<div class=" collapse-content ${classMap(bodyCollapseClass)}">	
-            		${childElements}
-				</div>	
-			</div>			
-        	`;
-			}
-			else if (this._level > 0) {
+					<style>
+						${css}
+					</style>
+					<div class="ba-section divider">
+						<button id="list-item-button" data-test-id class="ba-list-item ba-list-item__header" @click="${toggleCollapse}">
+							<span class="ba-list-item__text  ba-list-item__primary-text">${label}</span>
+							<span class="ba-list-item__after">
+								<i class="icon icon-rotate-90 chevron ${classMap(iconCollapseClass)}"></i>
+							</span>
+						</button>
+						<div class=" collapse-content ${classMap(bodyCollapseClass)}">${childElements}</div>
+					</div>
+				`;
+			} else if (this._level > 0) {
 				return html`
-				<style>
-				${css}
-				</style>
-				<div class='sub-divider subcategory${this._level}'>
-					<div class="ba-list-item  ba-list-item__sub-header non-selectable" @click="${toggleCollapse}">
-						<span class="ba-list-item__text  ba-list-item__primary-text">
-							${label}
-							<i class='centered-icon icon icon-rotate-90 chevron ${classMap(iconCollapseClass)}'></i>
-						</span>					
-					</div>		
-					<div class=" collapse-content ${classMap(bodyCollapseClass)}">	
-						${childElements}
-					</div>	
-				</div>			
-        	`;
+					<style>
+						${css}
+					</style>
+					<div class="sub-divider subcategory${this._level}">
+						<div class="ba-list-item  ba-list-item__sub-header non-selectable" @click="${toggleCollapse}">
+							<span class="ba-list-item__text  ba-list-item__primary-text">
+								${label}
+								<i class="centered-icon icon icon-rotate-90 chevron ${classMap(iconCollapseClass)}"></i>
+							</span>
+						</div>
+						<div class=" collapse-content ${classMap(bodyCollapseClass)}">${childElements}</div>
+					</div>
+				`;
 			}
 		}
 		return nothing;

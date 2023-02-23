@@ -13,7 +13,6 @@ import { mapReducer } from '../../../../../src/store/map/map.reducer';
 
 import { TestUtils } from '../../../../test-utils';
 
-
 import { register } from 'ol/proj/proj4';
 import { setLegendItems } from '../../../../../src/ea/store/module/ea.action';
 import { Polygon, Point, Geometry } from 'ol/geom';
@@ -27,7 +26,6 @@ import { setBeingMoved, setMoveStart as setMapMoveStart, setMoveEnd as setMapMov
 import { notificationReducer } from '../../../../../src/store/notifications/notifications.reducer';
 import { observe } from '../../../../../src/utils/storeUtils';
 import { simulateMapEvent } from '../../mapTestUtils';
-
 
 describe('OlMfpHandler', () => {
 	const initialState = {
@@ -62,7 +60,7 @@ describe('OlMfpHandler', () => {
 	};
 
 	const mfpEncoderMock = {
-		encode: async () => { }
+		encode: async () => {}
 	};
 
 	const setup = (state = initialState) => {
@@ -70,8 +68,16 @@ describe('OlMfpHandler', () => {
 			mfp: state,
 			ea: { legendItems: [{ title: '1' }, { title: '2' }] }
 		};
-		const store = TestUtils.setupStoreAndDi(mfpState, { mfp: mfpReducer, position: positionReducer, map: mapReducer, pointer: pointerReducer, notifications: notificationReducer, ea: eaReducer });
-		$injector.registerSingleton('TranslationService', translationServiceMock)
+		const store = TestUtils.setupStoreAndDi(mfpState, {
+			mfp: mfpReducer,
+			position: positionReducer,
+			map: mapReducer,
+			pointer: pointerReducer,
+			notifications: notificationReducer,
+			ea: eaReducer
+		});
+		$injector
+			.registerSingleton('TranslationService', translationServiceMock)
 			.registerSingleton('ConfigService', configService)
 			.registerSingleton('MapService', mapServiceMock)
 			.registerSingleton('MfpService', mfpServiceMock)
@@ -104,7 +110,8 @@ describe('OlMfpHandler', () => {
 				}),
 				new TileLayer({
 					source: new TileDebug()
-				})],
+				})
+			],
 			target: getTarget(),
 			view: new View({
 				center: viewCenter,
@@ -141,11 +148,16 @@ describe('OlMfpHandler', () => {
 			return canvas.getContext('2d');
 		};
 		const viewState = {
-			projection: null, resolution: 1, rotation: 0
+			projection: null,
+			resolution: 1,
+			rotation: 0
 		};
 		const setupFrameState = (time) => {
 			return {
-				time: +time, coordinateToPixelTransform: transform, viewHints: [], viewState: viewState
+				time: +time,
+				coordinateToPixelTransform: transform,
+				viewHints: [],
+				viewState: viewState
 			};
 		};
 
@@ -190,7 +202,6 @@ describe('OlMfpHandler', () => {
 			const handler = new OlMfpHandler();
 			const mfpBoundaryFeatureSpy = spyOn(handler._mfpBoundaryFeature, 'setStyle').and.callThrough();
 
-
 			handler.activate(map); // --> mfpLayer is now initialized
 			const mfpLayerSpy = spyOn(handler._mfpLayer, 'on').withArgs('postrender', jasmine.any(Function)).and.callThrough();
 			handler.activate(map);
@@ -210,16 +221,13 @@ describe('OlMfpHandler', () => {
 			handler._beingDragged = true;
 			const style = handler._mfpBoundaryFeature.getStyle()[0];
 
-
 			const renderFunction = style.getRenderer();
 			const pixelCoordinates = [];
 			const stateMock = { context: {} };
 			renderFunction(pixelCoordinates, stateMock);
 
-
 			expect(beingDraggedSpy).toHaveBeenCalled();
 		});
-
 
 		it('updates mfpPage after store changes', () => {
 			const current = { id: 'bar', scale: 42 };
@@ -340,7 +348,6 @@ describe('OlMfpHandler', () => {
 
 			expect(handler._beingDragged).toBeTrue();
 			expect(handler._previewDelayTimeoutId).toBeNull();
-
 		});
 
 		it('updates delayed mfpPreview after store changes by user interaction', async () => {
@@ -389,7 +396,9 @@ describe('OlMfpHandler', () => {
 			handler.activate(map);
 			handler._previewDelayTimeoutId = 42;
 			const updateSpy = spyOn(handler, '_delayedUpdateMfpPreview').and.callThrough();
-			const clearTimeoutSpy = spyOn(global, 'clearTimeout').withArgs(handler._previewDelayTimeoutId).and.callFake(() => { });
+			const clearTimeoutSpy = spyOn(global, 'clearTimeout')
+				.withArgs(handler._previewDelayTimeoutId)
+				.and.callFake(() => {});
 
 			setMapMoveEnd();
 			setBeingMoved(false);
@@ -404,7 +413,7 @@ describe('OlMfpHandler', () => {
 			const map = setupMap();
 			setup();
 			const handler = new OlMfpHandler();
-			const updateSpy = spyOn(handler, '_updateMfpPreview').and.callFake(() => { });
+			const updateSpy = spyOn(handler, '_updateMfpPreview').and.callFake(() => {});
 
 			handler.activate(map);
 			updateSpy.calls.reset();
@@ -440,7 +449,7 @@ describe('OlMfpHandler', () => {
 
 			setBeingDragged(true);
 
-			const warnOnceSpy = spyOn(handler, '_warnOnce').and.callFake(() => { });
+			const warnOnceSpy = spyOn(handler, '_warnOnce').and.callFake(() => {});
 			setBeingDragged(false);
 
 			await TestUtils.timeout(previewDelayTime + 10);
@@ -459,7 +468,7 @@ describe('OlMfpHandler', () => {
 
 			setBeingDragged(true);
 
-			const warnOnceSpy = spyOn(handler, '_warnOnce').and.callFake(() => { });
+			const warnOnceSpy = spyOn(handler, '_warnOnce').and.callFake(() => {});
 			setBeingDragged(false);
 
 			await TestUtils.timeout(previewDelayTime + 10);
@@ -480,7 +489,10 @@ describe('OlMfpHandler', () => {
 			handler._warnOnce(warnText);
 
 			expect(warnOnceSpy).toHaveBeenCalledTimes(3);
-			expect(notificationSpy).toHaveBeenCalledOnceWith(jasmine.objectContaining({ _payload:	jasmine.objectContaining({ content: warnText }) }), jasmine.anything());
+			expect(notificationSpy).toHaveBeenCalledOnceWith(
+				jasmine.objectContaining({ _payload: jasmine.objectContaining({ content: warnText }) }),
+				jasmine.anything()
+			);
 		});
 
 		it('warns with a i18n message', async () => {
@@ -499,7 +511,6 @@ describe('OlMfpHandler', () => {
 
 			expect(store.getState().notifications.latest.payload.content).toBe('olMap_handler_mfp_distortion_warning');
 		});
-
 	});
 
 	describe('when deactivate', () => {
@@ -628,8 +639,24 @@ describe('OlMfpHandler', () => {
 	});
 
 	describe('_toMfpBoundary', () => {
-		const boundary = new Polygon([[[0, 10], [10, 9], [10, 0], [0, -1], [0, 10]]]);
-		const cloned = new Polygon([[[0, 1], [1, 1], [1, 0], [0, 0], [0, 1]]]);
+		const boundary = new Polygon([
+			[
+				[0, 10],
+				[10, 9],
+				[10, 0],
+				[0, -1],
+				[0, 10]
+			]
+		]);
+		const cloned = new Polygon([
+			[
+				[0, 1],
+				[1, 1],
+				[1, 0],
+				[0, 0],
+				[0, 1]
+			]
+		]);
 		const center = new Point([0, 0]);
 
 		it('clones and transforms a geodetic boundary to a boundary with map projection', () => {
@@ -640,7 +667,6 @@ describe('OlMfpHandler', () => {
 			const classUnderTest = new OlMfpHandler();
 
 			const mfpBoundary = classUnderTest._toMfpBoundary(boundary, center, null);
-
 
 			expect(cloneSpy).toHaveBeenCalled();
 			expect(transformSpy).toHaveBeenCalled();
@@ -656,14 +682,12 @@ describe('OlMfpHandler', () => {
 			const rotationSpy = spyOn(cloned, 'rotate').and.returnValue(cloned);
 			const mfpBoundary = classUnderTest._toMfpBoundary(boundary, center, mapRotation);
 
-
 			expect(cloneSpy).toHaveBeenCalled();
 			expect(transformSpy).toHaveBeenCalled();
 			expect(rotationSpy).toHaveBeenCalledWith(mapRotation, [0, 0]);
 			expect(mfpBoundary).toBe(cloned);
 		});
 	});
-
 
 	describe('legend handling', () => {
 		it('updates legend items after store change', () => {
@@ -689,12 +713,8 @@ describe('OlMfpHandler', () => {
 			handler.activate(map);
 			setLegendItems([{ title: 't1' }, { title: 't2' }, { title: 't1' }]);
 			spyOn(mfpEncoderMock, 'encode')
-				.withArgs(map, jasmine.objectContaining(
-					{ legendItems: [
-						{ title: 't1' },
-						{ title: 't2' }
-					] }))
-				.and.callFake(() => { });
+				.withArgs(map, jasmine.objectContaining({ legendItems: [{ title: 't1' }, { title: 't2' }] }))
+				.and.callFake(() => {});
 
 			handler.activate(map);
 			requestJob();
@@ -710,10 +730,8 @@ describe('OlMfpHandler', () => {
 
 			const handler = new OlMfpHandler();
 			spyOn(mfpEncoderMock, 'encode')
-				.withArgs(map, jasmine.objectContaining(
-					{ legendItems: [{ title: '1' }, { title: '2' }] }
-				))
-				.and.callFake(() => { });
+				.withArgs(map, jasmine.objectContaining({ legendItems: [{ title: '1' }, { title: '2' }] }))
+				.and.callFake(() => {});
 
 			handler.activate(map);
 			requestJob();
@@ -730,13 +748,12 @@ describe('OlMfpHandler', () => {
 			const handler = new OlMfpHandler();
 			spyOn(mfpEncoderMock, 'encode')
 				.withArgs(map, jasmine.objectContaining({ legendItems: [] }))
-				.and.callFake(() => { });
+				.and.callFake(() => {});
 
 			handler.activate(map);
 			requestJob();
 
 			await TestUtils.timeout();
 		});
-
 	});
 });

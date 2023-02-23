@@ -11,7 +11,6 @@ import { MixerModuleContent } from '../../../../../toolbox/components/mixer/Mixe
 import { ResearchModuleContent } from '../../../../../toolbox/components/research/ResearchModuleContent';
 import css from './additionalMenu.css';
 
-
 const Update_IsOpen = 'update_isOpen';
 const Update_IsPortrait_HasMinWidth = 'update_isPortrait_hasMinWidth';
 /**
@@ -21,7 +20,6 @@ const Update_IsPortrait_HasMinWidth = 'update_isPortrait_hasMinWidth';
  * @author alsturm
  */
 export class AdditionalMenu extends MvuElement {
-
 	constructor() {
 		super({
 			isOpen: false,
@@ -29,11 +27,10 @@ export class AdditionalMenu extends MvuElement {
 			hasMinWidth: false
 		});
 
-		const {
-			EnvironmentService: environmentService,
-			TranslationService: translationService
-		}
-			= $injector.inject('EnvironmentService', 'TranslationService');
+		const { EnvironmentService: environmentService, TranslationService: translationService } = $injector.inject(
+			'EnvironmentService',
+			'TranslationService'
+		);
 
 		this._environmentService = environmentService;
 		this._translationService = translationService;
@@ -50,15 +47,20 @@ export class AdditionalMenu extends MvuElement {
 	}
 
 	onInitialize() {
-		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
-		this.observe(state => state.ea.currentModule, current => this._moduleId = current);
+		this.observe(
+			(state) => state.media,
+			(media) => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth })
+		);
+		this.observe(
+			(state) => state.ea.currentModule,
+			(current) => (this._moduleId = current)
+		);
 	}
 
 	/**
 	 * @override
-	*/
+	 */
 	createView() {
-
 		const toggleModuleFn = (id) => {
 			return () => {
 				const moduleId = this._moduleId === id ? null : id;

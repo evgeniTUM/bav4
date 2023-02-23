@@ -7,20 +7,17 @@ import { TabId } from '../../../../../store/mainMenu/mainMenu.action';
 import { AdditionalMenu } from './content/additionalMenu/AdditionalMenu';
 import { EaMiscContentPanel } from './content/misc/EaMiscContentPanel';
 
-
 /**
  *
  * @class
  * @author kunze_ge
  */
 export class EaMainMenu extends MainMenu {
-
 	constructor() {
 		super();
 		const { TranslationService: translationService } = $injector.inject('TranslationService');
 		this._translationService = translationService;
 	}
-
 
 	_getContentPanel(definition) {
 		switch (definition) {

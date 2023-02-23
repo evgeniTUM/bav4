@@ -11,19 +11,14 @@ import toolContentCss from './abstractModuleContent.css';
  * @abstract
  */
 export class AbstractModuleContent extends MvuElement {
-
 	constructor() {
 		super();
 
-		const {
-			TranslationService: translationService,
-			ConfigService: configService
-		} = $injector.inject('TranslationService', 'ConfigService');
+		const { TranslationService: translationService, ConfigService: configService } = $injector.inject('TranslationService', 'ConfigService');
 		this._translationService = translationService;
 		this._configService = configService;
 		this._moduleDomain = null;
 		this._shareUrls = null;
-
 
 		if (this.constructor === AbstractModuleContent) {
 			// Abstract class can not be constructed.
@@ -32,7 +27,7 @@ export class AbstractModuleContent extends MvuElement {
 	}
 
 	getConfig() {
-		throw new TypeError('Class has to override method \'getConfig\'');
+		throw new TypeError("Class has to override method 'getConfig'");
 	}
 
 	createView() {
@@ -65,14 +60,12 @@ export class AbstractModuleContent extends MvuElement {
 				}, 1000);
 			});
 			return true;
-		}
-		catch (ex) {
+		} catch (ex) {
 			return ex;
 		}
 	}
 
 	callModul() {
-
 		const ifrm = this.shadowRoot.getElementById(this.getConfig().frame_id);
 		const myWindow = ifrm.contentWindow;
 		const agent = this;
@@ -86,8 +79,7 @@ export class AbstractModuleContent extends MvuElement {
 		ifrm.onload = async function () {
 			try {
 				await agent.asyncInitialization(module, agent._moduleDomain);
-			}
-			catch (ex) {
+			} catch (ex) {
 				// Modul bereits geöffnet
 				console.error('Exception beim laden des Iframes ' + agent._moduleDomain + module);
 			}
@@ -108,17 +100,15 @@ export class AbstractModuleContent extends MvuElement {
 		// this.offsetParent.style.width = '40em';
 	}
 
-
-
 	/**
-	* @override
-	*/
+	 * @override
+	 */
 	defaultCss() {
 		return html`
-		${super.defaultCss()}
-		<style>
-		    ${toolContentCss}
-		</style>
+			${super.defaultCss()}
+			<style>
+				${toolContentCss}
+			</style>
 		`;
 	}
 }

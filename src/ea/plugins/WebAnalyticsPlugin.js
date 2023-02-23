@@ -3,7 +3,6 @@ import { BaPlugin } from '../../plugins/BaPlugin';
 import { observe } from '../../utils/storeUtils';
 
 export class WebAnalyticsPlugin extends BaPlugin {
-
 	/**
 	 * @override
 	 * @param {Store} store
@@ -17,14 +16,18 @@ export class WebAnalyticsPlugin extends BaPlugin {
 
 			const libraryName = 'matomo';
 
-			const _paq = window._paq = window._paq || [];
+			const _paq = (window._paq = window._paq || []);
 			/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
 			_paq.push(['trackPageView']);
 			_paq.push(['enableLinkTracking']);
 			_paq.push(['setTrackerUrl', matomoUrl + libraryName + '.php']);
 			_paq.push(['setSiteId', matomoId]);
-			const d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
-			g.async = true; g.src = matomoUrl + libraryName + '.js'; s.parentNode.insertBefore(g, s);
+			const d = document,
+				g = d.createElement('script'),
+				s = d.getElementsByTagName('script')[0];
+			g.async = true;
+			g.src = matomoUrl + libraryName + '.js';
+			s.parentNode.insertBefore(g, s);
 			g.setAttribute('id', 'matomo-script');
 			g.setAttribute('type', 'text/javascript');
 		};
@@ -37,24 +40,18 @@ export class WebAnalyticsPlugin extends BaPlugin {
 			window._paq = [];
 		};
 
-
 		const trackToolChange = (toolId) => {
 			if (toolId) {
 				window._paq.push(['trackEvent', 'Kartenwerkzeug', 'clickEvent', toolId]);
 			}
 		};
 
-
 		let activeLayerLabelsState = [];
 		const trackLayerChange = (layers) => {
-			const labels = layers.map(l => l.label);
-			const newLabels = labels.filter(l => !activeLayerLabelsState.includes(l));
+			const labels = layers.map((l) => l.label);
+			const newLabels = labels.filter((l) => !activeLayerLabelsState.includes(l));
 
-			newLabels
-				.filter(l => l)
-				.forEach(l =>
-					window._paq.push(['trackEvent', 'Kartenauswahl', 'clickEvent', l])
-				);
+			newLabels.filter((l) => l).forEach((l) => window._paq.push(['trackEvent', 'Kartenauswahl', 'clickEvent', l]));
 
 			activeLayerLabelsState = labels;
 		};
@@ -70,17 +67,16 @@ export class WebAnalyticsPlugin extends BaPlugin {
 			if (active) {
 				activateMatomo();
 				unsubscribes = [
-					observe(store, state => state.tools.current, trackToolChange),
-					observe(store, state => state.layers.active, trackLayerChange),
-					observe(store, state => state.ea.currentModule, trackModuleChange)
+					observe(store, (state) => state.tools.current, trackToolChange),
+					observe(store, (state) => state.layers.active, trackLayerChange),
+					observe(store, (state) => state.ea.currentModule, trackModuleChange)
 				];
-			}
-			else {
+			} else {
 				deactivateMatomo();
-				unsubscribes.forEach(unsubscribe => unsubscribe());
+				unsubscribes.forEach((unsubscribe) => unsubscribe());
 			}
 		};
 
-		observe(store, state => state.ea.webAnalyticsActive, onActiveStateChange, false);
+		observe(store, (state) => state.ea.webAnalyticsActive, onActiveStateChange, false);
 	}
 }

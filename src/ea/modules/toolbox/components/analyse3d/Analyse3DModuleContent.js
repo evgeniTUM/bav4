@@ -1,11 +1,9 @@
 import { AbstractModuleContent } from '../moduleContainer/AbstractModuleContent';
 
-
 export class Analyse3DModuleContent extends AbstractModuleContent {
-
 	/**
-	* @override
-	*/
+	 * @override
+	 */
 	getConfig() {
 		const translate = (key) => this._translationService.translate(key);
 
@@ -14,7 +12,6 @@ export class Analyse3DModuleContent extends AbstractModuleContent {
 			module: Analyse3DModuleContent.name,
 			frame_id: 'analyse3d_iframe',
 			header_title: translate('toolbox_analyse3d')
-
 		};
 	}
 

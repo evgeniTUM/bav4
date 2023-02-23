@@ -2,12 +2,10 @@ import { EaProcessEnvConfigService } from '../../../src/ea/services/EaProcessEnv
 import { ProcessEnvConfigService } from '../../../src/services/ProcessEnvConfigService';
 
 describe('tests for EaProcessEnvConfigService', () => {
-
 	beforeEach(function () {
 		// eslint-disable-next-line no-undef
 		const process = {
-			env: {
-			}
+			env: {}
 		};
 		window.process = process;
 		window.ba_externalConfigProperties = {};
@@ -18,13 +16,12 @@ describe('tests for EaProcessEnvConfigService', () => {
 	});
 
 	describe('getValue()', () => {
-
 		it('provides a value for required keys from process.env', () => {
 			// eslint-disable-next-line no-undef
 			process.env = {
-				'MODULE_BACKEND_URL': 'MODULE_BACKEND_URL_value',
-				'MATOMO_URL': 'MATOMO_URL_value',
-				'MATOMO_ID': 'MATOMO_ID_value'
+				MODULE_BACKEND_URL: 'MODULE_BACKEND_URL_value',
+				MATOMO_URL: 'MATOMO_URL_value',
+				MATOMO_ID: 'MATOMO_ID_value'
 			};
 
 			const configService = new EaProcessEnvConfigService();
@@ -37,9 +34,9 @@ describe('tests for EaProcessEnvConfigService', () => {
 		it('provides a value for required keys from window.config', () => {
 			// eslint-disable-next-line no-undef
 			window.ba_externalConfigProperties = {
-				'MODULE_BACKEND_URL': 'MODULE_BACKEND_URL_value',
-				'MATOMO_URL': 'MATOMO_URL_value',
-				'MATOMO_ID': 'MATOMO_ID_value'
+				MODULE_BACKEND_URL: 'MODULE_BACKEND_URL_value',
+				MATOMO_URL: 'MATOMO_URL_value',
+				MATOMO_ID: 'MATOMO_ID_value'
 			};
 
 			const configService = new EaProcessEnvConfigService();
@@ -48,7 +45,5 @@ describe('tests for EaProcessEnvConfigService', () => {
 			expect(configService.getValue('MATOMO_URL')).toBe('MATOMO_URL_value');
 			expect(configService.getValue('MATOMO_ID')).toBe('MATOMO_ID_value');
 		});
-
 	});
-
 });

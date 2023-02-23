@@ -21,7 +21,6 @@ const Update_SearchTerm = 'update_searchTerm';
  * @author alsturm
  */
 export class Header extends MvuElement {
-
 	constructor() {
 		super({
 			isOpen: false,
@@ -33,11 +32,10 @@ export class Header extends MvuElement {
 			searchTerm: null
 		});
 
-		const {
-			EnvironmentService: environmentService,
-			TranslationService: translationService
-		}
-			= $injector.inject('EnvironmentService', 'TranslationService');
+		const { EnvironmentService: environmentService, TranslationService: translationService } = $injector.inject(
+			'EnvironmentService',
+			'TranslationService'
+		);
 
 		this._environmentService = environmentService;
 		this._translationService = translationService;
@@ -59,16 +57,34 @@ export class Header extends MvuElement {
 	}
 
 	onInitialize() {
-		this.observe(state => state.mainMenu, mainMenu => this.signal(Update_IsOpen_TabIndex, { isOpen: mainMenu.open, tabIndex: mainMenu.tab }));
-		this.observe(state => state.network.fetching, fetching => this.signal(Update_Fetching, fetching));
-		this.observe(state => state.layers.active, active => this.signal(Update_Layers, active.filter(l => l.constraints.hidden === false)));
-		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
-		this.observe(state => state.search.query, query => this.signal(Update_SearchTerm, query.payload));
+		this.observe(
+			(state) => state.mainMenu,
+			(mainMenu) => this.signal(Update_IsOpen_TabIndex, { isOpen: mainMenu.open, tabIndex: mainMenu.tab })
+		);
+		this.observe(
+			(state) => state.network.fetching,
+			(fetching) => this.signal(Update_Fetching, fetching)
+		);
+		this.observe(
+			(state) => state.layers.active,
+			(active) =>
+				this.signal(
+					Update_Layers,
+					active.filter((l) => l.constraints.hidden === false)
+				)
+		);
+		this.observe(
+			(state) => state.media,
+			(media) => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth })
+		);
+		this.observe(
+			(state) => state.search.query,
+			(query) => this.signal(Update_SearchTerm, query.payload)
+		);
 	}
 
 	onAfterRender(firsttime) {
 		if (firsttime) {
-
 			const handler = (event, data) => {
 				if (['touchmove', 'mousemove'].includes(event.type) && data.directionX === 'LEFT' && data.absX > Header.SWIPE_DELTA_PX) {
 					swipeElement.focus();
@@ -98,11 +114,10 @@ export class Header extends MvuElement {
 	}
 
 	createView(model) {
-
 		const { isOpen, tabIndex, isFetching, layers, isPortrait, hasMinWidth, searchTerm } = model;
 
 		const showModalInfo = () => {
-			openModal('Showcase', html`<ba-showcase>`);
+			openModal('Showcase', html`<ba-showcase></ba-showcase>`);
 		};
 
 		const getOrientationClass = () => {
@@ -114,7 +129,7 @@ export class Header extends MvuElement {
 		};
 
 		const getOverlayClass = () => {
-			return (isOpen && !isPortrait) ? 'is-open' : '';
+			return isOpen && !isPortrait ? 'is-open' : '';
 		};
 
 		const getAnimatedBorderClass = () => {
@@ -122,7 +137,7 @@ export class Header extends MvuElement {
 		};
 
 		const getActiveClass = (buttonIndex) => {
-			return (tabIndex === buttonIndex) ? 'is-active' : '';
+			return tabIndex === buttonIndex ? 'is-active' : '';
 		};
 
 		const getIsClearClass = () => {
@@ -160,7 +175,7 @@ export class Header extends MvuElement {
 			if (isPortrait || !hasMinWidth) {
 				const popup = this.shadowRoot.getElementById('headerMobile');
 				popup.style.display = '';
-				window.setTimeout(() => popup.style.opacity = 1, 300);
+				window.setTimeout(() => (popup.style.opacity = 1), 300);
 			}
 		};
 
@@ -178,7 +193,6 @@ export class Header extends MvuElement {
 			setTab(TabId.MISC);
 			openMainMenu();
 		};
-
 
 		const openExtendedTab = () => {
 			setTab(TabId.EXTENSION);
@@ -227,7 +241,9 @@ export class Header extends MvuElement {
 						<div class="header__background">
 						</div>
 						<div class='header__search-container'>
-							<input id='input' data-test-id placeholder='${translate('header_search_placeholder')}' value="${searchTerm}" @focus="${onInputFocus}" @blur="${onInputBlur}" @input="${onInput}" class='header__search' type="search" placeholder="" />          
+							<input id='input' data-test-id placeholder='${translate(
+								'header_search_placeholder'
+							)}' value="${searchTerm}" @focus="${onInputFocus}" @blur="${onInputBlur}" @input="${onInput}" class='header__search' type="search" placeholder="" />          
 							<span class="header__search-clear ${getIsClearClass()}" @click="${clearSearchInput}">        							
 							</span>       
 							<button @click="${showModalInfo}" class="header__modal-button hide" title="modal">
@@ -235,17 +251,23 @@ export class Header extends MvuElement {
 							</button>
 						</div>
 						<div  class="header__button-container">
-							<button id="topics_button" data-test-id class="${getActiveClass(TabId.TOPICS)}" title=${translate('ea_header_tab_topics_title')} @click="${openTopicsTab}">
+							<button id="topics_button" data-test-id class="${getActiveClass(TabId.TOPICS)}" title=${translate(
+			'ea_header_tab_topics_title'
+		)} @click="${openTopicsTab}">
 								<span>
 									${translate('ea_header_tab_topics_button')}
 								</span>
 							</button>
-							<button id="extension_button" data-test-id class="${getActiveClass(TabId.EXTENSION)} ${getMinWidthClass()}" title=${translate('ea_header_tab_additional_title')}  @click="${openExtendedTab}">
+							<button id="extension_button" data-test-id class="${getActiveClass(TabId.EXTENSION)} ${getMinWidthClass()}" title=${translate(
+			'ea_header_tab_additional_title'
+		)}  @click="${openExtendedTab}">
 								<span>
 									${translate('ea_header_tab_additional_button')}
 								</span>
 							</button>
-							<button id="maps_button" data-test-id class="${getActiveClass(TabId.MAPS)}" title=${translate('ea_header_tab_maps_title')}  @click="${openMapLayerTab}">
+							<button id="maps_button" data-test-id class="${getActiveClass(TabId.MAPS)}" title=${translate(
+			'ea_header_tab_maps_title'
+		)}  @click="${openMapLayerTab}">
 								<span>
 									${translate('ea_header_tab_maps_button')}
 								</span>

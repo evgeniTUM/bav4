@@ -4,14 +4,12 @@ import { classMap } from 'lit-html/directives/class-map.js';
 import { TEST_ID_ATTRIBUTE_NAME } from '../../../../utils/markup';
 import { AbstractMvuContentPanel } from '../../../../modules/menu/components/mainMenu/content/AbstractMvuContentPanel';
 
-
 const Update_Disabled = 'update_disabled';
 const Update_Open = 'update_open';
 const Update_Title = 'update_title';
 const Update_CSS = 'update_css';
 
 export class CollapsableContent extends AbstractMvuContentPanel {
-
 	constructor() {
 		super({
 			disabled: false,
@@ -22,12 +20,11 @@ export class CollapsableContent extends AbstractMvuContentPanel {
 	}
 
 	onInitialize() {
-		this._onToggle = () => { };
+		this._onToggle = () => {};
 		this.setAttribute(TEST_ID_ATTRIBUTE_NAME, '');
 	}
 
 	update(type, data, model) {
-
 		switch (type) {
 			case Update_Disabled:
 				return { ...model, disabled: data };
@@ -50,9 +47,11 @@ export class CollapsableContent extends AbstractMvuContentPanel {
 			const newState = !open;
 			this.signal(Update_Open, newState);
 
-			this.dispatchEvent(new CustomEvent('toggle', {
-				detail: { open: newState }
-			}));
+			this.dispatchEvent(
+				new CustomEvent('toggle', {
+					detail: { open: newState }
+				})
+			);
 
 			this._onToggle(event);
 		};
@@ -61,19 +60,23 @@ export class CollapsableContent extends AbstractMvuContentPanel {
 		const title = titleAttribute ? titleAttribute : model.title;
 
 		return html`
-		<style>${customCSS}</style> 
-		<style>${css}</style> 
-        <div class='ba-section divider ${classMap({ disabled: disabled })}'>
-            <div class='header ba-list-item' @click=${onClick}>
-                <span .title='visible-title'  class='ba-list-item__text ba-list-item__primary-text' tabindex='0' .checked='true' >${title}</span>
-                <button data-test-id class='ba-list-item__after' title="collapse-title"  ?disabled=${disabled}>
-                    <i class='icon chevron icon-rotate-90 ${classMap({ iconexpand: open })}'></i>
-                </button>   
-            </div>
-            <div class='content ${classMap({ collapsed: !open })}'>
-                <slot></slot>
-            </div>
-         </div> 
+			<style>
+				${customCSS}
+			</style>
+			<style>
+				${css}
+			</style>
+			<div class="ba-section divider ${classMap({ disabled: disabled })}">
+				<div class="header ba-list-item" @click=${onClick}>
+					<span .title="visible-title" class="ba-list-item__text ba-list-item__primary-text" tabindex="0" .checked="true">${title}</span>
+					<button data-test-id class="ba-list-item__after" title="collapse-title" ?disabled=${disabled}>
+						<i class="icon chevron icon-rotate-90 ${classMap({ iconexpand: open })}"></i>
+					</button>
+				</div>
+				<div class="content ${classMap({ collapsed: !open })}">
+					<slot></slot>
+				</div>
+			</div>
 		`;
 	}
 
@@ -119,5 +122,4 @@ export class CollapsableContent extends AbstractMvuContentPanel {
 	get onToggle() {
 		return this._onToggle;
 	}
-
 }

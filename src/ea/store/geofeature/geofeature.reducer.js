@@ -15,26 +15,27 @@ export const initialState = {
 	 * @property {boolean}
 	 */
 	active: false
-
 };
 
 export const geofeatureReducer = (state = initialState, action) => {
-
 	const { type, payload } = action;
 	switch (type) {
 		case ADD_LAYER: {
 			return {
 				...state,
-				layers: [...state.layers, {
-					draggable: false,
-					...payload,
-					features: [] }
+				layers: [
+					...state.layers,
+					{
+						draggable: false,
+						...payload,
+						features: []
+					}
 				],
 				active: true
 			};
 		}
 		case REMOVE_LAYER: {
-			const layers = state.layers.filter(l => l.id !== payload);
+			const layers = state.layers.filter((l) => l.id !== payload);
 			const active = !!layers.length;
 			return {
 				...state,
@@ -43,10 +44,7 @@ export const geofeatureReducer = (state = initialState, action) => {
 			};
 		}
 		case ADD_FEATURE: {
-			const layers = state.layers.map(l => l.id === payload.layerId ?
-				{ ...l, features: [...l.features, ...payload.features] } :
-				l
-			);
+			const layers = state.layers.map((l) => (l.id === payload.layerId ? { ...l, features: [...l.features, ...payload.features] } : l));
 
 			return {
 				...state,
@@ -55,9 +53,8 @@ export const geofeatureReducer = (state = initialState, action) => {
 			};
 		}
 		case REMOVE_FEATURE: {
-			const layers = state.layers.map(l => l.id === payload.layerId ?
-				{ ...l, features: l.features.filter(f => !payload.ids.includes(f.id)) } :
-				l
+			const layers = state.layers.map((l) =>
+				l.id === payload.layerId ? { ...l, features: l.features.filter((f) => !payload.ids.includes(f.id)) } : l
 			);
 
 			return {
@@ -66,9 +63,7 @@ export const geofeatureReducer = (state = initialState, action) => {
 			};
 		}
 		case CLEAR_LAYER: {
-			const layers = state.layers.map(l => l.id === payload ?
-				{ ...l, features: [] } :
-				l);
+			const layers = state.layers.map((l) => (l.id === payload ? { ...l, features: [] } : l));
 
 			return {
 				...state,

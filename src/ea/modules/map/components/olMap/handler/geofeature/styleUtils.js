@@ -1,4 +1,3 @@
-
 import { Fill, Icon, Stroke, Style } from 'ol/style';
 import { styleTemplates } from './styleTemplates';
 
@@ -11,14 +10,9 @@ export const createStyleFnFromJson = (json) => {
 		return () => styleTemplates[json.template];
 	}
 
-	const image = json.image ?
-		new Icon(json.image.icon ? json.image.icon : json.image.circle)
-		: undefined;
+	const image = json.image ? new Icon(json.image.icon ? json.image.icon : json.image.circle) : undefined;
 
-	const lineDash = json.stroke.dashstyle ?
-		json.stroke.dashstyle.split(',').map(Number) :
-		undefined;
-
+	const lineDash = json.stroke.dashstyle ? json.stroke.dashstyle.split(',').map(Number) : undefined;
 
 	const style = {
 		fill: new Fill({

@@ -6,7 +6,22 @@ import { GeothermModuleContent } from '../../modules/toolbox/components/geotherm
 import { MixerModuleContent } from '../../modules/toolbox/components/mixer/MixerModuleContent';
 import { RedesignModuleContent } from '../../modules/toolbox/components/redesign/RedesignModuleContent';
 import { ResearchModuleContent } from '../../modules/toolbox/components/research/ResearchModuleContent';
-import { ACTIVATE_GEORESOURCE, ACTIVATE_LEGEND, ACTIVATE_WEBANALYTICS, CLEAR_PREVIEW_GEORESOURCE_ID, DEACTIVATE_ALL_GEORESOURCES, DEACTIVATE_GEORESOURCE, DEACTIVATE_LEGEND, DEACTIVATE_WEBANALYTICS, SET_CURRENT_MODULE, SET_LEGEND_ITEMS, SET_MAP_RESOLUTION, SET_PREVIEW_GEORESOURCE_ID, ACTIVATE_INFO_POPUP, DEACTIVATE_INFO_POPUP } from './ea.reducer';
+import {
+	ACTIVATE_GEORESOURCE,
+	ACTIVATE_LEGEND,
+	ACTIVATE_WEBANALYTICS,
+	CLEAR_PREVIEW_GEORESOURCE_ID,
+	DEACTIVATE_ALL_GEORESOURCES,
+	DEACTIVATE_GEORESOURCE,
+	DEACTIVATE_LEGEND,
+	DEACTIVATE_WEBANALYTICS,
+	SET_CURRENT_MODULE,
+	SET_LEGEND_ITEMS,
+	SET_MAP_RESOLUTION,
+	SET_PREVIEW_GEORESOURCE_ID,
+	ACTIVATE_INFO_POPUP,
+	DEACTIVATE_INFO_POPUP
+} from './ea.reducer';
 
 /**
  * Available modules.
@@ -37,16 +52,15 @@ export const EaModulesQueryParameters = Object.freeze([
 	{ name: GeothermModuleContent.name, parameter: 'standort' }
 ]);
 
-
 const getStore = () => {
 	const { StoreService: storeService } = $injector.inject('StoreService');
 	return storeService.getStore();
 };
 
 /**
-* Sets the tag of the currently active module.
-* @param {initeger} features
-*/
+ * Sets the tag of the currently active module.
+ * @param {initeger} features
+ */
 export const setCurrentModule = (id) => {
 	getStore().dispatch({
 		type: SET_CURRENT_MODULE,
@@ -86,7 +100,6 @@ export const deactivateAllGeoResources = () => {
 		payload: null
 	});
 };
-
 
 /**
  * Activates the legend.
@@ -181,7 +194,7 @@ export const activateInfoPopup = (msgId) => {
 /**
  * Deactivates the showing InfoPopup next time.
  */
-export const deactivateInfoPopup = (msgId) => {	
+export const deactivateInfoPopup = (msgId) => {
 	getStore().dispatch({
 		type: DEACTIVATE_INFO_POPUP,
 		payload: msgId

@@ -1,4 +1,3 @@
-
 import { EaLegendButton } from '../../../../../../src/ea/modules/legend/components/button/EaLegendButton';
 import { activateLegend } from '../../../../../../src/ea/store/module/ea.action';
 import { initialState, eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
@@ -7,18 +6,14 @@ import { TestUtils } from '../../../../../test-utils';
 
 window.customElements.define(EaLegendButton.tag, EaLegendButton);
 
-
 describe('LegendButton', () => {
 	let store;
 
 	const setup = async () => {
-
 		const state = { ea: initialState };
 
 		store = TestUtils.setupStoreAndDi(state, { ea: eaReducer });
-		$injector
-			.registerSingleton('TranslationService', { translate: (key) => key });
-
+		$injector.registerSingleton('TranslationService', { translate: (key) => key });
 
 		return await TestUtils.render(EaLegendButton.tag);
 	};
@@ -31,7 +26,6 @@ describe('LegendButton', () => {
 			expect(element.shadowRoot.querySelector('.icon')).toBeTruthy();
 			expect(element.shadowRoot.querySelector('.inactive')).toBeTruthy();
 		});
-
 
 		it('shows legend button in active state', async () => {
 			const element = await setup();
@@ -57,6 +51,5 @@ describe('LegendButton', () => {
 
 			expect(store.getState().ea.legendActive).toBe(false);
 		});
-
 	});
 });

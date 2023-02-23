@@ -12,11 +12,9 @@ import { openBottomSheet } from '../../../../src/store/bottomSheet/bottomSheet.a
 window.customElements.define(BottomSheet.tag, BottomSheet);
 
 describe('BottomSheet', () => {
-
 	let store;
 
 	const setup = async (content, state = {}) => {
-
 		const initialState = {
 			mainMenu: {
 				open: false
@@ -27,7 +25,11 @@ describe('BottomSheet', () => {
 			...state
 		};
 
-		store = TestUtils.setupStoreAndDi(initialState, { mainMenu: createNoInitialStateMainMenuReducer(), media: createNoInitialStateMediaReducer(), bottomSheet: bottomSheetReducer });
+		store = TestUtils.setupStoreAndDi(initialState, {
+			mainMenu: createNoInitialStateMainMenuReducer(),
+			media: createNoInitialStateMediaReducer(),
+			bottomSheet: bottomSheetReducer
+		});
 
 		const element = await TestUtils.renderAndLogLifecycle(BottomSheet.tag);
 		element.content = content;
@@ -48,7 +50,6 @@ describe('BottomSheet', () => {
 	});
 
 	describe('when initialized', () => {
-
 		it('renders nothing when no data available', async () => {
 			const element = await setup();
 
@@ -57,7 +58,6 @@ describe('BottomSheet', () => {
 	});
 
 	describe('when BottomSheet is rendered', () => {
-
 		it('displays the bottom sheet content', async () => {
 			const element = await setup('FooBar');
 			const contentElement = element.shadowRoot.querySelector('.bottom-sheet');
@@ -79,7 +79,6 @@ describe('BottomSheet', () => {
 	});
 
 	describe('responsive layout ', () => {
-
 		it('layouts for landscape and open Menu', async () => {
 			const element = await setup('FooBar', { mainMenu: { open: true }, media: { portrait: false } });
 			const contentElement = element.shadowRoot.querySelector('.bottom-sheet');
@@ -115,12 +114,9 @@ describe('BottomSheet', () => {
 			expect(element.shadowRoot.querySelectorAll(`[${TEST_ID_ATTRIBUTE_NAME}]`)).toHaveSize(1);
 			expect(element.shadowRoot.querySelectorAll('.bottom-sheet.is-open')).toHaveSize(0);
 		});
-
 	});
 
-
 	describe('after initial rendering ', () => {
-
 		it('when orientation changes', async () => {
 			const element = await setup('FooBar', { mainMenu: { open: true }, media: { portrait: false, observeResponsiveParameter: true } });
 
@@ -165,9 +161,6 @@ describe('BottomSheet', () => {
 			closeButton.click();
 
 			expect(store.getState().bottomSheet.data).toBeNull();
-
 		});
 	});
-
-
 });

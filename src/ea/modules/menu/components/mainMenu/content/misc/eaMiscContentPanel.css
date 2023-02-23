@@ -20,27 +20,27 @@
 .contact {
 	mask-image: url('assets/contact.svg');
 	-webkit-mask-image: url('assets/contact.svg');
-	transform: scale(.7);
+	transform: scale(0.7);
 }
 .checklist {
 	mask-image: url('assets/checklist.svg');
 	-webkit-mask-image: url('assets/checklist.svg');
-	transform: scale(.7);
+	transform: scale(0.7);
 }
 .lock {
 	mask-image: url('assets/lock.svg');
 	-webkit-mask-image: url('assets/lock.svg');
-	transform: scale(.7);
+	transform: scale(0.7);
 }
 .imprint {
 	mask-image: url('assets/imprint.svg');
 	-webkit-mask-image: url('assets/imprint.svg');
-	transform: scale(.7);
+	transform: scale(0.7);
 }
 .link {
 	mask-image: url('assets/link.svg');
 	-webkit-mask-image: url('assets/link.svg');
-	transform: scale(.7);
+	transform: scale(0.7);
 }
 .geoportal {
 	background-color: transparent;
@@ -57,7 +57,7 @@
 	-webkit-mask-size: cover;
 	mask-image: url('assets/gdo.svg');
 	-webkit-mask-image: url('assets/gdo.svg');
-	background: linear-gradient(90deg, rgba(8,131,181,1) 0%, rgba(43,91,148,1) 100%);
+	background: linear-gradient(90deg, rgba(8, 131, 181, 1) 0%, rgba(43, 91, 148, 1) 100%);
 }
 
 .slider-container {
@@ -69,12 +69,11 @@ ba-icon {
 	width: 2.6em;
 	height: 2.6em;
 	display: block;
-	margin: 0 .3em;
+	margin: 0 0.3em;
 }
 ba-icon:hover {
 	background: var(--primary-color);
-
 }
 ba-icon:focus {
-	box-shadow: 0 0 0 .2em var(--primary-color-lighter);
+	box-shadow: 0 0 0 0.2em var(--primary-color-lighter);
 }

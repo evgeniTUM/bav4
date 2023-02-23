@@ -2,9 +2,7 @@ export const OPEN_MODULE_REQUESTED = 'fnModuleComm/open';
 export const CHANGE_MODULE_REQUESTED = 'fnModuleComm/change';
 export const MODULE_RESET_REQUESTED = 'fnModuleComm/reset';
 
-
 export const initialState = {
-
 	/**
 	 * @property {module|null}
 	 */
@@ -19,10 +17,8 @@ export const initialState = {
 };
 
 export const fnModuleCommReducer = (state = initialState, action) => {
-
 	const { type, payload } = action;
 	switch (type) {
-
 		case OPEN_MODULE_REQUESTED:
 			return {
 				...state,
@@ -34,8 +30,7 @@ export const fnModuleCommReducer = (state = initialState, action) => {
 				...state,
 				active: false
 			};
-		case CHANGE_MODULE_REQUESTED:
-		{
+		case CHANGE_MODULE_REQUESTED: {
 			const active = !!payload;
 			return { state, fnModuleComm: payload, active: active };
 		}

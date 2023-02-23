@@ -53,7 +53,7 @@ $injector
 	.registerSingleton('ProjectionService', new Proj4JsService())
 	.register('HttpService', NetworkStateSyncHttpService)
 	.registerSingleton('ConfigService', new EaProcessEnvConfigService())
-	.registerSingleton('TranslationService', new TranslationService)
+	.registerSingleton('TranslationService', new TranslationService())
 	.register('CoordinateService', OlCoordinateService)
 	.register('EnvironmentService', EnvironmentService)
 	.register('MapService', MapService)

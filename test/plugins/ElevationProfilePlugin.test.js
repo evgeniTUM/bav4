@@ -6,7 +6,6 @@ import { TestUtils } from '../test-utils';
 import { closeBottomSheet } from '../../src/store/bottomSheet/bottomSheet.action';
 
 describe('ElevationProfilePlugin', () => {
-
 	const setup = (state) => {
 		const initialState = {
 			elevationProfile: elevationProfileInitialState,
@@ -22,13 +21,15 @@ describe('ElevationProfilePlugin', () => {
 	};
 
 	describe('when property `active` of slice-of-state `elevationProfile` changes', () => {
-
 		it('opens/closes the BottomSheet component', async () => {
 			const store = setup();
 			const instanceUnderTest = new ElevationProfilePlugin();
 			await instanceUnderTest.register(store);
 
-			openProfile([[0, 1], [2, 3]]);
+			openProfile([
+				[0, 1],
+				[2, 3]
+			]);
 
 			const wrapperElement = TestUtils.renderTemplateResult(store.getState().bottomSheet.data);
 			expect(wrapperElement.querySelectorAll('ba-elevation-profile')).toHaveSize(1);
@@ -40,7 +41,6 @@ describe('ElevationProfilePlugin', () => {
 	});
 
 	describe('when property `active` of slice-of-state `bottomSheet` changes', () => {
-
 		it('closes the ElevationProfile component and unsubscribes the bottomSheet observer', async () => {
 			const store = setup({
 				elevationProfile: {

@@ -2,9 +2,7 @@ import { activateMapClick, deactivateMapClick, requestMapClick, setMapCursorStyl
 import { mapclickReducer } from '../../../../src/ea/store/mapclick/mapclick.reducer';
 import { TestUtils } from '../../../test-utils';
 
-
 describe('mapclickReducer', () => {
-
 	const setup = (state) => {
 		return TestUtils.setupStoreAndDi(state, {
 			mapclick: mapclickReducer
@@ -53,5 +51,4 @@ describe('mapclickReducer', () => {
 
 		expect(store.getState().mapclick.mapCursorStyle).toEqual('crosshair');
 	});
-
 });

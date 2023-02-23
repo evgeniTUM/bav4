@@ -42,7 +42,7 @@
 }
 
 .slider-container {
-	position: fixed ;
+	position: fixed;
 	display: block;
 	right: calc(36em - (2.5em / 2));
 	width: calc(64em + 2.5em);
@@ -63,7 +63,7 @@
 	pointer-events: all;
 }
 
-input[type="range"] {
+input[type='range'] {
 	--track-height: 0;
 	--track-fill: 0%;
 	--thumb-size: 2.5em;
@@ -75,10 +75,10 @@ input[type="range"] {
 	outline-offset: 5px;
 	pointer-events: none;
 }
-input[type="range"]::-webkit-slider-thumb {
+input[type='range']::-webkit-slider-thumb {
 	appearance: none;
 	cursor: ew-resize;
-	border: .2em solid var(--secondary-color);
+	border: 0.2em solid var(--secondary-color);
 	block-size: var(--thumb-size);
 	inline-size: var(--thumb-size);
 	margin-top: var(--thumb-offset);
@@ -86,17 +86,17 @@ input[type="range"]::-webkit-slider-thumb {
 	background: url('assets/expand.svg') var(--secondary-color);
 	width: 2.3em;
 	height: 2.3em;
-	background-size: 1.9em  1.9em;
+	background-size: 1.9em 1.9em;
 	background-repeat: no-repeat;
 	box-shadow: 0 0 0 var(--thumb-highlight-size) var(--primary-color-lighter);
-	transition: box-shadow .1s ease;
+	transition: box-shadow 0.1s ease;
 	pointer-events: all;
 }
 
-input[type="range"]::-moz-range-thumb {
+input[type='range']::-moz-range-thumb {
 	appearance: none;
 	cursor: ew-resize;
-	border: .2em solid var(--secondary-color);
+	border: 0.2em solid var(--secondary-color);
 	block-size: 2em;
 	inline-size: 2em;
 	margin-top: 0;
@@ -104,22 +104,22 @@ input[type="range"]::-moz-range-thumb {
 	background: url('assets/expand.svg') var(--secondary-color);
 	width: 2em;
 	height: 2em;
-	background-size: 1.9em  1.9em;
+	background-size: 1.9em 1.9em;
 	background-repeat: no-repeat;
 	box-shadow: 0 0 0 var(--thumb-highlight-size) var(--primary-color-lighter);
-	transition: box-shadow .1s ease;
+	transition: box-shadow 0.1s ease;
 	pointer-events: all;
 }
 
-input[type="range"]::-webkit-slider-runnable-track {
+input[type='range']::-webkit-slider-runnable-track {
 	appearance: none;
 	block-size: 0;
 }
 
-input[type="range"]::-moz-range-track {
+input[type='range']::-moz-range-track {
 	appearance: none;
 	block-size: 0;
 }
-input[type="range"]:focus {
-	--thumb-highlight-size: .3em;
+input[type='range']:focus {
+	--thumb-highlight-size: 0.3em;
 }

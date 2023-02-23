@@ -1,6 +1,5 @@
 export const provide = (lang) => {
 	switch (lang) {
-
 		case 'en':
 			return {
 				header_action_button_title: 'to startpage of Energie-Atlas',

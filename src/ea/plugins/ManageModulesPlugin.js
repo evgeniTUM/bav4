@@ -37,17 +37,15 @@ export class ManageModulesPlugin extends BaPlugin {
 	 * @param {Store} store
 	 */
 	async register(store) {
-
 		const processEaModuleQueryParameter = () => {
 			const queryParams = new URLSearchParams(this._environmentService.getWindow().location.search);
 			const moduleParameter = queryParams.get(QueryParameters.EA_MODULE);
 
 			if (moduleParameter) {
-				const entry = EaModulesQueryParameters.find(e => e.parameter === moduleParameter);
+				const entry = EaModulesQueryParameters.find((e) => e.parameter === moduleParameter);
 				if (entry) {
 					setTimeout(() => setCurrentModule(entry.name), 100);
-				}
-				else {
+				} else {
 					emitNotification(`No module: "${moduleParameter}".`, LevelTypes.ERROR);
 				}
 			}
@@ -56,7 +54,7 @@ export class ManageModulesPlugin extends BaPlugin {
 		processEaModuleQueryParameter();
 
 		const handleMainMenu = (currentModule, lastModule) => {
-			if (EaModules.map(m => m.name).includes(lastModule)) {
+			if (EaModules.map((m) => m.name).includes(lastModule)) {
 				clearMap();
 				abortOrReset();
 				clearHighlightFeatures();
@@ -64,13 +62,13 @@ export class ManageModulesPlugin extends BaPlugin {
 				open();
 			}
 
-			if (EaModules.map(m => m.name).includes(currentModule)) {
+			if (EaModules.map((m) => m.name).includes(currentModule)) {
 				close();
 			}
 		};
 
 		const handleLayers = (currentModule, lastModule) => {
-		// remove layers for last module
+			// remove layers for last module
 			switch (lastModule) {
 				case EnergyMarketModuleContent.name:
 				case EnergyReportingModuleContent.name:
@@ -103,39 +101,32 @@ export class ManageModulesPlugin extends BaPlugin {
 		};
 
 		const onModuleChange = (moduleId) => {
-
 			handleMainMenu(moduleId, this._lastModule);
 			handleLayers(moduleId, this._lastModule);
 
 			this._lastModule = moduleId;
-
 		};
 
 		const onActiveGeoResourcesChanged = (ids) => {
-			const idsToAdd = ids.filter(id => !this._activeGeoResources.has(id));
-			const idsToRemove = Array.from(this._activeGeoResources).filter(id => !new Set(ids).has(id));
+			const idsToAdd = ids.filter((id) => !this._activeGeoResources.has(id));
+			const idsToRemove = Array.from(this._activeGeoResources).filter((id) => !new Set(ids).has(id));
 
 			const layerId = (resId) => `module-georesource-${resId}`;
 
-			idsToAdd.forEach(id => {
+			idsToAdd.forEach((id) => {
 				const wmsResource = this._geoResourceService.byId(id);
 
 				addLayer(layerId(id), { geoResourceId: id, label: wmsResource.label });
 				this._activeGeoResources.add(id);
 			});
 
-			idsToRemove.forEach(id => {
+			idsToRemove.forEach((id) => {
 				removeLayer(layerId(id));
 				this._activeGeoResources.delete(id);
 			});
-
 		};
 
-
-
-
-		observe(store, state => state.ea.currentModule, onModuleChange);
-		observe(store, state => state.ea.activeGeoResources, onActiveGeoResourcesChanged);
-
+		observe(store, (state) => state.ea.currentModule, onModuleChange);
+		observe(store, (state) => state.ea.activeGeoResources, onActiveGeoResourcesChanged);
 	}
 }

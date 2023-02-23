@@ -17,11 +17,10 @@ window.customElements.define(Icon.tag, Icon);
 window.customElements.define(IconSelect.tag, IconSelect);
 window.customElements.define(DrawToolContent.tag, DrawToolContent);
 
-
 describe('DrawToolContent', () => {
 	let store;
 	const windowMock = {
-		matchMedia() { }
+		matchMedia() {}
 	};
 
 	const shareServiceMock = {
@@ -44,8 +43,7 @@ describe('DrawToolContent', () => {
 		}
 	};
 
-
-	const iconServiceMock = { default: () => new IconResult('marker', 'foo'), all: () => [], getIconResult: () => { } };
+	const iconServiceMock = { default: () => new IconResult('marker', 'foo'), all: () => [], getIconResult: () => {} };
 
 	const drawDefaultState = {
 		active: false,
@@ -80,7 +78,12 @@ describe('DrawToolContent', () => {
 
 		const { embed = false, isTouch = false } = config;
 
-		store = TestUtils.setupStoreAndDi(state, { draw: drawReducer, modal: modalReducer, shared: sharedReducer, media: createNoInitialStateMediaReducer() });
+		store = TestUtils.setupStoreAndDi(state, {
+			draw: drawReducer,
+			modal: modalReducer,
+			shared: sharedReducer,
+			media: createNoInitialStateMediaReducer()
+		});
 		$injector
 			.registerSingleton('EnvironmentService', {
 				isEmbedded: () => embed,
@@ -96,9 +99,7 @@ describe('DrawToolContent', () => {
 	};
 
 	describe('class', () => {
-
 		it('inherits from AbstractToolContent', async () => {
-
 			const element = await setup();
 
 			expect(element instanceof AbstractToolContent).toBeTrue();
@@ -106,7 +107,6 @@ describe('DrawToolContent', () => {
 	});
 
 	describe('when instantiated', () => {
-
 		it('has a model with default values', async () => {
 			const element = await setup();
 			const model = element.getModel();
@@ -126,7 +126,6 @@ describe('DrawToolContent', () => {
 	});
 
 	describe('when initialized', () => {
-
 		it('builds list of tools', async () => {
 			const element = await setup();
 
@@ -137,7 +136,6 @@ describe('DrawToolContent', () => {
 		});
 
 		it('activates the Line draw tool', async () => {
-
 			const element = await setup();
 			const toolButton = element.shadowRoot.querySelector('#line-button');
 
@@ -153,7 +151,6 @@ describe('DrawToolContent', () => {
 		});
 
 		it('activates the marker draw tool', async () => {
-
 			const element = await setup();
 			const toolButton = element.shadowRoot.querySelector('#marker-button');
 
@@ -169,7 +166,6 @@ describe('DrawToolContent', () => {
 		});
 
 		it('activates the Text draw tool', async () => {
-
 			const element = await setup();
 			const toolButton = element.shadowRoot.querySelector('#text-button');
 
@@ -185,7 +181,6 @@ describe('DrawToolContent', () => {
 		});
 
 		it('activates the Polygon draw tool', async () => {
-
 			const element = await setup();
 			const toolButton = element.shadowRoot.querySelector('#polygon-button');
 
@@ -263,7 +258,6 @@ describe('DrawToolContent', () => {
 		});
 
 		it('collapse container', async () => {
-
 			const style = { ...StyleOptionTemplate, color: '#f00ba3', symbolSrc: 'data:image/svg+xml;base64,foobar' };
 
 			const element = await setup({ ...drawDefaultState, style });
@@ -398,7 +392,6 @@ describe('DrawToolContent', () => {
 			blackButton.click();
 			expect(colorInput.value.toUpperCase()).toBe('#000000');
 			expect(store.getState().draw.style.color.toUpperCase()).toBe('#000000');
-
 		});
 
 		it('sets the style, after color changes in color-input (with REMOTE icon-asset)', async () => {
@@ -536,7 +529,6 @@ describe('DrawToolContent', () => {
 		});
 
 		it('sets the sanitized description, after description changes in textarea', async () => {
-
 			const newText = 'bar';
 			const element = await setup({ ...drawDefaultState, description: 'Foo', style: StyleOptionTemplate });
 			const sanitizeSpy = spyOn(securityServiceMock, 'sanitizeHtml').withArgs('bar').and.callThrough();

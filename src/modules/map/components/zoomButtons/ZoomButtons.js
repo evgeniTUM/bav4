@@ -12,7 +12,6 @@ const Update_zoom_level = 'Update_zoom_level';
  * @author taulinger
  */
 export class ZoomButtons extends MvuElement {
-
 	constructor() {
 		super({
 			zoomLevel: 0
@@ -35,7 +34,10 @@ export class ZoomButtons extends MvuElement {
 	 * @override
 	 */
 	onInitialize() {
-		this.observe(state => state.position.zoom, zoomLevel => this.signal(Update_zoom_level, zoomLevel));
+		this.observe(
+			(state) => state.position.zoom,
+			(zoomLevel) => this.signal(Update_zoom_level, zoomLevel)
+		);
 	}
 
 	/**

@@ -3,15 +3,15 @@
 }
 
 .stats-content {
-	padding: 0.3em 0.5em .3em 0;
-	font-size: .9rem;
+	padding: 0.3em 0.5em 0.3em 0;
+	font-size: 0.9rem;
 	margin-top: 1.5em;
 }
 
 .stats-content span {
 	/* font-weight: bold; */
-	opacity: .8;
-	margin-right: .5em;
+	opacity: 0.8;
+	margin-right: 0.5em;
 }
 
 .stats-polygon-length {

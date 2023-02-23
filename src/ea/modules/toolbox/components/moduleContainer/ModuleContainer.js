@@ -6,7 +6,6 @@ import { open } from '../../../../../store/mainMenu/mainMenu.action';
 import { EaModules, setCurrentModule } from '../../../../store/module/ea.action';
 import css from './moduleContainer.css';
 
-
 const Update_IsPortrait_HasMinWidth = 'update_isPortrait_hasMinWidth';
 const Update_ModuleId = 'update_moduleId';
 
@@ -18,7 +17,6 @@ const MAX_WIDTH = 100;
  * @author kunze_ge
  */
 export class ModuleContainer extends MvuElement {
-
 	constructor() {
 		super({
 			isPortrait: false,
@@ -49,8 +47,14 @@ export class ModuleContainer extends MvuElement {
 	 * @override
 	 */
 	onInitialize() {
-		this.observe(state => state.media, media => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth }));
-		this.observe(state => state.ea.currentModule, current => this.signal(Update_ModuleId, current));
+		this.observe(
+			(state) => state.media,
+			(media) => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth })
+		);
+		this.observe(
+			(state) => state.ea.currentModule,
+			(current) => this.signal(Update_ModuleId, current)
+		);
 	}
 
 	/**
@@ -59,7 +63,7 @@ export class ModuleContainer extends MvuElement {
 	createView(model) {
 		const { moduleId, isPortrait, hasMinWidth } = model;
 
-		const module = EaModules.find(m => m.name === moduleId);
+		const module = EaModules.find((m) => m.name === moduleId);
 		if (!module) {
 			return nothing;
 		}
@@ -94,7 +98,8 @@ export class ModuleContainer extends MvuElement {
 			e.stopPropagation();
 		};
 
-		return content !== nothing ? html`
+		return content !== nothing
+			? html`
 			<style>${css}</style>		
 
 			<div class='slider-container'>
@@ -120,7 +125,8 @@ export class ModuleContainer extends MvuElement {
 					${content}
 				</div>
 			</div>
-		` : nothing;
+		`
+			: nothing;
 	}
 
 	isRenderingSkipped() {

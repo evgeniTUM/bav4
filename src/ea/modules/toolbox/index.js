@@ -6,4 +6,3 @@ import './components/moduleContainer';
 import './components/redesign';
 import './components/research';
 import './i18n';
-

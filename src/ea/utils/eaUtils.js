@@ -19,10 +19,8 @@ export const checkIfResolutionValid = (id, obj, resolution) => {
 		return true;
 	}
 
-	return obj._wmsLayers.length === 0 ||
-            obj._wmsLayers.some(l => resolution > l.maxResolution && resolution < l.minResolution);
+	return obj._wmsLayers.length === 0 || obj._wmsLayers.some((l) => resolution > l.maxResolution && resolution < l.minResolution);
 };
-
 
 /***
  * Converts a contribution category definition to JSON spec.
@@ -32,9 +30,8 @@ export const checkIfResolutionValid = (id, obj, resolution) => {
 export const generateJsonCategorySpecFromCSV = (spec) => {
 	const categories = [];
 
-	spec.forEach(e => {
+	spec.forEach((e) => {
 		const category = e.category.trim();
-
 
 		if (!categories[category]) {
 			categories[category] = [];
@@ -43,9 +40,9 @@ export const generateJsonCategorySpecFromCSV = (spec) => {
 		categories[category].push({
 			name: e.name.trim(),
 			optional: 'true' === e.optional.trim().toLowerCase(),
-			type: e.type.trim() });
+			type: e.type.trim()
+		});
 	});
-
 
 	return Object.entries(categories).map(([n, v]) => ({ 'ee-name': n, 'ee-angaben': v }));
 };
@@ -57,9 +54,9 @@ export const generateJsonCategorySpecFromCSV = (spec) => {
  */
 export const csv2json = (csv) => {
 	const lines = csv.split('\n');
-	const categories = lines[0].split(',').map(cat => cat.trim());
+	const categories = lines[0].split(',').map((cat) => cat.trim());
 
-	const objects = lines.slice(1).map(line => {
+	const objects = lines.slice(1).map((line) => {
 		const obj = {};
 		line.split(',').forEach((entry, index) => {
 			obj[categories[index]] = entry.trim();
@@ -68,6 +65,5 @@ export const csv2json = (csv) => {
 		return obj;
 	});
 
-	return objects.filter(entry => Object.keys(entry).length === categories.length);
+	return objects.filter((entry) => Object.keys(entry).length === categories.length);
 };
-

@@ -1,10 +1,7 @@
 import { provide } from '../../../../src/modules/layerManager/i18n/layerManager.provider';
 
-
 describe('i18n for layer-manager', () => {
-
 	it('provides translation for de', () => {
-
 		const map = provide('de');
 
 		expect(map.layerManager_title).toBe('Ausgewählte Karten');
@@ -25,7 +22,6 @@ describe('i18n for layer-manager', () => {
 	});
 
 	it('provides translation for en', () => {
-
 		const map = provide('en');
 
 		expect(map.layerManager_title).toBe('Layers');
@@ -58,7 +54,6 @@ describe('i18n for layer-manager', () => {
 	});
 
 	it('provides an empty map for a unknown lang', () => {
-
 		const map = provide('unknown');
 
 		expect(map).toEqual({});

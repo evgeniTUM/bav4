@@ -1,10 +1,8 @@
 import { csv2json, generateJsonCategorySpecFromCSV } from '../../../src/ea/utils/eaUtils';
 
 describe('EA Utils', () => {
-
 	describe('csv2json', () => {
 		it('parses a csv and returns a list of json objects', () => {
-
 			const csv = `cat1, cat2, cat3
 			val1.1, val1.2, val1.3
 			val2.1, val2.2, val2.3
@@ -17,7 +15,6 @@ describe('EA Utils', () => {
 				{ cat1: 'val2.1', cat2: 'val2.2', cat3: 'val2.3' }
 			]);
 		});
-
 	});
 
 	describe('generateJsonCategorySpecFromCSV', () => {
@@ -41,18 +38,13 @@ describe('EA Utils', () => {
 				},
 				{
 					'ee-name': 'cat2',
-					'ee-angaben': [
-						{ name: 'name3', optional: true, type: 'text' }
-					]
+					'ee-angaben': [{ name: 'name3', optional: true, type: 'text' }]
 				},
 				{
 					'ee-name': 'category 3',
-					'ee-angaben': [
-						{ name: 'hello there - me is a name', optional: true, type: 'text' }
-					]
+					'ee-angaben': [{ name: 'hello there - me is a name', optional: true, type: 'text' }]
 				}
 			]);
 		});
-
 	});
 });

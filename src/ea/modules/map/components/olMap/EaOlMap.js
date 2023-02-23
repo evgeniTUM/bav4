@@ -10,7 +10,6 @@ import css from './olMap.css';
  * @author kunze
  */
 export class EaOlMap extends OlMap {
-
 	constructor() {
 		super({
 			zoom: null,
@@ -19,10 +18,10 @@ export class EaOlMap extends OlMap {
 			fitRequest: null,
 			layers: []
 		});
-		const {
-			OlGeoFeatureLayerHandler: olGeoFeatureLayerHandler,
-			OlSelectLocationHandler: OlSelectLocationHandler
-		} = $injector.inject('OlGeoFeatureLayerHandler', 'OlSelectLocationHandler');
+		const { OlGeoFeatureLayerHandler: olGeoFeatureLayerHandler, OlSelectLocationHandler: OlSelectLocationHandler } = $injector.inject(
+			'OlGeoFeatureLayerHandler',
+			'OlSelectLocationHandler'
+		);
 		//
 		this._layerHandler.set(olGeoFeatureLayerHandler.id, olGeoFeatureLayerHandler);
 		this._layerHandler.set(OlSelectLocationHandler.id, OlSelectLocationHandler);
@@ -30,13 +29,15 @@ export class EaOlMap extends OlMap {
 		this._cursorStyle = 'auto';
 	}
 
-
 	onInitialize() {
 		super.onInitialize();
-		this.observe(state => state.mapclick.mapCursorStyle, (style) => {
-			this._cursorStyle = style;
-			this.render();
-		});
+		this.observe(
+			(state) => state.mapclick.mapCursorStyle,
+			(style) => {
+				this._cursorStyle = style;
+				this.render();
+			}
+		);
 
 		setMapResolution(this._view.getResolution());
 		this._view.on('change:resolution', (evt) => {
@@ -46,13 +47,11 @@ export class EaOlMap extends OlMap {
 
 	extendedCss() {
 		return html`
-		<style>
-		${css}
-
-		#ol-map {
-			cursor: ${this._cursorStyle}
-		}
-		</style>
+			<style>
+				${css} #ol-map {
+					cursor: ${this._cursorStyle};
+				}
+			</style>
 		`;
 	}
 

@@ -1,9 +1,9 @@
 export const provide = (lang) => {
 	switch (lang) {
-
 		case 'en':
 			return {
-				ea_dsgvo_text: 'Wir nutzen Cookies auf unserer Website. Einige von ihnen sind technisch essenziell, während andere uns helfen, diese Website zu verbessern. Weitere Informationen finden Sie in unseren Datenschutzinformationen. Ihre Einstellung können Sie dort jederzeit anpassen.',
+				ea_dsgvo_text:
+					'Wir nutzen Cookies auf unserer Website. Einige von ihnen sind technisch essenziell, während andere uns helfen, diese Website zu verbessern. Weitere Informationen finden Sie in unseren Datenschutzinformationen. Ihre Einstellung können Sie dort jederzeit anpassen.',
 				ea_dsgvo_cookie_settings: 'Cookie Settings',
 				ea_dsgvo_accept_all: 'Accept all cookies',
 				ea_dsgvo_reject_all: 'Reject all cookies',
@@ -18,7 +18,8 @@ export const provide = (lang) => {
 
 		case 'de':
 			return {
-				ea_dsgvo_text: 'Wir nutzen Cookies auf unserer Website. Einige von ihnen sind technisch essenziell, während andere uns helfen, diese Website zu verbessern. Weitere Informationen finden Sie in unseren Datenschutzinformationen. Ihre Einstellung können Sie dort jederzeit anpassen.',
+				ea_dsgvo_text:
+					'Wir nutzen Cookies auf unserer Website. Einige von ihnen sind technisch essenziell, während andere uns helfen, diese Website zu verbessern. Weitere Informationen finden Sie in unseren Datenschutzinformationen. Ihre Einstellung können Sie dort jederzeit anpassen.',
 				ea_dsgvo_cookie_settings: 'Cookie Einstellungen',
 				ea_dsgvo_accept_all: 'Alle Cookies akzeptieren',
 				ea_dsgvo_reject_all: 'Alle Cookies ablehnen',

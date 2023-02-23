@@ -7,18 +7,16 @@ import css from './container.css';
 import { MODUS } from './ContributionModus';
 
 export class EnergyMarketModuleContent extends MvuElement {
-
 	constructor() {
 		super({
 			isPortrait: false,
 			hasMinWidth: false
 		});
 
-		const {
-			EnvironmentService: environmentService,
-			TranslationService: translationService
-		}
-			= $injector.inject('EnvironmentService', 'TranslationService');
+		const { EnvironmentService: environmentService, TranslationService: translationService } = $injector.inject(
+			'EnvironmentService',
+			'TranslationService'
+		);
 
 		this._environmentService = environmentService;
 		this._translationService = translationService;
@@ -34,17 +32,16 @@ export class EnergyMarketModuleContent extends MvuElement {
 		const categories = generateJsonCategorySpecFromCSV(json);
 
 		return html`
-			<style>${css}</style>
-			<div class='container'>
-				<div class='header'> 
-					${translate('ea_menu_boerse')}
-				</div>
-				<div class='content'>
+			<style>
+				${css}
+			</style>
+			<div class="container">
+				<div class="header">${translate('ea_menu_boerse')}</div>
+				<div class="content">
 					<ea-feature-contribution .mode=${MODUS.market} .categories=${categories}></ea-feature-contribution>
 				</div>
 			</div>
-			`;
-
+		`;
 	}
 
 	isRenderingSkipped() {

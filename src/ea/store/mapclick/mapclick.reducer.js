@@ -4,7 +4,6 @@ export const MAPCLICK_REQUEST = 'mapclick/request';
 export const SET_CURSOR_STYLE = 'mapclick/setCursorStyle';
 
 export const initialState = {
-
 	/**
 	 * @property {String|null}
 	 */
@@ -25,11 +24,9 @@ export const initialState = {
 };
 
 export const mapclickReducer = (state = initialState, action) => {
-
 	const { type, payload } = action;
 	switch (type) {
 		case MAPCLICK_ACTIVATE: {
-
 			return {
 				...state,
 				listener_id: payload,
@@ -37,7 +34,6 @@ export const mapclickReducer = (state = initialState, action) => {
 			};
 		}
 		case MAPCLICK_DEACTIVATE: {
-
 			return {
 				...state,
 				active: false

@@ -13,26 +13,24 @@ import { round } from '../../src/utils/numberUtils';
 import { TestUtils } from '../test-utils';
 
 describe('ShareService', () => {
-
 	const coordinateService = {
-		transform: () => { }
+		transform: () => {}
 	};
 	const mapService = {
-		getSridDefinitionsForView: () => { },
-		getDefaultSridForView: () => { },
-		getSrid: () => { },
-		getMinZoomLevel: () => { },
-		getMaxZoomLevel: () => { }
+		getSridDefinitionsForView: () => {},
+		getDefaultSridForView: () => {},
+		getSrid: () => {},
+		getMinZoomLevel: () => {},
+		getMaxZoomLevel: () => {}
 	};
 	const geoResourceService = {
-		byId: () => { }
+		byId: () => {}
 	};
 	const environmentService = {
-		getWindow: () => { }
+		getWindow: () => {}
 	};
 
 	const setup = (state) => {
-
 		const store = TestUtils.setupStoreAndDi(state, {
 			layers: layersReducer,
 			position: positionReducer,
@@ -49,9 +47,7 @@ describe('ShareService', () => {
 	};
 
 	describe('class', () => {
-
 		it('defines constant values', async () => {
-
 			expect(ShareService.ROTATION_VALUE_PRECISION).toBe(4);
 			expect(ShareService.ZOOM_LEVEL_PRECISION).toBe(3);
 		});
@@ -64,7 +60,6 @@ describe('ShareService', () => {
 			mockNavigator.clipboard.writeText = jasmine.createSpy().and.returnValue(Promise.resolve('success'));
 			const mockWindow = { isSecureContext: true, navigator: mockNavigator };
 			spyOn(environmentService, 'getWindow').and.returnValue(mockWindow);
-
 
 			const instanceUnderTest = new ShareService();
 			const resolved = await instanceUnderTest.copyToClipboard('foo');
@@ -85,8 +80,7 @@ describe('ShareService', () => {
 			try {
 				await instanceUnderTest.copyToClipboard('foo');
 				throw new Error('Promise should not be resolved');
-			}
-			catch (error) {
+			} catch (error) {
 				expect(error.message).toBe('Clipboard API is not available');
 				expect(mockNavigator.clipboard.writeText).not.toHaveBeenCalled();
 			}
@@ -94,7 +88,6 @@ describe('ShareService', () => {
 	});
 
 	describe('encode current state to url', () => {
-
 		describe('_extractLayers', () => {
 			it('extracts the current layers state using the GeoResource id', () => {
 				setup();
@@ -125,7 +118,7 @@ describe('ShareService', () => {
 			it('extracts the current layers state ignoring hidden geoResources', () => {
 				setup();
 				const instanceUnderTest = new ShareService();
-				spyOn(geoResourceService, 'byId').and.callFake(id => {
+				spyOn(geoResourceService, 'byId').and.callFake((id) => {
 					return id === 'someLayer' ? { hidden: true } : {};
 				});
 				addLayer('someLayer');
@@ -152,9 +145,7 @@ describe('ShareService', () => {
 		});
 
 		describe('_extractPosition', () => {
-
 			describe('and rotation = 0', () => {
-
 				it('extracts the position state', () => {
 					const zoomLevel = 5.35;
 					const viewSrid = 25832;
@@ -176,10 +167,9 @@ describe('ShareService', () => {
 			});
 
 			describe('and rotation != 0', () => {
-
 				it('extracts the current position state', () => {
 					const zoomLevel = 5.35;
-					const rotationValue = .5347485;
+					const rotationValue = 0.5347485;
 					const viewSrid = 25832;
 					const mapSrid = 3857;
 					setup();
@@ -217,14 +207,12 @@ describe('ShareService', () => {
 				setup();
 				const instanceUnderTest = new ShareService();
 
-				EaModules.forEach(module => {
+				EaModules.forEach((module) => {
 					setCurrentModule(module.name);
 
 					const extract = instanceUnderTest._extractEaModule();
 
-					const expectedValue = EaModulesQueryParameters
-						.find(e => e.name === module.name)
-						.parameter;
+					const expectedValue = EaModulesQueryParameters.find((e) => e.name === module.name).parameter;
 					expect(extract[QueryParameters.EA_MODULE]).toBe(expectedValue);
 				});
 			});
@@ -240,7 +228,6 @@ describe('ShareService', () => {
 		});
 
 		describe('_mergeExtraParams', () => {
-
 			it('merges an array when key already present', () => {
 				setup();
 				const instanceUnderTest = new ShareService();
@@ -258,9 +245,9 @@ describe('ShareService', () => {
 				setup();
 				const instanceUnderTest = new ShareService();
 
-				const result = instanceUnderTest._mergeExtraParams({ foo: 'bar' }, { l: .5 });
+				const result = instanceUnderTest._mergeExtraParams({ foo: 'bar' }, { l: 0.5 });
 
-				expect(result).toEqual({ foo: 'bar', l: .5 });
+				expect(result).toEqual({ foo: 'bar', l: 0.5 });
 			});
 
 			it('does nothing when key not present', () => {
@@ -274,7 +261,6 @@ describe('ShareService', () => {
 		});
 
 		describe('encodeState', () => {
-
 			const location = {
 				protocol: 'http:',
 				host: 'foo.bar',

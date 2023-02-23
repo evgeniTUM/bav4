@@ -1,6 +1,5 @@
 import './setupPage';
 
-
 // register required modules
 import './modules/header';
 import './modules/footer';
@@ -28,7 +27,5 @@ import './modules/dndImport';
 import './modules/auth';
 import './modules/elevationProfile';
 
-
 //Import der Erweiterung für Energieatlas
 import './ea/main';
-

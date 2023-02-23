@@ -3,12 +3,9 @@
  * @module fnModuleCommComm/action
  */
 
-import { OPEN_MODULE_REQUESTED,
-	CHANGE_MODULE_REQUESTED,
-	MODULE_RESET_REQUESTED } from './fnModuleComm.reducer';
+import { OPEN_MODULE_REQUESTED, CHANGE_MODULE_REQUESTED, MODULE_RESET_REQUESTED } from './fnModuleComm.reducer';
 import { EventLike } from '../../../utils/storeUtils';
 import { $injector } from '../../../injection';
-
 
 const getStore = () => {
 	const { StoreService: storeService } = $injector.inject('StoreService');
@@ -45,6 +42,5 @@ export const closeFnModule = () => {
 	getStore().dispatch({
 		type: MODULE_RESET_REQUESTED,
 		payload: new EventLike()
-
 	});
 };

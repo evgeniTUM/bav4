@@ -19,11 +19,8 @@ window.customElements.define(LayerItem.tag, LayerItem);
 window.customElements.define(Checkbox.tag, Checkbox);
 window.customElements.define(Icon.tag, Icon);
 
-
-
 describe('LayerItem', () => {
-
-	const wmsCapabilitiesService = { getWmsLayers: () => ([]) };
+	const wmsCapabilitiesService = { getWmsLayers: () => [] };
 
 	const createNewDataTransfer = () => {
 		let data = {};
@@ -31,8 +28,7 @@ describe('LayerItem', () => {
 			clearData: function (key) {
 				if (key === undefined) {
 					data = {};
-				}
-				else {
+				} else {
 					delete data[key];
 				}
 			},
@@ -42,7 +38,7 @@ describe('LayerItem', () => {
 			setData: function (key, value) {
 				data[key] = value;
 			},
-			setDragImage: function () { },
+			setDragImage: function () {},
 			dropEffect: 'none',
 			files: [],
 			items: [],
@@ -52,13 +48,15 @@ describe('LayerItem', () => {
 	};
 
 	describe('when layer item is rendered', () => {
-		const geoResourceService = { byId: () => { }, addOrReplace: () => { } };
+		const geoResourceService = { byId: () => {}, addOrReplace: () => {} };
 
 		const setup = async (layer) => {
-			TestUtils.setupStoreAndDi({}, {
-				layers: layersReducer,
-				ea: eaReducer
-			}
+			TestUtils.setupStoreAndDi(
+				{},
+				{
+					layers: layersReducer,
+					ea: eaReducer
+				}
 			);
 			$injector
 				.registerSingleton('TranslationService', { translate: (key) => key })
@@ -78,8 +76,18 @@ describe('LayerItem', () => {
 		});
 
 		it('displays the GeoResource label as label', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1, collapsed: true };
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1,
+				collapsed: true
+			};
 			const element = await setup(layer);
 			const label = element.shadowRoot.querySelector('.ba-list-item__text');
 
@@ -87,15 +95,27 @@ describe('LayerItem', () => {
 		});
 
 		it('entry is disabled when resolution is invalid', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
 			spyOn(wmsCapabilitiesService, 'getWmsLayers')
 				.withArgs('geoResourceId0')
-				.and.returnValue([{
-					minResolution: 80,
-					maxResolution: 20
-				}]);
+				.and.returnValue([
+					{
+						minResolution: 80,
+						maxResolution: 20
+					}
+				]);
 
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1, collapsed: true };
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1,
+				collapsed: true
+			};
 			const element = await setup(layer);
 			setMapResolution(10);
 			await TestUtils.timeout();
@@ -107,8 +127,18 @@ describe('LayerItem', () => {
 		});
 
 		it('use layer.label property in checkbox-title ', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1, collapsed: true };
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1,
+				collapsed: true
+			};
 			const element = await setup(layer);
 			const toggle = element.shadowRoot.querySelector('ba-checkbox');
 
@@ -116,8 +146,18 @@ describe('LayerItem', () => {
 		});
 
 		it('use layer.opacity-property in slider ', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 0.55, collapsed: true };
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 0.55,
+				collapsed: true
+			};
 			const element = await setup(layer);
 
 			const slider = element.shadowRoot.querySelector('.opacity-slider');
@@ -125,8 +165,18 @@ describe('LayerItem', () => {
 		});
 
 		it('use layer.visible-property in checkbox ', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: false, zIndex: 0, opacity: 1, collapsed: true };
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: false,
+				zIndex: 0,
+				opacity: 1,
+				collapsed: true
+			};
 			const element = await setup(layer);
 			const toggle = element.shadowRoot.querySelector('ba-checkbox');
 
@@ -134,12 +184,21 @@ describe('LayerItem', () => {
 		});
 
 		it('use layer.collapsed-property in element style ', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1, collapsed: false };
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1,
+				collapsed: false
+			};
 			const element = await setup(layer);
 			const layerBody = element.shadowRoot.querySelector('.collapse-content');
 			const collapseButton = element.shadowRoot.querySelector('.ba-list-item button');
-
 
 			expect(layerBody.classList.contains('iscollapse')).toBeFalse();
 
@@ -149,8 +208,18 @@ describe('LayerItem', () => {
 		});
 
 		it('slider-elements stops dragstart-event propagation ', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1, collapsed: false };
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1,
+				collapsed: false
+			};
 			const element = await setup(layer);
 
 			const slider = element.shadowRoot.querySelector('.opacity-slider');
@@ -160,32 +229,50 @@ describe('LayerItem', () => {
 			slider.addEventListener('dragstart', dragstartSliderSpy);
 			sliderContainer.addEventListener('dragstart', dragstartContainerSpy);
 
-
 			const dragstartEvt = document.createEvent('MouseEvents');
 			dragstartEvt.initMouseEvent('dragstart', true, true, window, 1, 1, 1, 0, 0, false, false, false, false, 0, slider);
 			dragstartEvt.dataTransfer = createNewDataTransfer();
 			slider.dispatchEvent(dragstartEvt);
-
 
 			expect(dragstartSliderSpy).toHaveBeenCalled();
 			expect(dragstartContainerSpy).not.toHaveBeenCalled();
 		});
 
 		it('displays a overflow-menu', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1, collapsed: true };
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1,
+				collapsed: true
+			};
 			const element = await setup(layer);
 
 			expect(element.shadowRoot.querySelector('ba-overflow-menu')).toBeTruthy();
 		});
 
 		it('contains a menu-item for info', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1, collapsed: true };
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1,
+				collapsed: true
+			};
 			const element = await setup(layer);
 
 			const menu = element.shadowRoot.querySelector('ba-overflow-menu');
-			const infoMenuItem = menu.items.find(item => item.label === 'Info');
+			const infoMenuItem = menu.items.find((item) => item.label === 'Info');
 
 			expect(infoMenuItem).not.toBeNull();
 			expect(infoMenuItem.label).toEqual('Info');
@@ -195,12 +282,23 @@ describe('LayerItem', () => {
 		});
 
 		it('contains a disabled menu-item for info', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1, collapsed: true, constraints: { metaData: false } };
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1,
+				collapsed: true,
+				constraints: { metaData: false }
+			};
 			const element = await setup(layer);
 
 			const menu = element.shadowRoot.querySelector('ba-overflow-menu');
-			const infoMenuItem = menu.items.find(item => item.label === 'Info');
+			const infoMenuItem = menu.items.find((item) => item.label === 'Info');
 
 			expect(infoMenuItem).not.toBeNull();
 			expect(infoMenuItem.label).toEqual('Info');
@@ -210,12 +308,22 @@ describe('LayerItem', () => {
 		});
 
 		it('contains a menu-item for copy', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1, collapsed: true };
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1,
+				collapsed: true
+			};
 			const element = await setup(layer);
 
 			const menu = element.shadowRoot.querySelector('ba-overflow-menu');
-			const copyMenuItem = menu.items.find(item => item.label === 'layerManager_to_copy');
+			const copyMenuItem = menu.items.find((item) => item.label === 'layerManager_to_copy');
 
 			expect(copyMenuItem).not.toBeNull();
 			expect(copyMenuItem.label).toEqual('layerManager_to_copy');
@@ -225,12 +333,23 @@ describe('LayerItem', () => {
 		});
 
 		it('contains a disabled menu-item for copy', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1, collapsed: true, constraints: { cloneable: false } };
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1,
+				collapsed: true,
+				constraints: { cloneable: false }
+			};
 			const element = await setup(layer);
 
 			const menu = element.shadowRoot.querySelector('ba-overflow-menu');
-			const copyMenuItem = menu.items.find(item => item.label === 'layerManager_to_copy');
+			const copyMenuItem = menu.items.find((item) => item.label === 'layerManager_to_copy');
 
 			expect(copyMenuItem).not.toBeNull();
 			expect(copyMenuItem.label).toEqual('layerManager_to_copy');
@@ -240,12 +359,22 @@ describe('LayerItem', () => {
 		});
 
 		it('contains a menu-item for zoomToExtent', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1, collapsed: true };
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1,
+				collapsed: true
+			};
 			const element = await setup(layer);
 
 			const menu = element.shadowRoot.querySelector('ba-overflow-menu');
-			const zoomToExtentMenuItem = menu.items.find(item => item.label === 'layerManager_zoom_to_extent');
+			const zoomToExtentMenuItem = menu.items.find((item) => item.label === 'layerManager_zoom_to_extent');
 
 			expect(zoomToExtentMenuItem).not.toBeNull();
 			expect(zoomToExtentMenuItem.label).toEqual('layerManager_zoom_to_extent');
@@ -255,12 +384,21 @@ describe('LayerItem', () => {
 		});
 
 		it('contains a disabled menu-item for zoomToExtent', async () => {
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1, collapsed: true, constraints: { cloneable: false } };
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1,
+				collapsed: true,
+				constraints: { cloneable: false }
+			};
 			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new WmsGeoResource('geoResourceId0', 'id0', '', [], ''));
 			const element = await setup(layer);
 
 			const menu = element.shadowRoot.querySelector('ba-overflow-menu');
-			const zoomToExtentMenuItem = menu.items.find(item => item.label === 'layerManager_zoom_to_extent');
+			const zoomToExtentMenuItem = menu.items.find((item) => item.label === 'layerManager_zoom_to_extent');
 
 			expect(zoomToExtentMenuItem).not.toBeNull();
 			expect(zoomToExtentMenuItem.label).toEqual('layerManager_zoom_to_extent');
@@ -270,21 +408,41 @@ describe('LayerItem', () => {
 		});
 
 		it('contains test-id attributes', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1, collapsed: true };
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1,
+				collapsed: true
+			};
 			const element = await setup(layer);
 
 			expect(element.shadowRoot.querySelector('#button-detail').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 		});
 
 		it('uses geoResourceId for a InfoPanel ', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1, collapsed: true };
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1,
+				collapsed: true
+			};
 			const element = await setup(layer);
 			const spy = spyOn(element, '_getInfoPanelFor').and.callThrough();
 
 			const menu = element.shadowRoot.querySelector('ba-overflow-menu');
-			const infoMenuItem = menu.items.find(item => item.label === 'Info');
+			const infoMenuItem = menu.items.find((item) => item.label === 'Info');
 			infoMenuItem.action();
 
 			expect(spy).toHaveBeenCalledWith(layer.geoResourceId);
@@ -293,7 +451,15 @@ describe('LayerItem', () => {
 		it('does not show a loading hint for Non-GeoResourceFutures', async () => {
 			const geoResourceId = 'geoResourceId0';
 			spyOn(geoResourceService, 'byId').withArgs(geoResourceId).and.returnValue(new VectorGeoResource(geoResourceId, 'label0', VectorSourceType.KML));
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: geoResourceId, visible: true, zIndex: 0, opacity: 1, collapsed: true };
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: geoResourceId,
+				visible: true,
+				zIndex: 0,
+				opacity: 1,
+				collapsed: true
+			};
 			const element = await setup(layer);
 
 			expect(element.shadowRoot.querySelectorAll(Spinner.tag)).toHaveSize(0);
@@ -301,8 +467,18 @@ describe('LayerItem', () => {
 
 		it('shows a loading hint for GeoResourceFutures', async () => {
 			const geoResourceId = 'geoResourceId0';
-			spyOn(geoResourceService, 'byId').withArgs(geoResourceId).and.returnValue(new GeoResourceFuture(geoResourceId, async () => {}));
-			const layer = { ...createDefaultLayerProperties(), id: 'id0', geoResourceId: geoResourceId, visible: true, zIndex: 0, opacity: 1, collapsed: true };
+			spyOn(geoResourceService, 'byId')
+				.withArgs(geoResourceId)
+				.and.returnValue(new GeoResourceFuture(geoResourceId, async () => {}));
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: geoResourceId,
+				visible: true,
+				zIndex: 0,
+				opacity: 1,
+				collapsed: true
+			};
 			const element = await setup(layer);
 
 			expect(element.shadowRoot.querySelectorAll(Spinner.tag)).toHaveSize(1);
@@ -311,10 +487,14 @@ describe('LayerItem', () => {
 	});
 
 	describe('when user interacts with layer item', () => {
-		const geoResourceService = { byId: () => { } };
+		const geoResourceService = { byId: () => {} };
 		const layer = {
 			...createDefaultLayerProperties(),
-			id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1
+			id: 'id0',
+			geoResourceId: 'geoResourceId0',
+			visible: true,
+			zIndex: 0,
+			opacity: 1
 		};
 
 		const setup = () => {
@@ -342,7 +522,9 @@ describe('LayerItem', () => {
 
 		it('click on layer toggle change state in store', async () => {
 			const store = setup();
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
 			const element = await TestUtils.render(LayerItem.tag);
 			element.layer = { ...layer, collapsed: true };
 
@@ -355,7 +537,9 @@ describe('LayerItem', () => {
 
 		it('click on opacity slider change state in store', async () => {
 			const store = setup();
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
 			const element = await TestUtils.render(LayerItem.tag);
 			element.layer = { ...layer };
 
@@ -369,7 +553,9 @@ describe('LayerItem', () => {
 
 		it('click on opacity slider change style-property', async () => {
 			setup();
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
 			const element = await TestUtils.render(LayerItem.tag);
 			element.layer = { ...layer };
 
@@ -384,9 +570,11 @@ describe('LayerItem', () => {
 			expect(propertySpy).toHaveBeenCalled();
 		});
 
-		it('click on opacity slider without \'max\'-attribute change style-property', async () => {
+		it("click on opacity slider without 'max'-attribute change style-property", async () => {
 			setup();
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
 			const element = await TestUtils.render(LayerItem.tag);
 			element.layer = { ...layer };
 
@@ -404,7 +592,9 @@ describe('LayerItem', () => {
 
 		it('click on layer collapse button change collapsed property', async () => {
 			setup();
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
 			const element = await TestUtils.render(LayerItem.tag);
 			element.layer = { ...layer, collapsed: true };
 
@@ -416,12 +606,14 @@ describe('LayerItem', () => {
 
 		it('click on info icon show georesourceinfo panel as modal', async () => {
 			const store = setup();
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
 			const element = await TestUtils.render(LayerItem.tag);
 			element.layer = { ...layer };
 
 			const menu = element.shadowRoot.querySelector('ba-overflow-menu');
-			const infoMenuItem = menu.items.find(item => item.label === 'Info');
+			const infoMenuItem = menu.items.find((item) => item.label === 'Info');
 			infoMenuItem.action();
 
 			expect(store.getState().modal.data.title).toBe('label0');
@@ -430,22 +622,22 @@ describe('LayerItem', () => {
 
 		it('click on zoomToExtent icon changes state in store', async () => {
 			const store = setup();
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
 			const element = await TestUtils.render(LayerItem.tag);
 			element.layer = { ...layer };
 
 			const menu = element.shadowRoot.querySelector('ba-overflow-menu');
-			const zoomToExtentMenuItem = menu.items.find(item => item.label === 'layerManager_zoom_to_extent');
+			const zoomToExtentMenuItem = menu.items.find((item) => item.label === 'layerManager_zoom_to_extent');
 			zoomToExtentMenuItem.action();
 
 			expect(store.getState().position.fitLayerRequest.payload.id).toEqual('id0');
 		});
 	});
 
-
 	describe('when user change order of layer in group', () => {
-
-		const geoResourceService = { byId: () => { } };
+		const geoResourceService = { byId: () => {} };
 		let store;
 		const setup = (state) => {
 			store = TestUtils.setupStoreAndDi(state, { layers: layersReducer, ea: eaReducer });
@@ -457,18 +649,32 @@ describe('LayerItem', () => {
 		};
 
 		it('click on increase-button change state in store', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
 			const layer0 = {
 				...createDefaultLayerProperties(),
-				id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1
 			};
 			const layer1 = {
 				...createDefaultLayerProperties(),
-				id: 'id1', geoResourceId: 'geoResourceId0', visible: true, zIndex: 1, opacity: 1
+				id: 'id1',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 1,
+				opacity: 1
 			};
 			const layer2 = {
 				...createDefaultLayerProperties(),
-				id: 'id2', geoResourceId: 'geoResourceId0', visible: true, zIndex: 2, opacity: 1
+				id: 'id2',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 2,
+				opacity: 1
 			};
 			const state = {
 				layers: {
@@ -492,18 +698,32 @@ describe('LayerItem', () => {
 		});
 
 		it('click on decrease-button change state in store', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
 			const layer0 = {
 				...createDefaultLayerProperties(),
-				id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1
 			};
 			const layer1 = {
 				...createDefaultLayerProperties(),
-				id: 'id1', geoResourceId: 'geoResourceId0', visible: true, zIndex: 1, opacity: 1
+				id: 'id1',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 1,
+				opacity: 1
 			};
 			const layer2 = {
 				...createDefaultLayerProperties(),
-				id: 'id2', geoResourceId: 'geoResourceId0', visible: true, zIndex: 2, opacity: 1
+				id: 'id2',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 2,
+				opacity: 1
 			};
 			const state = {
 				layers: {
@@ -527,18 +747,32 @@ describe('LayerItem', () => {
 		});
 
 		it('click on decrease-button for first layer change not state in store', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
 			const layer0 = {
 				...createDefaultLayerProperties(),
-				id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1
 			};
 			const layer1 = {
 				...createDefaultLayerProperties(),
-				id: 'id1', geoResourceId: 'geoResourceId0', visible: true, zIndex: 1, opacity: 1
+				id: 'id1',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 1,
+				opacity: 1
 			};
 			const layer2 = {
 				...createDefaultLayerProperties(),
-				id: 'id2', geoResourceId: 'geoResourceId0', visible: true, zIndex: 2, opacity: 1
+				id: 'id2',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 2,
+				opacity: 1
 			};
 			const state = {
 				layers: {
@@ -561,11 +795,17 @@ describe('LayerItem', () => {
 			expect(store.getState().layers.active[2].id).toBe('id2');
 		});
 
-		it('click on \'copy\' icon adds a layer copy', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+		it("click on 'copy' icon adds a layer copy", async () => {
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
 			const layer0 = {
 				...createDefaultLayerProperties(),
-				id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1
 			};
 
 			const state = {
@@ -581,7 +821,7 @@ describe('LayerItem', () => {
 			expect(store.getState().layers.active[0].id).toBe('id0');
 
 			const menu = element.shadowRoot.querySelector('ba-overflow-menu');
-			const copyMenuItem = menu.items.find(item => item.label === 'layerManager_to_copy');
+			const copyMenuItem = menu.items.find((item) => item.label === 'layerManager_to_copy');
 			copyMenuItem.action();
 
 			expect(store.getState().layers.active[0].id).toBe(layer0.id);
@@ -590,18 +830,32 @@ describe('LayerItem', () => {
 		});
 
 		it('click on remove-button change state in store', async () => {
-			spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
 			const layer0 = {
 				...createDefaultLayerProperties(),
-				id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1
 			};
 			const layer1 = {
 				...createDefaultLayerProperties(),
-				id: 'id1', geoResourceId: 'geoResourceId0', visible: true, zIndex: 1, opacity: 1
+				id: 'id1',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 1,
+				opacity: 1
 			};
 			const layer2 = {
 				...createDefaultLayerProperties(),
-				id: 'id2', geoResourceId: 'geoResourceId0', visible: true, zIndex: 2, opacity: 1
+				id: 'id2',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 2,
+				opacity: 1
 			};
 			const state = {
 				layers: {
@@ -627,12 +881,16 @@ describe('LayerItem', () => {
 	describe('event handling', () => {
 		const layer = {
 			...createDefaultLayerProperties(),
-			id: 'id0', geoResourceId: 'geoResourceId0', visible: true, zIndex: 0, opacity: 1, collapsed: true
+			id: 'id0',
+			geoResourceId: 'geoResourceId0',
+			visible: true,
+			zIndex: 0,
+			opacity: 1,
+			collapsed: true
 		};
-		const geoResourceService = { byId: () => { } };
+		const geoResourceService = { byId: () => {} };
 
 		const setup = () => {
-
 			const store = TestUtils.setupStoreAndDi({}, { layers: layersReducer, modal: modalReducer, ea: eaReducer });
 			$injector
 				.registerSingleton('TranslationService', { translate: (key) => key })
@@ -642,10 +900,11 @@ describe('LayerItem', () => {
 			return store;
 		};
 		describe('on collapse', () => {
-
 			it('calls the onCollapse callback via property callback', async () => {
 				setup();
-				spyOn(geoResourceService, 'byId').withArgs('geoResourceId0').and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+				spyOn(geoResourceService, 'byId')
+					.withArgs('geoResourceId0')
+					.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
 				const element = await TestUtils.render(LayerItem.tag);
 
 				element.layer = { ...layer }; // collapsed = true is initialized
@@ -661,7 +920,6 @@ describe('LayerItem', () => {
 				expect(element.getModel().layer.collapsed).toBeTrue();
 				expect(element._onCollapse).toHaveBeenCalledTimes(2);
 			});
-
 		});
 	});
 });

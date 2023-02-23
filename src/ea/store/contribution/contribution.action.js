@@ -5,12 +5,10 @@
 import { SET_STATE, SET_LOCATION, DESCRIPTION_CHANGED, TAGGING_MODE_CHANGED } from './contribution.reducer';
 import { $injector } from '../../../injection';
 
-
 const getStore = () => {
 	const { StoreService: storeService } = $injector.inject('StoreService');
 	return storeService.getStore();
 };
-
 
 /**
  * Enable/Disable contribution dialog
@@ -32,9 +30,6 @@ export const toggleContributionMode = () => {
 	const state = getStore().getState().contribution.active;
 	setState(!state);
 };
-
-
-
 
 /**
  * Set the description

@@ -18,9 +18,7 @@ import { TestUtils } from '../../../../../test-utils';
 window.customElements.define(EaMainMenu.tag, EaMainMenu);
 
 describe('EaMainMenu', () => {
-
 	const setup = (state = {}, config = {}) => {
-
 		const { embed = false } = config;
 
 		const initialState = {
@@ -34,7 +32,6 @@ describe('EaMainMenu', () => {
 				observeResponsiveParameter: true
 			},
 			...state
-
 		};
 		TestUtils.setupStoreAndDi(initialState, {
 			mainMenu: createNoInitialStateMainMenuReducer(),
@@ -50,7 +47,6 @@ describe('EaMainMenu', () => {
 	};
 
 	describe('when instantiated', () => {
-
 		it('inherits MainMenu', async () => {
 			const element = await setup();
 
@@ -58,9 +54,7 @@ describe('EaMainMenu', () => {
 		});
 	});
 
-
 	describe('when initialized', () => {
-
 		it('renders the content panels', async () => {
 			const element = await setup();
 
@@ -103,7 +97,6 @@ describe('EaMainMenu', () => {
 		});
 
 		describe('when tab-index changes', () => {
-
 			const check = (index, panels) => {
 				for (let i = 0; i < panels.length; i++) {
 					expect(panels[i].classList.contains('is-active')).toBe(Object.values(TabId)[i] === index);
@@ -117,7 +110,6 @@ describe('EaMainMenu', () => {
 				setTab(TabId.EXTENSION);
 				check(TabId.EXTENSION, contentPanels);
 			});
-
 		});
 	});
 });

@@ -23,21 +23,21 @@
 	font-size: 2.2em;
 	flex-grow: 1;
 	text-align: right;
-	margin-right: .5em;
-	line-height: .9;
+	margin-right: 0.5em;
+	line-height: 0.9;
 }
 .prime-text-unit {
 	font-size: 2.2em;
 	text-align: left;
 	width: 2.1em;
-	line-height: .9;
+	line-height: 0.9;
 }
 .area {
 	opacity: 0;
 }
 .is-area {
 	opacity: 1;
-	transition: all .4s ease-in-out; 
+	transition: all 0.4s ease-in-out;
 }
 
 .ba-tool-container {
@@ -48,13 +48,13 @@
 }
 
 .ba-tool-container__title {
-	padding: .8em 1.5em;
-	font-weight: bold;   
+	padding: 0.8em 1.5em;
+	font-weight: bold;
 	background: var(--primary-color);
 	color: var(--text3);
 }
 .ba-tool-container__content {
-	padding: .8em 1.5em;
+	padding: 0.8em 1.5em;
 }
 .ba-tool-container__actions {
 	display: flex;
@@ -71,6 +71,6 @@
 }
 .sub-text {
 	text-align: center;
-	font-size: .8em;
-	opacity: .8;
+	font-size: 0.8em;
+	opacity: 0.8;
 }

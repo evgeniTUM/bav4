@@ -8,7 +8,6 @@ import { ResearchModuleContent } from '../../../../../src/ea/modules/toolbox/com
 import { EaModules } from '../../../../../src/ea/store/module/ea.action';
 
 describe('Energy Atlas Module', () => {
-
 	it('correct number of modules', () => {
 		expect(Object.keys(EaModules).length).toBe(7);
 	});
@@ -22,7 +21,6 @@ describe('Energy Atlas Module', () => {
 		expect(EnergyMarketModuleContent.tag).toBe('ea-module-energy-market');
 		expect(EnergyReportingModuleContent.tag).toBe('ea-module-energy-reporting');
 	});
-
 
 	it('every module has a name property', () => {
 		expect(MixerModuleContent.name).toBe('mixer');

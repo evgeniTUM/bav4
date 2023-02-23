@@ -43,7 +43,6 @@ module.exports = {
 				test: /\.csv$/i,
 				use: 'raw-loader'
 			}
-
 		]
 	},
 	plugins: [
@@ -86,10 +85,10 @@ module.exports = {
 	},
 	resolve: {
 		fallback: {
-			'https': false,
-			'http': false,
-			'buffer': false,
-			'fs': false
+			https: false,
+			http: false,
+			buffer: false,
+			fs: false
 		}
 	}
 };

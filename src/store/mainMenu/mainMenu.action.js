@@ -10,7 +10,6 @@ const getStore = () => {
 	return StoreService.getStore();
 };
 
-
 /**
  * Opens the main menu.
  * @function
@@ -38,7 +37,9 @@ export const close = () => {
  * @function
  */
 export const toggle = () => {
-	const { mainMenu: { open } } = getStore().getState();
+	const {
+		mainMenu: { open }
+	} = getStore().getState();
 	getStore().dispatch({
 		type: OPEN_CLOSED_CHANGED,
 		payload: !open
@@ -58,7 +59,7 @@ export const TabId = Object.freeze({
 	FEATUREINFO: 'featureinfo',
 	EXTENSION: 'extension',
 
-	valueOf: index => {
+	valueOf: (index) => {
 		switch (index) {
 			case 0:
 				return TabId.TOPICS;

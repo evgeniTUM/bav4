@@ -14,7 +14,6 @@ export const DEACTIVATE_INFO_POPUP = 'ea/infopopup/deactivate';
 export const ACTIVATE_INFO_POPUP = 'ea/info_popup/activate';
 
 export const initialState = {
-
 	/**
 	 * @property {String|null}
 	 */
@@ -62,11 +61,9 @@ export const initialState = {
 };
 
 export const eaReducer = (state = initialState, action) => {
-
 	const { type, payload } = action;
 	switch (type) {
 		case SET_CURRENT_MODULE: {
-
 			return {
 				...state,
 				currentModule: payload

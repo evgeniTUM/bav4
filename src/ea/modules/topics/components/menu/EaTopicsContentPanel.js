@@ -1,31 +1,28 @@
 import { $injector } from '../../../../../injection';
 import { TopicsContentPanel } from '../../../../../modules/topics/components/menu/TopicsContentPanel';
 
-
 /**
  * @class
  * @author kunze
  */
 export class EaTopicsContentPanel extends TopicsContentPanel {
-
 	constructor() {
 		super();
-		const { TopicsService: topicsService }
-			= $injector.inject('TopicsService');
+		const { TopicsService: topicsService } = $injector.inject('TopicsService');
 		this._topicsService = topicsService;
 	}
 
 	/**
-         * //set extended hls - style when theme has been selected
-         * @override
-         * @returns {undefined}
-         */
+	 * //set extended hls - style when theme has been selected
+	 * @override
+	 * @returns {undefined}
+	 */
 	initialize() {
 		this.observe(['topicsReady', 'contentIndex'], () => this.render());
 		this.observe('currentTopicId', (currentTopicId) => {
 			//we add and update the topic specific hue value
 			const topics = this._topicsService.all();
-			const topic = topics.filter(t => t.id === currentTopicId)[0];
+			const topic = topics.filter((t) => t.id === currentTopicId)[0];
 
 			if (!document.getElementById(TopicsContentPanel.Global_Topic_Hue_Style_Id)) {
 				const styleElement = document.createElement('style');
@@ -34,7 +31,9 @@ export class EaTopicsContentPanel extends TopicsContentPanel {
 			}
 			const style = document.getElementById(EaTopicsContentPanel.Global_Topic_Hue_Style_Id);
 			//set extended hls - style when theme has been selected
-			style.innerHTML = `*{--topic-hue: ${topic.style.hue || 0};} *{--topic-saturation: ${topic.style.sat || 0}%;} *{--topic-lightness: ${topic.style.light || 0}%;}`;
+			style.innerHTML = `*{--topic-hue: ${topic.style.hue || 0};} *{--topic-saturation: ${topic.style.sat || 0}%;} *{--topic-lightness: ${
+				topic.style.light || 0
+			}%;}`;
 		});
 	}
 
@@ -42,7 +41,7 @@ export class EaTopicsContentPanel extends TopicsContentPanel {
 	 * @override
 	 */
 	createViewHelper(state) {
-		const viewHelper = super.createViewHelper(state) ;
+		const viewHelper = super.createViewHelper(state);
 
 		const renderTopicStyle = (topic) => {
 			const hue = topic.style.hue || 0;
@@ -55,7 +54,10 @@ export class EaTopicsContentPanel extends TopicsContentPanel {
 				`;
 		};
 
-		return { topics: viewHelper.topics, getActiveClass: viewHelper.getActiveClass, getTabIndex: viewHelper.getTabIndex,
+		return {
+			topics: viewHelper.topics,
+			getActiveClass: viewHelper.getActiveClass,
+			getTabIndex: viewHelper.getTabIndex,
 			getVisibilityClass: viewHelper.getVisibilityClass,
 			changeTopic: viewHelper.changeTopic,
 			renderTopicStyle,

@@ -12,7 +12,6 @@ import { addGeoFeatureLayer, addGeoFeatures, clearLayer, removeGeoFeatures } fro
 import { activateMapClick, deactivateMapClick } from '../store/mapclick/mapclick.action';
 import { activateGeoResource, deactivateAllGeoResources } from '../store/module/ea.action';
 
-
 const MODULE_HANDSHAKE = 'handshake';
 const MODULE_RESET = 'reset';
 const ADD_FEATURE = 'addfeature';
@@ -36,25 +35,23 @@ const buffer = { features: [] };
  * @author gkunze
  */
 export class FnModulePlugin extends BaPlugin {
-
-
 	fnModuleMessageListener(e) {
-		const event = (e.message !== undefined) ? e.message : e;
+		const event = e.message !== undefined ? e.message : e;
 		const data = event.data;
 
-		const {
-			StoreService: storeService,
-			MapService: mapService
-		}
-			= $injector.inject('StoreService', 'MapService');
+		const { StoreService: storeService, MapService: mapService } = $injector.inject('StoreService', 'MapService');
 
 		this._storeService = storeService;
 		this._mapService = mapService;
 
 		const state = this._storeService.getStore().getState();
 
-		const { fnModuleComm: { module } } = state;
-		const { fnModuleComm: { domain } } = state;
+		const {
+			fnModuleComm: { module }
+		} = state;
+		const {
+			fnModuleComm: { domain }
+		} = state;
 
 		if (data.module === undefined || data.message === undefined || module === undefined || domain === undefined) {
 			return;
@@ -79,7 +76,7 @@ export class FnModulePlugin extends BaPlugin {
 			case MODULE_RESET:
 				break;
 			case ADD_FEATURE: {
-				const features = message.geojson.features.map(f => ({
+				const features = message.geojson.features.map((f) => ({
 					...f,
 					style: message.style,
 					expandTo: message.expandTo
@@ -109,8 +106,7 @@ export class FnModulePlugin extends BaPlugin {
 				break;
 			case ZOOM:
 				break;
-			case ZOOM_2_EXTENT:	{
-
+			case ZOOM_2_EXTENT: {
 				const extentVector = new VectorSource({
 					features: [getFeature(message.geojson.features[0])]
 				});
@@ -124,9 +120,7 @@ export class FnModulePlugin extends BaPlugin {
 			case ZOOM_N_CENTER_TO_FEATURE:
 				changeZoomAndCenter({
 					zoom: message.zoom + 4.7,
-					center: getFeature(message.geojson.features[0])
-						.getGeometry()
-						.getCoordinates()
+					center: getFeature(message.geojson.features[0]).getGeometry().getCoordinates()
 				});
 
 				break;
@@ -134,9 +128,7 @@ export class FnModulePlugin extends BaPlugin {
 				break;
 			case CLICK_IN_MAP_SIMULATION:
 				setClick({
-					coordinate: getFeature(message.geojson.features[0])
-						.getGeometry()
-						.getCoordinates()
+					coordinate: getFeature(message.geojson.features[0]).getGeometry().getCoordinates()
 				});
 				break;
 			case ACTIVATE_MAPCLICK:
@@ -154,7 +146,6 @@ export class FnModulePlugin extends BaPlugin {
 			default:
 				console.error('unbeḱannter Code ' + data.code);
 		}
-
 	}
 
 	implPostCodeMessageFnModule(code, module, domain, targetWindow) {
@@ -175,7 +166,6 @@ export class FnModulePlugin extends BaPlugin {
 	 * @param {Store} store
 	 */
 	async register(store) {
-
 		const { EnvironmentService: environmentService } = $injector.inject('EnvironmentService');
 		const { CoordinateService: coordinateService } = $injector.inject('CoordinateService');
 
@@ -184,7 +174,6 @@ export class FnModulePlugin extends BaPlugin {
 		_window.addEventListener('message', this.fnModuleMessageListener);
 
 		const onChange = (active, state) => {
-
 			const scope = state.fnModuleComm;
 			const targetWindow = window.ea_moduleWindow[scope.module];
 
@@ -193,8 +182,7 @@ export class FnModulePlugin extends BaPlugin {
 				//sende per postMessage
 				buffer.features = [];
 				this.implPostCodeMessageFnModule('open', scope.module, scope.domain, targetWindow);
-			}
-			else {
+			} else {
 				//deaktiviere das Module
 				buffer.features = [];
 				this.implPostCodeMessageFnModule('close', scope.module, scope.domain, targetWindow);
@@ -214,8 +202,7 @@ export class FnModulePlugin extends BaPlugin {
 			iframeWindow.postMessage(json, scope.domain);
 		};
 
-		observe(store, state => state.fnModuleComm.active, onChange);
-		observe(store, state => state.mapclick.coordinate, sendCoordinate);
-
+		observe(store, (state) => state.fnModuleComm.active, onChange);
+		observe(store, (state) => state.mapclick.coordinate, sendCoordinate);
 	}
 }

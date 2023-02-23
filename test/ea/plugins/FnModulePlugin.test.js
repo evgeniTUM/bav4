@@ -78,8 +78,6 @@ describe('FnModulePlugin', () => {
 			.registerSingleton('CoordinateService', coordinateServiceMock)
 			.registerSingleton('MapService', mapServiceMock);
 
-
-
 		return store;
 	};
 
@@ -90,7 +88,6 @@ describe('FnModulePlugin', () => {
 	afterEach(function () {
 		jasmine.clock().uninstall();
 	});
-
 
 	it('sends open messages when opening module', async () => {
 		const module = 'dom1';
@@ -106,14 +103,13 @@ describe('FnModulePlugin', () => {
 		openFnModuleComm(module, domain);
 
 		const lastMessage = windowMock.messages.pop();
-		expect(lastMessage).toEqual(
-			{
-				msg: {
-					code: 'open',
-					module: module
-				},
-				domain: domain
-			});
+		expect(lastMessage).toEqual({
+			msg: {
+				code: 'open',
+				module: module
+			},
+			domain: domain
+		});
 	});
 
 	it('sends close messages when closing module', async () => {
@@ -131,14 +127,13 @@ describe('FnModulePlugin', () => {
 		closeFnModule();
 
 		const lastMessage = windowMock.messages.pop();
-		expect(lastMessage).toEqual(
-			{
-				msg: {
-					code: 'close',
-					module: module
-				},
-				domain: domain
-			});
+		expect(lastMessage).toEqual({
+			msg: {
+				code: 'close',
+				module: module
+			},
+			domain: domain
+		});
 	});
 
 	describe('when communication is open,', () => {
@@ -159,7 +154,7 @@ describe('FnModulePlugin', () => {
 			return store;
 		};
 
-		it('adds non-draggable layer on message \'addlayer\'', async () => {
+		it("adds non-draggable layer on message 'addlayer'", async () => {
 			await setupOpen();
 
 			windowMock.listenerFunction({
@@ -174,10 +169,9 @@ describe('FnModulePlugin', () => {
 			const lastAction = storeActions.pop();
 			expect(lastAction.type).toEqual(ADD_LAYER);
 			expect(lastAction.payload).toEqual({ id: 42, draggable: false });
-
 		});
 
-		it('adds draggable layer on message \'addlayer\'', async () => {
+		it("adds draggable layer on message 'addlayer'", async () => {
 			await setupOpen();
 
 			windowMock.listenerFunction({
@@ -192,10 +186,9 @@ describe('FnModulePlugin', () => {
 			const lastAction = storeActions.pop();
 			expect(lastAction.type).toEqual(ADD_LAYER);
 			expect(lastAction.payload).toEqual({ id: 42, draggable: true });
-
 		});
 
-		it('adds geofeature on message \'addfeature\'', async () => {
+		it("adds geofeature on message 'addfeature'", async () => {
 			await setupOpen();
 			const geojson = {
 				type: 'i identify as a geojson'
@@ -213,7 +206,6 @@ describe('FnModulePlugin', () => {
 					}
 				},
 				event: { origin: module }
-
 			});
 
 			jasmine.clock().tick(150);
@@ -250,11 +242,11 @@ describe('FnModulePlugin', () => {
 
 			jasmine.clock().tick(110);
 
-			const actions = storeActions.filter(a => a.type === ADD_FEATURE);
+			const actions = storeActions.filter((a) => a.type === ADD_FEATURE);
 			expect(actions.length).toEqual(1);
 		});
 
-		it('removes geofeature on message \'removefeature\'', async () => {
+		it("removes geofeature on message 'removefeature'", async () => {
 			await setupOpen();
 
 			windowMock.listenerFunction({
@@ -267,7 +259,6 @@ describe('FnModulePlugin', () => {
 					}
 				},
 				event: { origin: module }
-
 			});
 
 			const lastAction = storeActions.pop();
@@ -275,7 +266,7 @@ describe('FnModulePlugin', () => {
 			expect(lastAction.payload).toEqual({ layerId: 42, ids: [24] });
 		});
 
-		it('activates mapclicks on message \'activate_mapclick\'', async () => {
+		it("activates mapclicks on message 'activate_mapclick'", async () => {
 			await setupOpen();
 
 			windowMock.listenerFunction({
@@ -285,7 +276,6 @@ describe('FnModulePlugin', () => {
 					message: 42
 				},
 				event: { origin: module }
-
 			});
 
 			const lastAction = storeActions.pop();
@@ -293,7 +283,7 @@ describe('FnModulePlugin', () => {
 			expect(lastAction.payload).toEqual(42);
 		});
 
-		it('deactivates mapclicks on message \'cancel_mapclick\'', async () => {
+		it("deactivates mapclicks on message 'cancel_mapclick'", async () => {
 			await setupOpen();
 
 			windowMock.listenerFunction({
@@ -303,14 +293,13 @@ describe('FnModulePlugin', () => {
 					message: null
 				},
 				event: { origin: module }
-
 			});
 
 			const lastAction = storeActions.pop();
 			expect(lastAction.type).toEqual(MAPCLICK_DEACTIVATE);
 		});
 
-		it('clears geofeatures on message \'clearmap\'', async () => {
+		it("clears geofeatures on message 'clearmap'", async () => {
 			await setupOpen();
 
 			windowMock.listenerFunction({
@@ -322,12 +311,12 @@ describe('FnModulePlugin', () => {
 				event: { origin: module }
 			});
 
-			const actions = storeActions.filter(a => a.type === CLEAR_LAYER);
+			const actions = storeActions.filter((a) => a.type === CLEAR_LAYER);
 			expect(actions).toHaveSize(1);
 			expect(actions[0].payload).toEqual('42');
 		});
 
-		it('clears hightlighed features on message \'clearmap\'', async () => {
+		it("clears hightlighed features on message 'clearmap'", async () => {
 			await setupOpen();
 
 			windowMock.listenerFunction({
@@ -339,11 +328,11 @@ describe('FnModulePlugin', () => {
 				event: { origin: module }
 			});
 
-			const actions = storeActions.filter(a => a.type === CLEAR_FEATURES);
+			const actions = storeActions.filter((a) => a.type === CLEAR_FEATURES);
 			expect(actions).toHaveSize(1);
 		});
 
-		it('clears featureInfo on message \'clearmap\'', async () => {
+		it("clears featureInfo on message 'clearmap'", async () => {
 			await setupOpen();
 
 			windowMock.listenerFunction({
@@ -355,27 +344,26 @@ describe('FnModulePlugin', () => {
 				event: { origin: module }
 			});
 
-			const actions = storeActions.filter(a => a.type === FEATURE_INFO_REQUEST_ABORT);
+			const actions = storeActions.filter((a) => a.type === FEATURE_INFO_REQUEST_ABORT);
 			expect(actions).toHaveSize(1);
 		});
 
-		it('sends a \'mapclick\' message on \'mapclick.coordinate\' event', async () => {
+		it("sends a 'mapclick' message on 'mapclick.coordinate' event", async () => {
 			await setupOpen();
 
 			activateMapClick();
 			requestMapClick([42.0, 24.0]);
 
 			expect(windowMock.messages).toHaveSize(1);
-			expect(windowMock.messages[0].msg).toEqual(
-				{
-					code: 'mapclick',
-					module: module,
-					id: undefined,
-					coord: '42,24'
-				});
+			expect(windowMock.messages[0].msg).toEqual({
+				code: 'mapclick',
+				module: module,
+				id: undefined,
+				coord: '42,24'
+			});
 		});
 
-		it('activates a georesource on message \'activateGeoResource\'', async () => {
+		it("activates a georesource on message 'activateGeoResource'", async () => {
 			await setupOpen();
 
 			windowMock.listenerFunction({
@@ -392,7 +380,7 @@ describe('FnModulePlugin', () => {
 			expect(lastAction.payload).toEqual('42');
 		});
 
-		it('deactivates all georesources on message \'deactivateGeoResource\'', async () => {
+		it("deactivates all georesources on message 'deactivateGeoResource'", async () => {
 			await setupOpen();
 
 			windowMock.listenerFunction({
@@ -408,7 +396,7 @@ describe('FnModulePlugin', () => {
 			expect(lastAction.type).toEqual(DEACTIVATE_ALL_GEORESOURCES);
 		});
 
-		it('zooms and centers map on \'zoomAndCenter\' message by a zoom factor of 4.7', async () => {
+		it("zooms and centers map on 'zoomAndCenter' message by a zoom factor of 4.7", async () => {
 			await setupOpen();
 
 			const zoomFactor = 4.7;
@@ -425,12 +413,12 @@ describe('FnModulePlugin', () => {
 				event: { origin: module }
 			});
 
-			const action = storeActions.find(a => a.type === ZOOM_CENTER_CHANGED);
+			const action = storeActions.find((a) => a.type === ZOOM_CENTER_CHANGED);
 			expect(action).toBeDefined();
 			expect(action.payload).toEqual({ zoom: 11 + zoomFactor, center: [42.0, 24.0] });
 		});
 
-		it('fits the map on \'zoom2Extent\' message with 20% scale', async () => {
+		it("fits the map on 'zoom2Extent' message with 20% scale", async () => {
 			await setupOpen();
 
 			windowMock.listenerFunction({
@@ -446,7 +434,15 @@ describe('FnModulePlugin', () => {
 											type: 'name',
 											properties: { name: 'EPSG:4326' }
 										},
-										coordinates: [[[2.5, 2.5], [2.5, 2.5], [3, 3], [4, 4], [5, 5]]],
+										coordinates: [
+											[
+												[2.5, 2.5],
+												[2.5, 2.5],
+												[3, 3],
+												[4, 4],
+												[5, 5]
+											]
+										],
 										type: 'Polygon'
 									},
 									id: '530497279',
@@ -460,12 +456,12 @@ describe('FnModulePlugin', () => {
 				event: { origin: module }
 			});
 
-			const action = storeActions.find(a => a.type === FIT_REQUESTED);
+			const action = storeActions.find((a) => a.type === FIT_REQUESTED);
 			expect(action).toBeDefined();
 			expect(action.payload._payload.extent).toEqual([2.25, 2.25, 5.25, 5.25]);
 		});
 
-		it('clicks inside map on \'clickInMap\' message', async () => {
+		it("clicks inside map on 'clickInMap' message", async () => {
 			await setupOpen();
 
 			windowMock.listenerFunction({
@@ -479,10 +475,9 @@ describe('FnModulePlugin', () => {
 				event: { origin: module }
 			});
 
-			const action = storeActions.find(a => a.type === CLICK_CHANGED);
+			const action = storeActions.find((a) => a.type === CLICK_CHANGED);
 			expect(action).toBeDefined();
 			expect(action.payload._payload).toEqual({ coordinate: [42.0, 24.0] });
 		});
-
 	});
 });

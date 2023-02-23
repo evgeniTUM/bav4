@@ -35,10 +35,10 @@ module.exports = {
 	},
 	resolve: {
 		fallback: {
-			'https': false,
-			'http': false,
-			'buffer': false,
-			'fs': false
+			https: false,
+			http: false,
+			buffer: false,
+			fs: false
 		}
 	}
 };

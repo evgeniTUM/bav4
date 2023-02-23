@@ -8,7 +8,6 @@ import { ResearchModuleContent } from '../../../../src/ea/modules/toolbox/compon
 import { EaModules, EaModulesQueryParameters } from '../../../../src/ea/store/module/ea.action';
 
 describe('toolAction', () => {
-
 	it('exports a EaModules enum', () => {
 		expect(Object.keys(EaModules).length).toBe(7);
 		expect(Object.isFrozen(EaModules)).toBeTrue();
@@ -21,7 +20,6 @@ describe('toolAction', () => {
 			Analyse3DModuleContent,
 			GeothermModuleContent
 		]);
-
 	});
 
 	it('exports a EaModulesQueryParameters enum', () => {
@@ -37,7 +35,5 @@ describe('toolAction', () => {
 			{ name: Analyse3DModuleContent.name, parameter: 'windanalyse' },
 			{ name: GeothermModuleContent.name, parameter: 'standort' }
 		]);
-
 	});
 });
-

@@ -5,13 +5,9 @@ import { $injector } from '../../../../../../src/injection';
 import { createMediaReducer } from '../../../../../../src/store/media/media.reducer';
 import { TestUtils } from '../../../../../test-utils';
 
-
-
 window.customElements.define(ModuleContainer.tag, ModuleContainer);
 
-
 describe('ModuleContainer', () => {
-
 	const setup = async (state) => {
 		TestUtils.setupStoreAndDi(state, {
 			ea: eaReducer,
@@ -42,9 +38,7 @@ describe('ModuleContainer', () => {
 		EaModules.forEach((activeModule) => {
 			setCurrentModule(activeModule.name);
 
-			expect(element.shadowRoot.querySelector(activeModule.tag))
-				.withContext(`module: ${activeModule} - is not active`)
-				.not.toBeNull();
+			expect(element.shadowRoot.querySelector(activeModule.tag)).withContext(`module: ${activeModule} - is not active`).not.toBeNull();
 
 			EaModules.forEach((inactiveModule) => {
 				if (activeModule !== inactiveModule) {
@@ -55,5 +49,4 @@ describe('ModuleContainer', () => {
 			});
 		});
 	});
-
 });

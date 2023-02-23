@@ -9,25 +9,18 @@ import { isHttpUrl } from '../../utils/checks';
 export const INFO_POPUP_NOTIFICATION_DELAY_TIME = 3000;
 
 export class InfoPopupPlugin extends BaPlugin {
-
 	/**
 	 * @override
 	 * @param {Store} store
 	 */
 	async register(store) {
-
-		const {
-			CookieService: cookieService,
-			EaInfoPopupService: eaInfoPopupService
-		}
-			= $injector.inject('CookieService', 'EaInfoPopupService');
+		const { CookieService: cookieService, EaInfoPopupService: eaInfoPopupService } = $injector.inject('CookieService', 'EaInfoPopupService');
 
 		let mustShow = true; //depence on cookie
 
 		this._cookieService = cookieService;
 		this._eaInfoPopupService = eaInfoPopupService;
 		this._infoPopupResult;
-
 
 		const loadInfo = async () => {
 			const result = await this._eaInfoPopupService.loadInfoPopupResult();
@@ -52,14 +45,13 @@ export class InfoPopupPlugin extends BaPlugin {
 			if (active) {
 				window.console.log('set Cookie with ...' + messageId);
 				this._cookieService.setCookie(messageId, 'show', 120);
-			}
-			else {
+			} else {
 				window.console.log('delete Cookie with ...' + messageId);
 				this._cookieService.deleteCookie(messageId);
 			}
 		};
 
 		loadInfo();
-		observe(store, state => state.ea.infoPopupActive, onInfoConfirmed, true);
+		observe(store, (state) => state.ea.infoPopupActive, onInfoConfirmed, true);
 	}
 }

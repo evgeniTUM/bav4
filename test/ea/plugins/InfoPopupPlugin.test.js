@@ -5,9 +5,7 @@ import { eaReducer } from '../../../src/ea/store/module/ea.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
 import { TestUtils } from '../../test-utils.js';
 
-
 describe('InfoPopupPlugin', () => {
-
 	const infoPopupServiceMock = {
 		loadInfoPopupResult: (v) => ({
 			key: { v }
@@ -25,21 +23,24 @@ describe('InfoPopupPlugin', () => {
 	let myCookie;
 
 	const cookieResourceServiceMock = {
-		setCookie: (name, settings, exdays) => { myCookie = FreshCookie;},
-		getCookie: (name) => { return myCookie;},
-		deleteCookie: (name) => { myCookie = undefined;}
+		setCookie: (name, settings, exdays) => {
+			myCookie = FreshCookie;
+		},
+		getCookie: (name) => {
+			return myCookie;
+		},
+		deleteCookie: (name) => {
+			myCookie = undefined;
+		}
 	};
 
 	const setup = async (state) => {
-
 		const store = TestUtils.setupStoreAndDi(state, {
 			ea: eaReducer
 		});
 
-		$injector
-			.registerSingleton('EaInfoPopupService', infoPopupServiceMock);
-		$injector
-			.registerSingleton('CookieService', cookieResourceServiceMock);
+		$injector.registerSingleton('EaInfoPopupService', infoPopupServiceMock);
+		$injector.registerSingleton('CookieService', cookieResourceServiceMock);
 
 		const instanceUnderTest = new InfoPopupPlugin();
 		await instanceUnderTest.register(store);
@@ -48,13 +49,11 @@ describe('InfoPopupPlugin', () => {
 	};
 
 	describe('confirmInfo/resetInfoState', () => {
-
 		beforeEach(async () => {
 			cookieResourceServiceMock.deleteCookie(cookieId);
 		});
 
 		it('create Cookie ', async () => {
-
 			cookieResourceServiceMock.deleteCookie(cookieId);
 
 			await setup();
@@ -70,7 +69,5 @@ describe('InfoPopupPlugin', () => {
 			let cookie = cookieResourceServiceMock.getCookie(cookieId);
 			expect(cookie).toBeUndefined();
 		});
-
 	});
-
 });

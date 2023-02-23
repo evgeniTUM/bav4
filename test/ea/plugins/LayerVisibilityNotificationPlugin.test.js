@@ -9,13 +9,11 @@ import { notificationReducer, NOTIFICATION_ADDED } from '../../../src/store/noti
 import { positionReducer } from '../../../src/store/position/position.reducer.js';
 import { TestUtils } from '../../test-utils.js';
 
-
 describe('LayerVisibilityNotificationPlugin', () => {
-
-	const wmsCapabilitiesServiceMock = { getWmsLayers: () => ([]) };
+	const wmsCapabilitiesServiceMock = { getWmsLayers: () => [] };
 
 	const translationServiceMock = {
-		translate: key => key
+		translate: (key) => key
 	};
 
 	const storeActions = [];
@@ -40,9 +38,7 @@ describe('LayerVisibilityNotificationPlugin', () => {
 		})
 	};
 
-
 	const setup = async (state) => {
-
 		storeActions.length = 0;
 
 		const store = TestUtils.setupStoreAndDi(state, {
@@ -61,12 +57,10 @@ describe('LayerVisibilityNotificationPlugin', () => {
 		const instanceUnderTest = new LayerVisibilityNotificationPlugin();
 		await instanceUnderTest.register(store);
 
-		spyOn(wmsCapabilitiesServiceMock, 'getWmsLayers')
-			.withArgs('id1').and.returnValue([layerItem1, layerItem2]);
+		spyOn(wmsCapabilitiesServiceMock, 'getWmsLayers').withArgs('id1').and.returnValue([layerItem1, layerItem2]);
 
 		return store;
 	};
-
 
 	it('shows a notification if switching from active to inactive layer for wms', async () => {
 		await setup();
@@ -79,7 +73,7 @@ describe('LayerVisibilityNotificationPlugin', () => {
 		setMapResolution(55);
 		await TestUtils.timeout();
 
-		const notificationActions = storeActions.filter(a => a.type === NOTIFICATION_ADDED);
+		const notificationActions = storeActions.filter((a) => a.type === NOTIFICATION_ADDED);
 		expect(notificationActions.length).toBe(1);
 		expect(notificationActions[0].payload._payload).toEqual({
 			content: '"label for id1" ea_notification_layer_not_visible',
@@ -99,7 +93,7 @@ describe('LayerVisibilityNotificationPlugin', () => {
 		setMapResolution(90);
 		await TestUtils.timeout();
 
-		const notificationActions = storeActions.filter(a => a.type === NOTIFICATION_ADDED);
+		const notificationActions = storeActions.filter((a) => a.type === NOTIFICATION_ADDED);
 		expect(notificationActions.length).toBe(0);
 	});
 
@@ -113,7 +107,7 @@ describe('LayerVisibilityNotificationPlugin', () => {
 		setMapResolution(90);
 		await TestUtils.timeout();
 
-		const notificationActions = storeActions.filter(a => a.type === NOTIFICATION_ADDED);
+		const notificationActions = storeActions.filter((a) => a.type === NOTIFICATION_ADDED);
 		expect(notificationActions.length).toBe(0);
 	});
 });

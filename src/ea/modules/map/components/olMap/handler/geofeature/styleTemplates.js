@@ -1,8 +1,7 @@
-
 import { Circle, Fill, Stroke, Style } from 'ol/style';
 
 export const styleTemplates = {
-	'geolocation': new Style({
+	geolocation: new Style({
 		fill: new Fill({
 			color: [255, 0, 0, 0.1]
 		}),
@@ -22,8 +21,7 @@ export const styleTemplates = {
 		})
 	}),
 
-	'eablocation':
-	new Style({
+	eablocation: new Style({
 		fill: new Fill({
 			color: [0, 255, 255, 0.1]
 		}),

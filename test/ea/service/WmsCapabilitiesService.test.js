@@ -8,14 +8,12 @@ describe('WmsCapabilitiesService', () => {
 	};
 
 	beforeAll(() => {
-		$injector
-			.registerSingleton('GeoResourceService', geoResourceServiceMock);
+		$injector.registerSingleton('GeoResourceService', geoResourceServiceMock);
 	});
 
 	describe('init', () => {
-
 		it('initializes the service with custom provider', () => {
-			const customProvider = async () => { };
+			const customProvider = async () => {};
 			const instanceUnderTest = new WmsCapabilitiesService(customProvider);
 			expect(instanceUnderTest._wmsCapabilitiesProvider).toBeDefined();
 			expect(instanceUnderTest._wmsCapabilitiesProvider).toEqual(customProvider);
@@ -28,12 +26,10 @@ describe('WmsCapabilitiesService', () => {
 	});
 
 	describe('extractWmsLayerItems method', () => {
-
 		it('return empty list when unknown goeresource id', async () => {
 			const instanceUnderTest = new WmsCapabilitiesService();
 
-			const byIdSpy = spyOn(geoResourceServiceMock, 'byId')
-				.withArgs('id1').and.returnValue(null);
+			const byIdSpy = spyOn(geoResourceServiceMock, 'byId').withArgs('id1').and.returnValue(null);
 
 			expect(await instanceUnderTest.getWmsLayers('id1')).toEqual([]);
 			expect(byIdSpy).toHaveBeenCalled();
@@ -42,8 +38,7 @@ describe('WmsCapabilitiesService', () => {
 		it('return empty list when goeresource has no _layers element', async () => {
 			const instanceUnderTest = new WmsCapabilitiesService();
 
-			const byIdSpy = spyOn(geoResourceServiceMock, 'byId')
-				.withArgs('id1').and.returnValue({ id: 'id1' });
+			const byIdSpy = spyOn(geoResourceServiceMock, 'byId').withArgs('id1').and.returnValue({ id: 'id1' });
 
 			expect(await instanceUnderTest.getWmsLayers('id1')).toEqual([]);
 			expect(byIdSpy).toHaveBeenCalled();
@@ -52,18 +47,17 @@ describe('WmsCapabilitiesService', () => {
 		it('calls capabilites provider to get the wms capabilities', async () => {
 			const instanceUnderTest = new WmsCapabilitiesService();
 
-			spyOn(geoResourceServiceMock, 'byId')
-				.withArgs('id1').and.returnValue({
-					id: 'id1',
-					_url: 'url42',
-					_layers: 'l1,l2'
-				});
+			spyOn(geoResourceServiceMock, 'byId').withArgs('id1').and.returnValue({
+				id: 'id1',
+				_url: 'url42',
+				_layers: 'l1,l2'
+			});
 
 			let actualUrl = null;
 			instanceUnderTest._wmsCapabilitiesProvider = async (url) => {
 				actualUrl = url;
 
-				return [] ;
+				return [];
 			};
 
 			await instanceUnderTest.getWmsLayers('id1');
@@ -74,12 +68,11 @@ describe('WmsCapabilitiesService', () => {
 		it('maps wms resources to  WmsCapabilitiesServiceitems', async () => {
 			const instanceUnderTest = new WmsCapabilitiesService();
 
-			spyOn(geoResourceServiceMock, 'byId')
-				.withArgs('id1').and.returnValue({
-					_id: 'id1',
-					_url: 'url42',
-					_layers: 'l1,l2'
-				});
+			spyOn(geoResourceServiceMock, 'byId').withArgs('id1').and.returnValue({
+				_id: 'id1',
+				_url: 'url42',
+				_layers: 'l1,l2'
+			});
 
 			instanceUnderTest._wmsCapabilitiesProvider = async () => [
 				{ _label: 'name1', _layers: 'l1', _extraParams: { legendUrl: 'url1', minResolution: 0, maxResolution: 1 } },
@@ -99,12 +92,14 @@ describe('WmsCapabilitiesService', () => {
 			const instanceUnderTest = new WmsCapabilitiesService();
 
 			spyOn(geoResourceServiceMock, 'byId')
-				.withArgs('id1').and.returnValue({
+				.withArgs('id1')
+				.and.returnValue({
 					_id: 'id1',
 					_url: 'url42',
 					_layers: 'l1'
 				})
-				.withArgs('id2').and.returnValue({
+				.withArgs('id2')
+				.and.returnValue({
 					_id: 'id2',
 					_url: 'url42',
 					_layers: 'l2'
@@ -123,13 +118,8 @@ describe('WmsCapabilitiesService', () => {
 			const resultRunOne = await instanceUnderTest.getWmsLayers('id1');
 			const resultRunTwo = await instanceUnderTest.getWmsLayers('id2');
 
-
-			expect(resultRunOne).toEqual([
-				{ title: 'name1', legendUrl: 'url1', minResolution: 0, maxResolution: 1 }
-			]);
-			expect(resultRunTwo).toEqual([
-				{ title: 'name2', legendUrl: 'url2', minResolution: 0, maxResolution: 1 }
-			]);
+			expect(resultRunOne).toEqual([{ title: 'name1', legendUrl: 'url1', minResolution: 0, maxResolution: 1 }]);
+			expect(resultRunTwo).toEqual([{ title: 'name2', legendUrl: 'url2', minResolution: 0, maxResolution: 1 }]);
 
 			expect(providerCalls).toEqual(1);
 		});
@@ -137,12 +127,11 @@ describe('WmsCapabilitiesService', () => {
 		it('do not call provider more than once for an unavaible url', async () => {
 			const instanceUnderTest = new WmsCapabilitiesService();
 
-			spyOn(geoResourceServiceMock, 'byId')
-				.withArgs('id1').and.returnValue({
-					_id: 'id1',
-					_url: 'url1',
-					_layers: 'l'
-				});
+			spyOn(geoResourceServiceMock, 'byId').withArgs('id1').and.returnValue({
+				_id: 'id1',
+				_url: 'url1',
+				_layers: 'l'
+			});
 
 			let providerCalls = 0;
 			instanceUnderTest._wmsCapabilitiesProvider = async () => {
@@ -159,5 +148,4 @@ describe('WmsCapabilitiesService', () => {
 			expect(providerCalls).toEqual(1);
 		});
 	});
-
 });

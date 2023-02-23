@@ -2,9 +2,7 @@ import { closeFnModule, openFnModuleComm } from '../../../../src/ea/store/fnModu
 import { fnModuleCommReducer } from '../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
 import { TestUtils } from '../../../test-utils';
 
-
 describe('fnModuleCommReducer', () => {
-
 	const setup = (state) => {
 		return TestUtils.setupStoreAndDi(state, {
 			fnModuleComm: fnModuleCommReducer
@@ -20,7 +18,7 @@ describe('fnModuleCommReducer', () => {
 		expect(actual.active).toBeFalse();
 	});
 
-	it('opens and closes the \'module\'', () => {
+	it("opens and closes the 'module'", () => {
 		const store = setup();
 
 		openFnModuleComm('mixer', window.location.origin, window);
@@ -33,5 +31,4 @@ describe('fnModuleCommReducer', () => {
 		expect(store.getState().fnModuleComm.module).toBe('mixer');
 		expect(store.getState().fnModuleComm.domain).toBe(window.location.origin);
 	});
-
 });

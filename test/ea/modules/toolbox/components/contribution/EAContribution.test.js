@@ -15,18 +15,15 @@ const SAMPLE_JSON_SPEC = [
 	{
 		'ee-name': 'Test1',
 		'ee-angaben': [
-			{ 'name': 'field1', 'optional': false },
-			{ 'name': 'field2', 'optional': true }
+			{ name: 'field1', optional: false },
+			{ name: 'field2', optional: true }
 		]
 	},
 	{
 		'ee-name': 'Test2',
-		'ee-angaben': [
-			{ 'name': 'field3', 'optional': true }
-		]
+		'ee-angaben': [{ name: 'field3', optional: true }]
 	}
 ];
-
 
 describe('EAContributon', () => {
 	let store;
@@ -76,14 +73,11 @@ describe('EAContributon', () => {
 	};
 
 	describe('class', () => {
-
 		it('inherits from AbstractMvuContentPanel', async () => {
-
 			const element = await setup();
 
 			expect(element instanceof AbstractMvuContentPanel).toBeTrue();
 		});
-
 	});
 
 	describe('when initialized', () => {
@@ -152,7 +146,6 @@ describe('EAContributon', () => {
 
 			expect(store.getState().contribution.tagging).toBe(true);
 		});
-
 	});
 
 	it('opens the research module when "find" button is clicked', async () => {
@@ -174,7 +167,6 @@ describe('EAContributon', () => {
 
 			expect(query('#step3').querySelectorAll('input').length).toBe(0);
 
-
 			query('#category').value = 'Test1';
 			query('#category').dispatchEvent(new Event('change'));
 
@@ -189,7 +181,6 @@ describe('EAContributon', () => {
 			expect(field2.placeholder).toBe('field2');
 			expect(field2.required).toBeFalse();
 			expect(field2.type).toBe('text');
-
 
 			query('#category').value = 'Test2';
 			query('#category').dispatchEvent(new Event('change'));
@@ -249,7 +240,6 @@ describe('EAContributon', () => {
 	});
 
 	describe('mode energy-reporting', () => {
-
 		it('does not show find button', async () => {
 			const element = await setup();
 			element.mode = MODUS.report;
@@ -306,9 +296,7 @@ describe('EAContributon', () => {
 			expect(element.shadowRoot.querySelectorAll('collapsable-content').length).toBe(0);
 			expect(element.shadowRoot.querySelector('#completion-message')).not.toBeNull();
 		});
-
 	});
-
 
 	describe('submit handling', () => {
 		it('does not sumbit on validation errors', async () => {
@@ -378,12 +366,9 @@ describe('EAContributon', () => {
 				'application/json'
 			);
 
-
 			expect(element.shadowRoot.querySelectorAll('collapsable-content').length).toBe(0);
 			expect(element.shadowRoot.querySelector('#completion-message')).not.toBeNull();
 		});
-
-
 
 		it('shows failure message when reponse code is not 200', async () => {
 			spyOn(httpServiceMock, 'post').and.returnValue({ status: 201 });
@@ -409,7 +394,6 @@ describe('EAContributon', () => {
 			expect(element.shadowRoot.querySelectorAll('collapsable-content').length).toBe(0);
 			expect(element.shadowRoot.querySelector('#failure-message')).not.toBeNull();
 		});
-
 
 		it('resets model on back button after submit', async () => {
 			spyOn(httpServiceMock, 'post').and.returnValue({ status: 200 });
@@ -448,7 +432,5 @@ describe('EAContributon', () => {
 			expect(store.getState().contribution.tagging).toBeFalse();
 			expect(store.getState().contribution.position).toBeNull();
 		});
-
 	});
-
 });

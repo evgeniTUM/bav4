@@ -3,7 +3,15 @@ import { $injector } from '../../../../injection';
 import { observe } from '../../../../utils/storeUtils';
 import { HIGHLIGHT_LAYER_ID } from '../../../../plugins/HighlightPlugin';
 import Feature from 'ol/Feature';
-import { createAnimation, eabMarkerStyleFunction, highlightAnimatedCoordinateFeatureStyleFunction, highlightCoordinateFeatureStyleFunction, highlightGeometryFeatureStyleFunction, highlightTemporaryCoordinateFeatureStyleFunction, highlightTemporaryGeometryFeatureStyleFunction } from './styleUtils';
+import {
+	createAnimation,
+	eabMarkerStyleFunction,
+	highlightAnimatedCoordinateFeatureStyleFunction,
+	highlightCoordinateFeatureStyleFunction,
+	highlightGeometryFeatureStyleFunction,
+	highlightTemporaryCoordinateFeatureStyleFunction,
+	highlightTemporaryGeometryFeatureStyleFunction
+} from './styleUtils';
 import { Vector as VectorSource } from 'ol/source';
 import { Vector as VectorLayer } from 'ol/layer';
 import { Point } from 'ol/geom';
@@ -12,29 +20,26 @@ import WKT from 'ol/format/WKT';
 import GeoJSON from 'ol/format/GeoJSON';
 import { unByKey } from 'ol/Observable';
 
-
 /**
  * Handler for displaying highlighted features
  * @author thiloSchlemmer
  * @author taulinger
  */
 export class OlHighlightLayerHandler extends OlLayerHandler {
-
 	constructor() {
 		super(HIGHLIGHT_LAYER_ID, { preventDefaultClickHandling: false, preventDefaultContextClickHandling: false });
 		const { StoreService } = $injector.inject('StoreService');
 		this._storeService = StoreService;
-		this._unregister = () => { };
+		this._unregister = () => {};
 		this._olMap = null;
 		this._olLayer = null;
 		this._animationListenerKeys = [];
 	}
 
-
 	/**
-		 * Activates the Handler.
-		 * @override
-		 */
+	 * Activates the Handler.
+	 * @override
+	 */
 	onActivate(olMap) {
 		this._olMap = olMap;
 		this._olLayer = this._createLayer();
@@ -43,10 +48,10 @@ export class OlHighlightLayerHandler extends OlLayerHandler {
 	}
 
 	/**
-		 *  @override
-		 *  @param {Map} olMap
-		 */
-	onDeactivate(/*eslint-disable no-unused-vars */olMap) {
+	 *  @override
+	 *  @param {Map} olMap
+	 */
+	onDeactivate(/*eslint-disable no-unused-vars */ olMap) {
 		this._unregister();
 		this._olMap = null;
 		this._olLayer = null;
@@ -68,7 +73,6 @@ export class OlHighlightLayerHandler extends OlLayerHandler {
 
 		//we have a HighlightGeometry
 		switch (data.geometryType) {
-
 			case HighlightGeometryType.WKT:
 				return this._appendStyle(feature, new WKT().readFeature(data.geometry));
 			case HighlightGeometryType.GEOJSON:
@@ -89,9 +93,7 @@ export class OlHighlightLayerHandler extends OlLayerHandler {
 		const { data } = feature;
 		//we have a HighlightCoordinate
 		if (data.coordinate) {
-
 			switch (feature.type) {
-
 				case HighlightFeatureType.DEFAULT:
 					olFeature.setStyle(highlightCoordinateFeatureStyleFunction);
 					break;
@@ -104,10 +106,8 @@ export class OlHighlightLayerHandler extends OlLayerHandler {
 				case HighlightFeatureType.QUERY_SUCCESS:
 					olFeature.setStyle(eabMarkerStyleFunction);
 			}
-		}
-		else {
+		} else {
 			switch (feature.type) {
-
 				case HighlightFeatureType.DEFAULT:
 					olFeature.setStyle(highlightGeometryFeatureStyleFunction);
 					break;
@@ -120,9 +120,7 @@ export class OlHighlightLayerHandler extends OlLayerHandler {
 	}
 
 	_register(store, olSource) {
-
 		const onChange = ({ features }) => {
-
 			olSource.clear();
 			/**
 			 * we unregister all animation related event listeners
@@ -132,12 +130,9 @@ export class OlHighlightLayerHandler extends OlLayerHandler {
 				this._animationListenerKeys.splice(i, 1);
 			}
 
-			olSource.addFeatures(
-				features
-					.map(this._toOlFeature, this)
-					.filter(olFeature => !!olFeature));
+			olSource.addFeatures(features.map(this._toOlFeature, this).filter((olFeature) => !!olFeature));
 		};
 
-		return observe(store, state => state.highlight, onChange, false);
+		return observe(store, (state) => state.highlight, onChange, false);
 	}
 }

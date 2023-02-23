@@ -5,7 +5,6 @@
 import { $injector } from '../../../injection';
 import { ADD_FEATURE, ADD_LAYER, CLEAR_LAYER, CLEAR_MAP, REMOVE_FEATURE, REMOVE_LAYER } from './geofeature.reducer';
 
-
 /**
  * Contains information for an GeoFeature for displaying in a map.
  * @typedef {Object} GeoFeature
@@ -35,17 +34,16 @@ export const GeoFeatureTypes = Object.freeze({
 	ANIMATED: 2
 });
 
-
 const getStore = () => {
 	const { StoreService: storeService } = $injector.inject('StoreService');
 	return storeService.getStore();
 };
 
 /**
-* Adds (appends) a single layer.
-* @param {integer} id the id of the layer
-* @function
-*/
+ * Adds (appends) a single layer.
+ * @param {integer} id the id of the layer
+ * @function
+ */
 export const addGeoFeatureLayer = (id) => {
 	getStore().dispatch({
 		type: ADD_LAYER,
@@ -54,10 +52,10 @@ export const addGeoFeatureLayer = (id) => {
 };
 
 /**
-* Removes a single layer.
-* @param {integer} id the id of the layer
-* @function
-*/
+ * Removes a single layer.
+ * @param {integer} id the id of the layer
+ * @function
+ */
 export const removeGeoFeatureLayer = (id) => {
 	getStore().dispatch({
 		type: REMOVE_LAYER,
@@ -66,10 +64,10 @@ export const removeGeoFeatureLayer = (id) => {
 };
 
 /**
-* Adds (appends) a single or an array of {@link GeoFeature}.
-* @param {Array.<GeoFeature>|GeoFeature} features
-* @function
-*/
+ * Adds (appends) a single or an array of {@link GeoFeature}.
+ * @param {Array.<GeoFeature>|GeoFeature} features
+ * @function
+ */
 export const addGeoFeatures = (layerId, features) => {
 	getStore().dispatch({
 		type: ADD_FEATURE,
@@ -111,4 +109,3 @@ export const removeGeoFeatures = (layerId, ids) => {
 		payload: { layerId, ids }
 	});
 };
-

@@ -1,6 +1,5 @@
 export const provide = (lang) => {
 	switch (lang) {
-
 		case 'en':
 			return {
 				ea_notification_layer_not_visible: 'is not available for this zoom level',

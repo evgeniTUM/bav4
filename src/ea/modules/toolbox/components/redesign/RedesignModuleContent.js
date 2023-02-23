@@ -1,11 +1,9 @@
 import { AbstractModuleContent } from '../moduleContainer/AbstractModuleContent';
 
-
 export class RedesignModuleContent extends AbstractModuleContent {
-
 	/**
-	* @override
-	*/
+	 * @override
+	 */
 	getConfig() {
 		const translate = (key) => this._translationService.translate(key);
 
@@ -14,7 +12,6 @@ export class RedesignModuleContent extends AbstractModuleContent {
 			module: RedesignModuleContent.name,
 			frame_id: 'redesign_iframe',
 			header_title: translate('toolbox_redesign_header')
-
 		};
 	}
 

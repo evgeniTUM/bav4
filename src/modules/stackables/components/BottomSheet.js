@@ -23,8 +23,16 @@ export class BottomSheet extends MvuElement {
 	}
 
 	onInitialize() {
-		this.observe(state => state.mainMenu, data => this.signal(Update_Main_Menu, data), true);
-		this.observe(state => state.media, data => this.signal(Update_Media, data), true);
+		this.observe(
+			(state) => state.mainMenu,
+			(data) => this.signal(Update_Main_Menu, data),
+			true
+		);
+		this.observe(
+			(state) => state.media,
+			(data) => this.signal(Update_Media, data),
+			true
+		);
 	}
 
 	update(type, data, model) {
@@ -49,20 +57,22 @@ export class BottomSheet extends MvuElement {
 
 	/**
 	 * @override
-	*/
+	 */
 	createView(model) {
 		const { content, open, portrait } = model;
 
-		const getOverlayClass = () => (open && !portrait) ? 'is-open' : '';
+		const getOverlayClass = () => (open && !portrait ? 'is-open' : '');
 
 		const onDismiss = () => closeBottomSheet();
 
-		return content ? html`
+		return content
+			? html`
 		<style>${css}</style>
 		<div class='bottom-sheet ${getOverlayClass()}' data-test-id>
         	${content}
 			<ba-icon id="close-icon" class='tool-container__close-button' .icon='${closeIcon}' .size=${1.6} .color=${'var(--text2)'} .color_hover=${'var(--text2)'} @click=${onDismiss}>
-		</div>` : nothing;
+		</div>`
+			: nothing;
 	}
 
 	static get tag() {

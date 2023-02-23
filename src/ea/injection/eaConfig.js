@@ -27,4 +27,3 @@ export const eaConfig = () => {
 		.register('CookieService', CookieService)
 		.registerModule(eaMapModule);
 };
-

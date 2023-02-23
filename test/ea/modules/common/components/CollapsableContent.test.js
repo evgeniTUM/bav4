@@ -5,9 +5,7 @@ import { TestUtils } from '../../../../test-utils';
 
 window.customElements.define(CollapsableContent.tag, CollapsableContent);
 
-
 describe('CollapsableContent', () => {
-
 	beforeEach(async () => {
 		TestUtils.setupStoreAndDi({});
 	});
@@ -20,7 +18,6 @@ describe('CollapsableContent', () => {
 		});
 
 		it('contains default values in the model', async () => {
-
 			const element = await TestUtils.render(CollapsableContent.tag);
 
 			//model
@@ -30,7 +27,6 @@ describe('CollapsableContent', () => {
 		});
 
 		it('renders the view', async () => {
-
 			const element = await TestUtils.render(CollapsableContent.tag);
 
 			//view
@@ -43,19 +39,16 @@ describe('CollapsableContent', () => {
 			expect((await TestUtils.render(CollapsableContent.tag)).getAttribute(TEST_ID_ATTRIBUTE_NAME)).toBe('');
 		});
 
-		it('uses attributes \'title\'', async () => {
+		it("uses attributes 'title'", async () => {
 			const element = await TestUtils.render(CollapsableContent.tag, { title: 'title42' });
 			const header = element.shadowRoot.querySelector('.header');
 
 			expect(header.innerText.trim()).toBe('title42');
-
 		});
 	});
 
-	describe('when property\'disabled\' changes', () => {
-
+	describe("when property'disabled' changes", () => {
 		it('updates the view', async () => {
-
 			const element = await TestUtils.render(CollapsableContent.tag);
 			const section = element.shadowRoot.querySelector('div');
 
@@ -71,10 +64,8 @@ describe('CollapsableContent', () => {
 		});
 	});
 
-	describe('when property\'title\' changes', () => {
-
+	describe("when property'title' changes", () => {
 		it('updates the view', async () => {
-
 			const element = await TestUtils.render(CollapsableContent.tag);
 			const header = element.shadowRoot.querySelector('.header');
 
@@ -86,10 +77,8 @@ describe('CollapsableContent', () => {
 		});
 	});
 
-	describe('when property\'open\' changes', () => {
-
+	describe("when property'open' changes", () => {
 		it('updates the view', async () => {
-
 			const element = await TestUtils.render(CollapsableContent.tag);
 			const content = element.shadowRoot.querySelector('.content');
 			const headerIcon = element.shadowRoot.querySelector('.icon');
@@ -104,11 +93,8 @@ describe('CollapsableContent', () => {
 		});
 	});
 
-
 	describe('when header is clicked', () => {
-
 		it('toggles the open property', async () => {
-
 			const element = await TestUtils.render(CollapsableContent.tag);
 
 			const button = element.shadowRoot.querySelector('button');
@@ -121,7 +107,6 @@ describe('CollapsableContent', () => {
 		});
 
 		it('calls the onToggle callback via property callback', async () => {
-
 			const element = await TestUtils.render(CollapsableContent.tag);
 
 			const button = element.shadowRoot.querySelector('button');
@@ -131,6 +116,5 @@ describe('CollapsableContent', () => {
 
 			expect(element.onToggle).toHaveBeenCalled();
 		});
-
 	});
 });

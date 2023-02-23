@@ -1,11 +1,9 @@
 import { AbstractModuleContent } from '../moduleContainer/AbstractModuleContent';
 
-
 export class ResearchModuleContent extends AbstractModuleContent {
-
 	/**
-	* @override
-	*/
+	 * @override
+	 */
 	getConfig() {
 		const translate = (key) => this._translationService.translate(key);
 
@@ -14,7 +12,6 @@ export class ResearchModuleContent extends AbstractModuleContent {
 			module: ResearchModuleContent.name,
 			frame_id: 'research_iframe',
 			header_title: translate('toolbox_recherche_header')
-
 		};
 	}
 
@@ -29,5 +26,4 @@ export class ResearchModuleContent extends AbstractModuleContent {
 	static get initialWidth() {
 		return 40;
 	}
-
 }

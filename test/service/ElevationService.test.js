@@ -3,16 +3,14 @@ import { loadBvvElevation } from '../../src/services/provider/elevation.provider
 import { getBvvProfile } from '../../src/services/provider/profile.provider';
 
 describe('ElevationService', () => {
-
 	const setup = (elevationProvider = loadBvvElevation, profileProvider = getBvvProfile) => {
 		return new ElevationService(elevationProvider, profileProvider);
 	};
 
 	describe('constructor', () => {
-
 		it('initializes the service with custom provider', async () => {
-			const customElevationProvider = async () => { };
-			const customProfileProvider = async () => { };
+			const customElevationProvider = async () => {};
+			const customProfileProvider = async () => {};
 
 			const instanceUnderTest = setup(customElevationProvider, customProfileProvider);
 
@@ -31,7 +29,6 @@ describe('ElevationService', () => {
 	});
 
 	describe('getElevation', () => {
-
 		it('provides a elevation', async () => {
 			const mockElevation = 42;
 			const instanceUnderTest = setup(async () => {
@@ -57,18 +54,20 @@ describe('ElevationService', () => {
 		it('rejects when argument is not a coordinate', async () => {
 			const instanceUnderTest = setup();
 
-			await expectAsync(instanceUnderTest.getElevation('invalid input')).toBeRejectedWithError('Parameter \'coordinate3857\' must be a coordinate');
+			await expectAsync(instanceUnderTest.getElevation('invalid input')).toBeRejectedWithError("Parameter 'coordinate3857' must be a coordinate");
 		});
 	});
 
 	describe('getProfile', () => {
-
 		it('provides a profile', async () => {
 			const mockProfile = { result: 42 };
 			const instanceUnderTest = setup(null, async () => {
 				return mockProfile;
 			});
-			const mockCoordinates = [[0, 1], [2, 3]];
+			const mockCoordinates = [
+				[0, 1],
+				[2, 3]
+			];
 
 			const result = await instanceUnderTest.getProfile(mockCoordinates);
 
@@ -80,7 +79,10 @@ describe('ElevationService', () => {
 			const instanceUnderTest = setup(null, async () => {
 				throw new Error(message);
 			});
-			const mockCoordinates = [[0, 1], [2, 3]];
+			const mockCoordinates = [
+				[0, 1],
+				[2, 3]
+			];
 
 			await expectAsync(instanceUnderTest.getProfile(mockCoordinates)).toBeRejectedWithError(`Could not load profile from provider: ${message}`);
 		});
@@ -88,14 +90,20 @@ describe('ElevationService', () => {
 		it('rejects when argument is not an Array or does not contain at least two coordinates', async () => {
 			const instanceUnderTest = setup();
 
-			await expectAsync(instanceUnderTest.getProfile('foo')).toBeRejectedWithError('Parameter \'coordinates3857\' must be an array containing at least two coordinates');
-			await expectAsync(instanceUnderTest.getProfile([[0, 1]])).toBeRejectedWithError('Parameter \'coordinates3857\' must be an array containing at least two coordinates');
+			await expectAsync(instanceUnderTest.getProfile('foo')).toBeRejectedWithError(
+				"Parameter 'coordinates3857' must be an array containing at least two coordinates"
+			);
+			await expectAsync(instanceUnderTest.getProfile([[0, 1]])).toBeRejectedWithError(
+				"Parameter 'coordinates3857' must be an array containing at least two coordinates"
+			);
 		});
 
 		it('rejects when argument contains not only coordinated', async () => {
 			const instanceUnderTest = setup();
 
-			await expectAsync(instanceUnderTest.getProfile([[0, 1], 'foo'])).toBeRejectedWithError('Parameter \'coordinates3857\' contains invalid coordinates');
+			await expectAsync(instanceUnderTest.getProfile([[0, 1], 'foo'])).toBeRejectedWithError(
+				"Parameter 'coordinates3857' contains invalid coordinates"
+			);
 		});
 	});
 });

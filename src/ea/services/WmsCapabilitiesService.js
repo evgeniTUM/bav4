@@ -4,7 +4,6 @@ import { bvvCapabilitiesProvider } from '../../services/provider/wmsCapabilities
 import { sleep } from '../../utils/sleep';
 
 export class WmsCapabilitiesService {
-
 	/**
 	 * @param {wmsCapabilitiesProvider} [wmsCapabilitiesProvider = bvvCapabilitiesProvider]
 	 */
@@ -25,8 +24,8 @@ export class WmsCapabilitiesService {
 		const filterCapabilities = (georesource, capabilities) => {
 			const layerFilter = georesource._layers.split(',');
 			return capabilities
-				.filter(l => layerFilter.includes(l._layers))
-				.map(l => ({
+				.filter((l) => layerFilter.includes(l._layers))
+				.map((l) => ({
 					title: l._label,
 					legendUrl: l._extraParams.legendUrl,
 					minResolution: l._extraParams.minResolution,
@@ -34,9 +33,7 @@ export class WmsCapabilitiesService {
 				}));
 		};
 
-
 		if (!(georesource._url in this._cache)) {
-
 			while (this._isLocked) {
 				await sleep(50);
 			}
@@ -57,12 +54,10 @@ export class WmsCapabilitiesService {
 					ids: []
 				};
 				capabilities = await this._wmsCapabilitiesProvider(georesource._url, options);
-			}
-			catch (e) {
+			} catch (e) {
 				console.warn(e);
 				console.warn('could not load capabilities for URL ' + georesource._url);
-			}
-			finally {
+			} finally {
 				this._cache[georesource._url] = capabilities;
 				this._isLocked = false;
 			}

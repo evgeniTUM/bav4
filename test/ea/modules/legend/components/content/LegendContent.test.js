@@ -1,4 +1,3 @@
-
 import { LegendContent } from '../../../../../../src/ea/modules/legend/components/content/LegendContent';
 import { activateLegend, setLegendItems, setMapResolution } from '../../../../../../src/ea/store/module/ea.action';
 import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
@@ -10,17 +9,13 @@ import { TestUtils } from '../../../../../test-utils';
 window.customElements.define(LegendContent.tag, LegendContent);
 
 describe('LegendContent', () => {
-
 	const setup = async (state = {}) => {
-
 		TestUtils.setupStoreAndDi(state, {
 			ea: eaReducer,
 			position: positionReducer,
 			media: createMediaReducer()
 		});
-		$injector
-			.registerSingleton('TranslationService', { translate: (key) => key })
-			.registerSingleton('EnvironmentService', { portrait: false });
+		$injector.registerSingleton('TranslationService', { translate: (key) => key }).registerSingleton('EnvironmentService', { portrait: false });
 
 		setMapResolution(50);
 		return await TestUtils.render(LegendContent.tag);

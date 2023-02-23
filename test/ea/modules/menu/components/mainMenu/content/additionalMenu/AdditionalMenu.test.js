@@ -18,11 +18,9 @@ import { TestUtils } from '../../../../../../../test-utils';
 window.customElements.define(AdditionalMenu.tag, AdditionalMenu);
 
 describe('AdditionalMenu', () => {
-
 	const storeActions = [];
 
 	const setup = (state = {}, config = {}) => {
-
 		const { embed = false } = config;
 		storeActions.length = 0;
 
@@ -33,7 +31,6 @@ describe('AdditionalMenu', () => {
 				observeResponsiveParameter: true
 			},
 			...state
-
 		};
 		TestUtils.setupStoreAndDi(initialState, {
 			spyReducer: (state, action) => storeActions.push(action),
@@ -52,7 +49,6 @@ describe('AdditionalMenu', () => {
 	};
 
 	describe('when instantiated', () => {
-
 		it('inherits MvuElement', async () => {
 			const element = await setup();
 
@@ -60,9 +56,7 @@ describe('AdditionalMenu', () => {
 		});
 	});
 
-
 	describe('when initialized', () => {
-
 		it('skips rendering when in embedded mode', async () => {
 			const element = await setup({}, { embed: true });
 
@@ -80,20 +74,20 @@ describe('AdditionalMenu', () => {
 
 			element.shadowRoot.getElementById('energy-market').click();
 
-			let setStateActions = storeActions.filter(e => e.type === SET_STATE);
+			let setStateActions = storeActions.filter((e) => e.type === SET_STATE);
 			expect(setStateActions.length).toBe(1);
 
-			let setModuleActions = storeActions.filter(e => e.type === SET_CURRENT_MODULE);
+			let setModuleActions = storeActions.filter((e) => e.type === SET_CURRENT_MODULE);
 			expect(setModuleActions.length).toBe(1);
 			expect(setModuleActions[0].payload).toBe(EnergyMarketModuleContent.name);
 
 			storeActions.length = 0;
 			element.shadowRoot.getElementById('energy-market').click();
 
-			setStateActions = storeActions.filter(e => e.type === SET_STATE);
+			setStateActions = storeActions.filter((e) => e.type === SET_STATE);
 			expect(setStateActions.length).toBe(1);
 
-			setModuleActions = storeActions.filter(e => e.type === SET_CURRENT_MODULE);
+			setModuleActions = storeActions.filter((e) => e.type === SET_CURRENT_MODULE);
 			expect(setModuleActions.length).toBe(1);
 			expect(setModuleActions[0].payload).toBe(null);
 		});
@@ -103,20 +97,20 @@ describe('AdditionalMenu', () => {
 
 			element.shadowRoot.getElementById('energy-reporting').click();
 
-			let setStateActions = storeActions.filter(e => e.type === SET_STATE);
+			let setStateActions = storeActions.filter((e) => e.type === SET_STATE);
 			expect(setStateActions.length).toBe(1);
 
-			let setModuleActions = storeActions.filter(e => e.type === SET_CURRENT_MODULE);
+			let setModuleActions = storeActions.filter((e) => e.type === SET_CURRENT_MODULE);
 			expect(setModuleActions.length).toBe(1);
 			expect(setModuleActions[0].payload).toBe(EnergyReportingModuleContent.name);
 
 			storeActions.length = 0;
 			element.shadowRoot.getElementById('energy-reporting').click();
 
-			setStateActions = storeActions.filter(e => e.type === SET_STATE);
+			setStateActions = storeActions.filter((e) => e.type === SET_STATE);
 			expect(setStateActions.length).toBe(1);
 
-			setModuleActions = storeActions.filter(e => e.type === SET_CURRENT_MODULE);
+			setModuleActions = storeActions.filter((e) => e.type === SET_CURRENT_MODULE);
 			expect(setModuleActions.length).toBe(1);
 			expect(setModuleActions[0].payload).toBe(null);
 		});
@@ -137,14 +131,14 @@ describe('AdditionalMenu', () => {
 				storeActions.length = 0;
 				element.shadowRoot.getElementById(module.id).click();
 
-				let setModuleActions = storeActions.filter(e => e.type === SET_CURRENT_MODULE);
+				let setModuleActions = storeActions.filter((e) => e.type === SET_CURRENT_MODULE);
 				expect(setModuleActions.length).toBe(1);
 				expect(setModuleActions[0].payload).toBe(module.name);
 
 				storeActions.length = 0;
 				element.shadowRoot.getElementById(module.id).click();
 
-				setModuleActions = storeActions.filter(e => e.type === SET_CURRENT_MODULE);
+				setModuleActions = storeActions.filter((e) => e.type === SET_CURRENT_MODULE);
 				expect(setModuleActions.length).toBe(1);
 				expect(setModuleActions[0].payload).toBe(null);
 			});
@@ -153,17 +147,8 @@ describe('AdditionalMenu', () => {
 		it('respects a specific order of menu items', async () => {
 			const element = await setup();
 
-			const itemIds = Array.from(element.shadowRoot.querySelectorAll('li')).map(i => i.id);
-			expect(itemIds).toEqual([
-				'research',
-				'mixer',
-				'analyse3d',
-				'geotherm',
-				'energy-market',
-				'energy-reporting'
-			]);
-
+			const itemIds = Array.from(element.shadowRoot.querySelectorAll('li')).map((i) => i.id);
+			expect(itemIds).toEqual(['research', 'mixer', 'analyse3d', 'geotherm', 'energy-market', 'energy-reporting']);
 		});
-
 	});
 });

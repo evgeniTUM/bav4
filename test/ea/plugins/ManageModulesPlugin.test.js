@@ -21,7 +21,6 @@ import { NOTIFICATION_ADDED } from '../../../src/store/notifications/notificatio
 import { TestUtils } from '../../test-utils.js';
 import { EnergyReportingModuleContent } from '../../../src/ea/modules/toolbox/components/contribution/EnergyReportingModuleContent.js';
 
-
 describe('ManageModulesPlugin', () => {
 	const windowMock = {
 		location: {
@@ -37,7 +36,6 @@ describe('ManageModulesPlugin', () => {
 	const storeActions = [];
 
 	const setup = (state) => {
-
 		storeActions.length = 0;
 
 		const store = TestUtils.setupStoreAndDi(state, {
@@ -47,9 +45,7 @@ describe('ManageModulesPlugin', () => {
 			mainMenu: createMainMenuReducer()
 		});
 
-		$injector
-			.registerSingleton('GeoResourceService', geoResourceServiceMock)
-			.registerSingleton('EnvironmentService', environmentServiceMock);
+		$injector.registerSingleton('GeoResourceService', geoResourceServiceMock).registerSingleton('EnvironmentService', environmentServiceMock);
 		return store;
 	};
 
@@ -103,7 +99,7 @@ describe('ManageModulesPlugin', () => {
 			ResearchModuleContent.name,
 			Analyse3DModuleContent.name,
 			GeothermModuleContent.name
-		].forEach(tag => {
+		].forEach((tag) => {
 			setCurrentModule(tag);
 
 			expect(store.getState().layers.active.length).toBe(1);
@@ -113,7 +109,6 @@ describe('ManageModulesPlugin', () => {
 			setCurrentModule('something');
 
 			expect(store.getState().layers.active.length).toBe(0);
-
 		});
 	});
 
@@ -152,22 +147,21 @@ describe('ManageModulesPlugin', () => {
 		});
 
 		it('clears map', async () => {
-			expect(storeActions.filter(a => a.type === CLEAR_MAP).length).toBeGreaterThan(0);
+			expect(storeActions.filter((a) => a.type === CLEAR_MAP).length).toBeGreaterThan(0);
 		});
 
 		it('clears active georesources', async () => {
-			expect(storeActions.filter(a => a.type === DEACTIVATE_ALL_GEORESOURCES).length).toBeGreaterThan(0);
+			expect(storeActions.filter((a) => a.type === DEACTIVATE_ALL_GEORESOURCES).length).toBeGreaterThan(0);
 		});
 
 		it('resets featureInfo state', async () => {
-			expect(storeActions.filter(a => a.type === FEATURE_INFO_REQUEST_ABORT).length).toBeGreaterThan(0);
+			expect(storeActions.filter((a) => a.type === FEATURE_INFO_REQUEST_ABORT).length).toBeGreaterThan(0);
 		});
 
 		it('clears highlight features', async () => {
-			expect(storeActions.filter(a => a.type === CLEAR_FEATURES).length).toBeGreaterThan(0);
+			expect(storeActions.filter((a) => a.type === CLEAR_FEATURES).length).toBeGreaterThan(0);
 		});
 	});
-
 
 	describe('when switching module, ', () => {
 		let store;
@@ -185,19 +179,19 @@ describe('ManageModulesPlugin', () => {
 		});
 
 		it('clears map', async () => {
-			expect(storeActions.filter(a => a.type === CLEAR_MAP).length).toBeGreaterThan(0);
+			expect(storeActions.filter((a) => a.type === CLEAR_MAP).length).toBeGreaterThan(0);
 		});
 
 		it('clears active georesources', async () => {
-			expect(storeActions.filter(a => a.type === DEACTIVATE_ALL_GEORESOURCES).length).toBeGreaterThan(0);
+			expect(storeActions.filter((a) => a.type === DEACTIVATE_ALL_GEORESOURCES).length).toBeGreaterThan(0);
 		});
 
 		it('resets featureInfo state', async () => {
-			expect(storeActions.filter(a => a.type === FEATURE_INFO_REQUEST_ABORT).length).toBeGreaterThan(0);
+			expect(storeActions.filter((a) => a.type === FEATURE_INFO_REQUEST_ABORT).length).toBeGreaterThan(0);
 		});
 
 		it('clears highlight features', async () => {
-			expect(storeActions.filter(a => a.type === CLEAR_FEATURES).length).toBeGreaterThan(0);
+			expect(storeActions.filter((a) => a.type === CLEAR_FEATURES).length).toBeGreaterThan(0);
 		});
 	});
 
@@ -212,9 +206,7 @@ describe('ManageModulesPlugin', () => {
 
 		expect(geoResourceServiceMock.byId).toHaveBeenCalledWith('42');
 
-		const actions = storeActions.filter(a =>
-			a.type === LAYER_ADDED &&
-			a.payload.id === 'module-georesource-42');
+		const actions = storeActions.filter((a) => a.type === LAYER_ADDED && a.payload.id === 'module-georesource-42');
 
 		expect(actions).toHaveSize(1);
 		expect(actions[0].payload).toEqual({
@@ -235,9 +227,7 @@ describe('ManageModulesPlugin', () => {
 		activateGeoResource('42');
 		activateGeoResource('42');
 
-		const actions = storeActions.filter(a =>
-			a.type === LAYER_ADDED &&
-			a.payload.id === 'module-georesource-42');
+		const actions = storeActions.filter((a) => a.type === LAYER_ADDED && a.payload.id === 'module-georesource-42');
 		expect(actions).toHaveSize(1);
 	});
 
@@ -250,15 +240,12 @@ describe('ManageModulesPlugin', () => {
 
 		deactivateGeoResource('42');
 
-		const actions = storeActions.filter(a =>
-			a.type === LAYER_REMOVED &&
-			a.payload === 'module-georesource-42');
+		const actions = storeActions.filter((a) => a.type === LAYER_REMOVED && a.payload === 'module-georesource-42');
 		expect(actions).toHaveSize(1);
 		expect(actions[0].payload).toEqual('module-georesource-42');
 	});
 
 	describe('processing of query parameter comp, ', () => {
-
 		it('opens ea module', async () => {
 			jasmine.clock().install();
 
@@ -274,8 +261,7 @@ describe('ManageModulesPlugin', () => {
 
 			jasmine.clock().tick(101);
 
-			const actions = storeActions.filter(a =>
-				a.type === SET_CURRENT_MODULE);
+			const actions = storeActions.filter((a) => a.type === SET_CURRENT_MODULE);
 			expect(actions).toHaveSize(1);
 			expect(actions[0].payload).toEqual(testCase.name);
 
@@ -285,20 +271,16 @@ describe('ManageModulesPlugin', () => {
 		it('emits error when "comp" value is invalid', async () => {
 			const store = setup();
 
-			const queryParam = QueryParameters.EA_MODULE + '=invalid' ;
+			const queryParam = QueryParameters.EA_MODULE + '=invalid';
 			spyOnProperty(windowMock.location, 'search').and.returnValue(queryParam);
 
 			const instanceUnderTest = new ManageModulesPlugin();
 			await instanceUnderTest.register(store);
 
-			const actions = storeActions.filter(a =>
-				a.type === NOTIFICATION_ADDED);
+			const actions = storeActions.filter((a) => a.type === NOTIFICATION_ADDED);
 			expect(actions).toHaveSize(1);
 			expect(actions[0].payload._payload.content).toEqual('No module: "invalid".');
 			expect(actions[0].payload._payload.level).toEqual(LevelTypes.ERROR);
-
 		});
 	});
-
-
 });

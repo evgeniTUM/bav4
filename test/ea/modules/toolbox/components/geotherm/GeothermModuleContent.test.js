@@ -7,17 +7,14 @@ import { TestUtils } from '../../../../../test-utils';
 
 window.customElements.define(GeothermModuleContent.tag, GeothermModuleContent);
 
-
 describe('GeothermModuleContent', () => {
-
 	const storeActions = [];
 
 	const configServiceMock = {
-		getValueAsPath() { }
+		getValueAsPath() {}
 	};
 
 	const setup = async (state) => {
-
 		storeActions.length = 0;
 
 		TestUtils.setupStoreAndDi(state, {
@@ -25,16 +22,12 @@ describe('GeothermModuleContent', () => {
 			geofeature: geofeatureReducer,
 			fnModuleComm: fnModuleCommReducer
 		});
-		$injector
-			.registerSingleton('TranslationService', { translate: (key) => key })
-			.registerSingleton('ConfigService', configServiceMock);
+		$injector.registerSingleton('TranslationService', { translate: (key) => key }).registerSingleton('ConfigService', configServiceMock);
 		return TestUtils.render(GeothermModuleContent.tag);
 	};
 
 	describe('class', () => {
-
 		it('inherits from AbstractModuleContent', async () => {
-
 			const element = await setup();
 
 			expect(element instanceof AbstractModuleContent).toBeTrue();
@@ -49,7 +42,5 @@ describe('GeothermModuleContent', () => {
 				header_title: 'toolbox_geotherm'
 			});
 		});
-
 	});
-
 });

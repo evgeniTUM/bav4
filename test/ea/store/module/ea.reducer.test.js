@@ -1,10 +1,21 @@
-import { activateGeoResource, activateLegend, activateWebAnalytics, clearPreviewGeoresourceId, deactivateAllGeoResources, deactivateGeoResource, deactivateLegend, deactivateWebAnalytics, setCurrentModule, setLegendItems, setMapResolution, setPreviewGeoresourceId } from '../../../../src/ea/store/module/ea.action';
+import {
+	activateGeoResource,
+	activateLegend,
+	activateWebAnalytics,
+	clearPreviewGeoresourceId,
+	deactivateAllGeoResources,
+	deactivateGeoResource,
+	deactivateLegend,
+	deactivateWebAnalytics,
+	setCurrentModule,
+	setLegendItems,
+	setMapResolution,
+	setPreviewGeoresourceId
+} from '../../../../src/ea/store/module/ea.action';
 import { eaReducer } from '../../../../src/ea/store/module/ea.reducer';
 import { TestUtils } from '../../../test-utils';
 
-
 describe('ea.reducer', () => {
-
 	const setup = (state) => {
 		return TestUtils.setupStoreAndDi(state, {
 			ea: eaReducer

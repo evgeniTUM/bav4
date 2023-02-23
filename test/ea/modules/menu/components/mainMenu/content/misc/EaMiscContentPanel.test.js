@@ -7,7 +7,6 @@ import { TestUtils } from '../../../../../../../test-utils';
 window.customElements.define(EaMiscContentPanel.tag, EaMiscContentPanel);
 
 describe('EaMiscContentPanel', () => {
-
 	const setup = () => {
 		TestUtils.setupStoreAndDi();
 		$injector.registerSingleton('TranslationService', { translate: (key) => key });
@@ -15,9 +14,7 @@ describe('EaMiscContentPanel', () => {
 	};
 
 	describe('class', () => {
-
 		it('inherits from AbstractContentPanel', async () => {
-
 			const element = await setup();
 
 			expect(element instanceof AbstractMvuContentPanel).toBeTrue();
@@ -29,7 +26,6 @@ describe('EaMiscContentPanel', () => {
 	});
 
 	describe('when initialized', () => {
-
 		it('renders the view', async () => {
 			const element = await setup();
 			expect(element.shadowRoot.querySelectorAll(ThemeToggle.tag)).toHaveSize(0);
@@ -62,7 +58,6 @@ describe('EaMiscContentPanel', () => {
 			expect(links[2].title).toEqual('ea_menu_misc_content_panel_newsletter_tooltip');
 			expect(links[2].querySelector('.ba-list-item__text').innerText).toEqual('ea_menu_misc_content_panel_newsletter');
 
-
 			expect(links[3].href).toEqual('https://www.energieatlas.bayern.de/service/impressum.html');
 			expect(links[3].target).toEqual('_blank');
 			expect(links[3].title).toEqual('ea_menu_misc_content_panel_imprint_tooltip');
@@ -73,7 +68,6 @@ describe('EaMiscContentPanel', () => {
 			expect(links[4].title).toEqual('ea_menu_misc_content_panel_contact_tooltip');
 			expect(links[4].querySelector('.ba-list-item__text').innerText).toEqual('ea_menu_misc_content_panel_contact');
 
-
 			expect(links[5].href).toEqual('https://www.energieatlas.bayern.de/service/datenschutz.html');
 			expect(links[5].target).toEqual('_blank');
 			expect(links[5].title).toEqual('ea_menu_misc_content_panel_privacy_policy_tooltip');
@@ -83,7 +77,6 @@ describe('EaMiscContentPanel', () => {
 			expect(links[6].target).toEqual('_blank');
 			expect(links[6].title).toEqual('ea_menu_misc_content_panel_terms_of_use_tooltip');
 			expect(links[6].querySelector('.ba-list-item__text').innerText).toEqual('ea_menu_misc_content_panel_terms_of_use');
-
 
 			expect(links[7].href).toEqual('https://www.energieatlas.bayern.de/infos_schriftgroesse');
 			expect(links[7].target).toEqual('_blank');
@@ -104,7 +97,6 @@ describe('EaMiscContentPanel', () => {
 			expect(links[10].target).toEqual('_blank');
 			expect(links[10].querySelector('.ba-list-item__primary-text').innerText).toEqual('menu_misc_content_panel_gp_header');
 			expect(links[10].querySelector('.ba-list-item__secondary-text').innerText).toEqual('menu_misc_content_panel_gp_text');
-
 		});
 		it('collapses all sections init', async () => {
 			const element = await setup();
@@ -115,5 +107,4 @@ describe('EaMiscContentPanel', () => {
 			});
 		});
 	});
-
 });

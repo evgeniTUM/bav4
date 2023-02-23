@@ -1,11 +1,9 @@
 import { AbstractModuleContent } from '../moduleContainer/AbstractModuleContent';
 
-
 export class GeothermModuleContent extends AbstractModuleContent {
-
 	/**
-	* @override
-	*/
+	 * @override
+	 */
 	getConfig() {
 		const translate = (key) => this._translationService.translate(key);
 
@@ -14,7 +12,6 @@ export class GeothermModuleContent extends AbstractModuleContent {
 			module: GeothermModuleContent.name,
 			frame_id: 'geotherm_iframe',
 			header_title: translate('toolbox_geotherm')
-
 		};
 	}
 

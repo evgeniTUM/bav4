@@ -8,7 +8,6 @@ import { $injector } from '../../injection/';
  * @author kun
  */
 export class EaInfoPopupService {
-
 	constructor(provider = loadInfoPopup) {
 		this._provider = provider;
 		this._infoPopupResult;
@@ -17,22 +16,20 @@ export class EaInfoPopupService {
 	}
 
 	/**
-	* Returns the corresponding  {@link InfoPopupResult} if present in the internal cache, otherwise retrieved from backend.
-	* @public
-	* @returns {InfoPopupResult | null }
-	* @throws Will throw an error if the provider result is wrong and pass it to the view.
-	*/
+	 * Returns the corresponding  {@link InfoPopupResult} if present in the internal cache, otherwise retrieved from backend.
+	 * @public
+	 * @returns {InfoPopupResult | null }
+	 * @throws Will throw an error if the provider result is wrong and pass it to the view.
+	 */
 	async loadInfoPopupResult() {
 		if (!this._infoPopupResult) {
 			try {
 				this._infoPopupResult = await this._provider();
-			}
-			catch (e) {
+			} catch (e) {
 				if (this._environmentService.isStandalone()) {
 					console.warn('infoPopup could not be fetched from backend. Using fallback');
 					this._infoPopupResult = this._infoPopupResult = this._newFallbackGeoResourceInfo();
-				}
-				else {
+				} else {
 					throw new Error('Could not load infoPopupResult from provider: ' + e.message);
 				}
 			}
@@ -51,18 +48,16 @@ export class EaInfoPopupService {
 }
 
 /**
-* @class
-* @author kun
-*/
+ * @class
+ * @author kun
+ */
 export class InfoPopupResult {
-
 	/**
 	 *
 	 * @param {string} url of this InfoPopupResult
 	 * @param {string} [title=null] optional title of this InfoPopupResult
 	 */
 	constructor(key = null, title, url) {
-
 		this._key = key;
 		this._title = title;
 		this._url = url;
@@ -80,4 +75,3 @@ export class InfoPopupResult {
 		return this._title;
 	}
 }
-

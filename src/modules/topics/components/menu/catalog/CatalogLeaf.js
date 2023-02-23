@@ -15,7 +15,6 @@ import css from './catalogLeaf.css';
  * @author costa_gi
  */
 export class CatalogLeaf extends AbstractContentPanel {
-
 	constructor() {
 		super();
 
@@ -23,8 +22,7 @@ export class CatalogLeaf extends AbstractContentPanel {
 			GeoResourceService: geoResourceService,
 			TranslationService: translationService,
 			WmsCapabilitiesService: wmsCapabilitiesService
-		}
-			= $injector.inject('GeoResourceService', 'TranslationService', 'WmsCapabilitiesService');
+		} = $injector.inject('GeoResourceService', 'TranslationService', 'WmsCapabilitiesService');
 
 		this._geoResourceService = geoResourceService;
 		this._translationService = translationService;
@@ -38,14 +36,11 @@ export class CatalogLeaf extends AbstractContentPanel {
 		this.updateState();
 	}
 
-
 	createView(state) {
-
 		const { layersStoreReady, checked, geoResourceId } = state;
 		const translate = (key) => this._translationService.translate(key);
 
 		if (geoResourceId && layersStoreReady) {
-
 			const geoR = this._geoResourceService.byId(geoResourceId);
 			const label = geoR ? geoR.label : geoResourceId;
 			const title = geoR ? geoR.label : translate('topics_catalog_leaf_no_georesource_title');
@@ -53,8 +48,7 @@ export class CatalogLeaf extends AbstractContentPanel {
 			const onToggle = (event) => {
 				if (event.detail.checked) {
 					addLayer(geoR.id);
-				}
-				else {
+				} else {
 					removeLayer(geoR.id);
 				}
 			};
@@ -74,21 +68,36 @@ export class CatalogLeaf extends AbstractContentPanel {
 
 			const validResolution = checkIfResolutionValid(geoResourceId, this, state.mapResolution);
 
-			const createTitle = (text, validResolution) =>
-				validResolution ? text : translate('ea_mainmenu_layer_not_visible');
-
+			const createTitle = (text, validResolution) => (validResolution ? text : translate('ea_mainmenu_layer_not_visible'));
 
 			return html`
-			<style>
-			${css}		
-			</style>
-			<span class="ba-list-item" @mouseenter=${onMouseEnter} @mouseleave=${onMouseLeave}>		
-					<ba-checkbox class="ba-list-item__text" @toggle=${onToggle}  .disabled=${!geoR || (!validResolution)} .checked=${checked} tabindex='0' .title=${createTitle(title, validResolution)}><span>${label}</span></ba-checkbox>						
-					<div class="ba-icon-button ba-list-item__after vertical-center separator">									                                                                                          
-						<ba-icon id='info' data-test-id .icon='${infoSvg}' .color=${'var(--primary-color)'} .color_hover=${'var(--text3)'} .size=${2} .title=${translate('layerManager_move_up')} @click=${openGeoResourceInfoPanel}></ba-icon>                    							 
+				<style>
+					${css}
+				</style>
+				<span class="ba-list-item" @mouseenter=${onMouseEnter} @mouseleave=${onMouseLeave}>
+					<ba-checkbox
+						class="ba-list-item__text"
+						@toggle=${onToggle}
+						.disabled=${!geoR || !validResolution}
+						.checked=${checked}
+						tabindex="0"
+						.title=${createTitle(title, validResolution)}
+						><span>${label}</span></ba-checkbox
+					>
+					<div class="ba-icon-button ba-list-item__after vertical-center separator">
+						<ba-icon
+							id="info"
+							data-test-id
+							.icon="${infoSvg}"
+							.color=${'var(--primary-color)'}
+							.color_hover=${'var(--text3)'}
+							.size=${2}
+							.title=${translate('layerManager_move_up')}
+							@click=${openGeoResourceInfoPanel}
+						></ba-icon>
 					</div>
 				</span>
-        	`;
+			`;
 		}
 		return nothing;
 	}
@@ -101,11 +110,10 @@ export class CatalogLeaf extends AbstractContentPanel {
 		} = globalState;
 
 		const geoResourceId = this._catalogPart ? this._catalogPart.geoResourceId : null;
-		const checked = geoResourceId ? activeLayers.map(layer => layer.geoResourceId).includes(geoResourceId) : false;
+		const checked = geoResourceId ? activeLayers.map((layer) => layer.geoResourceId).includes(geoResourceId) : false;
 
 		return { layersStoreReady, geoResourceId, checked, mapResolution };
 	}
-
 
 	static get tag() {
 		return 'ba-catalog-leaf';

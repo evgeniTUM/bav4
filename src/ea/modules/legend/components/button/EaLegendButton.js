@@ -6,7 +6,6 @@ import { activateLegend, deactivateLegend } from '../../../../store/module/ea.ac
 import css from './eaLegendButton.css';
 
 export class EaLegendButton extends BaElement {
-
 	constructor() {
 		super();
 		const { TranslationService } = $injector.inject('TranslationService');
@@ -22,8 +21,7 @@ export class EaLegendButton extends BaElement {
 		const onClick = () => {
 			if (active) {
 				deactivateLegend();
-			}
-			else {
+			} else {
 				activateLegend();
 			}
 		};
@@ -38,19 +36,23 @@ export class EaLegendButton extends BaElement {
 			active: active
 		};
 		return html`
-		<style>${css}</style> 
-		<div class='legend'>
-			<button class='legend-button ${classMap(classes)}' @click=${onClick} title=${title} >
-			<i class="icon legend-icon"></i></button>
-		</div>
+			<style>
+				${css}
+			</style>
+			<div class="legend">
+				<button class="legend-button ${classMap(classes)}" @click=${onClick} title=${title}>
+					<i class="icon legend-icon"></i>
+				</button>
+			</div>
 		`;
 	}
 
 	extractState(globalState) {
-		const { ea: { legendActive } } = globalState;
+		const {
+			ea: { legendActive }
+		} = globalState;
 		return { active: legendActive };
 	}
-
 
 	static get tag() {
 		return 'ea-legend-button';

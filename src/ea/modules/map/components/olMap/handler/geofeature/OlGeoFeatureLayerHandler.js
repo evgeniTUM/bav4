@@ -20,11 +20,14 @@ export const GEO_FEATURE_LAYER_ID = 'geofeature_layer';
  * @author kun
  */
 export class OlGeoFeatureLayerHandler extends OlLayerHandler {
-
 	constructor() {
 		super(GEO_FEATURE_LAYER_ID, { preventDefaultClickHandling: false, preventDefaultContextClickHandling: false });
-		const { StoreService, CoordinateService, MapService, TranslationService } = $injector
-			.inject('StoreService', 'CoordinateService', 'MapService', 'TranslationService');
+		const { StoreService, CoordinateService, MapService, TranslationService } = $injector.inject(
+			'StoreService',
+			'CoordinateService',
+			'MapService',
+			'TranslationService'
+		);
 
 		this._translationService = TranslationService;
 		this._storeService = StoreService;
@@ -47,9 +50,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 	 * @override
 	 */
 	onActivate(olMap) {
-
 		const createLayer = () => {
-
 			const source = new VectorSource({ wrapX: false });
 			const layer = new VectorLayer({
 				source: source
@@ -57,7 +58,6 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 			layer.label = 'geofeatures-layer';
 			return layer;
 		};
-
 
 		const getOrCreateLayer = () => {
 			const layer = createLayer();
@@ -86,7 +86,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 		deactivateMapClick();
 		this._helpTooltip.deactivate();
 
-		this._registeredObservers.forEach(unsubscribe => unsubscribe());
+		this._registeredObservers.forEach((unsubscribe) => unsubscribe());
 
 		unByKey(this._listeners);
 
@@ -94,9 +94,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 		this._vectorLayer = null;
 	}
 
-
 	_setup(store) {
-
 		const onMapClick = (event) => {
 			const state = store.getState();
 
@@ -117,8 +115,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 				setMapCursorStyle('crosshair');
 				this._options.preventDefaultClickHandling = true;
 				this._options.preventDefaultContextClickHandling = true;
-			}
-			else {
+			} else {
 				this._helpTooltip.deactivate();
 				setMapCursorStyle('auto');
 				this._options.preventDefaultClickHandling = false;
@@ -127,7 +124,6 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 		};
 
 		const onChange = ({ layers }) => {
-
 			const toOlFeature = (data, draggable) => {
 				const feature = new GeoJSON().readFeature(data);
 				feature.getGeometry().transform('EPSG:' + 4326, 'EPSG:' + this._mapService.getSrid());
@@ -141,7 +137,10 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 			};
 
 			const zoomToLayer = (layer) => {
-				const extentFeatures = layer.getSource().getFeatures().filter(f => f.expandTo);
+				const extentFeatures = layer
+					.getSource()
+					.getFeatures()
+					.filter((f) => f.expandTo);
 				if (extentFeatures.length === 0) {
 					return;
 				}
@@ -156,8 +155,7 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 
 			this._vectorLayer.getSource().clear();
 
-			const olFeatures = layers.map(l => l.features.map(f => toOlFeature(f, l.draggable)))
-				.flat();
+			const olFeatures = layers.map((l) => l.features.map((f) => toOlFeature(f, l.draggable))).flat();
 
 			if (olFeatures.length === 0) {
 				return;
@@ -166,12 +164,11 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 			this._vectorLayer.getSource().addFeatures(olFeatures);
 
 			zoomToLayer(this._vectorLayer);
-
 		};
 
 		this._registeredObservers = [
-			observe(store, state => state.geofeature, onChange),
-			observe(store, state => state.mapclick.active, onMapclickActivate)
+			observe(store, (state) => state.geofeature, onChange),
+			observe(store, (state) => state.mapclick.active, onMapclickActivate)
 		];
 	}
 }

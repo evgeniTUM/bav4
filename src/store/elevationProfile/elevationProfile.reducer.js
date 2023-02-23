@@ -21,14 +21,14 @@ export const elevationProfileReducer = (state = initialState, action) => {
 			const { active, coordinates = [] } = payload;
 			return coordinates.length
 				? {
-					...state,
-					coordinates: [...coordinates],
-					active: active
-				}
+						...state,
+						coordinates: [...coordinates],
+						active: active
+				  }
 				: {
-					...state,
-					active: active
-				};
+						...state,
+						active: active
+				  };
 		}
 		case ELEVATION_PROFILE_COORDINATES_CHANGED: {
 			return {

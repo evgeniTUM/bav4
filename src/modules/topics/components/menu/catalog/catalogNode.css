@@ -1,5 +1,5 @@
 .ba-section {
-	--secondary-color: var(--topic-theme, var(--secondary-color-theme));				  
+	--secondary-color: var(--topic-theme, var(--secondary-color-theme));
 }
 
 .non-selectable {

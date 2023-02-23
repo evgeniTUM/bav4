@@ -120,7 +120,7 @@ button:hover {
 }
 
 .button-container button {
-	padding: .5em 0.9em;
+	padding: 0.5em 0.9em;
 	background: var(--primary-color);
 	color: var(--text3);
 	border-color: var(--primary-color-lighter);
@@ -155,7 +155,7 @@ button:hover {
 }
 
 .subtext {
-	color: inherit; 
+	color: inherit;
 	font-weight: normal;
 	font-size: small;
 }
@@ -182,7 +182,7 @@ button:hover {
 }
 
 .form-buttons button {
-	padding: .5em 0.9em;
+	padding: 0.5em 0.9em;
 	background: var(--primary-color);
 	color: var(--text3);
 	border-color: var(--primary-color-lighter);

@@ -1,16 +1,13 @@
 import { AbstractModuleContent } from '../moduleContainer/AbstractModuleContent';
 
-
-
 /**
  * @class
  * @author kunze_ge
  */
 export class MixerModuleContent extends AbstractModuleContent {
-
 	/**
-	* @override
-	*/
+	 * @override
+	 */
 	getConfig() {
 		const translate = (key) => this._translationService.translate(key);
 
@@ -19,7 +16,6 @@ export class MixerModuleContent extends AbstractModuleContent {
 			module: MixerModuleContent.name,
 			frame_id: 'mixer_iframe',
 			header_title: translate('toolbox_mixer_header')
-
 		};
 	}
 

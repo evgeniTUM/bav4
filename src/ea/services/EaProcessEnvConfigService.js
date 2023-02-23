@@ -1,4 +1,3 @@
-
 import { ProcessEnvConfigService } from '../../services/ProcessEnvConfigService';
 /**
  * customized Service for external configuration properties.
@@ -6,7 +5,6 @@ import { ProcessEnvConfigService } from '../../services/ProcessEnvConfigService'
  * @author kunze_ge
  */
 export class EaProcessEnvConfigService extends ProcessEnvConfigService {
-
 	constructor() {
 		super();
 		// eslint-disable-next-line no-undef

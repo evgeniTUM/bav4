@@ -7,8 +7,7 @@ import { InfoPopupResult } from '../EaInfoPopupService';
  * @returns {Promise<GeoResourceInfoResult>}
  */
 export const loadInfoPopup = async () => {
-	const { HttpService: httpService,
-		ConfigService: configService } = $injector.inject('HttpService', 'ConfigService');
+	const { HttpService: httpService, ConfigService: configService } = $injector.inject('HttpService', 'ConfigService');
 
 	const loadInternal = async () => {
 		const url = `${configService.getValueAsPath('BACKEND_URL')}infoiframe`;

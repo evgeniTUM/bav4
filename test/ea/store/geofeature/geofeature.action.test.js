@@ -1,7 +1,6 @@
 import { GeoFeatureTypes } from '../../../../src/ea/store/geofeature/geofeature.action';
 
 describe('geofeature action', () => {
-
 	it('exports a GeoFeatureTypes enum', () => {
 		expect(Object.keys(GeoFeatureTypes).length).toBe(3);
 		expect(GeoFeatureTypes.DEFAULT).toBe(0);
