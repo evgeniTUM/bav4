@@ -7,12 +7,12 @@ const protoTest = function () {
 };
 
 //tests
-describe('Function Injection', () => {
-	it('Has http service', () => {
+describe('Function based Injection', () => {
+	it('has http service', () => {
 		expect(protoTest().HttpService).toBe(http);
 	});
 
-	it('Has router service', () => {
+	it('has router service', () => {
 		expect(protoTest().RouterService).toBe(router);
 	});
 });

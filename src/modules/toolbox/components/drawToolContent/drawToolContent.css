@@ -3,6 +3,7 @@
 	display: flex;
 	justify-content: center;
 }
+
 .tool-container__buttons > button {
 	position: relative;
 	background: transparent;
@@ -13,9 +14,11 @@
 	border: 0;
 	border-right: 1px dotted var(--header-background-color);
 }
+
 .tool-container__buttons > button:last-child {
 	border-right: none;
 }
+
 .tool-container__background {
 	height: 0em;
 	width: 0em;
@@ -26,12 +29,14 @@
 	transform: translate(-50%, -50%);
 	top: 1.8em;
 }
+
 .is-active .tool-container__background {
 	height: 3.4em;
 	width: 3.4em;
 	background-color: var(--primary-color) !important;
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 0 0 0.2em var(--primary-color-lighter);
 }
+
 .tool-container__icon {
 	background: var(--primary-color);
 	-webkit-mask-size: cover;
@@ -45,26 +50,32 @@
 .is-active .tool-container__icon {
 	background: var(--text3);
 }
+
 .tool-container__button:hover:not(.disabled-tool__button) .tool-container__background {
 	height: 3.4em;
 	width: 3.4em;
 	background-color: var(--secondary-color);
 }
+
 .tool-container__button:hover:not(.disabled-tool__button) .tool-container__icon {
 	background: var(--text3);
 }
+
 .tool-container__button:focus-visible:not(.disabled-tool__button) .tool-container__background {
 	height: 3.4em;
 	width: 3.4em;
 	background-color: var(--secondary-color);
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 0 0 0.2em var(--primary-color-lighter);
 }
+
 .tool-container__button:focus-visible {
 	box-shadow: none;
 }
+
 .tool-container__button:focus-visible:not(.disabled-tool__button) .tool-container__icon {
 	background: var(--text3);
 }
+
 .tool-container__button-text {
 	font-size: 0.8rem;
 	margin: 5.5em 0.3em 0.5em 0.3em;
@@ -72,34 +83,43 @@
 	text-align: center;
 	min-width: 5em;
 }
+
 ba-checkbox:focus {
 	box-shadow: none;
 }
+
 .preview_button {
 	width: 100%;
 	padding: 0.8em 1.5em;
 }
+
 .tool-container__checkbox {
 	font-size: 0.9rem;
 }
+
 .disclaimer-text {
 	text-align: justify;
 }
+
 .divider {
 	border-bottom: 1px solid var(--header-background-color);
 }
+
 .line {
 	mask-image: url('assets/line.svg');
 	-webkit-mask-image: url('assets/line.svg');
 }
+
 .symbol {
 	mask-image: url('assets/symbol.svg');
 	-webkit-mask-image: url('assets/symbol.svg');
 }
+
 .text {
 	mask-image: url('assets/text.svg');
 	-webkit-mask-image: url('assets/text.svg');
 }
+
 .polygon {
 	mask-image: url('assets/polygon.svg');
 	-webkit-mask-image: url('assets/polygon.svg');
@@ -108,6 +128,7 @@ ba-checkbox:focus {
 .tool-container__info {
 	/* padding: 0 1.5em .8em; */
 }
+
 .tool-container__form label {
 	min-width: 7em;
 	margin: auto 0;
@@ -129,6 +150,16 @@ ba-checkbox:focus {
 .tool-container__style_desc textarea,
 .tool-container__style_size select {
 	flex-grow: 1;
+}
+
+/*TODO: move to main.css/mvuElement.css*/
+.chips__container {
+	display: flex;
+	justify-content: center;
+	flex-flow: wrap;
+	gap: 0.5em 0.8em;
+	padding: 1em 0.8em;
+	border-bottom: 1px solid var(--header-background-color);
 }
 
 .attribute-container {
@@ -175,11 +206,13 @@ input[color] {
 	mask: url('assets/textAA.svg');
 	-webkit-mask-image: url('assets/textAA.svg');
 }
+
 .color-input__line {
 	mask: url('assets/line.svg');
 	-webkit-mask-image: url('assets/line.svg');
 	transform: scale(0.6);
 }
+
 .color-input__polygon {
 	mask: url('assets/polygon.svg');
 	-webkit-mask-image: url('assets/polygon.svg');
@@ -233,9 +266,11 @@ ba-iconselect {
 .large {
 	transform: scale(0.8);
 }
+
 .medium {
 	transform: scale(0.65);
 }
+
 .small {
 	transform: scale(0.4);
 }
@@ -277,6 +312,7 @@ ba-iconselect {
 	transform: rotate(90deg);
 	transition: all var(--animation-duration-large-open) var(--animation-easing-open);
 }
+
 .sub-header:hover .icon {
 	filter: brightness(0.8);
 }
@@ -312,48 +348,63 @@ ba-iconselect {
 .black {
 	background: black;
 }
+
 .grey {
 	background: grey;
 }
+
 .maroon {
 	background: maroon;
 }
+
 .red {
 	background: red;
 }
+
 .green {
 	background: green;
 }
+
 .lime {
 	background: lime;
 }
+
 .olive {
 	background: olive;
 }
+
 .yellow {
 	background: yellow;
 }
+
 .navy {
 	background: navy;
 }
+
 .blue {
 	background: blue;
 }
+
 .purple {
 	background: purple;
 }
+
 .fuchsia {
 	background: fuchsia;
 }
+
 .teal {
 	background: teal;
 }
+
 .aqua {
 	background: aqua;
 }
+
 .silver {
 	background: silver;
 }
+
 .white {
 	background: white;
 }

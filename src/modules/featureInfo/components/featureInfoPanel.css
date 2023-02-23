@@ -127,6 +127,19 @@ img {
 	color: var(--primary-color) 0.3;
 }
 
+.content {
+	margin: 0 0 1em 0;
+}
+
+.chips__container {
+	display: flex;
+	justify-content: flex-start;
+	flex-flow: wrap;
+	gap: 0.5em 0.8em;
+	padding: 1em 0;
+	border-bottom: 1px solid var(--header-background-color);
+}
+
 /* just for grundsteuer release, should be removed later */
 .grundsteuer p {
 	padding: 0 0 0.8em 0;

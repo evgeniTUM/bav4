@@ -1,12 +1,12 @@
 <p align="center">
-   <img src="https://raw.githubusercontent.com/ldbv-by/bav4-nomigration/master/logo.svg" height="128">
+   <img src="https://raw.githubusercontent.com/ldbv-by/bav4/master/logo.svg" height="128">
 </p>
 <h1 align="center">
    BayernAtlas v4 <br><br>
 
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ldbv-by/bav4-nomigration/node.js.yml?branch=master&style=for-the-badge)](https://github.com/ldbv-by/bav4-nomigration/actions/workflows/node.js.yml?query=branch%3Amaster)
-[![Coveralls branch](https://img.shields.io/coveralls/github/ldbv-by/bav4-nomigration/master?style=for-the-badge)](https://coveralls.io/github/ldbv-by/bav4-nomigration?branch=master)
-[![GitHub](https://img.shields.io/github/license/ldbv-by/bav4-nomigration?color=blue&style=for-the-badge)](http://www.apache.org/licenses/LICENSE-2.0)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ldbv-by/bav4/node.js.yml?branch=master&style=for-the-badge)](https://github.com/ldbv-by/bav4/actions/workflows/node.js.yml?query=branch%3Amaster)
+[![Coveralls branch](https://img.shields.io/coveralls/github/ldbv-by/bav4/master?style=for-the-badge)](https://coveralls.io/github/ldbv-by/bav4?branch=master)
+[![GitHub](https://img.shields.io/github/license/ldbv-by/bav4?color=blue&style=for-the-badge)](http://www.apache.org/licenses/LICENSE-2.0)
 
 </h1>
 
@@ -73,29 +73,33 @@ To enable the showcase component, the `SOFTWARE_INFO` property must be set.
 
 ### List of npm scripts
 
-| Run/Build                   |                                                                                                                                                                                                                                                              |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `npm run start`             | Compiles and hot-reloads for development. Will serve the project under `http://localhost:8080` (or the next available port if `8080` is already used, see console output)                                                                                    |
-| `npm run start:nohostcheck` | Compiles and hot-reloads for development. Will serve the project under `http://0.0.0.0:8080` (or the next available port if `8080` is already used, see console output) with disabled host checking so that the application is reachable from another device |
-| `npm run build:dev`         | Compiles all files without bundling and minification                                                                                                                                                                                                         |
-| `npm run build:prod`        | Compiles and minifies for production                                                                                                                                                                                                                         |
+<!-- prettier-ignore -->
+| Run/Build | |
+|----|----|
+| `npm run start` | Compiles and hot-reloads for development. Will serve the project under `http://localhost:8080` (or the next available port if `8080` is already used, see console output) |
+| `npm run start:nohostcheck` | Compiles and hot-reloads for development. Will serve the project under `http://0.0.0.0:8080` (or the next available port if `8080` is already used, see console output) with disabled host checking so that the application is reachable from another device|
+| `npm run build:dev` | Compiles all files without bundling and minification |
+| `npm run build:prod` | Compiles and minifies for production |
 
-| Test                  | Tests can be run against multiple browsers. Available browsers are `ChromeHeadless`, `FirefoxHeadless`, `WebkitHeadless`.                                                                                                                |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `npm run test`        | Runs unit and component tests against all available browsers. A (combined) code coverage report can be found under `./coverage/lcov-report`. Target browsers can be individually specified by the `--browsers` option (comma-seperated). |
-| `npm run test:single` | Runs a single test. Usage `npm run test:single --spec=MyTest.test.js `. The target browser can be individually specified by the `--browser` option. Default is `FirefoxHeadless`                                                         |
-| `npm run test:debug`  | Runs unit and component tests against headless Chrome (Chromium) with remote debugging enabled                                                                                                                                           |
+<!-- prettier-ignore -->
+| Test | Tests can be run against multiple browsers. Available browsers are `ChromeHeadless`, `FirefoxHeadless`, `WebkitHeadless`. |
+|----|----|
+| `npm run test` | Runs unit and component tests against all available browsers. A (combined) code coverage report can be found under  `./coverage/lcov-report`. Target browsers can be individually specified by the `--browsers` option (comma-seperated).  |
+| `npm run test:single` | Runs a single test. Usage `npm run test:single --spec=MyTest.test.js `. The target browser can be individually specified by the `--browser` option. Default is `FirefoxHeadless` |
+| `npm run test:debug` | Runs unit and component tests against headless Chrome (Chromium) with remote debugging enabled |
 
-| E2E Test                     | E2E tests are based on Playwright and can be run against multiple browsers. Available browsers are `chromium`, `firefox`, `webkit`. |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `npm run e2e`                | Runs E2E tests against all available browsers. A single browser can be individually specified by the `--browser` option             |
-| `npx playwright test --help` | Shows information about all options                                                                                                 |
+<!-- prettier-ignore -->
+| E2E Test | E2E tests are based on Playwright and can be run against multiple browsers. Available browsers are `chromium`, `firefox`, `webkit`. |
+|----|----|
+| `npm run e2e` | Runs E2E tests against all available browsers. A single browser can be individually specified by the `--browser` option |
+| `npx playwright test --help` | Shows information about all options |
 
 | Other                    |                                                                                 |
 | ------------------------ | ------------------------------------------------------------------------------- |
 | `npm run lint`           | Lints and fixes js and css files                                                |
+| `npm run prettier`       | Formats all code files                                                          |
+| `npm run es-check`       | Checks if js files use only allowed es-version language features                |
 | `npm run doc`            | Generates jsdoc files (see: `./docs`)                                           |
-| `npm run es-check`       | Checks if source files use only allowed es-version language features            |
 | `npm run analyze-bundle` | Visualize the size of webpack output files with an interactive zoomable treemap |
 
 ### Available Pages

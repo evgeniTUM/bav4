@@ -1,6 +1,6 @@
 import { FeatureInfoGeometryTypes } from '../../../../store/featureInfo/featureInfo.action';
 import GeoJSON from 'ol/format/GeoJSON';
-import { getStats } from '../../utils/olGeometryUtils';
+import { getLineString, getStats } from '../../utils/olGeometryUtils';
 import { $injector } from '../../../../injection';
 import { html } from 'lit-html';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
@@ -25,12 +25,15 @@ export const getBvvFeatureInfo = (olFeature, layerProperties) => {
 		fromProjection: 'EPSG:' + mapService.getSrid(),
 		toProjection: 'EPSG:' + mapService.getDefaultGeodeticSrid()
 	});
-
+	const elevationProfileCoordinates = getLineString(olFeature.getGeometry())?.getCoordinates() ?? [];
 	const getContent = () => {
 		const descContent = olFeature.get('description') || olFeature.get('desc');
-		const geometryContent = html`<ba-geometry-info .statistics=${stats}></ba-geometry-info>`;
+		const geometryContent = html`</div><ba-geometry-info .statistics=${stats}></ba-geometry-info><div class='chips__container'><ba-profile-chip .coordinates=${elevationProfileCoordinates}></ba-profile-chip>`;
 
-		return descContent ? html`${unsafeHTML(securityService.sanitizeHtml(descContent))}${geometryContent}` : html`${geometryContent}`;
+		return descContent
+			? html`<div class="content">${unsafeHTML(securityService.sanitizeHtml(descContent))}</div>
+					${geometryContent}`
+			: html`${geometryContent}`;
 	};
 
 	const geoRes = geoResourceService.byId(layerProperties.geoResourceId);

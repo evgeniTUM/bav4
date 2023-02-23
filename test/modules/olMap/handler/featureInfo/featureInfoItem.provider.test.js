@@ -89,6 +89,7 @@ describe('FeatureInfo provider', () => {
 				});
 				expect(target.innerText).toBe('');
 				expect(target.querySelector('ba-geometry-info')).toBeTruthy();
+				expect(target.querySelector('ba-profile-chip')).toBeTruthy();
 
 				//no name property, but description property
 				feature = new Feature({ geometry: new Point(coordinate) });
@@ -102,8 +103,9 @@ describe('FeatureInfo provider', () => {
 					content: jasmine.any(Object),
 					geometry: expectedFeatureInfoGeometry
 				});
-				expect(target.innerText).toBe('description');
+				expect(target.querySelector('.content').innerText).toBe('description');
 				expect(target.querySelector('ba-geometry-info')).toBeTruthy();
+				expect(target.querySelector('ba-profile-chip')).toBeTruthy();
 
 				//no name property, but desc property
 				feature = new Feature({ geometry: new Point(coordinate) });
@@ -117,8 +119,9 @@ describe('FeatureInfo provider', () => {
 					content: jasmine.any(Object),
 					geometry: expectedFeatureInfoGeometry
 				});
-				expect(target.innerText).toBe('desc');
+				expect(target.querySelector('.content').innerText).toBe('desc');
 				expect(target.querySelector('ba-geometry-info')).toBeTruthy();
+				expect(target.querySelector('ba-profile-chip')).toBeTruthy();
 			});
 
 			it('should sanitize description content', () => {

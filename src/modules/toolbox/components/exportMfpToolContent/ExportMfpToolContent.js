@@ -192,7 +192,6 @@ export class ExportMfpToolContent extends AbstractToolContent {
 			</div>
 			<div class="tool-section" style="margin-top:1em">
 				<div class="tool-sub-header">${translate('toolbox_exportMfp_scale')}</div>
-
 				<div style="display: flex; justify-content: center">
 					<ba-icon
 						id="decrease"

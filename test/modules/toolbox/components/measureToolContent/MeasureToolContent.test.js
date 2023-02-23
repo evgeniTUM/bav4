@@ -9,14 +9,17 @@ import { modalReducer } from '../../../../../src/store/modal/modal.reducer';
 import { sharedReducer } from '../../../../../src/store/shared/shared.reducer';
 import { measurementReducer } from '../../../../../src/store/measurement/measurement.reducer';
 import { ShareButton } from '../../../../../src/modules/toolbox/components/shareButton/ShareButton';
+import { ElevationProfileChip } from '../../../../../src/modules/chips/components/assistChips/ElevationProfileChip';
 import { notificationReducer } from '../../../../../src/store/notifications/notifications.reducer';
 import { LevelTypes } from '../../../../../src/store/notifications/notifications.action';
 import { isString } from '../../../../../src/utils/checks';
 import { TEST_ID_ATTRIBUTE_NAME } from '../../../../../src/utils/markup';
+import { elevationProfileReducer } from '../../../../../src/store/elevationProfile/elevationProfile.reducer';
 
 window.customElements.define(ShareButton.tag, ShareButton);
 window.customElements.define(MeasureToolContent.tag, MeasureToolContent);
 window.customElements.define(Checkbox.tag, Checkbox);
+window.customElements.define(ElevationProfileChip.tag, ElevationProfileChip);
 window.customElements.define(Icon.tag, Icon);
 
 describe('MeasureToolContent', () => {
@@ -75,7 +78,8 @@ describe('MeasureToolContent', () => {
 			measurement: measurementReducer,
 			modal: modalReducer,
 			shared: sharedReducer,
-			notifications: notificationReducer
+			notifications: notificationReducer,
+			elevationProfile: elevationProfileReducer
 		});
 		$injector
 			.registerSingleton('EnvironmentService', {
@@ -222,6 +226,19 @@ describe('MeasureToolContent', () => {
 			expect(element.shadowRoot.querySelector('#span-area-unit').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 			expect(element.shadowRoot.querySelector('#span-area-unit').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 			expect(element.shadowRoot.querySelector('#remove').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
+		});
+
+		it('contains elevation profile chip', async () => {
+			const state = {
+				measurement: {
+					statistic: { length: 42, area: 0 },
+					reset: null,
+					remove: null
+				}
+			};
+			const element = await setup(state);
+
+			expect(element.shadowRoot.querySelectorAll('ba-profile-chip')).toHaveSize(1);
 		});
 
 		it('shows only the lenght measurement statistics', async () => {

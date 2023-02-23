@@ -46,6 +46,7 @@ export class OlMap extends MvuElement {
 			OlGeolocationHandler: geolocationHandler,
 			OlHighlightLayerHandler: olHighlightLayerHandler,
 			OlFeatureInfoHandler: olFeatureInfoHandler,
+			ElevationProfileHandler: elevationProfileHandler,
 			OlMfpHandler: olMfpHandler
 		} = $injector.inject(
 			'MapService',
@@ -58,6 +59,7 @@ export class OlMap extends MvuElement {
 			'OlGeolocationHandler',
 			'OlHighlightLayerHandler',
 			'OlFeatureInfoHandler',
+			'ElevationProfileHandler',
 			'OlMfpHandler'
 		);
 
@@ -74,7 +76,10 @@ export class OlMap extends MvuElement {
 			[olDrawHandler.id, olDrawHandler],
 			[olMfpHandler.id, olMfpHandler]
 		]);
-		this._mapHandler = new Map([[olFeatureInfoHandler.id, olFeatureInfoHandler]]);
+		this._mapHandler = new Map([
+			[olFeatureInfoHandler.id, olFeatureInfoHandler],
+			[elevationProfileHandler.id, elevationProfileHandler]
+		]);
 		this._unsubscribers = [];
 	}
 
@@ -332,9 +337,9 @@ export class OlMap extends MvuElement {
 			const geoResource = this._geoResourceService.byId(geoResourceId);
 			//if geoResource is a future, we insert a placeholder olLayer replacing it after the geoResource was resolved
 			if (geoResource?.getType() === GeoResourceTypes.FUTURE) {
-				// eslint-disable-next-line promise/prefer-await-to-then
 				geoResource
 					.get()
+					// eslint-disable-next-line promise/prefer-await-to-then
 					.then((lazyLoadedGeoResource) => {
 						// replace the placeholder olLayer by the real the olLayer
 						const layer = layers.find((layer) => layer.id === id);
