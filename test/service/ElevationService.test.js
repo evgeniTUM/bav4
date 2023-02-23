@@ -14,9 +14,12 @@ describe('ElevationService', () => {
 	};
 
 	afterEach(() => {
+		$injector.reset();
+	});
 
 	describe('constructor', () => {
 		it('initializes the service with custom provider', async () => {
+			const customElevationProvider = async () => {};
 			const customProfileProvider = async () => {};
 
 			const instanceUnderTest = setup(customElevationProvider, customProfileProvider);

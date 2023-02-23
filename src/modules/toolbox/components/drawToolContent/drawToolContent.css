@@ -47,6 +47,7 @@
 	margin: 0.8em 0.8em;
 	position: absolute;
 }
+
 .is-active .tool-container__icon {
 	background: var(--text3);
 }
@@ -124,6 +125,7 @@ ba-checkbox:focus {
 	mask-image: url('assets/polygon.svg');
 	-webkit-mask-image: url('assets/polygon.svg');
 }
+
 .tool-container__form,
 .tool-container__info {
 	/* padding: 0 1.5em .8em; */
@@ -133,6 +135,7 @@ ba-checkbox:focus {
 	min-width: 7em;
 	margin: auto 0;
 }
+
 .tool-container__style_color,
 .tool-container__style_heigth,
 .tool-container__style_text,
@@ -146,6 +149,7 @@ ba-checkbox:focus {
 	max-width: 40em;
 	margin: auto;
 }
+
 .tool-container__form input,
 .tool-container__style_desc textarea,
 .tool-container__style_size select {

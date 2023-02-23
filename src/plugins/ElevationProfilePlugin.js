@@ -31,7 +31,11 @@ export class ElevationProfilePlugin extends BaPlugin {
 		const onProfileActiveStateChanged = (active) => {
 			if (active) {
 				this._bottomSheetUnsubscribeFn = observe(store, (state) => state.bottomSheet.active, onActiveStateChanged);
+				openBottomSheet(html`<ba-elevation-profile></ba-elevation-profile>`);
+			} else {
+				closeBottomSheet();
 				this._bottomSheetUnsubscribeFn?.();
+			}
 		};
 
 		observe(store, (state) => state.elevationProfile.active, onProfileActiveStateChanged, false);
