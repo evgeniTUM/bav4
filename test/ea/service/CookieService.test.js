@@ -1,6 +1,5 @@
-import { parse, serialize } from 'cookie';
 import { InfoPopupPlugin } from '../../../src/ea/plugins/InfoPopupPlugin.js';
-import { CookieService } from '../../../src/ea/services/CookieService';
+import { CookieService } from '../../../src/ea/services/CookieService.js';
 import { activateInfoPopup, deactivateInfoPopup } from '../../../src/ea/store/module/ea.action.js';
 import { eaReducer } from '../../../src/ea/store/module/ea.reducer.js';
 import { $injector } from '../../../src/injection/index.js';

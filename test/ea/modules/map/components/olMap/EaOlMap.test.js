@@ -133,6 +133,13 @@ describe('EaOlMap', () => {
 		}
 	};
 
+	const elevationProfileHandlerMock = {
+		register() {},
+		get id() {
+			return 'elevationProfileHandlerMockId';
+		}
+	};
+
 	const mfpHandlerMock = {
 		activate() {},
 		deactivate() {},
@@ -191,7 +198,8 @@ describe('EaOlMap', () => {
 			.registerSingleton('LayerService', layerServiceMock)
 			.registerSingleton('OlSelectLocationHandler', selectLocationLayerHandlerMock)
 			.registerSingleton('OlMfpHandler', mfpHandlerMock)
-			.registerSingleton('OlGeoFeatureLayerHandler', geoFeatureLayerHandlerMock);
+			.registerSingleton('OlGeoFeatureLayerHandler', geoFeatureLayerHandlerMock)
+			.registerSingleton('ElevationProfileHandler', elevationProfileHandlerMock);
 
 		return TestUtils.render(EaOlMap.tag);
 	};

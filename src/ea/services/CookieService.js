@@ -26,7 +26,7 @@ export class CookieService {
 	 * @param {String | Object } settings content of cookie
 	 * @param {numer } exdays days until expiration from now
 	 */
-	setCookie = function (name, settings, exdays) {
+	setCookie(name, settings, exdays) {
 		const expirationDate = new Date();
 		expirationDate.setDate(expirationDate.getDate() + exdays);
 		const host = this.getDomainWithoutSubdomain(window.location.href);
@@ -37,16 +37,16 @@ export class CookieService {
 			domain: host
 		};
 		document.cookie = serialize(name, settings, options);
-	};
+	}
 	/**
 	 * get a Cookie by name which is not yet expired
 	 * @param {String} name  identification name of cookie
 	 * @return {Object | undefined }
 	 */
-	getCookie = function (name) {
+	getCookie(name) {
 		const cookie = parse(document.cookie)[name];
 		return cookie;
-	};
+	}
 
 	deleteCookie(name) {
 		if (this.getCookie(name)) {

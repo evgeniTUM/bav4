@@ -58,7 +58,7 @@ describe('InfoPopupPlugin', () => {
 
 			await setup();
 			deactivateInfoPopup(cookieId);
-			let cookie = cookieResourceServiceMock.getCookie(cookieId);
+			const cookie = cookieResourceServiceMock.getCookie(cookieId);
 			expect(cookie).toBeDefined();
 			expect(cookie).toEqual(FreshCookie);
 		});
@@ -66,7 +66,7 @@ describe('InfoPopupPlugin', () => {
 			await setup();
 			deactivateInfoPopup(cookieId);
 			activateInfoPopup(cookieId);
-			let cookie = cookieResourceServiceMock.getCookie(cookieId);
+			const cookie = cookieResourceServiceMock.getCookie(cookieId);
 			expect(cookie).toBeUndefined();
 		});
 	});
