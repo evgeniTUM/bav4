@@ -1,4 +1,4 @@
-import { parse, serialize } from 'cookie';
+import { serialize } from 'cookie';
 import { InfoPopupPlugin } from '../../../src/ea/plugins/InfoPopupPlugin.js';
 import { activateInfoPopup, deactivateInfoPopup } from '../../../src/ea/store/module/ea.action.js';
 import { eaReducer } from '../../../src/ea/store/module/ea.reducer.js';
@@ -23,13 +23,13 @@ describe('InfoPopupPlugin', () => {
 	let myCookie;
 
 	const cookieResourceServiceMock = {
-		setCookie: (name, settings, exdays) => {
+		setCookie: () => {
 			myCookie = FreshCookie;
 		},
-		getCookie: (name) => {
+		getCookie: () => {
 			return myCookie;
 		},
-		deleteCookie: (name) => {
+		deleteCookie: () => {
 			myCookie = undefined;
 		}
 	};

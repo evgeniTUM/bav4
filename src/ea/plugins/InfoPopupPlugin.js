@@ -1,10 +1,9 @@
-import { parse, serialize } from 'cookie';
 import { html } from 'lit-html';
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
-import { observe } from '../../utils/storeUtils';
 import { openModal } from '../../store/modal/modal.action';
 import { isHttpUrl } from '../../utils/checks';
+import { observe } from '../../utils/storeUtils';
 
 export const INFO_POPUP_NOTIFICATION_DELAY_TIME = 3000;
 

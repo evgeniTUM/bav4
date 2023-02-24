@@ -12,7 +12,6 @@ import View from 'ol/View';
 import { OlHighlightLayerHandler } from '../../../../../src/modules/olMap/handler/highlight/OlHighlightLayerHandler';
 import {
 	eabMarkerStyleFunction,
-	highlightAnimatedCoordinateFeatureStyleFunction,
 	highlightCoordinateFeatureStyleFunction,
 	highlightGeometryFeatureStyleFunction,
 	highlightTemporaryCoordinateFeatureStyleFunction,
