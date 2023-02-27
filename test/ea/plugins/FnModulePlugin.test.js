@@ -8,6 +8,7 @@ import { ACTIVATE_GEORESOURCE, DEACTIVATE_ALL_GEORESOURCES } from '../../../src/
 import { $injector } from '../../../src/injection/index.js';
 import { FEATURE_INFO_REQUEST_ABORT } from '../../../src/store/featureInfo/featureInfo.reducer.js';
 import { CLEAR_FEATURES } from '../../../src/store/highlight/highlight.reducer.js';
+import { OPEN_CLOSED_CHANGED } from '../../../src/store/mainMenu/mainMenu.reducer.js';
 import { CLICK_CHANGED, pointerReducer } from '../../../src/store/pointer/pointer.reducer';
 import { FIT_REQUESTED, ZOOM_CENTER_CHANGED } from '../../../src/store/position/position.reducer.js';
 import { TestUtils } from '../../test-utils.js';
@@ -478,6 +479,45 @@ describe('FnModulePlugin', () => {
 			const action = storeActions.find((a) => a.type === CLICK_CHANGED);
 			expect(action).toBeDefined();
 			expect(action.payload._payload).toEqual({ coordinate: [42.0, 24.0] });
+		});
+
+		it("opens the menu on 'clickInMap' message", async () => {
+			await setupOpen();
+
+			windowMock.listenerFunction({
+				data: {
+					code: 'clickInMap',
+					module: domain,
+					message: {
+						geojson: GEOJSON_SAMPLE_DATA
+					}
+				},
+				event: { origin: module }
+			});
+
+			const action = storeActions.find((a) => a.type === OPEN_CLOSED_CHANGED);
+			expect(action).toBeDefined();
+			expect(action.payload).toBeTrue();
+		});
+
+		it("centers the map on coordinates with a radius of 500m on 'clickInMap' message", async () => {
+			await setupOpen();
+
+			windowMock.listenerFunction({
+				data: {
+					code: 'clickInMap',
+					module: domain,
+					message: {
+						geojson: GEOJSON_SAMPLE_DATA
+					}
+				},
+				event: { origin: module }
+			});
+
+			const action = storeActions.find((a) => a.type === FIT_REQUESTED);
+			expect(action).toBeDefined();
+			const actualExtent = action.payload._payload.extent;
+			expect(actualExtent).toEqual([41.99530023568723, 23.995300235687232, 42.00469976431277, 24.004699764312768]);
 		});
 	});
 });

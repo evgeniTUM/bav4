@@ -70,8 +70,6 @@ export class FnModulePlugin extends BaPlugin {
 			return feature;
 		};
 
-		// console.log(data.code);
-		// console.log(data.message);
 		switch (data.code) {
 			case MODULE_HANDSHAKE:
 				break;
@@ -123,7 +121,6 @@ export class FnModulePlugin extends BaPlugin {
 				break;
 			}
 			case ZOOM_N_CENTER_TO_FEATURE:
-				console.log(message);
 				changeZoomAndCenter({
 					zoom: message.zoom + 4.7,
 					center: getFeature(message.geojson.features[0]).getGeometry().getCoordinates()
@@ -134,19 +131,16 @@ export class FnModulePlugin extends BaPlugin {
 				break;
 			case CLICK_IN_MAP_SIMULATION:
 				{
-					const position = getFeature(message.geojson.features[0]).getGeometry().getCoordinates();
-
 					open();
 
-					const circle = new Circle(position, 500 / getPointResolution('EPSG:' + this._mapService.getSrid(), 1, [position[0], position[1]], 'm'));
-					console.log(circle);
+					const position = getFeature(message.geojson.features[0]).getGeometry().getCoordinates();
 
+					const circle = new Circle(position, 500 / getPointResolution('EPSG:' + this._mapService.getSrid(), 1, [position[0], position[1]], 'm'));
 					fit(circle.getExtent());
 
 					setClick({
-						coordinate: getFeature(message.geojson.features[0]).getGeometry().getCoordinates()
+						coordinate: position
 					});
-					this.queue.push(position);
 				}
 				break;
 			case ACTIVATE_MAPCLICK:
