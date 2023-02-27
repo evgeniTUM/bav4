@@ -8,9 +8,8 @@ import { ACTIVATE_GEORESOURCE, DEACTIVATE_ALL_GEORESOURCES } from '../../../src/
 import { $injector } from '../../../src/injection/index.js';
 import { FEATURE_INFO_REQUEST_ABORT } from '../../../src/store/featureInfo/featureInfo.reducer.js';
 import { CLEAR_FEATURES } from '../../../src/store/highlight/highlight.reducer.js';
-import { OPEN_CLOSED_CHANGED } from '../../../src/store/mainMenu/mainMenu.reducer.js';
 import { CLICK_CHANGED, pointerReducer } from '../../../src/store/pointer/pointer.reducer';
-import { FIT_REQUESTED, ZOOM_CENTER_CHANGED } from '../../../src/store/position/position.reducer.js';
+import { FIT_REQUESTED } from '../../../src/store/position/position.reducer.js';
 import { TestUtils } from '../../test-utils.js';
 
 const GEOJSON_SAMPLE_DATA = {
@@ -397,10 +396,8 @@ describe('FnModulePlugin', () => {
 			expect(lastAction.type).toEqual(DEACTIVATE_ALL_GEORESOURCES);
 		});
 
-		it("zooms and centers map on 'zoomAndCenter' message by a zoom factor of 4.7", async () => {
+		it("centers the map on coordinates with a radius of 500m on 'zoomAndCenter' message", async () => {
 			await setupOpen();
-
-			const zoomFactor = 4.7;
 
 			windowMock.listenerFunction({
 				data: {
@@ -414,9 +411,10 @@ describe('FnModulePlugin', () => {
 				event: { origin: module }
 			});
 
-			const action = storeActions.find((a) => a.type === ZOOM_CENTER_CHANGED);
+			const action = storeActions.find((a) => a.type === FIT_REQUESTED);
 			expect(action).toBeDefined();
-			expect(action.payload).toEqual({ zoom: 11 + zoomFactor, center: [42.0, 24.0] });
+			const actualExtent = action.payload._payload.extent;
+			expect(actualExtent).toEqual([41.99530023568723, 23.995300235687232, 42.00469976431277, 24.004699764312768]);
 		});
 
 		it("fits the map on 'zoom2Extent' message with 20% scale", async () => {
@@ -479,45 +477,6 @@ describe('FnModulePlugin', () => {
 			const action = storeActions.find((a) => a.type === CLICK_CHANGED);
 			expect(action).toBeDefined();
 			expect(action.payload._payload).toEqual({ coordinate: [42.0, 24.0] });
-		});
-
-		it("opens the menu on 'clickInMap' message", async () => {
-			await setupOpen();
-
-			windowMock.listenerFunction({
-				data: {
-					code: 'clickInMap',
-					module: domain,
-					message: {
-						geojson: GEOJSON_SAMPLE_DATA
-					}
-				},
-				event: { origin: module }
-			});
-
-			const action = storeActions.find((a) => a.type === OPEN_CLOSED_CHANGED);
-			expect(action).toBeDefined();
-			expect(action.payload).toBeTrue();
-		});
-
-		it("centers the map on coordinates with a radius of 500m on 'clickInMap' message", async () => {
-			await setupOpen();
-
-			windowMock.listenerFunction({
-				data: {
-					code: 'clickInMap',
-					module: domain,
-					message: {
-						geojson: GEOJSON_SAMPLE_DATA
-					}
-				},
-				event: { origin: module }
-			});
-
-			const action = storeActions.find((a) => a.type === FIT_REQUESTED);
-			expect(action).toBeDefined();
-			const actualExtent = action.payload._payload.extent;
-			expect(actualExtent).toEqual([41.99530023568723, 23.995300235687232, 42.00469976431277, 24.004699764312768]);
 		});
 	});
 });
