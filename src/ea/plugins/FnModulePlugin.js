@@ -1,15 +1,14 @@
 import GeoJSON from 'ol/format/GeoJSON';
 import { Circle } from 'ol/geom';
 import { fromExtent } from 'ol/geom/Polygon';
-import { getPointResolution, transform } from 'ol/proj';
+import { getPointResolution } from 'ol/proj';
 import VectorSource from 'ol/source/Vector';
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { abortOrReset } from '../../store/featureInfo/featureInfo.action';
 import { clearHighlightFeatures } from '../../store/highlight/highlight.action';
-import { open } from '../../store/mainMenu/mainMenu.action';
 import { setClick } from '../../store/pointer/pointer.action';
-import { changeCenter, changeLiveCenter, changeZoomAndCenter, fit } from '../../store/position/position.action';
+import { fit } from '../../store/position/position.action';
 import { observe } from '../../utils/storeUtils';
 import { addGeoFeatureLayer, addGeoFeatures, clearLayer, removeGeoFeatures } from '../store/geofeature/geofeature.action';
 import { activateMapClick, deactivateMapClick } from '../store/mapclick/mapclick.action';
@@ -78,70 +77,63 @@ export class FnModulePlugin extends BaPlugin {
 				break;
 			case MODULE_RESET:
 				break;
-			case ADD_FEATURE: {
-				const features = message.geojson.features.map((f) => ({
-					...f,
-					style: message.style,
-					expandTo: message.expandTo
-				}));
+			case ADD_FEATURE:
+				{
+					const features = message.geojson.features.map((f) => ({
+						...f,
+						style: message.style,
+						expandTo: message.expandTo
+					}));
 
-				buffer.features = [...buffer.features, ...features];
+					buffer.features = [...buffer.features, ...features];
 
-				setTimeout(() => {
-					if (buffer.features.length > 0) {
-						addGeoFeatures(message.layerId, buffer.features);
-						buffer.features = [];
-					}
-				}, 100);
-
+					setTimeout(() => {
+						if (buffer.features.length > 0) {
+							addGeoFeatures(message.layerId, buffer.features);
+							buffer.features = [];
+						}
+					}, 100);
+				}
 				break;
-			}
 			case REMOVE_FEATURE_BY_ID:
 				removeGeoFeatures(message.layerId, [message.id]);
 				break;
-			case CLEAR_MAP: {
-				clearLayer(message.toString());
-				clearHighlightFeatures();
-				abortOrReset();
+			case CLEAR_MAP:
+				{
+					clearLayer(message.toString());
+					clearHighlightFeatures();
+					abortOrReset();
+				}
 				break;
-			}
 			case REMOVE_LAYER:
 				break;
 			case ZOOM:
 				break;
-			case ZOOM_2_EXTENT: {
-				const extentVector = new VectorSource({
-					features: [getFeature(message.geojson.features[0])]
-				});
-				const polygon = fromExtent(extentVector.getExtent());
-
-				polygon.scale(1.2);
-				fit(polygon.getExtent());
-
-				break;
-			}
-			case ZOOM_N_CENTER_TO_FEATURE:
-				changeZoomAndCenter({
-					zoom: message.zoom + 4.7,
-					center: getFeature(message.geojson.features[0]).getGeometry().getCoordinates()
-				});
-
-				break;
-			case ZOOM_EXPAND:
-				break;
-			case CLICK_IN_MAP_SIMULATION:
+			case ZOOM_2_EXTENT:
 				{
-					open();
+					const extentVector = new VectorSource({
+						features: [getFeature(message.geojson.features[0])]
+					});
+					const polygon = fromExtent(extentVector.getExtent());
 
+					polygon.scale(1.2);
+					fit(polygon.getExtent());
+				}
+				break;
+			case ZOOM_N_CENTER_TO_FEATURE:
+				{
 					const position = getFeature(message.geojson.features[0]).getGeometry().getCoordinates();
 
 					const circle = new Circle(position, 500 / getPointResolution('EPSG:' + this._mapService.getSrid(), 1, [position[0], position[1]], 'm'));
 					fit(circle.getExtent());
-
-					setClick({
-						coordinate: position
-					});
 				}
+				break;
+			case ZOOM_EXPAND:
+				break;
+			case CLICK_IN_MAP_SIMULATION:
+				setClick({
+					coordinate: getFeature(message.geojson.features[0]).getGeometry().getCoordinates()
+				});
 				break;
 			case ACTIVATE_MAPCLICK:
 				activateMapClick(message);
