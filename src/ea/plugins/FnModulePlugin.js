@@ -1,12 +1,15 @@
 import GeoJSON from 'ol/format/GeoJSON';
+import { Circle } from 'ol/geom';
 import { fromExtent } from 'ol/geom/Polygon';
+import { getPointResolution, transform } from 'ol/proj';
 import VectorSource from 'ol/source/Vector';
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { abortOrReset } from '../../store/featureInfo/featureInfo.action';
 import { clearHighlightFeatures } from '../../store/highlight/highlight.action';
+import { open } from '../../store/mainMenu/mainMenu.action';
 import { setClick } from '../../store/pointer/pointer.action';
-import { changeZoomAndCenter, fit } from '../../store/position/position.action';
+import { changeCenter, changeLiveCenter, changeZoomAndCenter, fit } from '../../store/position/position.action';
 import { observe } from '../../utils/storeUtils';
 import { addGeoFeatureLayer, addGeoFeatures, clearLayer, removeGeoFeatures } from '../store/geofeature/geofeature.action';
 import { activateMapClick, deactivateMapClick } from '../store/mapclick/mapclick.action';
@@ -67,6 +70,8 @@ export class FnModulePlugin extends BaPlugin {
 			return feature;
 		};
 
+		// console.log(data.code);
+		// console.log(data.message);
 		switch (data.code) {
 			case MODULE_HANDSHAKE:
 				break;
@@ -118,6 +123,7 @@ export class FnModulePlugin extends BaPlugin {
 				break;
 			}
 			case ZOOM_N_CENTER_TO_FEATURE:
+				console.log(message);
 				changeZoomAndCenter({
 					zoom: message.zoom + 4.7,
 					center: getFeature(message.geojson.features[0]).getGeometry().getCoordinates()
@@ -127,9 +133,21 @@ export class FnModulePlugin extends BaPlugin {
 			case ZOOM_EXPAND:
 				break;
 			case CLICK_IN_MAP_SIMULATION:
-				setClick({
-					coordinate: getFeature(message.geojson.features[0]).getGeometry().getCoordinates()
-				});
+				{
+					const position = getFeature(message.geojson.features[0]).getGeometry().getCoordinates();
+
+					open();
+
+					const circle = new Circle(position, 500 / getPointResolution('EPSG:' + this._mapService.getSrid(), 1, [position[0], position[1]], 'm'));
+					console.log(circle);
+
+					fit(circle.getExtent());
+
+					setClick({
+						coordinate: getFeature(message.geojson.features[0]).getGeometry().getCoordinates()
+					});
+					this.queue.push(position);
+				}
 				break;
 			case ACTIVATE_MAPCLICK:
 				activateMapClick(message);
