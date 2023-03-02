@@ -133,7 +133,7 @@ export class DsgvoDialog extends MvuElement {
 				<div class="row">
 					<div class="row popup-text">
 						${translate('ea_dsgvo_text')}
-						<a id="privacy-policy-link" href="https://prod.energieatlas.bayern.de/datenschutz" target="_blank">
+						<a id="privacy-policy-link" href="https://www.energieatlas.bayern.de/datenschutz" target="_blank">
 							<ba-button .label=${translate('ea_dsgvo_privacy_policy')} .type=${'secondary'}></ba-button>
 						</a>
 						<ba-button id="cookie-settings" .label=${translate('ea_dsgvo_cookie_settings')} .type=${'secondary'} @click=${openSettings}></ba-button>

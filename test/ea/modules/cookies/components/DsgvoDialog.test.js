@@ -97,7 +97,7 @@ describe('DsgvoDialog', () => {
 
 			const link = element.shadowRoot.getElementById('privacy-policy-link');
 
-			expect(link.href).toEqual('https://prod.energieatlas.bayern.de/datenschutz');
+			expect(link.href).toEqual('https://www.energieatlas.bayern.de/datenschutz');
 			expect(link.target).toEqual('_blank');
 		});
 
