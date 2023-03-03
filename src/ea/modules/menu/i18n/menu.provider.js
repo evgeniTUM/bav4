@@ -48,9 +48,9 @@ export const provide = (lang) => {
 			return {
 				//the first part of the snake_case key should be the name of the related module
 				ea_menu_boerse: 'Abwärmeinformations- und Solarflächenbörse',
-				ea_menu_boerse_tooltip: 'Abwärmequellen-/senken oder Flächen zur PV-Nutzung melden',
+				ea_menu_boerse_tooltip: 'Abwärmequellen-/senken oder Flächen zur PV-Nutzung melden und suchen',
 				ea_menu_energy_reporting: 'Neumeldungen und Korrekturen',
-				ea_menu_energy_reporting_tooltip: 'Korrekturen und neue Objekte melden',
+				ea_menu_energy_reporting_tooltip: 'Neue Objekte und Korrekturen melden',
 				ea_menu_analyse3d: '3D-Analyse Windenergieanlagen',
 				ea_menu_analyse3d_tooltip: 'Realitätsnahe Darstellungen von Windenergieanlagen in der Landschaft erstellen',
 				ea_menu_recherche: 'Daten-Recherche und Download',
