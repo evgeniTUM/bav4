@@ -28,7 +28,7 @@ describe('SearchResultsPanel', () => {
 			expect(element.shadowRoot.querySelector('.search-results-panel')).toBeTruthy();
 			expect(element.shadowRoot.querySelector(LocationResultsPanel.tag)).toBeTruthy();
 			expect(element.shadowRoot.querySelector(GeoResourceResultsPanel.tag)).toBeTruthy();
-			expect(element.shadowRoot.querySelector(CpResultsPanel.tag)).toBeTruthy();
+			expect(element.shadowRoot.querySelector(CpResultsPanel.tag)).toBeFalsy();
 		});
 	});
 });
