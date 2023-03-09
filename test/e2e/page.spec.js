@@ -59,40 +59,33 @@ test.describe('page', () => {
 			expect(description).toBe(templateParameters.description);
 		});
 
-		test('should contain 4 top level ba-components', async ({ page }) => {
-			expect(await page.locator('body > *').count()).toBe(4);
+		test('should contain 5 top level ba-components', async ({ page }) => {
+			expect(await page.locator('body > *').count()).toBe(5);
+
+			expect(await page.locator('body > ea-page-container').count()).toBe(1);
+			expect(await page.locator('body > ba-dnd-import-panel').count()).toBe(1);
+			expect(await page.locator('body > ba-modal').count()).toBe(1);
+			expect(await page.locator('body > ba-map-context-menu').count()).toBe(1);
+			expect(await page.locator('body > ea-dsgvo-dialog').count()).toBe(1);
 		});
 
-		test('should contain a <ba-header> component', async ({ page }) => {
-			expect(await page.locator('ba-header').count()).toBe(1);
-		});
+		test('should contain ea-page-container with 12 components', async ({ page }) => {
+			// expect(await page.locator('ea-page-container > *').count()).toBe(13);
+			const path = '.page > .row > .main > ';
+			expect(await page.locator(path + '*').count()).toEqual(12);
 
-		test('should contain a <ba-main-menu> component', async ({ page }) => {
-			expect(await page.locator('ea-main-menu').count()).toBe(1);
-		});
-		test('should contain a <ba-ol-map> component', async ({ page }) => {
-			expect(await page.locator('ea-ol-map').count()).toBe(1);
-		});
-
-		test('should contain a <ba-map-button-container> component', async ({ page }) => {
-			expect(await page.locator('ba-map-button-container').count()).toBe(1);
-			expect(await page.locator('ba-chips').count()).toBe(1);
-			expect(await page.locator('ba-tool-bar').count()).toBe(1);
-			expect(await page.locator('ba-tool-container').count()).toBe(1);
-			expect(await page.locator('ba-footer').count()).toBe(1);
-			expect(await page.locator('ba-nonembedded-hint').count()).toBe(1);
-			expect(await page.locator('ba-theme-provider').count()).toBe(1);
-			expect(await page.locator('ba-notification-panel').count()).toBe(1);
-			expect(await page.locator('ba-modal').count()).toBe(1);
-			expect(await page.locator('ba-map-context-menu').count()).toBe(1);
-		});
-
-		test('should contain a <ba-dnd-import-panel> component', async ({ page }) => {
-			expect(await page.locator('ba-dnd-import-panel').count()).toBe(1);
-		});
-
-		test('should contain a <ea-page-container> component', async ({ page }) => {
-			expect(await page.locator('ea-page-container').count()).toBe(1);
+			expect(await page.locator(path + 'ba-header').count()).toBe(1);
+			expect(await page.locator(path + 'ba-footer').count()).toBe(1);
+			expect(await page.locator(path + 'ea-main-menu').count()).toBe(1);
+			expect(await page.locator(path + 'ea-ol-map').count()).toBe(1);
+			expect(await page.locator(path + 'ba-chips').count()).toBe(1);
+			expect(await page.locator(path + 'ba-map-button-container').count()).toBe(1);
+			expect(await page.locator(path + 'ba-tool-bar').count()).toBe(1);
+			expect(await page.locator(path + 'ba-tool-container').count()).toBe(1);
+			expect(await page.locator(path + 'ba-nonembedded-hint').count()).toBe(1);
+			expect(await page.locator(path + 'ba-theme-provider').count()).toBe(1);
+			expect(await page.locator(path + 'ba-notification-panel').count()).toBe(1);
+			expect(await page.locator(path + 'ea-legend').count()).toBe(1);
 		});
 	});
 });
