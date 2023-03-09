@@ -26,4 +26,8 @@ export class Analyse3DModuleContent extends AbstractModuleContent {
 	static get initialWidth() {
 		return 39;
 	}
+
+	static get minWidth() {
+		return 39;
+	}
 }
