@@ -59,4 +59,8 @@ export class EnergyReportingModuleContent extends MvuElement {
 	static get initialWidth() {
 		return 40;
 	}
+
+	static get minWidth() {
+		return 40;
+	}
 }
