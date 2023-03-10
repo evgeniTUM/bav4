@@ -15,46 +15,55 @@ export const ACTIVATE_INFO_POPUP = 'ea/info_popup/activate';
 
 export const initialState = {
 	/**
+	 * Name of the currently active module.
 	 * @property {String|null}
 	 */
 	currentModule: null,
 
 	/**
+	 * The currently activated and managed layers from the active module.
 	 * @property {Array<string>}
 	 */
 	activeGeoResources: [],
 
 	/**
+	 * If true the legend is being displayed.
 	 * @property {boolean}
 	 */
 	legendActive: false,
 
 	/**
+	 * The georesource id of the layer to preview inside the legend (e.g. mouse over a layer).
 	 * @property {String|null}
 	 */
 	legendGeoresourceId: null,
 
 	/**
+	 * The legend items to display.
 	 * @property {Array<LegendItem>}
 	 */
 	legendItems: [],
 
 	/**
+	 * The current map resolution.
 	 * @property {Double}
 	 */
 	mapResolution: 0.0,
 
 	/**
+	 * If true web analytics is active.
 	 * @property {boolean}
 	 */
 	webAnalyticsActive: false,
 
 	/**
+	 * If true the info popup will be displayer on load.
 	 * @property {boolean}
 	 */
 	infoPopupActive: false,
 
 	/**
+	 * The id of the info popup to display.
 	 * @property {String|null}
 	 */
 	infoPopupId: null
