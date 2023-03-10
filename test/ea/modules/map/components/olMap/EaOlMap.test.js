@@ -150,6 +150,14 @@ describe('EaOlMap', () => {
 			return getDefaultLayerOptions();
 		}
 	};
+
+	const olElevationProfileHandlerMock = {
+		register() {},
+		get id() {
+			return 'olElevationProfileHandlerMockId';
+		}
+	};
+
 	const vectorLayerServiceMock = {};
 
 	let store;
@@ -194,6 +202,7 @@ describe('EaOlMap', () => {
 			.registerSingleton('OlGeolocationHandler', geolocationLayerHandlerMock)
 			.registerSingleton('OlHighlightLayerHandler', highlightLayerHandlerMock)
 			.registerSingleton('OlFeatureInfoHandler', featureInfoHandlerMock)
+			.registerSingleton('OlElevationProfileHandler', olElevationProfileHandlerMock)
 			.registerSingleton('VectorLayerService', vectorLayerServiceMock)
 			.registerSingleton('LayerService', layerServiceMock)
 			.registerSingleton('OlSelectLocationHandler', selectLocationLayerHandlerMock)
