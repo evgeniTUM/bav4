@@ -37,6 +37,12 @@ const Default_Capabilities_Result = {
 					value: 'EPSG:31467'
 				},
 				{
+					code: 25832,
+					urn: false,
+					axisOrderLatLong: false,
+					value: 'EPSG:25832'
+				},
+				{
 					code: 3857,
 					urn: false,
 					axisOrderLatLong: false,
@@ -147,7 +153,8 @@ describe('bvvCapabilitiesProvider', () => {
 	};
 
 	const mapService = {
-		getSrid: () => 3857
+		getSrid: () => 3857,
+		getDefaultGeodeticSrid: () => 25832
 	};
 
 	const baaCredentialService = {
@@ -269,7 +276,8 @@ describe('bvvCapabilitiesProvider', () => {
 				url: 'https://online.resource/GetMap?',
 				format: 'image/png',
 				queryable: true,
-				authenticationType: null
+				authenticationType: null,
+				exportable: true
 			})
 		);
 		expect(wmsGeoResources[1]).toEqual(
@@ -279,7 +287,8 @@ describe('bvvCapabilitiesProvider', () => {
 				url: 'https://online.resource/GetMap?',
 				format: 'image/png',
 				queryable: false,
-				authenticationType: null
+				authenticationType: null,
+				exportable: false
 			})
 		);
 	});
@@ -311,7 +320,8 @@ describe('bvvCapabilitiesProvider', () => {
 				format: 'image/png',
 				queryable: false,
 				authenticationType: null,
-				layers: layerName
+				layers: layerName,
+				exportable: false
 			})
 		);
 	});
@@ -348,7 +358,8 @@ describe('bvvCapabilitiesProvider', () => {
 				url: 'https://online.resource/GetMap?',
 				format: 'image/png',
 				queryable: true,
-				authenticationType: null
+				authenticationType: null,
+				exportable: true
 			})
 		);
 		expect(wmsGeoResources[1]).toEqual(
@@ -358,7 +369,8 @@ describe('bvvCapabilitiesProvider', () => {
 				url: 'https://online.resource/GetMap?',
 				format: 'image/png',
 				queryable: false,
-				authenticationType: null
+				authenticationType: null,
+				exportable: false
 			})
 		);
 	});

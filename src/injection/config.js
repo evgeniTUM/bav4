@@ -46,6 +46,7 @@ import { Proj4JsService } from '../services/Proj4JsService';
 import { BvvMfp3Encoder } from '../modules/olMap/services/Mfp3Encoder';
 import { ElevationProfilePlugin } from '../plugins/ElevationProfilePlugin';
 import { ElevationService } from '../services/ElevationService';
+import { IframeStatePlugin } from '../plugins/IframeStatePlugin';
 
 import { eaConfig } from '../ea/injection/eaConfig';
 
@@ -95,6 +96,7 @@ $injector
 	.registerSingleton('SearchPlugin', new SearchPlugin())
 	.registerSingleton('ExportMfpPlugin', new ExportMfpPlugin())
 	.registerSingleton('ElevationProfilePlugin', new ElevationProfilePlugin())
+	.registerSingleton('IframeStatePlugin', new IframeStatePlugin())
 	.registerSingleton('HistoryStatePlugin', new HistoryStatePlugin())
 	.registerModule(mapModule)
 	.registerModule(topicsModule);

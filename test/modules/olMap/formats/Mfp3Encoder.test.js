@@ -3,7 +3,7 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 
 import { $injector } from '../../../../src/injection';
-import { BvvMfp3Encoder } from '../../../../src/modules/olMap/services/Mfp3Encoder';
+import { BvvMfp3Encoder, MFP_ENCODING_ERROR_TYPE } from '../../../../src/modules/olMap/services/Mfp3Encoder';
 
 import proj4 from 'proj4';
 import { register } from 'ol/proj/proj4';
@@ -99,9 +99,11 @@ describe('BvvMfp3Encoder', () => {
 	};
 
 	class TestGeoResource extends GeoResource {
-		constructor(type, label) {
+		constructor(type, label, exportable = true) {
 			super(`test_${label}`);
 			this._type = type;
+			this._label = label;
+			this._exportable = exportable;
 		}
 
 		/**
@@ -187,11 +189,11 @@ describe('BvvMfp3Encoder', () => {
 			const encoder = new BvvMfp3Encoder();
 			spyOn(encoder, '_getCopyrights').and.callFake(() => [{}]);
 
-			const actualSpec = await encoder.encode(mapMock, getProperties({ pageCenter: pageCenter }));
+			const encodingResult = await encoder.encode(mapMock, getProperties({ pageCenter: pageCenter }));
 
 			expect(mapCenterSpy).not.toHaveBeenCalled();
-			expect(actualSpec.attributes.map.center[0]).toBeCloseTo(691365.6, -1);
-			expect(actualSpec.attributes.map.center[1]).toBeCloseTo(5335084.7, -1);
+			expect(encodingResult.specs.attributes.map.center[0]).toBeCloseTo(691365.6, -1);
+			expect(encodingResult.specs.attributes.map.center[1]).toBeCloseTo(5335084.7, -1);
 		});
 
 		it('uses the provided pageExtent for the specs', async () => {
@@ -206,7 +208,7 @@ describe('BvvMfp3Encoder', () => {
 		it('requests the corresponding geoResource for a layer', async () => {
 			const geoResourceServiceSpy = spyOn(geoResourceServiceMock, 'byId')
 				.withArgs('foo')
-				.and.callFake(() => new TestGeoResource(null, 'something', 'something'));
+				.and.callFake(() => new TestGeoResource(null, 'something'));
 			const encoder = new BvvMfp3Encoder();
 
 			await encoder.encode(mapMock, getProperties());
@@ -351,10 +353,28 @@ describe('BvvMfp3Encoder', () => {
 				.and.callFake(() => null);
 			const encoder = new BvvMfp3Encoder();
 			const layerMock = { get: () => 'foo' };
+			const errorSpy = jasmine.createSpy();
 
-			const actualEncoded = encoder._encode(layerMock, getProperties());
+			const actualEncoded = encoder._encode(layerMock, errorSpy);
 
 			expect(actualEncoded).toBeFalse();
+			expect(errorSpy).toHaveBeenCalledWith('[foo]', MFP_ENCODING_ERROR_TYPE.MISSING_GEORESOURCE);
+		});
+
+		it('does NOT encode a layer, if a geoResource is not exportable', () => {
+			const notExportableGeoResource = new TestGeoResource('something', 'foo label', false);
+
+			spyOn(geoResourceServiceMock, 'byId')
+				.withArgs('foo')
+				.and.callFake(() => notExportableGeoResource);
+			const encoder = new BvvMfp3Encoder();
+			const layerMock = { get: () => 'foo' };
+			const errorSpy = jasmine.createSpy();
+
+			const actualEncoded = encoder._encode(layerMock, errorSpy);
+
+			expect(actualEncoded).toBeFalse();
+			expect(errorSpy).toHaveBeenCalledWith('foo label', MFP_ENCODING_ERROR_TYPE.NOT_EXPORTABLE);
 		});
 
 		it('encodes two layers with attributions', async () => {
@@ -383,25 +403,89 @@ describe('BvvMfp3Encoder', () => {
 					]
 				};
 			});
-			const actualSpec = await encoder.encode(mapMock, getProperties());
+			const encodingResult = await encoder.encode(mapMock, getProperties());
 
-			expect(actualSpec).toEqual({
-				layout: 'foo',
-				attributes: {
-					map: {
-						layers: jasmine.any(Array),
-						center: jasmine.any(Array),
-						scale: jasmine.any(Number),
-						projection: 'EPSG:25832',
-						dpi: jasmine.any(Number),
-						rotation: null
-					},
-					dataOwner: 'Bar CopyRight,Foo CopyRight',
-					shortLink: 'http://url.to/shorten',
-					qrcodeurl: 'http://url.to/shorten.png',
-					legend: jasmine.any(Object),
-					printLegend: jasmine.any(Boolean)
-				}
+			expect(encodingResult).toEqual({
+				specs: {
+					layout: 'foo',
+					attributes: {
+						map: {
+							layers: jasmine.any(Array),
+							center: jasmine.any(Array),
+							scale: jasmine.any(Number),
+							projection: 'EPSG:25832',
+							dpi: jasmine.any(Number),
+							rotation: null
+						},
+						dataOwner: 'Bar CopyRight,Foo CopyRight',
+						shortLink: 'http://url.to/shorten',
+						qrcodeurl: 'http://url.to/shorten.png',
+						legend: jasmine.any(Object),
+						printLegend: jasmine.any(Boolean)
+					}
+				},
+				errors: []
+			});
+		});
+
+		it('encodes and collect errors', async () => {
+			const tileGrid = {
+				getTileSize: () => 42
+			};
+			const sourceMock = {
+				getTileGrid: () => tileGrid,
+				getUrls: () => ['https://some.url/to/foo/{z}/{x}/{y}'],
+				getParams: () => []
+			};
+			const exportableGeoResource = new TestGeoResource(GeoResourceTypes.WMS);
+			const notExportableGeoResource = new TestGeoResource(GeoResourceTypes.WMS, 'theLabel', false);
+
+			spyOn(geoResourceServiceMock, 'byId')
+				.withArgs('foo')
+				.and.callFake(() => exportableGeoResource)
+				.withArgs('bar')
+				.and.callFake(() => exportableGeoResource)
+				.withArgs('baz')
+				.and.callFake(() => notExportableGeoResource)
+				.withArgs('fuzz')
+				.and.callFake(() => notExportableGeoResource);
+			const encoder = new BvvMfp3Encoder();
+
+			spyOn(mapMock, 'getLayers').and.callFake(() => {
+				return {
+					getArray: () => [
+						{ get: () => 'foo', getExtent: () => [20, 20, 50, 50], getSource: () => sourceMock, getOpacity: () => 1, getVisible: () => true },
+						{ get: () => 'bar', getExtent: () => [20, 20, 50, 50], getSource: () => sourceMock, getOpacity: () => 1, getVisible: () => true },
+						{ get: () => 'baz', getExtent: () => [20, 20, 50, 50], getSource: () => sourceMock, getOpacity: () => 1, getVisible: () => true },
+						{ get: () => 'fuzz', getExtent: () => [20, 20, 50, 50], getSource: () => sourceMock, getOpacity: () => 1, getVisible: () => true }
+					]
+				};
+			});
+			const encodingResult = await encoder.encode(mapMock, getProperties());
+
+			expect(encodingResult).toEqual({
+				specs: {
+					layout: 'foo',
+					attributes: {
+						map: {
+							layers: jasmine.any(Array),
+							center: jasmine.any(Array),
+							scale: jasmine.any(Number),
+							projection: 'EPSG:25832',
+							dpi: jasmine.any(Number),
+							rotation: null
+						},
+						dataOwner: jasmine.any(String),
+						shortLink: jasmine.any(String),
+						qrcodeurl: jasmine.any(String),
+						legend: jasmine.any(Object),
+						printLegend: jasmine.any(Boolean)
+					}
+				},
+				errors: [
+					{ label: 'theLabel', type: MFP_ENCODING_ERROR_TYPE.NOT_EXPORTABLE },
+					{ label: 'theLabel', type: MFP_ENCODING_ERROR_TYPE.NOT_EXPORTABLE }
+				]
 			});
 		});
 
@@ -434,25 +518,28 @@ describe('BvvMfp3Encoder', () => {
 					]
 				};
 			});
-			const actualSpec = await encoder.encode(mapMock, getProperties());
+			const encodingResult = await encoder.encode(mapMock, getProperties());
 
-			expect(actualSpec).toEqual({
-				layout: 'foo',
-				attributes: {
-					map: {
-						layers: jasmine.any(Array),
-						center: jasmine.any(Array),
-						scale: jasmine.any(Number),
-						projection: 'EPSG:25832',
-						dpi: jasmine.any(Number),
-						rotation: null
-					},
-					dataOwner: 'Baz CopyRight,Bar CopyRight,Foo CopyRight',
-					shortLink: 'http://url.to/shorten',
-					qrcodeurl: 'http://url.to/shorten.png',
-					legend: jasmine.any(Object),
-					printLegend: jasmine.any(Boolean)
-				}
+			expect(encodingResult).toEqual({
+				specs: {
+					layout: 'foo',
+					attributes: {
+						map: {
+							layers: jasmine.any(Array),
+							center: jasmine.any(Array),
+							scale: jasmine.any(Number),
+							projection: 'EPSG:25832',
+							dpi: jasmine.any(Number),
+							rotation: null
+						},
+						dataOwner: 'Baz CopyRight,Bar CopyRight,Foo CopyRight',
+						shortLink: 'http://url.to/shorten',
+						qrcodeurl: 'http://url.to/shorten.png',
+						legend: jasmine.any(Object),
+						printLegend: jasmine.any(Boolean)
+					}
+				},
+				errors: []
 			});
 		});
 
@@ -482,25 +569,28 @@ describe('BvvMfp3Encoder', () => {
 					]
 				};
 			});
-			const actualSpec = await encoder.encode(mapMock, getProperties());
+			const encodingResult = await encoder.encode(mapMock, getProperties());
 
-			expect(actualSpec).toEqual({
-				layout: 'foo',
-				attributes: {
-					map: {
-						layers: jasmine.any(Array),
-						center: jasmine.any(Array),
-						scale: jasmine.any(Number),
-						projection: 'EPSG:25832',
-						dpi: jasmine.any(Number),
-						rotation: null
-					},
-					dataOwner: 'Foo CopyRight',
-					shortLink: 'http://url.to/shorten',
-					qrcodeurl: 'http://url.to/shorten.png',
-					legend: jasmine.any(Object),
-					printLegend: jasmine.any(Boolean)
-				}
+			expect(encodingResult).toEqual({
+				specs: {
+					layout: 'foo',
+					attributes: {
+						map: {
+							layers: jasmine.any(Array),
+							center: jasmine.any(Array),
+							scale: jasmine.any(Number),
+							projection: 'EPSG:25832',
+							dpi: jasmine.any(Number),
+							rotation: null
+						},
+						dataOwner: 'Foo CopyRight',
+						shortLink: 'http://url.to/shorten',
+						qrcodeurl: 'http://url.to/shorten.png',
+						legend: jasmine.any(Object),
+						printLegend: jasmine.any(Boolean)
+					}
+				},
+				errors: []
 			});
 		});
 
@@ -509,6 +599,17 @@ describe('BvvMfp3Encoder', () => {
 			const PointsPerInch = 72; // PostScript points 1/72"
 			const resolution = 1 / UnitsRatio / PointsPerInch;
 
+			const tileGrid = {
+				getTileSize: () => 42
+			};
+			const sourceMock = {
+				getTileGrid: () => tileGrid,
+				getUrls: () => ['https://some.url/to/foo/{z}/{x}/{y}'],
+				getParams: () => []
+			};
+			spyOn(geoResourceServiceMock, 'byId')
+				.withArgs('foo')
+				.and.callFake(() => new TestGeoResource(GeoResourceTypes.WMS, 'wms'));
 			const encoder = new BvvMfp3Encoder();
 
 			const properties = {
@@ -519,45 +620,57 @@ describe('BvvMfp3Encoder', () => {
 					{ title: 'not encoded', legendUrl: 'url not used', minResolution: 100, maxResolution: resolution + 1 }
 				]
 			};
+			spyOn(mapMock, 'getLayers').and.callFake(() => {
+				return {
+					getArray: () => [
+						{ get: () => 'foo', getExtent: () => [20, 20, 50, 50], getSource: () => sourceMock, getOpacity: () => 1, getVisible: () => true }
+					]
+				};
+			});
 
-			const actualSpec = await encoder.encode(mapMock, properties);
+			const encodingResult = await encoder.encode(mapMock, properties);
 
-			expect(actualSpec).toEqual({
-				layout: 'foo',
-				attributes: {
-					map: jasmine.any(Object),
-					dataOwner: jasmine.any(String),
-					shortLink: jasmine.any(String),
-					qrcodeurl: jasmine.any(String),
-					legend: {
-						name: '',
-						classes: [
-							{ name: 't1:DELIMITER:url1', icons: ['url1'] },
-							{ name: 't2:DELIMITER:url2', icons: ['url2'] }
-						]
-					},
-					printLegend: true
-				}
+			expect(encodingResult.errors).toEqual([]);
+			expect(encodingResult.specs.attributes.printLegend).toEqual(true);
+			expect(encodingResult.specs.attributes.legend).toEqual({
+				name: '',
+				classes: [
+					{ name: 't1:DELIMITER:url1', icons: ['url1'] },
+					{ name: 't2:DELIMITER:url2', icons: ['url2'] }
+				]
 			});
 		});
 
 		it('encodes printLegend to false when no legend items', async () => {
+			const tileGrid = {
+				getTileSize: () => 42
+			};
+			const sourceMock = {
+				getTileGrid: () => tileGrid,
+				getUrls: () => ['https://some.url/to/foo/{z}/{x}/{y}'],
+				getParams: () => []
+			};
+			spyOn(geoResourceServiceMock, 'byId')
+				.withArgs('foo')
+				.and.callFake(() => new TestGeoResource(GeoResourceTypes.WMS, 'wms'));
 			const encoder = new BvvMfp3Encoder();
 
-			const properties = { ...getProperties(), legendItems: [] };
-
-			const actualSpec = await encoder.encode(mapMock, properties);
-
-			expect(actualSpec).toEqual({
-				layout: 'foo',
-				attributes: jasmine.objectContaining({
-					legend: {
-						name: '',
-						classes: []
-					},
-					printLegend: false
-				})
+			const properties = {
+				...getProperties(),
+				legendItems: []
+			};
+			spyOn(mapMock, 'getLayers').and.callFake(() => {
+				return {
+					getArray: () => [
+						{ get: () => 'foo', getExtent: () => [20, 20, 50, 50], getSource: () => sourceMock, getOpacity: () => 1, getVisible: () => true }
+					]
+				};
 			});
+
+			const encodingResult = await encoder.encode(mapMock, properties);
+
+			expect(encodingResult.errors).toEqual([]);
+			expect(encodingResult.specs.attributes.printLegend).toBeFalse();
 		});
 
 		it("resolves wmts layer with wmts-source to a mfp 'wmts' spec", () => {

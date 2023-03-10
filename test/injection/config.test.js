@@ -52,6 +52,7 @@ describe('injector configuration', () => {
 		expect($injector.getScope('SearchPlugin')).toBe(Injector.SCOPE_SINGLETON);
 		expect($injector.getScope('ExportMfpPlugin')).toBe(Injector.SCOPE_SINGLETON);
 		expect($injector.getScope('ElevationProfilePlugin')).toBe(Injector.SCOPE_SINGLETON);
+		expect($injector.getScope('IframeStatePlugin')).toBe(Injector.SCOPE_SINGLETON);
 		expect($injector.getScope('HistoryStatePlugin')).toBe(Injector.SCOPE_SINGLETON);
 
 		// map module
@@ -66,7 +67,7 @@ describe('injector configuration', () => {
 		expect($injector.getScope('OverlayService')).toBe(Injector.SCOPE_PERLOOKUP);
 		expect($injector.getScope('OlFeatureInfoHandler')).toBe(Injector.SCOPE_PERLOOKUP);
 		expect($injector.getScope('OlFeatureInfoHandler')).toBe(Injector.SCOPE_PERLOOKUP);
-		expect($injector.getScope('ElevationProfileHandler')).toBe(Injector.SCOPE_PERLOOKUP);
+		expect($injector.getScope('OlElevationProfileHandler')).toBe(Injector.SCOPE_PERLOOKUP);
 		expect($injector.getScope('OlMfpHandler')).toBe(Injector.SCOPE_PERLOOKUP);
 
 		// topic module

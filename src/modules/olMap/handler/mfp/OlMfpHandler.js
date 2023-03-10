@@ -13,6 +13,8 @@ import { toLonLat } from 'ol/proj';
 import { equals, getIntersection } from 'ol/extent';
 import { emitNotification, LevelTypes } from '../../../../store/notifications/notifications.action';
 import { unByKey } from 'ol/Observable';
+import { html } from 'lit-html';
+import { MFP_ENCODING_ERROR_TYPE } from '../../services/Mfp3Encoder';
 
 const Points_Per_Inch = 72; // PostScript points 1/72"
 const MM_Per_Inches = 25.4;
@@ -114,7 +116,6 @@ export class OlMfpHandler extends OlLayerHandler {
 		// A shortcut and allowed alternative is the direct binding to the ol map events.
 		// The current design is chosen prior to the alternative, due to the fact, that the call traffic have no substantial influence to
 		// the performance and time consumptions (< 1 ms), but makes it simpler to follow only one source of events.
-
 		return [
 			observe(
 				store,
@@ -398,9 +399,25 @@ export class OlMfpHandler extends OlLayerHandler {
 		const showGrid = this._storeService.getStore().getState().mfp.showGrid;
 		const pageCenter = this._getVisibleCenterPoint();
 		const legendItems = this._printLegend ? this._legendItems : [];
-		const encodingProperties = { layoutId: id, scale: scale, rotation: rotation, dpi: dpi, pageCenter: pageCenter, showGrid: showGrid, legendItems };
-		const specs = await this._encoder.encode(this._map, encodingProperties);
+		const encodingProperties = { layoutId: id, scale: scale, rotation: rotation, dpi: dpi, pageCenter: pageCenter, showGrid: showGrid, legendItems};
+		const encodingResult = await this._encoder.encode(this._map, encodingProperties);
 
-		startJob(specs);
+		startJob(encodingResult.specs);
+		const encodingErrors = encodingResult.errors.filter((e) => e.type === MFP_ENCODING_ERROR_TYPE.NOT_EXPORTABLE);
+		const notify = encodingErrors.length > 0 ? () => this._notifyAboutEncodingErrors(encodingErrors) : () => {};
+		notify();
+	}
+
+	_notifyAboutEncodingErrors(encodingErrors) {
+		const translate = (key) => this._translationService.translate(key);
+
+		const warningContent = html`<div>
+			<p style="color: var(--text3);">${translate('olMap_handler_mfp_encoder_layer_not_exportable')}</p>
+			<ul style="margin-left:2em;">
+				${encodingErrors.map((encodingError) => html`<li style="color: var(--text3);">${encodingError.label}</li>`)}
+			</ul>
+		</div>`;
+
+		emitNotification(warningContent, LevelTypes.WARN);
 	}
 }
