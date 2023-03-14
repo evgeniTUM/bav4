@@ -432,5 +432,28 @@ describe('EAContributon', () => {
 			expect(store.getState().contribution.tagging).toBeFalse();
 			expect(store.getState().contribution.position).toBeNull();
 		});
+
+		it('resets categoryFields after category change', async () => {
+			const element = await setup();
+			element.mode = MODUS.report;
+
+			element.categories = SAMPLE_JSON_SPEC;
+
+			const query = (query) => element.shadowRoot.querySelector(query);
+
+			query('#category').value = 'Test1';
+			query('#category').dispatchEvent(new Event('change'));
+			query('[name="field1"]').value = 'text1';
+			query('[name="field1"]').dispatchEvent(new Event('input'));
+
+			query('#category').value = 'Test2';
+			query('#category').dispatchEvent(new Event('change'));
+			query('[name="field3"]').value = 'text3';
+			query('[name="field3"]').dispatchEvent(new Event('input'));
+
+			expect(element.getModel().categoryFields).toEqual({
+				field3: 'text3'
+			});
+		});
 	});
 });

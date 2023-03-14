@@ -82,6 +82,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 	}
 
 	reset() {
+		this.signal(Reset, {
+			mode: this.getModel().energyMarketMode ? MODUS.market : undefined,
+			categoriesSpecification: this.getModel().categoriesSpecification
+		});
 		setLocation(null);
 		setTaggingMode(false);
 	}
@@ -182,7 +186,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 		};
 
 		const onSelectionChanged = (e) => {
-			this.signal(Update, { currentCategory: e.target.value });
+			this.signal(Update, { currentCategory: e.target.value, categoryFields: {} });
 			model.categoryFields = {};
 			this.shadowRoot.querySelectorAll('.category-fields input').forEach((i) => (i.value = ''));
 			this.signal(Update, { openSections: 'step3' });
@@ -351,19 +355,11 @@ ${isCorrection ? '' : html`<div class="category-fields">${categoryFields[model.c
 				</div>
 			</form>`;
 
-		const onClickBackButton = () => {
-			this.reset();
-			this.signal(Reset, {
-				mode: energyMarketMode ? MODUS.market : undefined,
-				categoriesSpecification: model.categoriesSpecification
-			});
-		};
-
 		const completionForm = html`
 		<div>${model.statusMessage}</div>
 				<div class='form-buttons'>
 					<ba-button id="back" .label=${translate('ea_contribution_button_back')} 
-						.type=${'primary'} @click=${onClickBackButton} >
+						.type=${'primary'} @click=${() => this.reset()} >
 						Senden
 					</button>
 				</div>
