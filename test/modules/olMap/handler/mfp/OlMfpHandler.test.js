@@ -744,7 +744,7 @@ describe('OlMfpHandler', () => {
 			setLegendItems([{ title: 't1' }, { title: 't2' }, { title: 't1' }]);
 			spyOn(mfpEncoderMock, 'encode')
 				.withArgs(map, jasmine.objectContaining({ legendItems: [{ title: 't1' }, { title: 't2' }] }))
-				.and.callFake(() => {});
+				.and.callFake(() => ({ specs: {}, errors: [] }));
 
 			handler.activate(map);
 			requestJob();
@@ -761,7 +761,7 @@ describe('OlMfpHandler', () => {
 			const handler = new OlMfpHandler();
 			spyOn(mfpEncoderMock, 'encode')
 				.withArgs(map, jasmine.objectContaining({ legendItems: [{ title: '1' }, { title: '2' }] }))
-				.and.callFake(() => {});
+				.and.callFake(() => ({ specs: {}, errors: [] }));
 
 			handler.activate(map);
 			requestJob();
@@ -778,7 +778,7 @@ describe('OlMfpHandler', () => {
 			const handler = new OlMfpHandler();
 			spyOn(mfpEncoderMock, 'encode')
 				.withArgs(map, jasmine.objectContaining({ legendItems: [] }))
-				.and.callFake(() => {});
+				.and.callFake(() => ({ specs: {}, errors: [] }));
 
 			handler.activate(map);
 			requestJob();
