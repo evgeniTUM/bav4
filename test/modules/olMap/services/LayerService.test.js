@@ -113,6 +113,16 @@ describe('LayerService', () => {
 				expect(wmsSource.getParams().VERSION).toBe('1.1.1');
 			});
 
+			it('converts a WmsGeoresource to a olLayer filtering out extra-parameter legendUrl', () => {
+				const instanceUnderTest = setup();
+				const wmsGeoresource = new WmsGeoResource('geoResourceId', 'label', 'https://some.url', 'layer', 'image/png');
+				wmsGeoresource.setExtraParams({ legendUrl: 'https://foo.bar' });
+
+				const wmsOlLayer = instanceUnderTest.toOlLayer('id', wmsGeoresource);
+
+				expect(wmsOlLayer.getSource().getParams().legendUrl).toBeUndefined();
+			});
+
 			it('converts a WmsGeoresource containing optional properties to a olLayer', () => {
 				const instanceUnderTest = setup();
 				const id = 'id';
