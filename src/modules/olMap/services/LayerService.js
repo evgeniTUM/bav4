@@ -53,7 +53,9 @@ export class LayerService {
 						LAYERS: geoResource.layers,
 						FORMAT: geoResource.format,
 						VERSION: '1.1.1',
-						...geoResource.extraParams
+						...geoResource.extraParams,
+						// filter out legendUrl as some WMS services won't process this parameter correctly
+						legendUrl: undefined
 					}
 				});
 
