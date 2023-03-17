@@ -299,6 +299,7 @@ describe('ShareService', () => {
 				spyOn(instanceUnderTest, '_extractPosition').and.returnValue({ z: 5, c: ['44.123', '88.123'] });
 				spyOn(instanceUnderTest, '_extractLayers').and.returnValue({ l: ['someLayer', 'anotherLayer'] });
 				spyOn(instanceUnderTest, '_extractTopic').and.returnValue({ t: 'someTopic' });
+				spyOn(instanceUnderTest, '_extractEaModule').and.returnValue({ comp: 'someModule' });
 				const _mergeExtraParamsSpy = spyOn(instanceUnderTest, '_mergeExtraParams').withArgs(jasmine.anything(), extraParam).and.callThrough();
 
 				const encoded = instanceUnderTest.encodeState(extraParam);
@@ -309,6 +310,7 @@ describe('ShareService', () => {
 				expect(queryParams.get(QueryParameters.ZOOM)).toBe('5');
 				expect(queryParams.get(QueryParameters.CENTER)).toBe('44.123,88.123');
 				expect(queryParams.get(QueryParameters.TOPIC)).toBe('someTopic');
+				expect(queryParams.get(QueryParameters.EA_MODULE)).toBe('someModule');
 				expect(queryParams.get('foo')).toBe('bar');
 				expect(_mergeExtraParamsSpy).toHaveBeenCalled();
 			});
