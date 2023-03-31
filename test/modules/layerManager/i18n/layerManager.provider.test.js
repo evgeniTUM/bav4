@@ -6,7 +6,7 @@ describe('i18n for layer-manager', () => {
 
 		expect(map.layerManager_title).toBe('Ausgewählte Karten');
 		expect(map.layerManager_change_visibility).toBe('Sichtbarkeit umschalten');
-		expect(map.layerManager_opacity).toBe('Opazität');
+		expect(map.layerManager_opacity).toBe('Transparenz');
 		expect(map.layerManager_collapse).toBe('Eigenschaften einklappen');
 		expect(map.layerManager_expand).toBe('Eigenschaften ausklappen');
 		expect(map.layerManager_move_up).toBe('Ebene anheben');
