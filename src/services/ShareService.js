@@ -5,8 +5,9 @@ import { EaModulesQueryParameters } from '../ea/store/module/ea.action';
 
 export class ShareService {
 	constructor() {
-		const { EnvironmentService: environmentService } = $injector.inject('EnvironmentService');
+		const { EnvironmentService: environmentService, ConfigService: configService } = $injector.inject('EnvironmentService', 'ConfigService');
 		this._environmentService = environmentService;
+		this._configService = configService;
 	}
 
 	/**
@@ -40,11 +41,13 @@ export class ShareService {
 
 	/**
 	 * Encodes the current state to a URL.
-	 * @param {object} extraParams Additional parameters. Non-existing entries will be added. Existing values will be ignored except for values that are an array.
+	 * The generated URL is based on the `FRONTEND_URL` config parameter.
+	 * @param {object} [extraParams] Additional parameters. Non-existing entries will be added. Existing values will be ignored except for values that are an array.
 	 * In this case, existing values will be concatenated with the additional values.
+	 * @param {array} [pathParameters] Optional path parameters. Will be appended to the current pathname without further checks
 	 * @returns {string} url
 	 */
-	encodeState(extraParams = {}) {
+	encodeState(extraParams = {}, pathParameters = []) {
 		const extractedState = this._mergeExtraParams(
 			{
 				...this._extractPosition(),
@@ -55,9 +58,10 @@ export class ShareService {
 			extraParams
 		);
 
+		const baseUrl = this._configService.getValueAsPath('FRONTEND_URL');
 		const searchParams = new URLSearchParams(extractedState);
-		const location = this._environmentService.getWindow().location;
-		return `${location.protocol}//${location.host}${location.pathname}` + '?' + decodeURIComponent(searchParams.toString());
+		const mergedPathParameters = pathParameters.length ? [...pathParameters] : [];
+		return `${baseUrl}${mergedPathParameters.join('/')}` + '?' + decodeURIComponent(searchParams.toString());
 	}
 
 	/**

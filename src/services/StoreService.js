@@ -30,6 +30,8 @@ import { mapclickReducer } from '../ea/store/mapclick/mapclick.reducer';
 import { bottomSheetReducer } from '../store/bottomSheet/bottomSheet.reducer';
 import { elevationProfileReducer } from '../store/elevationProfile/elevationProfile.reducer';
 import { chipsReducer } from '../store/chips/chips.reducer';
+import { stateForEncodingReducer } from '../store/stateForEncoding/stateForEncoding.reducer';
+import { iframeContainerReducer } from '../store/iframeContainer/iframeContainer.reducer';
 
 /**
  * Service which configures, initializes and holds the redux store.
@@ -72,7 +74,9 @@ export class StoreService {
 			mfp: mfpReducer,
 			bottomSheet: bottomSheetReducer,
 			elevationProfile: elevationProfileReducer,
-			chips: chipsReducer
+			chips: chipsReducer,
+			stateForEncoding: stateForEncodingReducer,
+			iframeContainer: iframeContainerReducer
 		});
 
 		this._store = createStore(rootReducer);
@@ -100,9 +104,13 @@ export class StoreService {
 				SearchPlugin: searchPlugin,
 				ExportMfpPlugin: exportMfpPlugin,
 				ElevationProfilePlugin: elevationProfilePlugin,
-				HistoryStatePlugin: historyStatePlugin,
+				ObserveStateForEncodingPlugin: observeStateForEncodingPlugin,
 				InfoPopupPlugin: infoPopupPlugin,
-				IframeStatePlugin: iframeStatePlugin
+				IframeStatePlugin: iframeStatePlugin,
+				IframeContainerPlugin: iframeContainerPlugin,
+				SharePlugin: sharePlugin,
+				ToolsPlugin: toolsPlugin,
+				HistoryStatePlugin: historyStatePlugin
 			} = $injector.inject(
 				'TopicsPlugin',
 				'ChipsPlugin',
@@ -125,9 +133,13 @@ export class StoreService {
 				'SearchPlugin',
 				'ExportMfpPlugin',
 				'ElevationProfilePlugin',
+				'IframeStatePlugin',
+				'IframeContainerPlugin',
+				'SharePlugin',
+				'ToolsPlugin',
 				'HistoryStatePlugin',
 				'InfoPopupPlugin',
-				'IframeStatePlugin'
+				'ObserveStateForEncodingPlugin'
 			);
 
 			setTimeout(async () => {
@@ -155,7 +167,11 @@ export class StoreService {
 				await exportMfpPlugin.register(this._store);
 				await elevationProfilePlugin.register(this._store);
 				await iframeStatePlugin.register(this._store);
-				await historyStatePlugin.register(this._store); // should be registered as last plugin
+				await iframeContainerPlugin.register(this._store);
+				await sharePlugin.register(this._store);
+				await toolsPlugin.register(this._store);
+				await historyStatePlugin.register(this._store);
+				await observeStateForEncodingPlugin.register(this._store); // should be registered as last plugin
 			});
 		});
 	}

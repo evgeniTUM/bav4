@@ -27,12 +27,12 @@ import { notificationReducer } from '../../../../../src/store/notifications/noti
 import { LevelTypes } from '../../../../../src/store/notifications/notifications.action';
 import { acknowledgeTermsOfUse } from '../../../../../src/store/shared/shared.action';
 import { simulateMapBrowserEvent } from '../../mapTestUtils';
-import { ToolId } from '../../../../../src/store/tools/tools.action';
 import { drawReducer } from '../../../../../src/store/draw/draw.reducer';
 import { toolsReducer } from '../../../../../src/store/tools/tools.reducer';
 import { MeasurementOverlay } from '../../../../../src/modules/olMap/components/MeasurementOverlay';
 import { getAttributionForLocallyImportedOrCreatedGeoResource } from '../../../../../src/services/provider/attribution.provider';
 import { Layer } from 'ol/layer';
+import { Tools } from '../../../../../src/domain/tools';
 
 proj4.defs('EPSG:25832', '+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +axis=neu');
 register(proj4);
@@ -141,7 +141,7 @@ describe('OlMeasurementHandler', () => {
 		});
 		$injector
 			.registerSingleton('TranslationService', translationServiceMock)
-			.registerSingleton('MapService', { getSrid: () => 3857, getDefaultGeodeticSrid: () => 25832 })
+			.registerSingleton('MapService', { getSrid: () => 3857, getDefaultGeodeticSrid: () => 25832, getDefaultGeodeticExtent: () => [5, -80, 14, 80] })
 			.registerSingleton('EnvironmentService', environmentServiceMock)
 			.registerSingleton('GeoResourceService', geoResourceServiceMock)
 			.registerSingleton('InteractionStorageService', interactionStorageServiceMock)
@@ -288,14 +288,12 @@ describe('OlMeasurementHandler', () => {
 				const classUnderTest = new OlMeasurementHandler();
 				const map = setupMap();
 				const layerStub = {};
-				const warnSpy = spyOn(console, 'warn');
 				map.removeInteraction = jasmine.createSpy();
 				classUnderTest.activate(map);
 				classUnderTest.deactivate(map, layerStub);
 
 				// removes Interaction for select, draw, modify, snap, dragPan
 				expect(map.removeInteraction).toHaveBeenCalledTimes(5);
-				expect(warnSpy).toHaveBeenCalled();
 			});
 
 			it('adds a select interaction', () => {
@@ -706,7 +704,6 @@ describe('OlMeasurementHandler', () => {
 			const store = setup();
 			const classUnderTest = new OlMeasurementHandler();
 			const map = setupMap();
-			const warnSpy = spyOn(console, 'warn');
 
 			classUnderTest.activate(map);
 			expect(classUnderTest._vectorLayer).toBeTruthy();
@@ -714,7 +711,6 @@ describe('OlMeasurementHandler', () => {
 
 			await TestUtils.timeout();
 			expect(store.getState().layers.active.length).toBe(0);
-			expect(warnSpy).toHaveBeenCalledWith('Cannot store empty layer');
 		});
 	});
 
@@ -1319,7 +1315,7 @@ describe('OlMeasurementHandler', () => {
 				]
 			]);
 			feature.getGeometry().dispatchEvent('change');
-			expect(store.getState().measurement.statistic.length).toBeCloseTo(506, 0);
+			expect(store.getState().measurement.statistic.length).toBeCloseTo(500, 0);
 			expect(store.getState().measurement.statistic.area).toBeCloseTo(0, 1);
 		});
 
@@ -1834,7 +1830,7 @@ describe('OlMeasurementHandler', () => {
 			simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, 250, 250);
 
 			expect(store.getState().draw.selection.length).toBe(1);
-			expect(store.getState().tools.current).toBe(ToolId.DRAWING);
+			expect(store.getState().tools.current).toBe(Tools.DRAWING);
 		});
 
 		it('updates statistics if clickposition is in anyinteract to selected feature', () => {

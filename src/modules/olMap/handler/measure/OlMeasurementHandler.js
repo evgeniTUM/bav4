@@ -35,11 +35,12 @@ import { OlSketchHandler } from '../OlSketchHandler';
 import { MEASUREMENT_LAYER_ID, MEASUREMENT_TOOL_ID } from '../../../../plugins/MeasurementPlugin';
 import { acknowledgeTermsOfUse } from '../../../../store/shared/shared.action';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
-import { setCurrentTool, ToolId } from '../../../../store/tools/tools.action';
+import { setCurrentTool } from '../../../../store/tools/tools.action';
 import { setSelection as setDrawSelection } from '../../../../store/draw/draw.action';
 import { KeyActionMapper } from '../../../../utils/KeyActionMapper';
 import { getAttributionForLocallyImportedOrCreatedGeoResource } from '../../../../services/provider/attribution.provider';
 import { KML } from 'ol/format';
+import { Tools } from '../../../../domain/tools';
 
 const Debounce_Delay = 1000;
 
@@ -91,7 +92,8 @@ export class OlMeasurementHandler extends OlLayerHandler {
 
 		this._projectionHints = {
 			fromProjection: 'EPSG:' + this._mapService.getSrid(),
-			toProjection: 'EPSG:' + this._mapService.getDefaultGeodeticSrid()
+			toProjection: 'EPSG:' + this._mapService.getDefaultGeodeticSrid(),
+			toProjectionExtent: this._mapService.getDefaultGeodeticExtent()
 		};
 		this._lastPointerMoveEvent = null;
 		this._lastInteractionStateType = null;
@@ -221,7 +223,7 @@ export class OlMeasurementHandler extends OlLayerHandler {
 				if (changeToMeasureTool(features)) {
 					const drawIds = features.filter((f) => f.getId().startsWith('draw_')).map((f) => f.getId());
 					setDrawSelection(drawIds);
-					setCurrentTool(ToolId.DRAWING);
+					setCurrentTool(Tools.DRAWING);
 				}
 			};
 
@@ -660,16 +662,12 @@ export class OlMeasurementHandler extends OlLayerHandler {
 		this._storedContent = newContent;
 	}
 
-	/**
-	 * todo: redundant with OlDrawHandler, possible responsibility of a statefull _storageHandler
-	 */
 	async _convertToPermanentLayer() {
 		const translate = (key) => this._translationService.translate(key);
 		const label = translate('olMap_handler_draw_layer_label');
 
 		const isEmpty = this._vectorLayer.getSource().getFeatures().length === 0;
 		if (isEmpty) {
-			console.warn('Cannot store empty layer');
 			return;
 		}
 
