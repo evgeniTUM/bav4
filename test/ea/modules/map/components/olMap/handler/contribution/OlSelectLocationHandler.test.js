@@ -6,10 +6,11 @@ import {
 	OlSelectLocationHandler,
 	SELECT_LOCATION_LAYER_ID
 } from '../../../../../../../../src/ea/modules/map/components/olMap/handler/selection/OlSelectLocationHandler';
-import { setLocation } from '../../../../../../../../src/ea/store/contribution/contribution.action';
+import { setLocation, setTaggingMode } from '../../../../../../../../src/ea/store/contribution/contribution.action';
 import { contributionReducer, initialState } from '../../../../../../../../src/ea/store/contribution/contribution.reducer';
 import { $injector } from '../../../../../../../../src/injection';
 import { TestUtils } from '../../../../../../../test-utils.js';
+import { mapclickReducer } from '../../../../../../../../src/ea/store/mapclick/mapclick.reducer';
 
 describe('OlSelectLocationHandler', () => {
 	const translationServiceMock = { translate: (key) => key };
@@ -17,7 +18,10 @@ describe('OlSelectLocationHandler', () => {
 		contribution: initialState
 	};
 	const setup = (state = defaultState) => {
-		const store = TestUtils.setupStoreAndDi(state, { contribution: contributionReducer });
+		const store = TestUtils.setupStoreAndDi(state, {
+			contribution: contributionReducer,
+			mapclick: mapclickReducer
+		});
 		$injector.registerSingleton('TranslationService', translationServiceMock);
 		return store;
 	};
@@ -29,7 +33,7 @@ describe('OlSelectLocationHandler', () => {
 		expect(handler.activate).toBeTruthy();
 		expect(handler.deactivate).toBeTruthy();
 		expect(handler.id).toBe(SELECT_LOCATION_LAYER_ID);
-		expect(handler.options).toEqual({ preventDefaultClickHandling: true, preventDefaultContextClickHandling: true });
+		expect(handler.options).toEqual({ preventDefaultClickHandling: false, preventDefaultContextClickHandling: false });
 	});
 
 	describe('when activated over olMap', () => {
@@ -74,6 +78,50 @@ describe('OlSelectLocationHandler', () => {
 			setLocation([4, 2]);
 
 			expect(classUnderTest._positionFeature.getGeometry().getCoordinates()).toEqual([4, 2]);
+		});
+
+		it('activates tooltip when tagging mode active', async () => {
+			const map = setupMap();
+			setup();
+
+			const classUnderTest = new OlSelectLocationHandler();
+			classUnderTest.activate(map);
+
+			setTaggingMode(true);
+			expect(classUnderTest._helpTooltip._map).not.toBeNull();
+
+			setTaggingMode(false);
+			expect(classUnderTest._helpTooltip._map).toBeNull();
+		});
+
+		it('sets mouse cursor over map to crosshair when tagging mode active', async () => {
+			const map = setupMap();
+			const store = setup();
+
+			const classUnderTest = new OlSelectLocationHandler();
+			classUnderTest.activate(map);
+
+			setTaggingMode(true);
+			expect(store.getState().mapclick.mapCursorStyle).toEqual('crosshair');
+
+			setTaggingMode(false);
+			expect(store.getState().mapclick.mapCursorStyle).toEqual('auto');
+		});
+
+		it('prevents default click handling when tagging mode active', async () => {
+			const map = setupMap();
+			setup();
+
+			const classUnderTest = new OlSelectLocationHandler();
+			classUnderTest.activate(map);
+
+			setTaggingMode(true);
+			expect(classUnderTest._options.preventDefaultClickHandling).toEqual(true);
+			expect(classUnderTest._options.preventDefaultContextClickHandling).toEqual(true);
+
+			setTaggingMode(false);
+			expect(classUnderTest._options.preventDefaultClickHandling).toEqual(false);
+			expect(classUnderTest._options.preventDefaultContextClickHandling).toEqual(false);
 		});
 	});
 });
