@@ -61,6 +61,7 @@ describe('ManageModulesPlugin', () => {
 
 		expect(store.getState().layers.active.length).toBe(1);
 		expect(store.getState().layers.active[0].id).toBe(SELECT_LOCATION_LAYER_ID);
+		expect(store.getState().layers.active[0].constraints.alwaysTop).toBe(true);
 
 		setCurrentModule('something');
 
@@ -79,6 +80,7 @@ describe('ManageModulesPlugin', () => {
 
 		expect(store.getState().layers.active.length).toBe(1);
 		expect(store.getState().layers.active[0].id).toBe(SELECT_LOCATION_LAYER_ID);
+		expect(store.getState().layers.active[0].constraints.alwaysTop).toBe(true);
 
 		setCurrentModule('something');
 
