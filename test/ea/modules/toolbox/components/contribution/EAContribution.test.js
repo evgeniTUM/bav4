@@ -146,6 +146,23 @@ describe('EAContributon', () => {
 
 			expect(store.getState().contribution.tagging).toBe(true);
 		});
+
+		it('deactivates tagging mode when coordinates are selected', async () => {
+			jasmine.clock().install();
+
+			const element = await setup();
+			const tagButton = element.shadowRoot.querySelector('#tag');
+
+			tagButton.click();
+			expect(store.getState().contribution.tagging).toBe(true);
+
+			setLocation([42, 24]);
+			jasmine.clock().tick(500);
+
+			expect(store.getState().contribution.tagging).toBe(false);
+
+			jasmine.clock().uninstall();
+		});
 	});
 
 	it('opens the research module when "find" button is clicked', async () => {
