@@ -37,8 +37,7 @@ Wasserkraftanlage,Name der Webseite,TRUE,text
 Wasserkraftanlage,Stand,TRUE,text
 Windenergieanlage,Leistung,FALSE,text
 Windenergieanlage,Inbetriebnahmedatum,FALSE,text
-Windenergieanlage,Typ,FALSE,text
-Windenergieanlage,Hersteller,FALSE,text
+Windenergieanlage,Hersteller + Typ,FALSE,text
 Windenergieanlage,Rotordurchmesser,FALSE,text
 Windenergieanlage,Nabenhöhe,FALSE,text
 Windenergieanlage,Gesamthöhe,TRUE,text
