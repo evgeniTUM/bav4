@@ -233,7 +233,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			>
 				<div class="button-icon tag-icon"></div>
 				${translate('ea_contribution_button_tag_title')}
-				<div class="subtext">${translate('ea_contribution_button_tag_subtext')}</div>
+				<div class="subtext">${translate('ea_contribution_button_tag_subtext' + (!isCorrection && model.tagging ? '_tagging' : ''))}</div>
 			</button>
 		`;
 		const secondButton = energyMarketMode
@@ -257,7 +257,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			  >
 					<div class="button-icon correction-icon"></div>
 					${translate('ea_contribution_button_correction_title')}
-					<div class="subtext">${translate('ea_contribution_button_tag_subtext')}</div>
+					<div class="subtext">${translate('ea_contribution_button_tag_subtext' + (isCorrection && model.tagging ? '_tagging' : ''))}</div>
 			  </button>`;
 
 		const onToggle = (e) => {

@@ -1,6 +1,6 @@
 import { MODUS } from '../../../../../../src/ea/modules/toolbox/components/contribution/ContributionModus';
 import { EAContribution } from '../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
-import { setLocation } from '../../../../../../src/ea/store/contribution/contribution.action';
+import { setLocation, setTaggingMode } from '../../../../../../src/ea/store/contribution/contribution.action';
 import { contributionReducer, initialState } from '../../../../../../src/ea/store/contribution/contribution.reducer';
 import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../src/injection';
@@ -145,6 +145,17 @@ describe('EAContributon', () => {
 			tagButton.click();
 
 			expect(store.getState().contribution.tagging).toBe(true);
+		});
+
+		it('tag button changes subtext title when tagging mode is active', async () => {
+			const element = await setup();
+			const subtextElement = element.shadowRoot.querySelector('#tag .subtext');
+
+			expect(subtextElement.textContent).toEqual('ea_contribution_button_tag_subtext');
+
+			setTaggingMode(true);
+
+			expect(subtextElement.textContent).toEqual('ea_contribution_button_tag_subtext_tagging');
 		});
 
 		it('deactivates tagging mode when coordinates are selected', async () => {
