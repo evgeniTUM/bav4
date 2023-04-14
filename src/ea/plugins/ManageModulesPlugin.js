@@ -87,7 +87,7 @@ export class ManageModulesPlugin extends BaPlugin {
 			switch (currentModule) {
 				case EnergyMarketModuleContent.name:
 				case EnergyReportingModuleContent.name:
-					addLayer(SELECT_LOCATION_LAYER_ID, { label: 'Standortselektion', constraints: { hidden: true, alwaysTop: false } });
+					addLayer(SELECT_LOCATION_LAYER_ID, { label: 'Standortselektion', constraints: { hidden: true, alwaysTop: true } });
 					break;
 
 				case MixerModuleContent.name:

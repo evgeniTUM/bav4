@@ -71,6 +71,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 				return { ...model, categoryFields: {} };
 
 			case Position_Change: {
+				setTimeout(() => setTaggingMode(false), 500);
+
 				if (model.position === null && data) {
 					this.shadowRoot.getElementById('coordinates').setCustomValidity('');
 					return { ...model, openSections: model.currentCategory ? model.openSections : 'step2' };
@@ -217,8 +219,9 @@ export class EAContribution extends AbstractMvuContentPanel {
 					<div class="arrow-down"></div>`
 			: '';
 
-		const firstButtonClass = model.tagging ? (energyMarketMode || !isCorrection ? 'active' : 'inactive') : 'unselected';
-		const secondButtonClass = model.tagging ? (energyMarketMode || isCorrection ? 'active' : 'inactive') : 'unselected';
+		const modeSelected = model.tagging || model.position !== null;
+		const firstButtonClass = modeSelected ? (energyMarketMode || !isCorrection ? 'active' : 'inactive') : 'unselected';
+		const secondButtonClass = modeSelected ? (energyMarketMode || isCorrection ? 'active' : 'inactive') : 'unselected';
 
 		const firstButton = html`
 			<button
@@ -230,7 +233,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			>
 				<div class="button-icon tag-icon"></div>
 				${translate('ea_contribution_button_tag_title')}
-				<div class="subtext">${translate('ea_contribution_button_tag_subtext')}</div>
+				<div class="subtext">${translate('ea_contribution_button_tag_subtext' + (!isCorrection && model.tagging ? '_tagging' : ''))}</div>
 			</button>
 		`;
 		const secondButton = energyMarketMode
@@ -254,7 +257,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			  >
 					<div class="button-icon correction-icon"></div>
 					${translate('ea_contribution_button_correction_title')}
-					<div class="subtext">${translate('ea_contribution_button_tag_subtext')}</div>
+					<div class="subtext">${translate('ea_contribution_button_tag_subtext' + (isCorrection && model.tagging ? '_tagging' : ''))}</div>
 			  </button>`;
 
 		const onToggle = (e) => {

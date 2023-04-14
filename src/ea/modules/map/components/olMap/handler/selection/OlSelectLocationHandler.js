@@ -16,7 +16,7 @@ export const SELECT_LOCATION_LAYER_ID = 'select_location_layer_id';
 
 export class OlSelectLocationHandler extends OlLayerHandler {
 	constructor() {
-		super(SELECT_LOCATION_LAYER_ID);
+		super(SELECT_LOCATION_LAYER_ID, { preventDefaultClickHandling: false, preventDefaultContextClickHandling: false });
 		const { StoreService } = $injector.inject('StoreService');
 		this._helpTooltip = new HelpTooltip();
 		this._storeService = StoreService;
@@ -86,10 +86,14 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 			if (taggingMode) {
 				setMapCursorStyle('crosshair');
 				this._helpTooltip.activate(this._map);
+				this._options.preventDefaultClickHandling = true;
+				this._options.preventDefaultContextClickHandling = true;
 				tagging = true;
 			} else {
 				setMapCursorStyle('auto');
 				this._helpTooltip.deactivate();
+				this._options.preventDefaultClickHandling = false;
+				this._options.preventDefaultContextClickHandling = false;
 				tagging = false;
 			}
 		};

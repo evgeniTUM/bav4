@@ -1,10 +1,11 @@
+import { Tools } from '../../../src/domain/tools.js';
 import { WebAnalyticsPlugin } from '../../../src/ea/plugins/WebAnalyticsPlugin.js';
 import { activateWebAnalytics, deactivateWebAnalytics, EaModules, setCurrentModule } from '../../../src/ea/store/module/ea.action.js';
 import { eaReducer } from '../../../src/ea/store/module/ea.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
 import { addLayer, removeLayer } from '../../../src/store/layers/layers.action.js';
 import { layersReducer } from '../../../src/store/layers/layers.reducer.js';
-import { setCurrentTool, ToolId } from '../../../src/store/tools/tools.action.js';
+import { setCurrentTool } from '../../../src/store/tools/tools.action.js';
 import { toolsReducer } from '../../../src/store/tools/tools.reducer.js';
 import { TestUtils } from '../../test-utils.js';
 
@@ -63,7 +64,7 @@ describe('WebAnalyticsPlugin', () => {
 			activateWebAnalytics();
 			deactivateWebAnalytics();
 
-			setCurrentTool(ToolId.DRAWING);
+			setCurrentTool(Tools.DRAWING);
 
 			expect(window._paq).toEqual([]);
 		});
@@ -91,12 +92,12 @@ describe('WebAnalyticsPlugin', () => {
 		});
 
 		it('tool selection', async () => {
-			setCurrentTool(ToolId.DRAWING);
+			setCurrentTool(Tools.DRAWING);
 			setCurrentTool(null);
 
 			const trackEvents = window._paq.filter((i) => i[0] === 'trackEvent');
 			expect(trackEvents.length).toEqual(1);
-			expect(trackEvents[0]).toEqual(['trackEvent', 'Kartenwerkzeug', 'clickEvent', ToolId.DRAWING]);
+			expect(trackEvents[0]).toEqual(['trackEvent', 'Kartenwerkzeug', 'clickEvent', Tools.DRAWING]);
 		});
 
 		it('layer activation', async () => {
