@@ -111,7 +111,6 @@
 }
 .header__button-container button:focus {
 	z-index: 0;
-	box-shadow: 0 0 0 0.2em var(--primary-color-lighter);
 }
 .header__button-container button:first-child {
 	border-radius: var(--border-radius-button) 0 0 var(--border-radius-button);
