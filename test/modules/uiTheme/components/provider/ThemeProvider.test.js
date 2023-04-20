@@ -43,8 +43,8 @@ describe('ThemeProvider', () => {
 			await setup({ window: mockWindow });
 
 			expect(document.body.innerHTML).toBe('<ba-theme-provider></ba-theme-provider>');
-			expect(addSpy).toHaveBeenCalledWith('dark-theme');
-			expect(removeSpy).toHaveBeenCalledWith('light-theme');
+			expect(addSpy).toHaveBeenCalledWith('light-theme');
+			expect(removeSpy).toHaveBeenCalledWith('dark-theme');
 		});
 	});
 
@@ -65,8 +65,8 @@ describe('ThemeProvider', () => {
 
 			await setup({ window: mockWindow });
 			expect(document.body.innerHTML).toBe('<ba-theme-provider></ba-theme-provider>');
-			expect(addSpy).toHaveBeenCalledWith('dark-theme');
-			expect(removeSpy).toHaveBeenCalledWith('light-theme');
+			expect(addSpy).toHaveBeenCalledWith('light-theme');
+			expect(removeSpy).toHaveBeenCalledWith('dark-theme');
 
 			setIsDarkSchema(false);
 
