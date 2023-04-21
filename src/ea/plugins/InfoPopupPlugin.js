@@ -19,7 +19,7 @@ export class InfoPopupPlugin extends BaPlugin {
 
 		this._cookieService = cookieService;
 		this._eaInfoPopupService = eaInfoPopupService;
-		this._infoPopupResult;
+		this._infoPopupResult = null;
 
 		const loadInfo = async () => {
 			const result = await this._eaInfoPopupService.loadInfoPopupResult();

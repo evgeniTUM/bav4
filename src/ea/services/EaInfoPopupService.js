@@ -10,7 +10,7 @@ import { $injector } from '../../injection/';
 export class EaInfoPopupService {
 	constructor(provider = loadInfoPopup) {
 		this._provider = provider;
-		this._infoPopupResult;
+		this._infoPopupResult = null;
 		const { EnvironmentService: environmentService } = $injector.inject('EnvironmentService');
 		this._environmentService = environmentService;
 	}
