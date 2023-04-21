@@ -25,9 +25,10 @@ export class InfoPopupPlugin extends BaPlugin {
 			const result = await this._eaInfoPopupService.loadInfoPopupResult();
 			this._infoPopupResult = result;
 			const contentAvailable = this._infoPopupResult != null && isHttpUrl(this._infoPopupResult.url);
-			if (this._cookieService.getCookie(this._infoPopupResult.key) !== undefined) {
+			if (this._infoPopupResult && this._cookieService.getCookie(this._infoPopupResult.key) !== undefined) {
 				mustShow = false;
 			}
+
 			if (mustShow && contentAvailable) {
 				window.setTimeout(() => openModalInfoPopup(this._infoPopupResult), INFO_POPUP_NOTIFICATION_DELAY_TIME);
 			}
