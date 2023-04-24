@@ -258,7 +258,7 @@ export class Header extends MvuElement {
 									${translate('ea_header_tab_topics_button')}
 								</span>
 							</button>
-							<button id="extension_button" data-test-id class="${getActiveClass(TabId.EXTENSION)} ${getMinWidthClass()}" title=${translate(
+							<button id="extension_button" data-test-id class="${getActiveClass(TabId.EXTENSION)}" title=${translate(
 			'ea_header_tab_additional_title'
 		)}  @click="${openExtendedTab}">
 								<span>
@@ -275,9 +275,7 @@ export class Header extends MvuElement {
 									${layerCount}
 								</div>
 							</button>
-							<button id="misc_button" data-test-id class="${getActiveClass(TabId.MISC)} ${getMinWidthClass()}" title=${translate(
-			'ea_header_tab_more_title'
-		)}  @click="${openMiscTab}">
+							<button id="misc_button" data-test-id class="${getActiveClass(TabId.MISC)}" title=${translate('ea_header_tab_more_title')}  @click="${openMiscTab}">
 								<span>
 									${translate('header_tab_misc_button')}
 								</span>
