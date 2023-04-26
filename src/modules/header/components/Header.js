@@ -223,9 +223,6 @@ export class Header extends MvuElement {
 						<div id='header__text' class='${getOverlayClass()} header__text'>
 							<a  title=${translate('header_action_button_title')} class="eab-logo-link" target="_blank" href="https://www.energieatlas.bayern.de/"></a>
 						</div>
-						<div class='header__logo-badge'>										
-							${translate('header_logo_badge')}
-						</div>	
 					</div>		
 					<div id='headerMobile' class='${getOverlayClass()} header__text-mobile'>
 						<a  title=${translate('header_action_button_title')} class="eab-logo-link" target="_blank" href="https://www.energieatlas.bayern.de/"></a>
