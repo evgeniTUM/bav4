@@ -1,10 +1,9 @@
 import { html } from 'lit-html';
 import { repeat } from 'lit-html/directives/repeat.js';
-import { AbstractToolContent } from '../toolContainer/AbstractToolContent';
 import { $injector } from '../../../../injection';
-import css from './shareToolContent.css';
-import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { openModal } from '../../../../store/modal/modal.action';
+import { AbstractToolContent } from '../toolContainer/AbstractToolContent';
+import css from './shareToolContent.css';
 
 /**
  * @class
@@ -90,17 +89,6 @@ export class ShareToolContent extends AbstractToolContent {
 	createView() {
 		const translate = (key) => this._translationService.translate(key);
 
-		const onToggle = (event) => {
-			//Todo: This is workaround until all commons components / ba-button is reworked
-			//then we bind a local field to the disabled property and just call render() afterwards
-			this.shadowRoot.querySelector('.preview_button').disabled = !event.detail.checked;
-		};
-
-		const onPreview = () => {
-			const content = html`<ba-iframe-generator></ba-iframe-generator>`;
-			openModal('BayernAtlas-IFrame', content);
-		};
-
 		const getToolTemplate = (tool) => {
 			const buttonContent = html`
 				<div class="tool-container__background"></div>
@@ -174,21 +162,6 @@ export class ShareToolContent extends AbstractToolContent {
 							(tool) => getToolTemplate(tool)
 						)}
 					</div>
-				</div>
-				<div class="ba-tool-container__title">${translate('toolbox_shareTool_embed')}</div>
-				<div class="ba-tool-container__content">
-					<ba-checkbox class="tool-container__checkbox" tabindex="0" @toggle=${onToggle} .checked=${false}>
-						<span class="disclaimer-text">${unsafeHTML(`${translate('toolbox_shareTool_disclaimer')}`)}</span>
-					</ba-checkbox>
-				</div>
-				<div class="ba-tool-container__actions">
-					<ba-button
-						class="preview_button"
-						.type=${'primary'}
-						.label=${translate('toolbox_shareTool_preview')}
-						.disabled=${true}
-						@click=${onPreview}
-					></ba-button>
 				</div>
 			</div>
 		`;
