@@ -10,8 +10,9 @@ export const loadEabGeoResourceDetailInfo = async (geoResourceId) => {
 	const {
 		HttpService: httpService,
 		ConfigService: configService,
-		GeoResourceService: geoResourceService
-	} = $injector.inject('HttpService', 'ConfigService', 'GeoResourceService');
+		GeoResourceService: geoResourceService,
+		SecurityService: securityService
+	} = $injector.inject('HttpService', 'ConfigService', 'GeoResourceService', 'SecurityService');
 
 	const loadInternal = async (geoResource) => {
 		const url = `${configService.getValueAsPath('BACKEND_URL')}georesource/info/detail/${geoResource.id}`;
@@ -24,7 +25,7 @@ export const loadEabGeoResourceDetailInfo = async (geoResourceId) => {
 	switch (result.status) {
 		case 200: {
 			const htmlContent = await result.text();
-			return new GeoResourceInfoResult(htmlContent);
+			return new GeoResourceInfoResult(securityService.sanitizeHtml(htmlContent));
 		}
 		case 204: {
 			return null;
