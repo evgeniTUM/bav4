@@ -76,7 +76,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 				if (model.position === null && data) {
 					this.shadowRoot.getElementById('coordinates').setCustomValidity('');
-					return { ...model, openSections: model.currentCategory ? model.openSections : 'step2' };
+					return { ...model, openSections: model.currentCategory ? model.openSections : 'step3' };
 				}
 
 				return model;
@@ -122,7 +122,6 @@ export class EAContribution extends AbstractMvuContentPanel {
 		const translate = (key) => this._translationService.translate(key);
 
 		const onClickTagButton = (mode) => () => {
-			setTaggingMode(true);
 			this.signal(Update, { mode });
 		};
 
@@ -220,9 +219,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 					<div class="arrow-down"></div>`
 			: '';
 
-		const modeSelected = model.tagging || model.position !== null;
-		const firstButtonClass = modeSelected ? (energyMarketMode || !isCorrection ? 'active' : 'inactive') : 'unselected';
-		const secondButtonClass = modeSelected ? (energyMarketMode || isCorrection ? 'active' : 'inactive') : 'unselected';
+		const firstButtonClass = model.mode ? (energyMarketMode || !isCorrection ? 'active' : 'inactive') : 'unselected';
+		const secondButtonClass = model.mode ? (energyMarketMode || isCorrection ? 'active' : 'inactive') : 'unselected';
 
 		const firstButton = html`
 			<button
@@ -234,7 +232,6 @@ export class EAContribution extends AbstractMvuContentPanel {
 			>
 				<div class="button-icon tag-icon"></div>
 				${translate('ea_contribution_button_tag_title')}
-				<div class="subtext">${translate('ea_contribution_button_tag_subtext' + (!isCorrection && model.tagging ? '_tagging' : ''))}</div>
 			</button>
 		`;
 		const secondButton = energyMarketMode
@@ -247,7 +244,6 @@ export class EAContribution extends AbstractMvuContentPanel {
 			  >
 					<div class="button-icon search-icon"></div>
 					${translate('ea_contribution_button_find_title')}
-					<div class="subtext">${translate('ea_contribution_button_find_text')}</div>
 			  </button>`
 			: html`<button
 					id="correction"
@@ -258,7 +254,6 @@ export class EAContribution extends AbstractMvuContentPanel {
 			  >
 					<div class="button-icon correction-icon"></div>
 					${translate('ea_contribution_button_correction_title')}
-					<div class="subtext">${translate('ea_contribution_button_tag_subtext' + (isCorrection && model.tagging ? '_tagging' : ''))}</div>
 			  </button>`;
 
 		const onToggle = (e) => {
@@ -268,7 +263,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 		const onClickSendButton = () => {
 			const form = this.shadowRoot.getElementById('report');
 			if (!form.checkValidity()) {
-				this.signal(Update, { openSections: ['step1', 'step2', 'step3', 'step4'], showInvalidFields: true });
+				this.signal(Update, { openSections: ['step1', 'step2', 'step3', 'step4', 'open5'], showInvalidFields: true });
 				form.reportValidity();
 			} else {
 				submit();
@@ -278,6 +273,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 		const stepTitle = (text, subtext) => html` <span style="color: var(--primary-color)">${text}${subtext ? ':' : ''}</span>
 			<span style="font-style: italic">${subtext}</span>`;
 
+		const onSelectButtonClick = () => {
+			setTaggingMode(true);
+		};
+
 		const form = html`
 			<form id='report' class='form-content' action="#">
 
@@ -286,7 +285,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 					<div class='step'>
 					<collapsable-content id='step1' .customCSS=${collapsableContentCss}
-						.title=${stepTitle('1. Standort des Objektes markieren', model.mode)}
+						.title=${stepTitle('1. Modus auswählen', model.mode)}
 						.open=${model.openSections.includes('step1')} @toggle=${onToggle}>
 						<div class='arrow-container'>
 							${buttonHeaders}
@@ -295,6 +294,20 @@ export class EAContribution extends AbstractMvuContentPanel {
 								${firstButton}
 								${secondButton}
 						</div>
+
+						<br/>
+					</collapsable-content>
+					</div>
+
+					<div class='step'>
+					<collapsable-content id='step2' .customCSS=${collapsableContentCss}
+						.title=${stepTitle('2. Standort des Objektes markieren', model.mode)}
+						.open=${model.openSections.includes('step2')} @toggle=${onToggle}>
+
+
+						<ba-button id="tag" .type=${'primary'} @click=${onSelectButtonClick}
+							.label=${translate('ea_contribution_button_tag_subtext' + (model.tagging ? '_tagging' : ''))}>
+						</ba-button>
 
 						<br/>
 						<div title=${translate(model.tagging ? 'ea_contribution_coordinates_tooltip_2' : 'ea_contribution_coordinates_tooltip_1')}>
@@ -307,10 +320,11 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</collapsable-content>
 					</div>
 
+
 					<div class='step'>
-					<collapsable-content id='step2' .customCSS=${collapsableContentCss}
-						.title=${stepTitle('2. Auswahl der Kategorie', model.currentCategory)}
-						.open=${model.openSections.includes('step2')} @toggle=${onToggle} >
+					<collapsable-content id='step3' .customCSS=${collapsableContentCss}
+						.title=${stepTitle('3. Auswahl der Kategorie', model.currentCategory)}
+						.open=${model.openSections.includes('step3')} @toggle=${onToggle} >
 						<select id='category' @change="${onSelectionChanged}" title="${translate('footer_coordinate_select')}" required>
 							<option value="" selected disabled>Bitte wählen ... </option>
 							${model.categoriesSpecification.map((e) => html`<option value="${e['ee-name']}">${e['ee-name']}</option> `)}
@@ -320,8 +334,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 					</div>
 
 					<div class='step'>
-					<collapsable-content id='step3' .customCSS=${collapsableContentCss}
-						.title=${stepTitle('3. Angaben zum Objekt')} .open=${model.openSections.includes('step3')}
+					<collapsable-content id='step4' .customCSS=${collapsableContentCss}
+						.title=${stepTitle('4. Angaben zum Objekt')} .open=${model.openSections.includes('step4')}
 						@toggle=${onToggle}>
 						<div class='fields-help'>Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</div>
 
@@ -335,8 +349,8 @@ ${isCorrection ? '' : html`<div class="category-fields">${categoryFields[model.c
 					</div>
 
 					<div class='step'>
-					<collapsable-content id='step4' .customCSS=${collapsableContentCss}
-						.title=${stepTitle('4. E-Mail Adresse')} .open=${model.openSections.includes('step4')} 
+					<collapsable-content id='step5' .customCSS=${collapsableContentCss}
+						.title=${stepTitle('5. E-Mail Adresse')} .open=${model.openSections.includes('step5')} 
 						@toggle=${onToggle}>
 						<input id='email' placeholder='Ihre E-Mail-Adresse*' required  type='email' name="email" 
 							@input=${(e) => this.signal(Update, { email: e.target.value })}>
