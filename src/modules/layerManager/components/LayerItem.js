@@ -1,3 +1,6 @@
+/**
+ * @module modules/layerManager/components/LayerItem
+ */
 import { html, nothing } from 'lit-html';
 import css from './layerItem.css';
 import { $injector } from '../../../injection';
@@ -215,7 +218,7 @@ export class LayerItem extends AbstractMvuContentPanel {
 
 		const getMenuItems = () => {
 			return [
-				{ id: 'copy', label: translate('layerManager_to_copy'), icon: cloneSvg, action: cloneLayer, disabled: !layer.constraints?.cloneable },
+				{ id: 'copy', label: translate('layerManager_to_copy'), icon: cloneSvg, action: cloneLayer, disabled: false },
 				{
 					id: 'zoomToExtent',
 					label: translate('layerManager_zoom_to_extent'),

@@ -5,7 +5,7 @@ import { EaMiscContentPanel } from '../../../../../../src/ea/modules/menu/compon
 import { EaMainMenu } from '../../../../../../src/ea/modules/menu/components/mainMenu/EaMainMenu';
 import { EaTopicsContentPanel } from '../../../../../../src/ea/modules/topics/components/menu/EaTopicsContentPanel';
 import { $injector } from '../../../../../../src/injection';
-import { FeatureInfoPanel } from '../../../../../../src/modules/featureInfo/components/FeatureInfoPanel';
+import { FeatureInfoPanel } from '../../../../../../src/modules/featureInfo/components/featureInfoPanel/FeatureInfoPanel';
 import { MapsContentPanel } from '../../../../../../src/modules/menu/components/mainMenu/content/maps/MapsContentPanel';
 import { MainMenu } from '../../../../../../src/modules/menu/components/mainMenu/MainMenu';
 import { SearchResultsPanel } from '../../../../../../src/modules/search/components/menu/SearchResultsPanel';

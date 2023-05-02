@@ -1,3 +1,6 @@
+/**
+ * @module modules/olMap/handler/measure/OlMeasurementHandler
+ */
 import { DragPan, Draw, Modify, Select, Snap } from 'ol/interaction';
 import { Vector as VectorSource } from 'ol/source';
 import { Vector as VectorLayer } from 'ol/layer';
@@ -5,7 +8,7 @@ import { unByKey } from 'ol/Observable';
 import { LineString, Polygon } from 'ol/geom';
 import { $injector } from '../../../../injection';
 import { OlLayerHandler } from '../OlLayerHandler';
-import { setStatistic, setMode, setSelection } from '../../../../store/measurement/measurement.action';
+import { setStatistic, setMode, setSelection, setFileSaveResult } from '../../../../store/measurement/measurement.action';
 import { addLayer, removeLayer } from '../../../../store/layers/layers.action';
 import { createSketchStyleFunction, selectStyleFunction } from '../../utils/olStyleUtils';
 import { getStats } from '../../utils/olGeometryUtils';
@@ -32,7 +35,7 @@ import {
 } from '../../utils/olInteractionUtils';
 import { emitNotification, LevelTypes } from '../../../../store/notifications/notifications.action';
 import { OlSketchHandler } from '../OlSketchHandler';
-import { MEASUREMENT_LAYER_ID, MEASUREMENT_TOOL_ID } from '../../../../plugins/MeasurementPlugin';
+import { MEASUREMENT_LAYER_ID } from '../../../../plugins/MeasurementPlugin';
 import { acknowledgeTermsOfUse } from '../../../../store/shared/shared.action';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { setCurrentTool } from '../../../../store/tools/tools.action';
@@ -92,8 +95,8 @@ export class OlMeasurementHandler extends OlLayerHandler {
 
 		this._projectionHints = {
 			fromProjection: 'EPSG:' + this._mapService.getSrid(),
-			toProjection: 'EPSG:' + this._mapService.getDefaultGeodeticSrid(),
-			toProjectionExtent: this._mapService.getDefaultGeodeticExtent()
+			toProjection: 'EPSG:' + this._mapService.getLocalProjectedSrid(),
+			toProjectionExtent: this._mapService.getLocalProjectedSridExtent()
 		};
 		this._lastPointerMoveEvent = null;
 		this._lastInteractionStateType = null;
@@ -125,7 +128,8 @@ export class OlMeasurementHandler extends OlLayerHandler {
 		}
 		const getOldLayer = (map) => {
 			const isOldLayer = (layer) => this._storageHandler.isStorageId(layer.get('geoResourceId'));
-			return map.getLayers().getArray().find(isOldLayer);
+			// we iterate over all layers in reverse order, the top-most layer is the one we take source for our drawing layer
+			return map.getLayers().getArray().reverse().find(isOldLayer);
 		};
 
 		const createLayer = () => {
@@ -218,17 +222,17 @@ export class OlMeasurementHandler extends OlLayerHandler {
 
 			const changeTool = (features) => {
 				const changeToMeasureTool = (features) => {
-					return features.some((f) => f.getId().startsWith('draw_'));
+					return features.some((f) => f.getId().startsWith(Tools.DRAWING + '_'));
 				};
 				if (changeToMeasureTool(features)) {
-					const drawIds = features.filter((f) => f.getId().startsWith('draw_')).map((f) => f.getId());
+					const drawIds = features.filter((f) => f.getId().startsWith(Tools.DRAWING + '_')).map((f) => f.getId());
 					setDrawSelection(drawIds);
 					setCurrentTool(Tools.DRAWING);
 				}
 			};
 
 			const isToolChangeNeeded = (features) => {
-				return features.some((f) => !f.getId().startsWith('measure_'));
+				return features.some((f) => !f.getId().startsWith(Tools.MEASURING + '_'));
 			};
 			const selectableFeatures = getSelectableFeatures(this._map, this._vectorLayer, pixel);
 			const clickAction = isToolChangeNeeded(selectableFeatures) ? changeTool : addToSelection;
@@ -460,7 +464,7 @@ export class OlMeasurementHandler extends OlLayerHandler {
 				this._overlayService.update(this._sketchHandler.active, this._map, StyleTypes.MEASURE, { geometry: measureGeometry });
 			};
 
-			this._sketchHandler.activate(event.feature, MEASUREMENT_TOOL_ID + '_');
+			this._sketchHandler.activate(event.feature, Tools.MEASURING + '_');
 			this._overlayService.add(this._sketchHandler.active, this._map, StyleTypes.MEASURE);
 			listener = event.feature.on('change', onFeatureChange);
 			zoomListener = this._map.getView().on('change:resolution', onResolutionChange);
@@ -658,8 +662,9 @@ export class OlMeasurementHandler extends OlLayerHandler {
 		features.forEach((f) => saveManualOverlayPosition(f));
 
 		const newContent = createKML(this._vectorLayer, 'EPSG:3857');
-		this._storageHandler.store(newContent, FileStorageServiceDataTypes.KML);
 		this._storedContent = newContent;
+		const fileSaveResult = await this._storageHandler.store(newContent, FileStorageServiceDataTypes.KML);
+		setFileSaveResult({ fileSaveResult, content: newContent });
 	}
 
 	async _convertToPermanentLayer() {
@@ -687,7 +692,7 @@ export class OlMeasurementHandler extends OlLayerHandler {
 
 		// register the stored data as new georesource
 		this._geoResourceService.addOrReplace(vgr);
-		addLayer(id, { constraints: { cloneable: false, metaData: false } });
+		addLayer(id, { constraints: { metaData: false } });
 	}
 
 	static get Debounce_Delay() {

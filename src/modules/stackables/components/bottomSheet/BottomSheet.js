@@ -1,8 +1,11 @@
+/**
+ * @module modules/stackables/components/bottomSheet/BottomSheet
+ */
 import { html, nothing } from 'lit-html';
 import css from './bottomSheet.css';
-import { MvuElement } from '../../MvuElement';
-import { closeBottomSheet } from '../../../store/bottomSheet/bottomSheet.action';
-import closeIcon from './assets/x-square.svg';
+import { MvuElement } from '../../../MvuElement';
+import { closeBottomSheet } from '../../../../store/bottomSheet/bottomSheet.action';
+import closeIcon from '../assets/x-square.svg';
 
 const Update = 'update';
 const Update_Main_Menu = 'update_main_menu';
@@ -65,7 +68,7 @@ export class BottomSheet extends MvuElement {
 
 		const onDismiss = () => {
 			const elementModal = this.shadowRoot.querySelector('.bottom-sheet');
-			elementModal.classList.add('hide');
+			elementModal.classList.add('fade-out');
 			elementModal.addEventListener('animationend', () => {
 				closeBottomSheet();
 			});

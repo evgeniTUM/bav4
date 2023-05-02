@@ -1,3 +1,6 @@
+/**
+ * @module modules/topics/components/menu/catalog/CatalogLeaf
+ */
 import { html, nothing } from 'lit-html';
 import { clearPreviewGeoresourceId, setPreviewGeoresourceId } from '../../../../../ea/store/module/ea.action';
 import { checkIfResolutionValid } from '../../../../../ea/utils/eaUtils';

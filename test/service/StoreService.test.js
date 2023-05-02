@@ -81,6 +81,9 @@ describe('StoreService', () => {
 		const toolsPluginMock = {
 			register: () => {}
 		};
+		const iframeGeometryIdPluginMock = {
+			register: () => {}
+		};
 		const historyStatePluginMock = {
 			register: () => {}
 		};
@@ -130,6 +133,7 @@ describe('StoreService', () => {
 				.registerSingleton('IframeContainerPlugin', iframeContainerPluginMock)
 				.registerSingleton('SharePlugin', sharePluginMock)
 				.registerSingleton('ToolsPlugin', toolsPluginMock)
+				.registerSingleton('IframeGeometryIdPlugin', iframeGeometryIdPluginMock)
 				.registerSingleton('HistoryStatePlugin', historyStatePluginMock)
 				.registerSingleton('ObserveStateForEncodingPlugin', observeStateForEncodingPluginMock)
 
@@ -204,6 +208,7 @@ describe('StoreService', () => {
 			const iframeContainerPluginSpy = spyOn(iframeContainerPluginMock, 'register');
 			const sharePluginSpy = spyOn(sharePluginMock, 'register');
 			const toolsPluginSpy = spyOn(toolsPluginMock, 'register');
+			const iframeGeometryIdPluginSpy = spyOn(iframeGeometryIdPluginMock, 'register');
 			const historyStatePluginSpy = spyOn(historyStatePluginMock, 'register');
 			const observeStateForEncodingPluginSpy = spyOn(observeStateForEncodingPluginMock, 'register');
 			const instanceUnderTest = new StoreService();
@@ -240,6 +245,7 @@ describe('StoreService', () => {
 			expect(iframeContainerPluginSpy).toHaveBeenCalledWith(store);
 			expect(sharePluginSpy).toHaveBeenCalledWith(store);
 			expect(toolsPluginSpy).toHaveBeenCalledWith(store);
+			expect(iframeGeometryIdPluginSpy).toHaveBeenCalledWith(store);
 			expect(historyStatePluginSpy).toHaveBeenCalledWith(store);
 			expect(observeStateForEncodingPluginSpy).toHaveBeenCalledWith(store);
 		});
