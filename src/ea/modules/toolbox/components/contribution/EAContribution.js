@@ -8,6 +8,7 @@ import { MODUS } from './ContributionModus';
 import css from './eaContribution.css';
 import collapsableContentCss from './collapsableContent.css';
 import validationCss from './validation.css';
+import { GlobalCoordinateRepresentations } from '../../../../../domain/coordinateRepresentation';
 
 const Update = 'update';
 const Reset = 'reset';
@@ -130,7 +131,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 		};
 
 		const getCoordinatesString = () => {
-			return model.position ? this._coordinateService.stringify(this._coordinateService.toLonLat(model.position), 4326, { digits: 5 }) : '';
+			return model.position ? this._coordinateService.stringify(model.position, GlobalCoordinateRepresentations.WGS84, { digits: 5 }) : '';
 		};
 
 		const completionMessage = html` <div id="completion-message">

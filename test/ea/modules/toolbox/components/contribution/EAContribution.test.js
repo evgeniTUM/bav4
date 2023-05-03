@@ -1,3 +1,4 @@
+import { GlobalCoordinateRepresentations } from '../../../../../../src/domain/coordinateRepresentation';
 import { MODUS } from '../../../../../../src/ea/modules/toolbox/components/contribution/ContributionModus';
 import { EAContribution } from '../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
 import { setLocation, setTaggingMode } from '../../../../../../src/ea/store/contribution/contribution.action';
@@ -122,17 +123,16 @@ describe('EAContributon', () => {
 		});
 
 		it('shows tag location when present', async () => {
-			const expectedCoordinates = [42.0, 24.0];
-			const expectedCoordString = 'expected';
-			const toLonLatSpy = spyOn(coordinateServiceMock, 'toLonLat').and.returnValue({});
-			spyOn(coordinateServiceMock, 'stringify').and.returnValue(expectedCoordString);
+			const givenCoordinates = [42, 24];
+			const expectedCoordString = '42.00000 24.00000';
+			const stringifyMock = spyOn(coordinateServiceMock, 'stringify').and.returnValue(expectedCoordString);
 
 			const element = await setup();
 
 			element.shadowRoot.querySelector('#tag').click();
-			setLocation([42, 24]);
+			setLocation(givenCoordinates);
 
-			expect(toLonLatSpy).toHaveBeenCalledWith(expectedCoordinates);
+			expect(stringifyMock).toHaveBeenCalledWith([42, 24], GlobalCoordinateRepresentations.WGS84, { digits: 5 });
 			expect(element.shadowRoot.querySelector('.coordinates').value).toEqual(expectedCoordString);
 		});
 
