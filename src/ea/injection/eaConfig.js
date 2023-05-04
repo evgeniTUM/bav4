@@ -7,8 +7,6 @@ import { LegendPlugin } from '../plugins/LegendPlugin';
 import { WebAnalyticsPlugin } from '../plugins/WebAnalyticsPlugin';
 import { WmsCapabilitiesService } from '../services/WmsCapabilitiesService';
 import { LayerVisibilityNotificationPlugin } from '../plugins/LayerVisibilityNotificationPlugin';
-import { GeoResourceInfoService } from '../../modules/geoResourceInfo/services/GeoResourceInfoService';
-import { loadEabGeoResourceDetailInfo } from '../services/provider/geoResourceDetailInfoResult.provider';
 import { InfoPopupPlugin } from '../plugins/InfoPopupPlugin';
 import { EaInfoPopupService } from '../services/EaInfoPopupService';
 import { CookieService } from '../services/CookieService';
@@ -16,7 +14,6 @@ import { CookieService } from '../services/CookieService';
 export const eaConfig = () => {
 	$injector
 		.registerSingleton('WmsCapabilitiesService', new WmsCapabilitiesService())
-		.registerSingleton('GeoResourceDetailInfoService', new GeoResourceInfoService(loadEabGeoResourceDetailInfo))
 		.registerSingleton('FnModulePlugin', new FnModulePlugin())
 		.registerSingleton('ManageModulesPlugin', new ManageModulesPlugin())
 		.registerSingleton('LegendPlugin', new LegendPlugin())
