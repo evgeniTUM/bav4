@@ -194,6 +194,11 @@ button:hover {
 	font-weight: bold;
 }
 
+.tag-button {
+	width: 15em;
+	margin: auto;
+}
+
 .coordinates {
 	border-style: solid;
 	padding-right: 1em;

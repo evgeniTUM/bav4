@@ -121,8 +121,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 	createView(model) {
 		const translate = (key) => this._translationService.translate(key);
 
-		const onClickTagButton = (mode) => () => {
-			this.signal(Update, { mode });
+		const onClickNewButton = (mode) => () => {
+			this.signal(Update, { mode, openSections: 'step2' });
 		};
 
 		const onClickFindButton = () => {
@@ -191,7 +191,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			this.signal(Update, { currentCategory: e.target.value, categoryFields: {} });
 			model.categoryFields = {};
 			this.shadowRoot.querySelectorAll('.category-fields input').forEach((i) => (i.value = ''));
-			this.signal(Update, { openSections: 'step3' });
+			this.signal(Update, { openSections: 'step4' });
 		};
 
 		const categoryFields = {};
@@ -224,10 +224,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 		const firstButton = html`
 			<button
-				id="tag"
+				id="new"
 				type="button"
 				class=${firstButtonClass}
-				@click=${onClickTagButton(energyMarketMode ? MODUS.market : MODUS.report)}
+				@click=${onClickNewButton(energyMarketMode ? MODUS.market : MODUS.report)}
 				title=${translate('ea_contribution_button_tag_tooltip')}
 			>
 				<div class="button-icon tag-icon"></div>
@@ -249,7 +249,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 					id="correction"
 					type="button"
 					class=${secondButtonClass}
-					@click=${onClickTagButton(MODUS.correction)}
+					@click=${onClickNewButton(MODUS.correction)}
 					title=${translate('ea_contribution_button_correction_tooltip')}
 			  >
 					<div class="button-icon correction-icon"></div>
@@ -301,21 +301,21 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 					<div class='step'>
 					<collapsable-content id='step2' .customCSS=${collapsableContentCss}
-						.title=${stepTitle('2. Standort des Objektes markieren', model.mode)}
+						.title=${stepTitle('2. Standort des Objektes markieren', getCoordinatesString(model.position))}
 						.open=${model.openSections.includes('step2')} @toggle=${onToggle}>
-
-
-						<ba-button id="tag" .type=${'primary'} @click=${onSelectButtonClick}
-							.label=${translate('ea_contribution_button_tag_subtext' + (model.tagging ? '_tagging' : ''))}>
-						</ba-button>
-
-						<br/>
-						<div title=${translate(model.tagging ? 'ea_contribution_coordinates_tooltip_2' : 'ea_contribution_coordinates_tooltip_1')}>
-							<label for="coordinates">${translate('ea_contribution_coordinates_text')}</label>	
-							<input id='coordinates' name='coordinates' class="coordinates" 
-								oninvalid="this.setCustomValidity('Bitte Standort markieren')"
-								placeholder=${translate('ea_contribution_coordinates_placeholder')}
-								value=${getCoordinatesString()} required></input>
+						<div>
+							<div title=${translate(model.tagging ? 'ea_contribution_coordinates_tooltip_2' : 'ea_contribution_coordinates_tooltip_1')}>
+								<label for="coordinates">${translate('ea_contribution_coordinates_text')}</label>	
+								<input id='coordinates' name='coordinates' class="coordinates" 
+									oninvalid="this.setCustomValidity('Bitte Standort markieren')"
+									placeholder=${translate('ea_contribution_coordinates_placeholder')}
+									value=${getCoordinatesString()} required></input>
+							</div>
+							<div class="tag-button">
+								<ba-button style="width:20em" id="tag" .type=${'primary'} @click=${onSelectButtonClick}
+									.label=${translate('ea_contribution_button_tag_subtext' + (model.tagging ? '_tagging' : ''))}>
+								</ba-button>
+							</div>
 						</div>
 					</collapsable-content>
 					</div>
