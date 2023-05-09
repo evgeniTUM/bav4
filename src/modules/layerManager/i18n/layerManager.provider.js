@@ -18,7 +18,8 @@ export const provide = (lang) => {
 				layerManager_collapse_all: 'collapse all',
 				layerManager_remove_all: 'remove all',
 				layerManager_deactivate_all: 'deactivate all',
-				layerManager_loading_hint: 'Loading'
+				layerManager_loading_hint: 'Loading',
+				layerManager_info: 'Show layer information'
 			};
 
 		case 'de':
@@ -39,7 +40,8 @@ export const provide = (lang) => {
 				layerManager_collapse_all: 'Alle einklappen',
 				layerManager_remove_all: 'Alle entfernen',
 				layerManager_deactivate_all: 'Alle deaktivieren',
-				layerManager_loading_hint: 'Wird geladen'
+				layerManager_loading_hint: 'Wird geladen',
+				layerManager_info: 'Ebeneninformation öffnen'
 			};
 
 		default:

@@ -94,6 +94,7 @@ export class CatalogLeaf extends AbstractContentPanel {
 							.icon="${infoSvg}"
 							.color=${'var(--primary-color)'}
 							.color_hover=${'var(--text3)'}
+							.title=${translate('layerManager_info')}
 							.size=${2}
 							@click=${openGeoResourceInfoPanel}
 						></ba-icon>
