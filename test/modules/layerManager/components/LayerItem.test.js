@@ -12,7 +12,7 @@ import { positionReducer } from '../../../../src/store/position/position.reducer
 import { eaReducer } from '../../../../src/ea/store/module/ea.reducer';
 import { setMapResolution } from '../../../../src/ea/store/module/ea.action';
 
-import { GeoResourceFuture, VectorGeoResource, VectorSourceType, WmsGeoResource } from '../../../../src/domain/geoResources';
+import { GeoResourceFuture, VectorGeoResource, VectorSourceType } from '../../../../src/domain/geoResources';
 import { Spinner } from '../../../../src/modules/commons/components/spinner/Spinner';
 
 window.customElements.define(LayerItem.tag, LayerItem);
