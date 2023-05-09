@@ -270,7 +270,7 @@ export class LayerItem extends AbstractMvuContentPanel {
 							.color=${'var(--primary-color)'}
 							.color_hover=${'var(--text3)'}
 							.size=${2.6}
-							.title=${translate('layerManager_to_copy')}
+							.title=${translate('layerManager_info')}
 							.disabled=${!layer.constraints?.metaData}
 							@click=${openGeoResourceInfoPanel}
 						></ba-icon>
