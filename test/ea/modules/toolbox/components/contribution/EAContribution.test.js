@@ -409,6 +409,8 @@ describe('EAContributon', () => {
 
 			const query = (query) => element.shadowRoot.querySelector(query);
 
+			query('#new').click();
+
 			query('#tag').click();
 			setLocation([42, 0]);
 

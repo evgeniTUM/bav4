@@ -229,3 +229,7 @@ textarea:required::placeholder {
 .error {
 	color: red;
 }
+
+.mode-validation-element {
+	display: none;
+}

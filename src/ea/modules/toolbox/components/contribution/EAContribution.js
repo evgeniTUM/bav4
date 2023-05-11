@@ -58,8 +58,12 @@ export class EAContribution extends AbstractMvuContentPanel {
 			case Reset:
 				return { ...initialModel, ...data };
 
-			case Update:
+			case Update: {
+				const modeButtons = this.shadowRoot.getElementById('mode-validation-element');
+				if (modeButtons) modeButtons.setCustomValidity(data.mode || model.mode ? '' : 'Bitte Modus auswählen');
+
 				return { ...model, ...data };
+			}
 
 			case Update_Field: {
 				const categoryFields = model.categoryFields;
@@ -263,7 +267,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 		const onClickSendButton = () => {
 			const form = this.shadowRoot.getElementById('report');
 			if (!form.checkValidity()) {
-				this.signal(Update, { openSections: ['step1', 'step2', 'step3', 'step4', 'open5'], showInvalidFields: true });
+				this.signal(Update, { openSections: ['step1', 'step2', 'step3', 'step4', 'step5'], showInvalidFields: true });
 				form.reportValidity();
 			} else {
 				submit();
@@ -290,6 +294,9 @@ export class EAContribution extends AbstractMvuContentPanel {
 						<div class='arrow-container'>
 							${buttonHeaders}
 						</div>
+
+						<button id='mode-validation-element'></button>
+
 						<div class='button-container'>
 								${firstButton}
 								${secondButton}
