@@ -231,5 +231,11 @@ textarea:required::placeholder {
 }
 
 .mode-validation-element {
-	display: none;
+	display: block;
+	height: 0;
+	padding: 0;
+	margin: 0;
+	/* bug in chrome: border has to be there for the validation msg to be shown */
+	border-width: 1px;
+	border-color: var(--primary-bg-color);
 }
