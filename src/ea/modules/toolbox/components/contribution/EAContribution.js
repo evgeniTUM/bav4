@@ -295,7 +295,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 							${buttonHeaders}
 						</div>
 
-						<button id='mode-validation-element'></button>
+						<input class='mode-validation-element' id='mode-validation-element'></input>
 
 						<div class='button-container'>
 								${firstButton}
