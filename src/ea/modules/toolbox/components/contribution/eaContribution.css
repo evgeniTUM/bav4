@@ -194,6 +194,11 @@ button:hover {
 	font-weight: bold;
 }
 
+.tag-button {
+	width: 15em;
+	margin: auto;
+}
+
 .coordinates {
 	border-style: solid;
 	padding-right: 1em;
@@ -223,4 +228,14 @@ textarea:required::placeholder {
 
 .error {
 	color: red;
+}
+
+.mode-validation-element {
+	display: block;
+	height: 0;
+	padding: 0;
+	margin: 0;
+	/* bug in chrome: border has to be there for the validation msg to be shown */
+	border-width: 1px;
+	border-color: var(--primary-bg-color);
 }

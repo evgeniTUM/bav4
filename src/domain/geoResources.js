@@ -1,3 +1,6 @@
+/**
+ * @module domain/geoResources
+ */
 import { $injector } from '../injection';
 import { getDefaultAttribution } from '../services/provider/attribution.provider';
 import { isHttpUrl } from '../utils/checks';
@@ -144,7 +147,7 @@ export class GeoResource {
 	}
 
 	/**
-	 * `true` if this GeoResource is allowed to be listed as a result for a query.
+	 * `true` if this GeoResource is allowed to be exported.
 	 *  @type {boolean}
 	 */
 	get exportable() {
@@ -368,12 +371,16 @@ export class WmsGeoResource extends GeoResource {
 export class XyzGeoResource extends GeoResource {
 	constructor(id, label, url) {
 		super(id, label);
-		this._url = url;
+		this._urls = url;
 		this._tileGridId = null;
 	}
 
-	get url() {
-		return this._url;
+	/**
+	 * The urls of this `XyzGeoResource`.
+	 *  @type {string|string[]}
+	 */
+	get urls() {
+		return this._urls;
 	}
 
 	/**
@@ -419,6 +426,7 @@ export class VectorGeoResource extends GeoResource {
 		this._sourceType = sourceType;
 		this._data = null;
 		this._srid = null;
+		this._clusterParams = {};
 	}
 
 	/**
@@ -491,6 +499,22 @@ export class VectorGeoResource extends GeoResource {
 	 */
 	hasLabel() {
 		return !!this._label || this.label !== this._getFallbackLabel();
+	}
+
+	/**
+	 * @returns `true` if this VectorGeoResource should be displayed clustered
+	 */
+	isClustered() {
+		return !!Object.keys(this._clusterParams).length;
+	}
+
+	get clusterParams() {
+		return { ...this._clusterParams };
+	}
+
+	setClusterParams(clusterParams) {
+		this._clusterParams = { ...clusterParams };
+		return this;
 	}
 
 	/**

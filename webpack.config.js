@@ -78,7 +78,6 @@ module.exports = {
 
 	// OPTIONAL
 	// Reload On File Change
-	watch: false,
 	devServer: {
 		static: './dist',
 		port: port

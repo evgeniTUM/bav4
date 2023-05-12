@@ -36,7 +36,7 @@ describe('injector configuration', () => {
 		expect($injector.getScope('BaaCredentialService')).toBe(Injector.SCOPE_SINGLETON);
 		expect($injector.getScope('MfpService')).toBe(Injector.SCOPE_SINGLETON);
 		expect($injector.getScope('ChipsConfigurationService')).toBe(Injector.SCOPE_SINGLETON);
-		expect($injector.getScope('MapFeedbackService')).toBe(Injector.SCOPE_SINGLETON);
+		expect($injector.getScope('FeedbackService')).toBe(Injector.SCOPE_SINGLETON);
 
 		expect($injector.getScope('DrawPlugin')).toBe(Injector.SCOPE_SINGLETON);
 		expect($injector.getScope('TopicsPlugin')).toBe(Injector.SCOPE_SINGLETON);
@@ -58,6 +58,7 @@ describe('injector configuration', () => {
 		expect($injector.getScope('IframeContainerPlugin')).toBe(Injector.SCOPE_SINGLETON);
 		expect($injector.getScope('SharePlugin')).toBe(Injector.SCOPE_SINGLETON);
 		expect($injector.getScope('ToolsPlugin')).toBe(Injector.SCOPE_SINGLETON);
+		expect($injector.getScope('IframeGeometryIdPlugin')).toBe(Injector.SCOPE_SINGLETON);
 		expect($injector.getScope('HistoryStatePlugin')).toBe(Injector.SCOPE_SINGLETON);
 		expect($injector.getScope('ObserveStateForEncodingPlugin')).toBe(Injector.SCOPE_SINGLETON);
 

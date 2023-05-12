@@ -43,7 +43,7 @@ describe('i18n for layer-manager', () => {
 	});
 
 	it('have the expected amount of translations', () => {
-		const expectedSize = 16;
+		const expectedSize = 17;
 		const deMap = provide('de');
 		const enMap = provide('en');
 

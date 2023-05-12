@@ -1,21 +1,19 @@
+/**
+ * @module modules/layerManager/components/LayerItem
+ */
 import { html, nothing } from 'lit-html';
-import css from './layerItem.css';
-import { $injector } from '../../../injection';
 import { classMap } from 'lit-html/directives/class-map.js';
-import { addLayer, modifyLayer, removeLayer } from './../../../store/layers/layers.action';
-import arrowUpSvg from './assets/arrow-up-short.svg';
-import arrowDownSvg from './assets/arrow-down-short.svg';
-import cloneSvg from './assets/clone.svg';
-import zoomToExtentSvg from './assets/zoomToExtent.svg';
-import removeSvg from './assets/trash.svg';
-import infoSvg from './assets/info.svg';
-import { AbstractMvuContentPanel } from '../../menu/components/mainMenu/content/AbstractMvuContentPanel';
 import { openModal } from '../../../../src/store/modal/modal.action';
-import { createUniqueId } from '../../../utils/numberUtils';
-import { fitLayer } from '../../../store/position/position.action';
-import { GeoResourceFuture, VectorGeoResource } from '../../../domain/geoResources';
-import { MenuTypes } from '../../commons/components/overflowMenu/OverflowMenu';
+import { GeoResourceFuture } from '../../../domain/geoResources';
 import { checkIfResolutionValid } from '../../../ea/utils/eaUtils';
+import { $injector } from '../../../injection';
+import { AbstractMvuContentPanel } from '../../menu/components/mainMenu/content/AbstractMvuContentPanel';
+import { modifyLayer, removeLayer } from './../../../store/layers/layers.action';
+import arrowDownSvg from './assets/arrow-down-short.svg';
+import arrowUpSvg from './assets/arrow-up-short.svg';
+import infoSvg from './assets/info.svg';
+import removeSvg from './assets/trash.svg';
+import css from './layerItem.css';
 
 const Update_Layer = 'update_layer';
 const Update_Layer_Collapsed = 'update_layer_collapsed';
@@ -124,7 +122,6 @@ export class LayerItem extends AbstractMvuContentPanel {
 		if (!layer) {
 			return nothing;
 		}
-		const geoResource = this._geoResourceService.byId(layer.geoResourceId);
 		const currentLabel = layer.label;
 		const getCollapseTitle = () => {
 			return layer.collapsed ? translate('layerManager_expand') : translate('layerManager_collapse');
@@ -159,15 +156,6 @@ export class LayerItem extends AbstractMvuContentPanel {
 			if (layer.zIndex - 1 >= 0) {
 				modifyLayer(layer.id, { zIndex: layer.zIndex - 1 });
 			}
-		};
-
-		const cloneLayer = () => {
-			//state store change -> implicit call of #render()
-			addLayer(`${layer.geoResourceId}_${createUniqueId()}`, { ...layer, geoResourceId: layer.geoResourceId, zIndex: layer.zIndex + 1 });
-		};
-
-		const zoomToExtent = () => {
-			fitLayer(layer.id);
 		};
 
 		const remove = () => {
@@ -213,20 +201,6 @@ export class LayerItem extends AbstractMvuContentPanel {
 			openModal(layer.label, this._getInfoPanelFor(layer.geoResourceId));
 		};
 
-		const getMenuItems = () => {
-			return [
-				{ id: 'copy', label: translate('layerManager_to_copy'), icon: cloneSvg, action: cloneLayer, disabled: !layer.constraints?.cloneable },
-				{
-					id: 'zoomToExtent',
-					label: translate('layerManager_zoom_to_extent'),
-					icon: zoomToExtentSvg,
-					action: zoomToExtent,
-					disabled: !(geoResource instanceof VectorGeoResource)
-				},
-				{ id: 'info', label: 'Info', icon: infoSvg, action: openGeoResourceInfoPanel, disabled: !layer.constraints?.metaData }
-			];
-		};
-
 		const validResolution = checkIfResolutionValid(layer.geoResourceId, this, model.mapResolution);
 		this.observe(
 			(state) => state.ea.mapResolution,
@@ -254,42 +228,55 @@ export class LayerItem extends AbstractMvuContentPanel {
 						<i class="icon chevron icon-rotate-90 ${classMap(iconCollapseClass)}"></i>
 					</button>
 				</div>
-				<div class="collapse-content ba-list-item  ${classMap(bodyCollapseClass)}">
-					${getSlider()}
-					<div>
-						<ba-icon
-							id="increase"
-							.icon="${arrowUpSvg}"
-							.color=${'var(--primary-color)'}
-							.color_hover=${'var(--text3)'}
-							.size=${2.6}
-							.title=${translate('layerManager_move_up')}
-							@click=${increaseIndex}
-						></ba-icon>
+				<div class="collapse-content  ${classMap(bodyCollapseClass)}">
+					<div class="ba-list-item">
+						${getSlider()}
+						<div>
+							<ba-icon
+								id="increase"
+								.icon="${arrowUpSvg}"
+								.color=${'var(--primary-color)'}
+								.color_hover=${'var(--text3)'}
+								.size=${2.6}
+								.title=${translate('layerManager_move_up')}
+								@click=${increaseIndex}
+							></ba-icon>
+						</div>
+						<div>
+							<ba-icon
+								id="decrease"
+								.icon="${arrowDownSvg}"
+								.color=${'var(--primary-color)'}
+								.color_hover=${'var(--text3)'}
+								.size=${2.6}
+								.title=${translate('layerManager_move_down')}
+								@click=${decreaseIndex}
+							></ba-icon>
+						</div>
+						<div>
+							<ba-icon
+								id="remove"
+								.icon="${removeSvg}"
+								.color=${'var(--primary-color)'}
+								.color_hover=${'var(--text3)'}
+								.size=${2.6}
+								.title=${translate('layerManager_remove')}
+								@click=${remove}
+							></ba-icon>
+						</div>
+						<div>
+							<ba-icon
+								id="info"
+								.icon="${infoSvg}"
+								.color=${'var(--primary-color)'}
+								.color_hover=${'var(--text3)'}
+								.size=${2.6}
+								.title=${translate('layerManager_info')}
+								.disabled=${!layer.constraints?.metaData}
+								@click=${openGeoResourceInfoPanel}
+							></ba-icon>
+						</div>
 					</div>
-					<div>
-						<ba-icon
-							id="decrease"
-							.icon="${arrowDownSvg}"
-							.color=${'var(--primary-color)'}
-							.color_hover=${'var(--text3)'}
-							.size=${2.6}
-							.title=${translate('layerManager_move_down')}
-							@click=${decreaseIndex}
-						></ba-icon>
-					</div>
-					<div>
-						<ba-icon
-							id="remove"
-							.icon="${removeSvg}"
-							.color=${'var(--primary-color)'}
-							.color_hover=${'var(--text3)'}
-							.size=${2.6}
-							.title=${translate('layerManager_remove')}
-							@click=${remove}
-						></ba-icon>
-					</div>
-					<ba-overflow-menu .type=${MenuTypes.MEATBALL} .items=${getMenuItems()}></ba-overflow-menu>
 				</div>
 			</div>`;
 	}

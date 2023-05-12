@@ -1,3 +1,4 @@
+import { GlobalCoordinateRepresentations } from '../../../../../../src/domain/coordinateRepresentation';
 import { MODUS } from '../../../../../../src/ea/modules/toolbox/components/contribution/ContributionModus';
 import { EAContribution } from '../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
 import { setLocation, setTaggingMode } from '../../../../../../src/ea/store/contribution/contribution.action';
@@ -122,17 +123,16 @@ describe('EAContributon', () => {
 		});
 
 		it('shows tag location when present', async () => {
-			const expectedCoordinates = [42.0, 24.0];
-			const expectedCoordString = 'expected';
-			const toLonLatSpy = spyOn(coordinateServiceMock, 'toLonLat').and.returnValue({});
-			spyOn(coordinateServiceMock, 'stringify').and.returnValue(expectedCoordString);
+			const givenCoordinates = [42, 24];
+			const expectedCoordString = '42.00000 24.00000';
+			const stringifyMock = spyOn(coordinateServiceMock, 'stringify').and.returnValue(expectedCoordString);
 
 			const element = await setup();
 
 			element.shadowRoot.querySelector('#tag').click();
-			setLocation([42, 24]);
+			setLocation(givenCoordinates);
 
-			expect(toLonLatSpy).toHaveBeenCalledWith(expectedCoordinates);
+			expect(stringifyMock).toHaveBeenCalledWith([42, 24], GlobalCoordinateRepresentations.WGS84, { digits: 5 });
 			expect(element.shadowRoot.querySelector('.coordinates').value).toEqual(expectedCoordString);
 		});
 
@@ -147,15 +147,15 @@ describe('EAContributon', () => {
 			expect(store.getState().contribution.tagging).toBe(true);
 		});
 
-		it('tag button changes subtext title when tagging mode is active', async () => {
+		it('tag button changes title when tagging mode is active', async () => {
 			const element = await setup();
-			const subtextElement = element.shadowRoot.querySelector('#tag .subtext');
+			const tagButton = element.shadowRoot.querySelector('#tag');
 
-			expect(subtextElement.textContent).toEqual('ea_contribution_button_tag_subtext');
+			expect(tagButton.label).toEqual('ea_contribution_button_tag_subtext');
 
 			setTaggingMode(true);
 
-			expect(subtextElement.textContent).toEqual('ea_contribution_button_tag_subtext_tagging');
+			expect(tagButton.label).toEqual('ea_contribution_button_tag_subtext_tagging');
 		});
 
 		it('deactivates tagging mode when coordinates are selected', async () => {
@@ -193,12 +193,12 @@ describe('EAContributon', () => {
 
 			const query = (query) => element.shadowRoot.querySelector(query);
 
-			expect(query('#step3').querySelectorAll('input').length).toBe(0);
+			expect(query('#step4').querySelectorAll('input').length).toBe(0);
 
 			query('#category').value = 'Test1';
 			query('#category').dispatchEvent(new Event('change'));
 
-			expect(query('#step3').querySelectorAll('input').length).toBe(2);
+			expect(query('#step4').querySelectorAll('input').length).toBe(2);
 
 			const field1 = query('[name="field1"]');
 			expect(field1.placeholder).toBe('field1*');
@@ -213,7 +213,7 @@ describe('EAContributon', () => {
 			query('#category').value = 'Test2';
 			query('#category').dispatchEvent(new Event('change'));
 
-			expect(query('#step3').querySelectorAll('input').length).toBe(1);
+			expect(query('#step4').querySelectorAll('input').length).toBe(1);
 
 			const field3 = query('[name="field3"]');
 			expect(field3.placeholder).toBe('field3');
@@ -221,16 +221,17 @@ describe('EAContributon', () => {
 			expect(field3.type).toBe('text');
 		});
 
-		it('opens section 2 when coordinates are selected', async () => {
+		it('opens section 3 when coordinates are selected', async () => {
 			const element = await setup();
 			element.categories = SAMPLE_JSON_SPEC;
 
 			setLocation([42, 24]);
 
 			expect(element.shadowRoot.querySelector('#step1').open).toBeFalsy();
-			expect(element.shadowRoot.querySelector('#step2').open).toBeTruthy();
-			expect(element.shadowRoot.querySelector('#step3').open).toBeFalsy();
+			expect(element.shadowRoot.querySelector('#step2').open).toBeFalsy();
+			expect(element.shadowRoot.querySelector('#step3').open).toBeTruthy();
 			expect(element.shadowRoot.querySelector('#step4').open).toBeFalsy();
+			expect(element.shadowRoot.querySelector('#step5').open).toBeFalsy();
 		});
 
 		it('opens section 3 when category is selected', async () => {
@@ -243,8 +244,9 @@ describe('EAContributon', () => {
 
 			expect(element.shadowRoot.querySelector('#step1').open).toBeFalsy();
 			expect(element.shadowRoot.querySelector('#step2').open).toBeFalsy();
-			expect(element.shadowRoot.querySelector('#step3').open).toBeTruthy();
-			expect(element.shadowRoot.querySelector('#step4').open).toBeFalsy();
+			expect(element.shadowRoot.querySelector('#step3').open).toBeFalsy();
+			expect(element.shadowRoot.querySelector('#step4').open).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#step5').open).toBeFalsy();
 		});
 
 		it('shows only one text area when correction mode', async () => {
@@ -407,6 +409,8 @@ describe('EAContributon', () => {
 
 			const query = (query) => element.shadowRoot.querySelector(query);
 
+			query('#new').click();
+
 			query('#tag').click();
 			setLocation([42, 0]);
 
@@ -433,6 +437,7 @@ describe('EAContributon', () => {
 
 			const query = (query) => element.shadowRoot.querySelector(query);
 
+			query('#new').click();
 			query('#tag').click();
 			setLocation([42, 2]);
 
@@ -451,7 +456,7 @@ describe('EAContributon', () => {
 
 			backButton.click();
 
-			expect(element.shadowRoot.querySelectorAll('collapsable-content').length).toBe(4);
+			expect(element.shadowRoot.querySelectorAll('collapsable-content').length).toBe(5);
 			expect(element.shadowRoot.querySelector('#failure-message')).toBeNull();
 
 			expect(element.getModel().mode).toBeUndefined();

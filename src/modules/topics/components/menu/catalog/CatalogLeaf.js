@@ -1,3 +1,6 @@
+/**
+ * @module modules/topics/components/menu/catalog/CatalogLeaf
+ */
 import { html, nothing } from 'lit-html';
 import { clearPreviewGeoresourceId, setPreviewGeoresourceId } from '../../../../../ea/store/module/ea.action';
 import { checkIfResolutionValid } from '../../../../../ea/utils/eaUtils';
@@ -91,6 +94,7 @@ export class CatalogLeaf extends AbstractContentPanel {
 							.icon="${infoSvg}"
 							.color=${'var(--primary-color)'}
 							.color_hover=${'var(--text3)'}
+							.title=${translate('layerManager_info')}
 							.size=${2}
 							@click=${openGeoResourceInfoPanel}
 						></ba-icon>

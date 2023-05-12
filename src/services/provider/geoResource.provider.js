@@ -1,5 +1,5 @@
 /**
- * @module service/provider
+ * @module services/provider/geoResource_provider
  */
 import {
 	AggregateGeoResource,
@@ -30,7 +30,7 @@ export const _definitionToGeoResource = (definition) => {
 				);
 			case 'xyz':
 				return (
-					new XyzGeoResource(def.id, def.label, def.url)
+					new XyzGeoResource(def.id, def.label, def.urls)
 						//set specific optional values
 						.setTileGridId(def.tileGridId)
 				);
@@ -42,6 +42,7 @@ export const _definitionToGeoResource = (definition) => {
 					new VectorGeoResource(def.id, def.label, Symbol.for(def.sourceType))
 						//set specific optional values
 						.setUrl(def.url)
+						.setClusterParams(def.clusterParams ?? {})
 				);
 			case 'aggregate':
 				return new AggregateGeoResource(def.id, def.label, def.geoResourceIds);
@@ -68,7 +69,7 @@ export const _definitionToGeoResource = (definition) => {
 /**
  * Uses the BVV endpoint to load geoResources.
  * @function
- * @implements geoResourceProvider
+ * @implements {module:services/GeoResourceService~geoResourceProvider}
  * @returns {Promise<Array<GeoResource>>}
  */
 export const loadBvvGeoResources = async () => {
@@ -112,8 +113,9 @@ export const _parseBvvAttributionDefinition = (definition) => {
 };
 
 /**
- * Loads example georesource without a backend.
+ * Loads example GeoResources without a backend.
  * @function
+ * @implements {module:services/GeoResourceService~geoResourceProvider}
  * @returns {Promise<Array<GeoResource>>}
  */
 export const loadExampleGeoResources = async () => {
@@ -144,7 +146,7 @@ export const loadExampleGeoResources = async () => {
 /**
  * Uses the BVV endpoint to load a GeoResource by id
  * @function
- * @implements geoResourceByIdProvider
+ * @implements {module:services/GeoResourceService~geoResourceByIdProvider}
  * @returns {GeoResourceFuture|null}
  */
 export const loadBvvGeoResourceById = (id) => {
@@ -178,7 +180,7 @@ export const loadBvvGeoResourceById = (id) => {
  *
  * WMS: `{url}||{layer}||[{label}]`
  * @function
- * @implements geoResourceByIdProvider
+ * @implements {module:services/GeoResourceService~geoResourceByIdProvider}
  * @returns {GeoResourceFuture|null}
  */
 export const loadExternalGeoResource = (urlBasedAsId) => {
