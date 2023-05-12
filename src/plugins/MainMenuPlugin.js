@@ -28,7 +28,7 @@ export class MainMenuPlugin extends BaPlugin {
 			setTab(tabId);
 		} else {
 			// set default tab id
-			setTab(TabId.MAPS);
+			setTab(TabId.TOPICS);
 		}
 	}
 
