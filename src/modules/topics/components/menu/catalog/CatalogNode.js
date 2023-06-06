@@ -87,7 +87,7 @@ export class CatalogNode extends AbstractContentPanel {
 								<i class="centered-icon icon icon-rotate-90 chevron ${classMap(iconCollapseClass)}"></i>
 							</span>
 						</div>
-						<div class=" collapse-content ${classMap(bodyCollapseClass)}">${childElements}</div>
+						<div class=" collapse-content ${classMap(bodyCollapseClass)}"><div>${childElements}</div></div>
 					</div>
 				`;
 			}
