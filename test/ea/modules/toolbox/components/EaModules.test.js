@@ -33,8 +33,8 @@ describe('Energy Atlas Module', () => {
 	});
 
 	it('every module has an initialWidth and minWidth properties', () => {
-		expect(MixerModuleContent.initialWidth).toBe(48);
-		expect(MixerModuleContent.minWidth).toBe(48);
+		expect(MixerModuleContent.initialWidth).toBe(49);
+		expect(MixerModuleContent.minWidth).toBe(49);
 
 		expect(ResearchModuleContent.initialWidth).toBe(40);
 		expect(ResearchModuleContent.minWidth).toBe(40);
