@@ -28,10 +28,10 @@ export class MixerModuleContent extends AbstractModuleContent {
 	}
 
 	static get initialWidth() {
-		return 49;
+		return 48;
 	}
 
 	static get minWidth() {
-		return 49;
+		return 48;
 	}
 }
