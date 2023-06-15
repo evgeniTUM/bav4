@@ -14,6 +14,14 @@ Biomasseanlage,Bürgerenergieanlage (ja/nein),TRUE,text
 Biomasseanlage,Link zur Webseite,TRUE,text
 Biomasseanlage,Name der Webseite,TRUE,text
 Biomasseanlage,Stand,TRUE,text
+Biometahnanlage,Name der Anlage,FALSE,text
+Biometahnanlage,Technologie,FALSE,text
+Biometahnanlage,Gaserzeugungsleistung (kW),FALSE,text
+Biometahnanlage,Inbetriebnahmedatum,FALSE,text
+Biometahnanlage,MaStR-Nr.,TRUE,text
+Biometahnanlage,Anlagenbetreiber,TRUE,text
+Biometahnanlage,Netzbetreiberprüfung (geprüft/ungeprüft/abgelehnt),TRUE,text
+Biometahnanlage,Stand,TRUE,text
 Photovoltaikanlage,Leistung (kW),FALSE,text
 Photovoltaikanlage,Inbetriebnahmedatum,FALSE,text
 Photovoltaikanlage,Freiflächenanlage (ja/nein),TRUE,text
@@ -59,6 +67,17 @@ Heiz(kraft)werk - fossil,Art der Anlage,TRUE,text
 Heiz(kraft)werk - fossil,Link zur Webseite,TRUE,text
 Heiz(kraft)werk - fossil,Name der Webseite,TRUE,text
 Heiz(kraft)werk - fossil,Stand,TRUE,text
+Abfallheiz(kraft)werk,Name der Anlage,FALSE,text
+Abfallheiz(kraft)werk,Betreiber,FALSE,text
+Abfallheiz(kraft)werk,Hauptbrennstoff,FALSE,text
+Abfallheiz(kraft)werk,elektrische Leistung (kW),FALSE,text
+Abfallheiz(kraft)werk,Thermische Leistung (kW),FALSE,text
+Abfallheiz(kraft)werk,Energieerzeugung (Strom/Wärme/Strom + Wärme),FALSE,text
+Abfallheiz(kraft)werk,Inbetriebnahmedatum,FALSE,text
+Abfallheiz(kraft)werk,Nebenbrennstoff,TRUE,text
+Abfallheiz(kraft)werk,Art der Anlage,TRUE,text
+Abfallheiz(kraft)werk,Bezeichnung vierte BImSchV,TRUE,text
+Abfallheiz(kraft)werk,Stand,TRUE,text
 Wärmenetz,Netztyp (Wassernetz/Dampfnetz),FALSE,text
 Wärmenetz,Netzlänge (km),FALSE,text
 Wärmenetz,Vorlauftemperatur (°C),FALSE,text
@@ -89,3 +108,4 @@ Anlage Tiefe Geothermie,Anzahl Bohrungen,TRUE,text
 Anlage Tiefe Geothermie,Link zur Webseite,TRUE,text
 Anlage Tiefe Geothermie,Name der Webseite,TRUE,text
 Anlage Tiefe Geothermie,Stand,TRUE,text
+Sonstige Kategorie,Anlagentyp,FALSE,text

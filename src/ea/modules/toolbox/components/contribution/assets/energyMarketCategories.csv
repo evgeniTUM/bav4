@@ -65,3 +65,9 @@ Abwärmeinformationsbörse: Abwärmesenken,Branche,TRUE,text
 Abwärmeinformationsbörse: Abwärmesenken,Link zur Webseite,TRUE,text
 Abwärmeinformationsbörse: Abwärmesenken,Name der Webseite,TRUE,text
 Abwärmeinformationsbörse: Abwärmesenken,Stand,TRUE,text
+Abwärmeinformationsbörse: Abwärmequellen kommunales Abwasser,Ansprechpartner,FALSE,text
+Abwärmeinformationsbörse: Abwärmequellen kommunales Abwasser,Ansprechpartner Telefon,FALSE,text
+Abwärmeinformationsbörse: Abwärmequellen kommunales Abwasser,Ansprechpartner E-Mail,FALSE,text
+Abwärmeinformationsbörse: Abwärmequellen kommunales Abwasser,Bezeichnung der Anlagen,FALSE,text
+Abwärmeinformationsbörse: Abwärmequellen kommunales Abwasser,Abwassermenge (m3/a),FALSE,text
+Abwärmeinformationsbörse: Abwärmequellen,Stand,TRUE,text
