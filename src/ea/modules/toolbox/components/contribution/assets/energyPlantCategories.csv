@@ -14,14 +14,14 @@ Biomasseanlage,Bürgerenergieanlage (ja/nein),TRUE,text
 Biomasseanlage,Link zur Webseite,TRUE,text
 Biomasseanlage,Name der Webseite,TRUE,text
 Biomasseanlage,Stand,TRUE,text
-Biometahnanlage,Name der Anlage,FALSE,text
-Biometahnanlage,Technologie,FALSE,text
-Biometahnanlage,Gaserzeugungsleistung (kW),FALSE,text
-Biometahnanlage,Inbetriebnahmedatum,FALSE,text
-Biometahnanlage,MaStR-Nr.,TRUE,text
-Biometahnanlage,Anlagenbetreiber,TRUE,text
-Biometahnanlage,Netzbetreiberprüfung (geprüft/ungeprüft/abgelehnt),TRUE,text
-Biometahnanlage,Stand,TRUE,text
+Biomethananlage,Name der Anlage,FALSE,text
+Biomethananlage,Technologie,FALSE,text
+Biomethananlage,Gaserzeugungsleistung (kW),FALSE,text
+Biomethananlage,Inbetriebnahmedatum,FALSE,text
+Biomethananlage,MaStR-Nr.,TRUE,text
+Biomethananlage,Anlagenbetreiber,TRUE,text
+Biomethananlage,Netzbetreiberprüfung (geprüft/ungeprüft/abgelehnt),TRUE,text
+Biomethananlage,Stand,TRUE,text
 Photovoltaikanlage,Leistung (kW),FALSE,text
 Photovoltaikanlage,Inbetriebnahmedatum,FALSE,text
 Photovoltaikanlage,Freiflächenanlage (ja/nein),TRUE,text
