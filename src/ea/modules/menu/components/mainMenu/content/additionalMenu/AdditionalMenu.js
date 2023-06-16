@@ -1,7 +1,6 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../../../../injection';
 import { MvuElement } from '../../../../../../../modules/MvuElement';
-import { toggleContributionMode } from '../../../../../../store/contribution/contribution.action';
 import { setCurrentModule } from '../../../../../../store/module/ea.action';
 import { Analyse3DModuleContent } from '../../../../../toolbox/components/analyse3d/Analyse3DModuleContent';
 import { EnergyMarketModuleContent } from '../../../../../toolbox/components/contribution/EnergyMarketModuleContent';
@@ -68,16 +67,6 @@ export class AdditionalMenu extends MvuElement {
 			};
 		};
 
-		const toggleEnergyMarketModule = () => {
-			toggleContributionMode();
-			toggleModuleFn(EnergyMarketModuleContent.name)();
-		};
-
-		const toggleEnergyReportingModule = () => {
-			toggleContributionMode();
-			toggleModuleFn(EnergyReportingModuleContent.name)();
-		};
-
 		const translate = (key) => this._translationService.translate(key);
 
 		return html`
@@ -139,7 +128,7 @@ export class AdditionalMenu extends MvuElement {
 				</span>
 			</span>
 		</li>
-		<li id="energy-market" class="ba-list-item" @click="${toggleEnergyMarketModule}">
+		<li id="energy-market" class="ba-list-item" @click="${toggleModuleFn(EnergyMarketModuleContent.name)}">
 			<span class="ba-list-item__pre">
 				<span class="ba-list-item__icon icon-boerse">
 				</span>
@@ -153,7 +142,7 @@ export class AdditionalMenu extends MvuElement {
 				</span>
 			</span>
 		</li>
-		<li id="energy-reporting" class="ba-list-item" @click="${toggleEnergyReportingModule}">
+		<li id="energy-reporting" class="ba-list-item" @click="${toggleModuleFn(EnergyReportingModuleContent.name)}">
 			<span class="ba-list-item__pre">
 				<span class="ba-list-item__icon icon-reporting">
 				</span>

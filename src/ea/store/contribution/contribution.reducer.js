@@ -7,11 +7,6 @@ export const initialState = {
 	/**
 	 * @type {Boolean}
 	 */
-	active: false,
-
-	/**
-	 * @type {Boolean}
-	 */
 	tagging: false,
 
 	/**
@@ -28,12 +23,6 @@ export const initialState = {
 export const contributionReducer = (state = initialState, action) => {
 	const { type, payload } = action;
 	switch (type) {
-		case SET_STATE: {
-			return {
-				...state,
-				active: payload
-			};
-		}
 		case DESCRIPTION_CHANGED: {
 			return {
 				...state,
