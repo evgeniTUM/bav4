@@ -20,6 +20,7 @@ import { LevelTypes } from '../../../src/store/notifications/notifications.actio
 import { NOTIFICATION_ADDED } from '../../../src/store/notifications/notifications.reducer.js';
 import { TestUtils } from '../../test-utils.js';
 import { EnergyReportingModuleContent } from '../../../src/ea/modules/toolbox/components/contribution/EnergyReportingModuleContent.js';
+import { addLayer } from '../../../src/store/layers/layers.action.js';
 
 describe('ManageModulesPlugin', () => {
 	const windowMock = {
@@ -231,6 +232,19 @@ describe('ManageModulesPlugin', () => {
 
 		const actions = storeActions.filter((a) => a.type === LAYER_ADDED && a.payload.id === 'module-georesource-42');
 		expect(actions).toHaveSize(1);
+	});
+
+	it('do not activates a georesource if already active', async () => {
+		const store = setup();
+
+		const instanceUnderTest = new ManageModulesPlugin();
+		await instanceUnderTest.register(store);
+
+		addLayer('42');
+		activateGeoResource('42');
+
+		const actions = storeActions.filter((a) => a.type === LAYER_ADDED && a.payload.id === 'module-georesource-42');
+		expect(actions).toHaveSize(0);
 	});
 
 	it('deactivates a georesource layer', async () => {

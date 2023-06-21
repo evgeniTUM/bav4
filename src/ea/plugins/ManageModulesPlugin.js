@@ -30,6 +30,7 @@ export class ManageModulesPlugin extends BaPlugin {
 
 		this._lastModule = '';
 		this._activeGeoResources = new Set();
+		this._activeLayers = [];
 	}
 
 	/**
@@ -108,7 +109,7 @@ export class ManageModulesPlugin extends BaPlugin {
 		};
 
 		const onActiveGeoResourcesChanged = (ids) => {
-			const idsToAdd = ids.filter((id) => !this._activeGeoResources.has(id));
+			const idsToAdd = ids.filter((id) => !this._activeGeoResources.has(id)).filter((id) => !this._activeLayers.includes(id));
 			const idsToRemove = Array.from(this._activeGeoResources).filter((id) => !new Set(ids).has(id));
 
 			const layerId = (resId) => `module-georesource-${resId}`;
@@ -126,6 +127,11 @@ export class ManageModulesPlugin extends BaPlugin {
 			});
 		};
 
+		const onActiveLayersChanged = (layers) => {
+			this._activeLayers = layers.map((l) => l.geoResourceId);
+		};
+
+		observe(store, (state) => state.layers.active, onActiveLayersChanged);
 		observe(store, (state) => state.ea.currentModule, onModuleChange);
 		observe(store, (state) => state.ea.activeGeoResources, onActiveGeoResourcesChanged);
 	}
