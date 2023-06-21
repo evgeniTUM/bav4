@@ -258,7 +258,7 @@ export class Header extends MvuElement {
 									${translate('ea_header_tab_topics_button')}
 								</span>
 							</button>
-							<button id="extension_button" data-test-id class="${getActiveClass(TabId.EXTENSION)}" title=${translate(
+							<button id="extension_button" data-test-id class="${getActiveClass(TabId.EXTENSION)} ${getMinWidthClass()}" title=${translate(
 			'ea_header_tab_additional_title'
 		)}  @click="${openExtendedTab}">
 								<span>
