@@ -16,6 +16,10 @@ describe('WebAnalyticsPlugin', () => {
 		getValue: (v) => v
 	};
 
+	const geoResourceServiceMock = {
+		byId: (v) => v
+	};
+
 	const setup = async (state) => {
 		storeActions.length = 0;
 
@@ -26,6 +30,7 @@ describe('WebAnalyticsPlugin', () => {
 		});
 
 		$injector.registerSingleton('ConfigService', configServiceMock);
+		$injector.registerSingleton('GeoResourceService', geoResourceServiceMock);
 
 		const instanceUnderTest = new WebAnalyticsPlugin();
 		await instanceUnderTest.register(store);
@@ -101,6 +106,8 @@ describe('WebAnalyticsPlugin', () => {
 		});
 
 		it('layer activation', async () => {
+			spyOn(geoResourceServiceMock, 'byId').and.callFake((id) => ({ label: 'label-for-' + id }));
+
 			addLayer('l1', { geoResourceId: 'id1' });
 			addLayer('l2', { geoResourceId: 'id2' });
 			removeLayer('l1');
@@ -108,8 +115,8 @@ describe('WebAnalyticsPlugin', () => {
 
 			const trackEvents = window._paq.filter((i) => i[0] === 'trackEvent');
 			expect(trackEvents.length).toEqual(2);
-			expect(trackEvents[0]).toEqual(['trackEvent', 'Kartenauswahl', 'clickEvent', 'id1']);
-			expect(trackEvents[1]).toEqual(['trackEvent', 'Kartenauswahl', 'clickEvent', 'id2']);
+			expect(trackEvents[0]).toEqual(['trackEvent', 'Kartenauswahl', 'clickEvent', 'label-for-id1']);
+			expect(trackEvents[1]).toEqual(['trackEvent', 'Kartenauswahl', 'clickEvent', 'label-for-id2']);
 		});
 
 		it('module selection', async () => {
