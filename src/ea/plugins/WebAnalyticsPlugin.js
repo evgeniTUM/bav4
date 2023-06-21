@@ -1,6 +1,7 @@
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { observe } from '../../utils/storeUtils';
+import { activateGeoResource } from '../store/module/ea.action';
 
 export class WebAnalyticsPlugin extends BaPlugin {
 	/**
@@ -46,14 +47,14 @@ export class WebAnalyticsPlugin extends BaPlugin {
 			}
 		};
 
-		let activeLayerLabelsState = [];
+		let activeLayerIdsState = [];
 		const trackLayerChange = (layers) => {
-			const labels = layers.map((l) => l.label);
-			const newLabels = labels.filter((l) => !activeLayerLabelsState.includes(l));
+			const ids = layers.map((l) => l.geoResourceId);
 
-			newLabels.filter((l) => l).forEach((l) => window._paq.push(['trackEvent', 'Kartenauswahl', 'clickEvent', l]));
+			const newIds = ids.filter((l) => !activeLayerIdsState.includes(l));
+			newIds.forEach((l) => window._paq.push(['trackEvent', 'Kartenauswahl', 'clickEvent', l]));
 
-			activeLayerLabelsState = labels;
+			activeLayerIdsState = ids;
 		};
 
 		const trackModuleChange = (moduleId) => {
