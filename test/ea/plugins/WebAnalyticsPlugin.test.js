@@ -101,15 +101,15 @@ describe('WebAnalyticsPlugin', () => {
 		});
 
 		it('layer activation', async () => {
-			addLayer('id1', { label: 'id1-label' });
-			addLayer('id2', { label: 'id2-label' });
-			removeLayer('id1');
-			removeLayer('id2');
+			addLayer('l1', { geoResourceId: 'id1' });
+			addLayer('l2', { geoResourceId: 'id2' });
+			removeLayer('l1');
+			removeLayer('l2');
 
 			const trackEvents = window._paq.filter((i) => i[0] === 'trackEvent');
 			expect(trackEvents.length).toEqual(2);
-			expect(trackEvents[0]).toEqual(['trackEvent', 'Kartenauswahl', 'clickEvent', 'id1-label']);
-			expect(trackEvents[1]).toEqual(['trackEvent', 'Kartenauswahl', 'clickEvent', 'id2-label']);
+			expect(trackEvents[0]).toEqual(['trackEvent', 'Kartenauswahl', 'clickEvent', 'id1']);
+			expect(trackEvents[1]).toEqual(['trackEvent', 'Kartenauswahl', 'clickEvent', 'id2']);
 		});
 
 		it('module selection', async () => {
