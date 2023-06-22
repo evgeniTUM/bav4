@@ -51,7 +51,10 @@ export class WebAnalyticsPlugin extends BaPlugin {
 			const ids = layers.map((l) => l.geoResourceId);
 
 			const newIds = ids.filter((l) => !activeGeoResourceIds.includes(l));
-			const labels = newIds.map((id) => geoResourceService.byId(id)).map((geoResource) => geoResource.label);
+			const labels = newIds
+				.map((id) => geoResourceService.byId(id))
+				.filter((l) => l !== null)
+				.map((geoResource) => geoResource.label);
 			labels.forEach((l) => window._paq.push(['trackEvent', 'Kartenauswahl', 'clickEvent', l]));
 
 			activeGeoResourceIds = ids;
