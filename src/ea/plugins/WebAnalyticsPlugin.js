@@ -47,17 +47,15 @@ export class WebAnalyticsPlugin extends BaPlugin {
 		};
 
 		let activeGeoResourceIds = [];
-		const trackLayerChange = (layers) => {
+		const trackLayerChange = async (layers) => {
 			const ids = layers.map((l) => l.geoResourceId);
-
 			const newIds = ids.filter((l) => !activeGeoResourceIds.includes(l));
-			const labels = newIds
-				.map((id) => geoResourceService.byId(id))
-				.filter((l) => l !== null)
-				.map((geoResource) => geoResource.label);
-			labels.forEach((l) => window._paq.push(['trackEvent', 'Kartenauswahl', 'clickEvent', l]));
-
 			activeGeoResourceIds = ids;
+
+			const newGeoResources = await Promise.all(newIds.map(async (id) => await geoResourceService.byId(id)));
+			const labels = newGeoResources.filter((l) => l !== null).map((geoResource) => geoResource.label);
+
+			labels.forEach((l) => window._paq.push(['trackEvent', 'Kartenauswahl', 'clickEvent', l]));
 		};
 
 		const trackModuleChange = (moduleId) => {
