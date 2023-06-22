@@ -119,6 +119,16 @@ describe('WebAnalyticsPlugin', () => {
 			expect(trackEvents[1]).toEqual(['trackEvent', 'Kartenauswahl', 'clickEvent', 'label-for-id2']);
 		});
 
+		it('layer activation deals with null values correctly', async () => {
+			spyOn(geoResourceServiceMock, 'byId').and.callFake(() => null);
+
+			addLayer('l1', { geoResourceId: 'id1' });
+			removeLayer('l1');
+
+			const trackEvents = window._paq.filter((i) => i[0] === 'trackEvent');
+			expect(trackEvents.length).toEqual(0);
+		});
+
 		it('module selection', async () => {
 			EaModules.forEach((m) => {
 				setCurrentModule(m.name);
