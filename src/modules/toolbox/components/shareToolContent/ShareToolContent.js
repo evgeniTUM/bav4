@@ -92,6 +92,38 @@ export class ShareToolContent extends AbstractToolContent {
 	createView() {
 		const translate = (key) => this._translationService.translate(key);
 
+		const shareWithoutShareAPI = async () => {
+			const shortUrl = await this._generateShortUrl();
+			const title = translate('toolbox_shareTool_share');
+			const content = html`<ba-share-content .urls=${shortUrl}></ba-share-content>`;
+			openModal(title, content);
+		};
+
+		const shareWithShareAPI = async () => {
+			try {
+				const shortUrl = await this._generateShortUrl();
+
+				const shareData = {
+					title: translate('toolbox_shareTool_title'),
+					url: shortUrl
+				};
+
+				await this._window.navigator.share(shareData);
+			} catch (e) {
+				shareWithoutShareAPI();
+			}
+		};
+
+		const triggerShareAction = async () => {
+			if (this._isShareApiAvailable()) {
+				shareWithShareAPI();
+			} else {
+				shareWithoutShareAPI();
+			}
+		};
+
+		setTimeout(triggerShareAction);
+
 		const getToolTemplate = (tool) => {
 			const buttonContent = html`
 				<div class="tool-container__background"></div>
@@ -102,27 +134,9 @@ export class ShareToolContent extends AbstractToolContent {
 			const getOnClickFunction = () => {
 				if (tool.name === 'share-api') {
 					if (this._isShareApiAvailable()) {
-						return async () => {
-							try {
-								const shortUrl = await this._generateShortUrl();
-
-								const shareData = {
-									title: translate('toolbox_shareTool_title'),
-									url: shortUrl
-								};
-
-								await this._window.navigator.share(shareData);
-							} catch (e) {
-								console.warn('ShareAPI not available: ' + e);
-							}
-						};
+						return shareWithShareAPI;
 					} else {
-						return async () => {
-							const shortUrl = await this._generateShortUrl();
-							const title = translate('toolbox_shareTool_share');
-							const content = html`<ba-share-content .urls=${shortUrl}></ba-share-content>`;
-							openModal(title, content);
-						};
+						return shareWithoutShareAPI;
 					}
 				} else {
 					return async () => {
