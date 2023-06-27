@@ -64,10 +64,10 @@ describe('StyleService', () => {
 		});
 
 		it('detects drawStyleTypes as type from olFeature', () => {
-			const markerFeature = { getId: () => 'draw_marker_123', getKeys: () => [] };
-			const textFeature = { getId: () => 'draw_text_123', getKeys: () => [] };
-			const lineFeature = { getId: () => 'draw_line_123', getKeys: () => [] };
-			const polygonFeature = { getId: () => 'draw_polygon_123', getKeys: () => [] };
+			const markerFeature = { getId: () => 'drawing_marker_123', getKeys: () => [] };
+			const textFeature = { getId: () => 'drawing_text_123', getKeys: () => [] };
+			const lineFeature = { getId: () => 'drawing_line_123', getKeys: () => [] };
+			const polygonFeature = { getId: () => 'drawing_polygon_123', getKeys: () => [] };
 
 			expect(instanceUnderTest._detectStyleType(markerFeature)).toEqual(StyleTypes.MARKER);
 			expect(instanceUnderTest._detectStyleType(textFeature)).toEqual(StyleTypes.TEXT);
@@ -158,8 +158,8 @@ describe('StyleService', () => {
 			const featureWithStyleArray = new Feature({ geometry: new Point([0, 0]) });
 			const featureWithStyleFunction = new Feature({ geometry: new Point([0, 0]) });
 			const style = new Style({ text: new Text({ text: 'foo' }) });
-			featureWithStyleArray.setId('draw_text_12345678');
-			featureWithStyleFunction.setId('draw_text_9876543');
+			featureWithStyleArray.setId('drawing_text_12345678');
+			featureWithStyleFunction.setId('drawing_text_9876543');
 			featureWithStyleArray.setStyle([style]);
 			featureWithStyleFunction.setStyle(() => style);
 
@@ -197,8 +197,8 @@ describe('StyleService', () => {
 				image: new Icon({ src: 'http://foo.bar/icon.png', anchor: [0.5, 1], anchorXUnits: 'fraction', anchorYUnits: 'fraction', color: '#ff0000' }),
 				text: new Text({ text: 'foo' })
 			});
-			featureWithStyleArray.setId('draw_marker_12345678');
-			featureWithStyleFunction.setId('draw_marker_9876543');
+			featureWithStyleArray.setId('drawing_marker_12345678');
+			featureWithStyleFunction.setId('drawing_marker_9876543');
 			featureWithStyleArray.setStyle([style]);
 			featureWithStyleFunction.setStyle(() => [style]);
 
@@ -252,8 +252,8 @@ describe('StyleService', () => {
 					]
 				])
 			});
-			lineFeature.setId('draw_line_12345678');
-			polygonFeature.setId('draw_polygon_9876543');
+			lineFeature.setId('drawing_line_12345678');
+			polygonFeature.setId('drawing_polygon_9876543');
 			const lineStyleSetterSpy = spyOn(lineFeature, 'setStyle');
 			const polygonStyleSetterSpy = spyOn(polygonFeature, 'setStyle');
 			const viewMock = {
