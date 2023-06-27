@@ -57,7 +57,7 @@ export class GeoResource {
 	 * @param {string} id the id of this GeoResource
 	 * @param {string | null} [label] the label of this GeoResource
 	 */
-	constructor(id, label = null) {
+	constructor(id, label = '', opacity = 1.0) {
 		if (this.constructor === GeoResource) {
 			// Abstract class can not be constructed.
 			throw new TypeError('Can not construct abstract class.');
@@ -66,7 +66,7 @@ export class GeoResource {
 
 		this._id = id;
 		this._label = label;
-		this._opacity = 1.0;
+		this._opacity = opacity;
 		this._hidden = false;
 		this._minZoom = null;
 		this._maxZoom = null;
