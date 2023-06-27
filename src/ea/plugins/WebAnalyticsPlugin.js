@@ -1,7 +1,6 @@
 import { $injector } from '../../injection';
 import { BaPlugin } from '../../plugins/BaPlugin';
 import { observe } from '../../utils/storeUtils';
-import { activateGeoResource } from '../store/module/ea.action';
 
 export class WebAnalyticsPlugin extends BaPlugin {
 	/**
@@ -9,7 +8,7 @@ export class WebAnalyticsPlugin extends BaPlugin {
 	 * @param {Store} store
 	 */
 	async register(store) {
-		const { ConfigService: configService } = $injector.inject('ConfigService');
+		const { ConfigService: configService, GeoResourceService: geoResourceService } = $injector.inject('ConfigService', 'GeoResourceService');
 
 		const activateMatomo = () => {
 			const matomoUrl = configService.getValue('MATOMO_URL') + '/';
@@ -47,14 +46,16 @@ export class WebAnalyticsPlugin extends BaPlugin {
 			}
 		};
 
-		let activeLayerIdsState = [];
-		const trackLayerChange = (layers) => {
+		let activeGeoResourceIds = [];
+		const trackLayerChange = async (layers) => {
 			const ids = layers.map((l) => l.geoResourceId);
+			const newIds = ids.filter((l) => !activeGeoResourceIds.includes(l));
+			activeGeoResourceIds = ids;
 
-			const newIds = ids.filter((l) => !activeLayerIdsState.includes(l));
-			newIds.forEach((l) => window._paq.push(['trackEvent', 'Kartenauswahl', 'clickEvent', l]));
+			const newGeoResources = await Promise.all(newIds.map(async (id) => await geoResourceService.byId(id)));
+			const labels = newGeoResources.filter((l) => l !== null).map((geoResource) => geoResource.label);
 
-			activeLayerIdsState = ids;
+			labels.forEach((l) => window._paq.push(['trackEvent', 'Kartenauswahl', 'clickEvent', l]));
 		};
 
 		const trackModuleChange = (moduleId) => {
