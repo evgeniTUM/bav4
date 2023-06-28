@@ -235,7 +235,7 @@ export class DrawToolContent extends AbstractToolContent {
 			`;
 		};
 
-		const drawingStyle = selectedStyle ? selectedStyle.style : preselectedStyle;
+		const drawingStyle = selectedStyle && model.mode === 'select' ? selectedStyle.style : preselectedStyle;
 		const drawingType = preselectedType ? preselectedType : selectedStyle ? selectedStyle.type : null;
 		const getStyleTemplate = (type, style) => {
 			const onChangeColor = (e) => {
@@ -397,7 +397,7 @@ export class DrawToolContent extends AbstractToolContent {
 												</div>
 												<div class='color-row'>
 													<div class="tool-container__style_symbol" title="${translate('toolbox_drawTool_style_symbol')}">								
-														<ba-iconselect  id="style_symbol" .title="${translate('toolbox_drawTool_style_symbol_select')}" .value=${style.symbolSrc} .color=${
+												<ba-iconselect  id="style_symbol" .title="${translate('toolbox_drawTool_style_symbol_select')}" .value=${style.symbolSrc} .color=${
 							style.color
 						} @select=${onChangeSymbol} ></ba-iconselect>													
 													</div>	
