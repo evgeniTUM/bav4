@@ -7,6 +7,9 @@ import { $injector } from '../../../../injection';
 import { openModal } from '../../../../store/modal/modal.action';
 import { AbstractToolContent } from '../toolContainer/AbstractToolContent';
 import css from './shareToolContent.css';
+import { setCurrentTool } from '../../../../store/tools/tools.action';
+
+const Update_fallback_on_internal_implementation = 'update_fallback_on_internal_implementation';
 
 /**
  * @class
@@ -16,7 +19,9 @@ import css from './shareToolContent.css';
  */
 export class ShareToolContent extends AbstractToolContent {
 	constructor() {
-		super();
+		super({
+			useShareAPI: true
+		});
 
 		const {
 			TranslationService: translationService,
@@ -31,13 +36,23 @@ export class ShareToolContent extends AbstractToolContent {
 		this._window = this._environmentService.getWindow();
 	}
 
+	update(type, _, model) {
+		switch (type) {
+			case Update_fallback_on_internal_implementation:
+				return {
+					...model,
+					useShareAPI: false
+				};
+		}
+	}
+
 	_getToolsDefinitions() {
 		const translate = (key) => this._translationService.translate(key);
 		const shareApi = {
 			id: 1,
 			name: 'share-api',
-			title: this._isShareApiAvailable() ? translate('toolbox_shareTool_share') : translate('toolbox_shareTool_link'),
-			icon: this._isShareApiAvailable() ? 'share' : 'link'
+			title: this._useShareApi() ? translate('toolbox_shareTool_share') : translate('toolbox_shareTool_link'),
+			icon: this._useShareApi() ? 'share' : 'link'
 		};
 
 		const mail = {
@@ -56,7 +71,7 @@ export class ShareToolContent extends AbstractToolContent {
 			href: (url) => this._urlService.qrCode(url)
 		};
 
-		if (this._isShareApiAvailable()) {
+		if (this._useShareApi()) {
 			return [shareApi];
 		} else {
 			if (this._environmentService.isStandalone()) {
@@ -69,8 +84,8 @@ export class ShareToolContent extends AbstractToolContent {
 	/**
 	 *@private
 	 */
-	_isShareApiAvailable() {
-		return this._window.navigator.share ? true : false;
+	_useShareApi() {
+		return this.getModel().useShareAPI && this._window.navigator.share;
 	}
 
 	/**
@@ -109,20 +124,18 @@ export class ShareToolContent extends AbstractToolContent {
 				};
 
 				await this._window.navigator.share(shareData);
+				setCurrentTool(null);
 			} catch (e) {
-				shareWithoutShareAPI();
+				console.warn('error when using Web Share API, falling back to internal implementation');
+				this.signal(Update_fallback_on_internal_implementation);
 			}
 		};
 
-		const triggerShareAction = async () => {
-			if (this._isShareApiAvailable()) {
+		setTimeout(async () => {
+			if (this._useShareApi()) {
 				shareWithShareAPI();
-			} else {
-				shareWithoutShareAPI();
 			}
-		};
-
-		setTimeout(triggerShareAction);
+		});
 
 		const getToolTemplate = (tool) => {
 			const buttonContent = html`
@@ -133,7 +146,7 @@ export class ShareToolContent extends AbstractToolContent {
 
 			const getOnClickFunction = () => {
 				if (tool.name === 'share-api') {
-					if (this._isShareApiAvailable()) {
+					if (this._useShareApi()) {
 						return shareWithShareAPI;
 					} else {
 						return shareWithoutShareAPI;
