@@ -3,7 +3,7 @@ import { $injector } from '../../../../../src/injection';
 import { DrawToolContent } from '../../../../../src/modules/toolbox/components/drawToolContent/DrawToolContent';
 import { AbstractToolContent } from '../../../../../src/modules/toolbox/components/toolContainer/AbstractToolContent';
 import { drawReducer } from '../../../../../src/store/draw/draw.reducer';
-import { setMode, setSelectedStyle, setStyle, setType } from '../../../../../src/store/draw/draw.action';
+import { setSelectedStyle, setStyle, setType } from '../../../../../src/store/draw/draw.action';
 import { EventLike } from '../../../../../src/utils/storeUtils';
 import { modalReducer } from '../../../../../src/store/modal/modal.reducer';
 import { IconResult } from '../../../../../src/services/IconService';
@@ -219,7 +219,6 @@ describe('DrawToolContent', () => {
 
 			expect(element.shadowRoot.querySelector('#style_marker')).toBeNull();
 			setSelectedStyle(selectedStyle);
-			setMode('select');
 			expect(element.shadowRoot.querySelector('#style_marker')).toBeTruthy();
 		});
 
