@@ -3,6 +3,7 @@ import { Checkbox } from '../../../../../src/modules/commons/components/checkbox
 import { ShareDialogContent } from '../../../../../src/modules/share/components/dialog/ShareDialogContent';
 import { ShareToolContent } from '../../../../../src/modules/toolbox/components/shareToolContent/ShareToolContent';
 import { modalReducer } from '../../../../../src/store/modal/modal.reducer';
+import { toolsReducer } from '../../../../../src/store/tools/tools.reducer';
 import { TestUtils } from '../../../../test-utils';
 
 window.customElements.define(ShareDialogContent.tag, ShareDialogContent);
@@ -28,7 +29,10 @@ describe('ShareToolContent', () => {
 
 		const state = {};
 
-		store = TestUtils.setupStoreAndDi(state, { modal: modalReducer });
+		store = TestUtils.setupStoreAndDi(state, {
+			tools: toolsReducer,
+			modal: modalReducer
+		});
 		$injector
 			.registerSingleton('EnvironmentService', {
 				getWindow: () => windowMock,
@@ -85,50 +89,60 @@ describe('ShareToolContent', () => {
 				expect(element.shadowRoot.querySelector('.tool-container__icon').classList).toContain('share');
 			});
 
-			describe('on share button click', () => {
-				it('initializes share api button', async () => {
-					const mockShortUrl = 'https://short/url';
-					const mockShareData = {
-						title: 'toolbox_shareTool_title',
-						url: mockShortUrl
-					};
-					const windowMock = {
-						open() {},
-						navigator: {
-							share() {}
-						}
-					};
-					const windowShareSpy = spyOn(windowMock.navigator, 'share');
-					const config = { windowMock };
-					const element = await setup(config);
-					spyOn(element, '_generateShortUrl').and.returnValue(mockShortUrl);
+			it('triggers sharing on init', async () => {
+				const mockShortUrl = 'https://short/url';
+				const mockShareData = {
+					title: 'toolbox_shareTool_title',
+					url: mockShortUrl
+				};
+				const windowMock = {
+					open() {},
+					navigator: {
+						share() {}
+					}
+				};
+				const windowShareSpy = spyOn(windowMock.navigator, 'share');
+				const config = { windowMock };
+				const element = await setup(config);
+				spyOn(element, '_generateShortUrl').and.returnValue(mockShortUrl);
 
-					element.shadowRoot.querySelectorAll('.tool-container__button')[0].click();
+				await TestUtils.timeout();
+				expect(windowShareSpy).toHaveBeenCalledWith(mockShareData);
+			});
 
-					await TestUtils.timeout();
-					expect(windowShareSpy).toHaveBeenCalledWith(mockShareData);
-				});
+			it('closes tool window on success', async () => {
+				const mockShortUrl = 'https://short/url';
+				const windowMock = {
+					navigator: {
+						share() {}
+					}
+				};
+				spyOn(windowMock.navigator, 'share').and.returnValue(Promise.resolve(() => {}));
+				const config = { windowMock };
+				const element = await setup(config);
+				spyOn(element, '_generateShortUrl').and.returnValue(mockShortUrl);
 
-				it('logs a warn statement on share api reject', async () => {
-					const mockShortUrl = 'https://short/url';
-					const mockErrorMsg = 'something got wrong';
-					const windowMock = {
-						navigator: {
-							share() {}
-						}
-					};
-					spyOn(windowMock.navigator, 'share').and.returnValue(Promise.reject(new Error(mockErrorMsg)));
-					const warnSpy = spyOn(console, 'warn');
-					const config = { windowMock };
-					const element = await setup(config);
-					spyOn(element, '_generateShortUrl').and.returnValue(mockShortUrl);
-					const shareButton = element.shadowRoot.querySelectorAll('.tool-container__button')[0];
+				await TestUtils.timeout();
 
-					shareButton.click();
+				expect(store.getState().tools.current).toBeNull();
+			});
 
-					await TestUtils.timeout();
-					expect(warnSpy).toHaveBeenCalledWith('ShareAPI not available: Error: ' + mockErrorMsg);
-				});
+			it('falls back on own implementation on share api error', async () => {
+				const mockShortUrl = 'https://short/url';
+				const mockErrorMsg = 'something got wrong';
+				const windowMock = {
+					navigator: {
+						share() {}
+					}
+				};
+				spyOn(windowMock.navigator, 'share').and.returnValue(Promise.reject(new Error(mockErrorMsg)));
+				const config = { windowMock };
+				const element = await setup(config);
+				spyOn(element, '_generateShortUrl').and.returnValue(mockShortUrl);
+
+				await TestUtils.timeout();
+
+				expect(element.shadowRoot.querySelector('.tool-container__buttons').childElementCount).toBe(3);
 			});
 		});
 
@@ -149,6 +163,19 @@ describe('ShareToolContent', () => {
 					expect(element.shadowRoot.querySelectorAll('.tool-container__icon')[1].classList).toContain('mail');
 					expect(element.shadowRoot.querySelectorAll('.tool-container__icon')[2].classList).toContain('qr');
 				});
+			});
+
+			it('does not trigger sharing on init', async () => {
+				const mockShortUrl = 'https://short/url';
+				const windowMock = {
+					navigator: {}
+				};
+				const config = { windowMock };
+				const element = await setup(config);
+				spyOn(element, '_generateShortUrl').and.returnValue(mockShortUrl);
+
+				await TestUtils.timeout();
+				expect(store.getState().modal.data).toBeNull();
 			});
 
 			describe('shortUrl service NOT available', () => {
