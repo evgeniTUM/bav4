@@ -35,6 +35,14 @@ describe('LegendPlugin', () => {
 	const setup = async (state) => {
 		storeActions.length = 0;
 
+		spyOn(wmsCapabilitiesServiceMock, 'getWmsLayers')
+			.withArgs('id1')
+			.and.returnValue([layerItem1])
+			.withArgs('id2')
+			.and.returnValue([layerItem2])
+			.withArgs('id3')
+			.and.returnValue([layerItem3]);
+
 		const store = TestUtils.setupStoreAndDi(state, {
 			layers: layersReducer,
 			ea: eaReducer
@@ -44,14 +52,6 @@ describe('LegendPlugin', () => {
 
 		const instanceUnderTest = new LegendPlugin();
 		await instanceUnderTest.register(store);
-
-		spyOn(wmsCapabilitiesServiceMock, 'getWmsLayers')
-			.withArgs('id1')
-			.and.returnValue([layerItem1])
-			.withArgs('id2')
-			.and.returnValue([layerItem2])
-			.withArgs('id3')
-			.and.returnValue([layerItem3]);
 
 		return store;
 	};
@@ -68,7 +68,23 @@ describe('LegendPlugin', () => {
 			expect(store.getState().ea.legendItems).toEqual([layerItem1, layerItem2]);
 		});
 
-		it('show legend only for visible layers', async () => {
+		it('creates legend items on plugin load', async () => {
+			const store = await setup({
+				layers: {
+					active: [
+						{ geoResourceId: 'id1', visible: true },
+						{ geoResourceId: 'id2', visible: true }
+					]
+				}
+			});
+
+			activateLegend();
+
+			await TestUtils.timeout();
+			expect(store.getState().ea.legendItems).toEqual([layerItem1, layerItem2]);
+		});
+
+		it('shows legend only for visible layers', async () => {
 			const store = await setup();
 			activateLegend();
 
@@ -81,7 +97,7 @@ describe('LegendPlugin', () => {
 			expect(store.getState().ea.legendItems).toEqual([layerItem1, layerItem3]);
 		});
 
-		it('create preview layers items first', async () => {
+		it('creates preview layers items first', async () => {
 			const store = await setup();
 			activateLegend();
 
@@ -105,7 +121,7 @@ describe('LegendPlugin', () => {
 			expect(store.getState().ea.legendItems).toEqual([layerItem1, layerItem2, layerItem3]);
 		});
 
-		it('show preview layer only once if already active', async () => {
+		it('shows preview layer only once if already active', async () => {
 			const store = await setup();
 			activateLegend();
 
@@ -127,7 +143,7 @@ describe('LegendPlugin', () => {
 			expect(store.getState().ea.legendItems).toEqual([layerItem1]);
 		});
 
-		it('always show preview layer first', async () => {
+		it('always shows preview layer first', async () => {
 			const store = await setup();
 			activateLegend();
 
@@ -180,7 +196,7 @@ describe('LegendPlugin', () => {
 			expect(store.getState().ea.legendItems).toEqual([layerItem1]);
 		});
 
-		it('does not legend on preview id change', async () => {
+		it('does not show legend on preview id change when legend disabled', async () => {
 			const store = await setup();
 			deactivateLegend();
 

@@ -153,5 +153,27 @@ describe('CatalogNode', () => {
 			expect(element.shadowRoot.querySelector('.iscollapse')).toBeFalsy();
 			expect(element.shadowRoot.querySelector('.iconexpand')).toBeTruthy();
 		});
+
+		it('does not render leaf nodes if collapsed', async () => {
+			//load node data
+			const [node] = await loadExampleCatalog('foo');
+			const element = await setup();
+
+			//assign data
+			element.data = node;
+
+			//data contains one node and two leaves
+			expect(element.shadowRoot.querySelectorAll(CatalogLeaf.tag)).toHaveSize(2);
+			expect(element.shadowRoot.querySelectorAll(CatalogNode.tag)).toHaveSize(1);
+
+			expect(element.shadowRoot.querySelector('.iscollapse')).toBeFalsy();
+			expect(element.shadowRoot.querySelector('#children-container').children).toHaveSize(3);
+
+			const collapseButton = element.shadowRoot.querySelector('.ba-list-item__header');
+			collapseButton.click();
+
+			expect(element.shadowRoot.querySelector('.iscollapse')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#children-container').children).toHaveSize(0);
+		});
 	});
 });

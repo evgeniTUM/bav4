@@ -78,7 +78,7 @@ export class LegendPlugin extends BaPlugin {
 			(state) => state.ea.legendActive,
 			(value) => (legendActive = value)
 		);
-		observe(store, (state) => state.layers.active, onActiveLayersChange);
+		observe(store, (state) => state.layers.active, onActiveLayersChange, false);
 		observe(store, (state) => state.ea.legendGeoresourceId, onPreviewIdChange);
 	}
 }
