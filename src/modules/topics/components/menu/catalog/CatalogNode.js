@@ -72,7 +72,9 @@ export class CatalogNode extends AbstractContentPanel {
 								<i class="icon icon-rotate-90 chevron ${classMap(iconCollapseClass)}"></i>
 							</span>
 						</button>
-						<div class=" collapse-content ${classMap(bodyCollapseClass)}"><div>${childElements}</div></div>
+						<div class=" collapse-content ${classMap(bodyCollapseClass)}">
+							<div id="children-container">${this._isCollapsed ? '' : childElements}</div>
+						</div>
 					</div>
 				`;
 			} else if (this._level > 0) {
