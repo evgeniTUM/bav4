@@ -102,7 +102,7 @@ describe('ShareService', () => {
 				addLayer('anotherLayer_123', { geoResourceId: 'anotherLayer' });
 
 				const extract = instanceUnderTest._extractLayers();
-				expect(extract[QueryParameters.LAYER]).toEqual(encodeURIComponent(['someLayer', 'anotherLayer']));
+				expect(extract[QueryParameters.LAYER]).toEqual(['someLayer', 'anotherLayer']);
 				expect(extract[QueryParameters.LAYER_OPACITY]).not.toBeDefined();
 				expect(extract[QueryParameters.LAYER_VISIBILITY]).not.toBeDefined();
 			});
@@ -115,7 +115,7 @@ describe('ShareService', () => {
 				addLayer('anotherLayer');
 
 				const extract = instanceUnderTest._extractLayers();
-				expect(extract[QueryParameters.LAYER]).toEqual(encodeURIComponent(['anotherLayer']));
+				expect(extract[QueryParameters.LAYER]).toEqual(['anotherLayer']);
 				expect(extract[QueryParameters.LAYER_OPACITY]).not.toBeDefined();
 				expect(extract[QueryParameters.LAYER_VISIBILITY]).not.toBeDefined();
 			});
@@ -130,7 +130,7 @@ describe('ShareService', () => {
 				addLayer('anotherLayer');
 
 				const extract = instanceUnderTest._extractLayers();
-				expect(extract[QueryParameters.LAYER]).toEqual(encodeURIComponent(['anotherLayer']));
+				expect(extract[QueryParameters.LAYER]).toEqual(['anotherLayer']);
 				expect(extract[QueryParameters.LAYER_OPACITY]).not.toBeDefined();
 				expect(extract[QueryParameters.LAYER_VISIBILITY]).not.toBeDefined();
 			});
@@ -143,7 +143,7 @@ describe('ShareService', () => {
 				addLayer('anotherLayer', { visible: false });
 
 				const extract = instanceUnderTest._extractLayers();
-				expect(extract[QueryParameters.LAYER]).toEqual(encodeURIComponent(['someLayer', 'anotherLayer']));
+				expect(extract[QueryParameters.LAYER]).toEqual(['someLayer', 'anotherLayer']);
 				expect(extract[QueryParameters.LAYER_OPACITY]).toEqual([0.5, 1.0]);
 				expect(extract[QueryParameters.LAYER_VISIBILITY]).toEqual([true, false]);
 			});
