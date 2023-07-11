@@ -85,7 +85,7 @@ export class ShareToolContent extends AbstractToolContent {
 	 *@private
 	 */
 	_useShareApi() {
-		return this.getModel().useShareAPI && this._window.navigator.share;
+		return this._window.navigator.canShare && this._window.navigator.canShare({ url: 'https://ldbv.bayern.de', title: 'test' });
 	}
 
 	/**
