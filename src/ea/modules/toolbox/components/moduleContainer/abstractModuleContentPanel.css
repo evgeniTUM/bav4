@@ -1,0 +1,233 @@
+/* CSS classes for all AbstractModuleContentPanel implementations */
+
+.container {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.header {
+	padding: 0.8em 1.5em;
+	font-weight: bold;
+	background: var(--primary-color);
+	color: var(--text3);
+}
+
+.content {
+	overflow-y: scroll;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.introduction {
+	margin-top: 1em;
+	margin-bottom: 2em;
+	margin-left: 1em;
+		display: flex;
+}
+
+.fields-help {
+	margin-bottom: 1em;
+}
+
+.section-header {
+	font-weight: bold;
+	font-size: larger;
+}
+
+.button-header {
+	text-align: center;
+}
+
+
+.button-icon {
+	height: 3em;
+	width: 100%;
+	margin-bottom: 0.5em;
+}
+
+.active .button-icon {
+	background-color: white;
+	color: var(--primary-color);
+}
+
+.inactive .button-icon {
+	background-color: var(--primary-color);
+	color: white;
+}
+
+.unselected .button-icon {
+	background-color: var(--primary-color);
+	color: white;
+}
+
+
+button:hover {
+	filter: brightness(0.9);
+}
+
+.arrow-container {
+	display: grid;
+	grid-column-gap: 0.2em;
+	grid-template-columns: calc(50% - 0.1em) calc(50% - 0.1em);
+	padding: 0.2em;
+}
+
+.button-container {
+	border-color: var(--primary-color-lighter);
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 10px;
+	display: grid;
+	grid-column-gap: 0.2em;
+	grid-template-columns: calc(50% - 0.1em) calc(50% - 0.1em);
+	padding: 0.2em;
+}
+
+.button-container button {
+	padding: 0.5em 0.9em;
+	background: var(--primary-color);
+	color: var(--text3);
+	border-color: var(--primary-color-lighter);
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: all var(--animation-duration-medium-open) var(--animation-easing-linea);
+	font-weight: bold;
+	position: relative;
+	z-index: 1;
+
+	width:100%;
+	/* width: 15em; */
+	justify-self: center;
+}
+
+.button-container .active {
+	color: white;
+	background-color: var(--primary-color);
+}
+
+.button-container .inactive {
+	opacity: 0.5;
+	background-color: white;
+	color: var(--primary-color);
+	pointer-events: none;
+}
+
+.button-container .unselected {
+	background-color: white;
+	color: var(--primary-color);
+}
+
+.subtext {
+	color: inherit;
+	font-weight: normal;
+	font-size: small;
+}
+
+.button-container .subtext {
+	font-weight: normal;
+	font-size: small;
+}
+
+.form-content {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: 100%;
+}
+
+.form-buttons {
+	width: 100%;
+	padding: 1em;
+	border-top: 2px solid var(--header-background-color);
+	justify-content: right;
+	display: flex;
+	align-self: flex-end;
+}
+
+.form-buttons button {
+	padding: 0.5em 0.9em;
+	background: var(--primary-color);
+	color: var(--text3);
+	border-color: var(--primary-color-lighter);
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: all var(--animation-duration-medium-open) var(--animation-easing-linea);
+	font-weight: bold;
+}
+
+.tag-button {
+	width: 15em;
+	margin: auto;
+}
+
+.coordinates {
+	border-style: solid;
+	padding-right: 1em;
+
+	pointer-events: none;
+}
+
+.control-label.required {
+	font-weight: bold;
+}
+
+input {
+	margin-bottom: 0.5em;
+}
+
+::placeholder {
+	opacity: 0.6;
+}
+
+input:required::placeholder {
+	font-weight: bold;
+}
+
+textarea:required::placeholder {
+	font-weight: bold;
+}
+
+.error {
+	color: red;
+}
+
+.mode-validation-element {
+	display: block;
+	height: 0;
+	padding: 0;
+	margin: 0;
+	/* bug in chrome: border has to be there for the validation msg to be shown */
+	border-width: 1px;
+	border-color: var(--primary-bg-color);
+}
+
+.footer-content {
+	width: 100%;
+	height: 100%;
+	padding: 1em;
+	justify-content: right;
+	display: flex;
+	align-items: flex-end;}
+
+.footer-buttons {
+	width: 100%;
+	height: 100%;
+	padding: 1em;
+	border-top: 2px solid var(--header-background-color);
+	justify-content: right;
+	display: flex;
+	align-items: flex-end;
+}
+.popup-hint {
+  margin-left: 5px;
+  color: var(--info-color);
+}
+.popup-hint .bold {
+  font-weight: bold;
+}
