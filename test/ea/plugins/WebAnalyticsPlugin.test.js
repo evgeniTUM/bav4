@@ -69,7 +69,7 @@ describe('WebAnalyticsPlugin', () => {
 			activateWebAnalytics();
 			deactivateWebAnalytics();
 
-			setCurrentTool(Tools.DRAWING);
+			setCurrentTool(Tools.DRAW);
 
 			expect(window._paq).toEqual([]);
 		});
@@ -97,12 +97,12 @@ describe('WebAnalyticsPlugin', () => {
 		});
 
 		it('tool selection', async () => {
-			setCurrentTool(Tools.DRAWING);
+			setCurrentTool(Tools.DRAW);
 			setCurrentTool(null);
 
 			const trackEvents = window._paq.filter((i) => i[0] === 'trackEvent');
 			expect(trackEvents.length).toEqual(1);
-			expect(trackEvents[0]).toEqual(['trackEvent', 'Kartenwerkzeug', 'clickEvent', Tools.DRAWING]);
+			expect(trackEvents[0]).toEqual(['trackEvent', 'Kartenwerkzeug', 'clickEvent', Tools.DRAW]);
 		});
 
 		it('layer activation', async () => {
