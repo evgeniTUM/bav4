@@ -99,10 +99,10 @@ describe('ShareService', () => {
 				const instanceUnderTest = new ShareService();
 				spyOn(geoResourceService, 'byId').and.returnValue({ hidden: false });
 				addLayer('someLayer_123', { geoResourceId: 'someLayer' });
-				addLayer('anotherLayer_123', { geoResourceId: 'anotherLayer' });
+				addLayer('anotherLayer_123', { geoResourceId: 'https://foo.bar/some||thing' });
 
 				const extract = instanceUnderTest._extractLayers();
-				expect(extract[QueryParameters.LAYER]).toEqual(encodeURIComponent(['someLayer', 'anotherLayer']));
+				expect(extract[QueryParameters.LAYER]).toEqual(['someLayer', 'https%3A%2F%2Ffoo.bar%2Fsome%7C%7Cthing']);
 				expect(extract[QueryParameters.LAYER_OPACITY]).not.toBeDefined();
 				expect(extract[QueryParameters.LAYER_VISIBILITY]).not.toBeDefined();
 			});
@@ -115,7 +115,7 @@ describe('ShareService', () => {
 				addLayer('anotherLayer');
 
 				const extract = instanceUnderTest._extractLayers();
-				expect(extract[QueryParameters.LAYER]).toEqual(encodeURIComponent(['anotherLayer']));
+				expect(extract[QueryParameters.LAYER]).toEqual(['anotherLayer']);
 				expect(extract[QueryParameters.LAYER_OPACITY]).not.toBeDefined();
 				expect(extract[QueryParameters.LAYER_VISIBILITY]).not.toBeDefined();
 			});
@@ -130,7 +130,7 @@ describe('ShareService', () => {
 				addLayer('anotherLayer');
 
 				const extract = instanceUnderTest._extractLayers();
-				expect(extract[QueryParameters.LAYER]).toEqual(encodeURIComponent(['anotherLayer']));
+				expect(extract[QueryParameters.LAYER]).toEqual(['anotherLayer']);
 				expect(extract[QueryParameters.LAYER_OPACITY]).not.toBeDefined();
 				expect(extract[QueryParameters.LAYER_VISIBILITY]).not.toBeDefined();
 			});
@@ -143,7 +143,7 @@ describe('ShareService', () => {
 				addLayer('anotherLayer', { visible: false });
 
 				const extract = instanceUnderTest._extractLayers();
-				expect(extract[QueryParameters.LAYER]).toEqual(encodeURIComponent(['someLayer', 'anotherLayer']));
+				expect(extract[QueryParameters.LAYER]).toEqual(['someLayer', 'anotherLayer']);
 				expect(extract[QueryParameters.LAYER_OPACITY]).toEqual([0.5, 1.0]);
 				expect(extract[QueryParameters.LAYER_VISIBILITY]).toEqual([true, false]);
 			});

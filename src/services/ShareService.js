@@ -65,7 +65,7 @@ export class ShareService {
 		const baseUrl = this._configService.getValueAsPath('FRONTEND_URL');
 		const searchParams = new URLSearchParams(extractedState);
 		const mergedPathParameters = pathParameters.length ? [...pathParameters] : [];
-		return `${baseUrl}${mergedPathParameters.join('/')}` + '?' + decodeURIComponent(searchParams.toString());
+		return `${baseUrl}${mergedPathParameters.join('/')}?${decodeURIComponent(searchParams.toString())}`;
 	}
 
 	/**
@@ -147,7 +147,7 @@ export class ShareService {
 		if (layer_opacity.filter((lo) => lo !== 1).length === 0) {
 			layer_opacity = null;
 		}
-		extractedState[QueryParameters.LAYER] = encodeURIComponent(geoResourceIds);
+		extractedState[QueryParameters.LAYER] = geoResourceIds.map((grId) => encodeURIComponent(grId)); //an GeoResource id may contain also an URL, so we encode it
 		if (layer_visibility) {
 			extractedState[QueryParameters.LAYER_VISIBILITY] = layer_visibility;
 		}
