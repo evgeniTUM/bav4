@@ -131,6 +131,7 @@ describe('ShareToolContent', () => {
 			});
 
 			it('falls back on own implementation on share api error', async () => {
+				jasmine.clock().install();
 				const mockShortUrl = 'https://short/url';
 				const mockErrorMsg = 'something got wrong';
 				const windowMock = {
@@ -143,6 +144,8 @@ describe('ShareToolContent', () => {
 				const element = await setup(config);
 				spyOn(element, '_generateShortUrl').and.returnValue(mockShortUrl);
 
+				jasmine.clock().tick(100);
+				jasmine.clock().uninstall();
 				await TestUtils.timeout();
 
 				expect(element.shadowRoot.querySelector('.tool-container__buttons').childElementCount).toBe(3);
