@@ -5,9 +5,6 @@ import { getUid } from 'ol';
 import { $injector } from '../../../injection';
 import { rgbToHex } from '../../../utils/colors';
 import {
-	markerStyleFunction,
-	highlightStyleFunction,
-	highlightTemporaryStyleFunction,
 	measureStyleFunction,
 	nullStyleFunction,
 	lineStyleFunction,
@@ -16,11 +13,15 @@ import {
 	markerScaleToKeyword,
 	getStyleArray,
 	geojsonStyleFunction,
-	defaultStyleFunction
+	defaultStyleFunction,
+	defaultClusterStyleFunction,
+	markerStyleFunction
 } from '../utils/olStyleUtils';
 
 /**
- * @enum
+ * Enumeration of predefined types of style
+ * @readonly
+ * @enum {String}
  */
 export const StyleTypes = Object.freeze({
 	NULL: 'null',
@@ -49,15 +50,11 @@ const Default_Colors = [
 const GeoJSON_SimpleStyle_Keys = ['marker-symbol', 'marker-size', 'marker-color', 'stroke', 'stroke-opacity', 'stroke-width', 'fill', 'fill-opacity'];
 
 /**
- * Adds or removes styles and overlays to ol.feature.
+ * Adds or removes styles and overlays to {@link ol.feature}.
  * @class
  * @author thiloSchlemmer
  */
 export class StyleService {
-	/**
-	 *
-	 * @param {administrationProvider} [administrationProvider=loadBvvAdministration]
-	 */
 	constructor() {
 		this._defaultColorIndex = 0;
 		this._defaultColorByLayerId = {};
@@ -78,7 +75,7 @@ export class StyleService {
 	}
 
 	/**
-	 * Adds (explicit or implicit) specified styles and overlays (OverlayStyle) to the specified feature.
+	 * Adds (explicit or implicit) specified styles and overlays ({@link OverlayStyle}) to the specified feature.
 	 * @param {ol.Feature} olFeature the feature to be styled
 	 * @param {ol.Map} olMap the map, where overlays related to the feature-style will be added
 	 * @param {ol.Layer} olLayer the layer of the feature, used for layer-wide color in the default style
@@ -112,21 +109,29 @@ export class StyleService {
 	}
 
 	/**
+	 * Adds a cluster style to the specified {@link ol.layer.vector.VectorLayer}.
+	 * @param {ol.layer.vector.VectorLayer} olVectorLayer the vector layer with the clustered features
+	 */
+	addClusterStyle(olVectorLayer) {
+		olVectorLayer.setStyle(defaultClusterStyleFunction());
+	}
+
+	/**
 	 * A Container-Object for optional properties related to a update of feature-style or -overlays
 	 * @typedef {Object} UpdateProperties
 	 * @param {Number} [opacity] the opacity (0-1), may or may not given, to update the opacity of the specified feature, based on
-	 * the styletype belonging to the feature
+	 * the style type ({@link StyleTypes}) belonging to the feature
 	 * @param {Boolean} [top] the top-flag (true/false),  may or may not given, whether or not to update the behavior of being in the
 	 * topmost layer
 	 * @param {Boolean} [visible] the visible-flag (true/false), may or may not given, whether or not to update the visibility of the
-	 * specified feature, based on the styletype belonging to the feature
+	 * specified feature, based on the style type ({@link StyleTypes}) belonging to the feature
 	 */
 
 	/**
 	 * Updates (explicit or implicit) specified styles and overlays ({@link OverlayStyle}) to the specified feature.
 	 * @param {ol.Feature} olFeature the feature to be styled
 	 * @param {ol.Map} olMap the map, where overlays related to the feature-style will be updated
-	 * @param {UpdateProperties} properties the optional properties, which are used for additional style updates;
+	 * @param {module:modules/olMap/services/StyleService~UpdateProperties} properties the optional properties, which are used for additional style updates;
 	 * any possible implications of a combination of defined UpdateProperties (i.e. visible=true && top=false) are handled by the current
 	 * implementation of the StyleService
 	 * @param {StyleTypes} [styleType] the {@link StyleTypes}, which should be used for the update
@@ -150,9 +155,9 @@ export class StyleService {
 	}
 
 	/**
-	 * Returns a ol-StyleFunction for the specified StyleType
-	 * @param {StyleType} styleType
-	 * @returns {Function} styleFunction the StyleFunction, used by ol to render a feature
+	 * Returns a {@link ol.style.StyleFunction} for the specified {@link StyleTypes}
+	 * @param {StyleTypes} styleType
+	 * @returns {Function} the {@link ol.style.StyleFunction}, used by ol to render a feature
 	 */
 	getStyleFunction(styleType) {
 		switch (styleType) {
@@ -160,10 +165,6 @@ export class StyleService {
 				return nullStyleFunction;
 			case StyleTypes.MEASURE:
 				return measureStyleFunction;
-			case StyleTypes.HIGHLIGHT:
-				return highlightStyleFunction;
-			case StyleTypes.HIGHLIGHT_TEMP:
-				return highlightTemporaryStyleFunction;
 			case StyleTypes.LINE:
 				return lineStyleFunction;
 			case StyleTypes.POLYGON:
@@ -218,13 +219,20 @@ export class StyleService {
 	}
 
 	_addTextStyle(olFeature) {
-		const styles = getStyleArray(olFeature);
 		const getStyleOption = () => {
-			const currentStyle = styles[0];
-			const currentColor = currentStyle.getText().getFill().getColor();
-			const currentText = currentStyle.getText().getText();
-			const currentScale = currentStyle.getText().getScale();
-			return { color: Array.isArray(currentColor) ? rgbToHex(currentColor) : currentColor, scale: currentScale, text: currentText };
+			const fromStyle = (style) => {
+				const currentColor = style.getText().getFill().getColor();
+				const currentText = style.getText().getText();
+				const currentScale = style.getText().getScale();
+				return { color: Array.isArray(currentColor) ? rgbToHex(currentColor) : currentColor, scale: currentScale, text: currentText };
+			};
+
+			const fromAttribute = (feature) => {
+				return { text: feature.get('name') };
+			};
+
+			const styles = getStyleArray(olFeature);
+			return styles ? fromStyle(styles[0]) : fromAttribute(olFeature);
 		};
 
 		const newStyle = textStyleFunction(getStyleOption());
@@ -236,13 +244,21 @@ export class StyleService {
 		const { IconService: iconService } = $injector.inject('IconService');
 
 		const getStyleOption = (feature) => {
-			const style = getStyleArray(feature)[0];
-			const symbolSrc = style.getImage().getSrc();
-			const styleColor = style.getImage().getColor();
-			const color = styleColor ? styleColor : iconService.decodeColor(symbolSrc);
-			const scale = markerScaleToKeyword(style.getImage().getScale());
-			const text = style.getText().getText();
-			return { symbolSrc: symbolSrc, color: rgbToHex(color), scale: scale, text: text };
+			const fromStyle = (style) => {
+				const symbolSrc = style.getImage().getSrc();
+				const styleColor = style.getImage().getColor();
+				const color = styleColor ? styleColor : iconService.decodeColor(symbolSrc);
+				const scale = markerScaleToKeyword(style.getImage().getScale());
+				const text = style.getText().getText();
+				return { symbolSrc: symbolSrc, color: rgbToHex(color), scale: scale, text: text };
+			};
+
+			const fromAttribute = (feature) => {
+				return { text: feature.get('name') };
+			};
+
+			const styles = getStyleArray(feature);
+			return styles ? fromStyle(styles[0]) : fromAttribute(olFeature);
 		};
 
 		const newStyle = markerStyleFunction(getStyleOption(olFeature));
@@ -269,7 +285,7 @@ export class StyleService {
 			return regex.test(candidate);
 		};
 		const isDrawingStyleType = (type, candidate) => {
-			const regex = new RegExp('^drawing_' + type + '_');
+			const regex = new RegExp('^draw_' + type + '_');
 			return regex.test(candidate);
 		};
 

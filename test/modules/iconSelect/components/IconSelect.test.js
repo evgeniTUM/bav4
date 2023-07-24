@@ -22,7 +22,7 @@ describe('IconSelect', () => {
 			media: createNoInitialStateMediaReducer()
 		});
 		$injector.registerSingleton('TranslationService', { translate: (key) => key }).registerSingleton('IconService', iconServiceMock);
-		return TestUtils.render(IconSelect.tag, attributes);
+		return TestUtils.render(IconSelect.tag, {}, attributes);
 	};
 
 	describe('when initialized', () => {
@@ -161,6 +161,25 @@ describe('IconSelect', () => {
 	});
 
 	describe('when icon is selected (event handling) ', () => {
+		it('fires a "select" event', async () => {
+			spyOn(iconServiceMock, 'all').and.returnValue(Promise.resolve([new IconResult('foo', '42'), new IconResult('bar', '42')]));
+
+			const state = {
+				media: {
+					portrait: false
+				}
+			};
+			const element = await setup(state, {});
+			const spy = jasmine.createSpy();
+			element.addEventListener('select', spy);
+
+			element.click();
+			const selectableIcon = element.shadowRoot.querySelector('#svg_foo');
+			selectableIcon.click();
+
+			expect(spy).toHaveBeenCalledOnceWith(jasmine.objectContaining({ detail: { selected: jasmine.any(IconResult) } }));
+		});
+
 		it('calls the onSelect callback via property callback', async () => {
 			spyOn(iconServiceMock, 'all').and.returnValue(Promise.resolve([new IconResult('foo', '42'), new IconResult('bar', '42')]));
 

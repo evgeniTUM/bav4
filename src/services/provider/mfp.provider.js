@@ -2,7 +2,8 @@
  * @module services/provider/mfp_provider
  */
 import { $injector } from '../../injection';
-import { HttpService, MediaType } from '../HttpService';
+import { HttpService } from '../HttpService';
+import { MediaType } from '../../domain/mediaTypes';
 
 /**
  * @typedef {Object} BvvMfpCapabilities
@@ -53,7 +54,7 @@ export const postMfpSpec = async (spec, urlId, abortController) => {
 				headers: {
 					'Content-Type': MediaType.JSON
 				},
-				timeout: 20000
+				timeout: 40000
 			},
 			abortController
 		);

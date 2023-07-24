@@ -3,7 +3,8 @@
  */
 /**
  * Enum which holds all valid query parameter keys.
- * @enum
+ * @readonly
+ * @enum {String}
  */
 export const QueryParameters = Object.freeze({
 	// official parameters
@@ -20,6 +21,7 @@ export const QueryParameters = Object.freeze({
 	EA_MODULE: 'comp',
 	TOOL_ID: 'tid',
 	IFRAME_COMPONENTS: 'ifc',
+	CROSSHAIR: 'crh',
 	// technical parameters
 	T_ENABLE_TEST_IDS: 't_enable-test-ids',
 	T_DISABLE_INITIAL_UI_HINTS: 't_disable-initial-ui-hints'

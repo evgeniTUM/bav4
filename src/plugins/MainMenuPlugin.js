@@ -3,7 +3,8 @@
  */
 import { observe } from '../utils/storeUtils';
 import { BaPlugin } from '../plugins/BaPlugin';
-import { close, open, setTab, TabId } from '../store/mainMenu/mainMenu.action';
+import { close, open, setTab } from '../store/mainMenu/mainMenu.action';
+import { TabIds } from '../domain/mainMenu';
 import { $injector } from '../injection';
 import { QueryParameters } from '../domain/queryParameters';
 
@@ -20,15 +21,15 @@ export class MainMenuPlugin extends BaPlugin {
 
 	_init() {
 		const { EnvironmentService: environmentService } = $injector.inject('EnvironmentService');
-		const queryParams = new URLSearchParams(environmentService.getWindow().location.search);
+		const queryParams = environmentService.getQueryParams();
 
 		// check if we have a query parameter defining the tab id
-		const tabId = TabId.valueOf(parseInt(queryParams.get(QueryParameters.MENU_ID), 10));
+		const tabId = TabIds.valueOf(parseInt(queryParams.get(QueryParameters.MENU_ID), 10));
 		if (tabId) {
 			setTab(tabId);
 		} else {
 			// set default tab id
-			setTab(TabId.TOPICS);
+			setTab(TabIds.TOPICS);
 		}
 	}
 
@@ -53,7 +54,7 @@ export class MainMenuPlugin extends BaPlugin {
 					}
 					setTab(this._previousTab);
 				} else {
-					setTab(TabId.FEATUREINFO);
+					setTab(TabIds.FEATUREINFO);
 					open();
 				}
 			}
@@ -68,13 +69,13 @@ export class MainMenuPlugin extends BaPlugin {
 
 		const onQueryChanged = ({ payload }) => {
 			if (payload) {
-				setTab(TabId.SEARCH);
+				setTab(TabIds.SEARCH);
 				open();
 			}
 		};
 
 		const onTabChanged = (tab, state) => {
-			if (tab === TabId.FEATUREINFO) {
+			if (tab === TabIds.FEATUREINFO) {
 				this._open = state.mainMenu.open;
 			} else {
 				this._previousTab = tab;

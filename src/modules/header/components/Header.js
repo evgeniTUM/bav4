@@ -2,7 +2,8 @@
  * @module modules/header/components/Header
  */
 import { html } from 'lit-html';
-import { open as openMainMenu, setTab, TabId, toggle } from '../../../store/mainMenu/mainMenu.action';
+import { open as openMainMenu, setTab, toggle } from '../../../store/mainMenu/mainMenu.action';
+import { TabIds } from '../../../domain/mainMenu';
 import { $injector } from '../../../injection';
 import css from './header.css';
 import { setQuery } from '../../../store/search/search.action';
@@ -147,11 +148,33 @@ export class Header extends MvuElement {
 			return searchTerm ? 'is-clear-visible' : '';
 		};
 
+		const getDemoClass = () => {
+			return this._environmentService.isStandalone() ? 'is-demo' : '';
+		};
+
+		const getBadgeText = () => {
+			return this._environmentService.isStandalone() ? translate('header_logo_badge_standalone') : translate('header_logo_badge');
+		};
+
+		const getEmblem = () => {
+			return this._environmentService.isStandalone()
+				? html`<a
+						href="${translate('header_emblem_link_standalone')}"
+						title="${translate('header_emblem_title_standalone')}"
+						class="header__emblem"
+						target="_blank"
+				  ></a>`
+				: html`<span class='header__emblem_label' >Bayerische Staatsregierung</span>
+					<a  title=${translate('header_emblem_action_title')} class="header_action_link" target="_blank" href="https://www.bayern.de/">
+						<div class='header__emblem'></div>
+					</a>`;
+		};
+
 		const layerCount = layers.length;
 
 		const onInputFocus = () => {
 			disableResponsiveParameterObservation();
-			setTab(TabId.SEARCH);
+			setTab(TabIds.SEARCH);
 			if (isPortrait || !hasMinWidth) {
 				const popup = this.shadowRoot.getElementById('headerMobile');
 				popup.style.display = 'none';
@@ -183,22 +206,22 @@ export class Header extends MvuElement {
 		};
 
 		const openTopicsTab = () => {
-			setTab(TabId.TOPICS);
+			setTab(TabIds.TOPICS);
 			openMainMenu();
 		};
 
 		const openMapLayerTab = () => {
-			setTab(TabId.MAPS);
+			setTab(TabIds.MAPS);
 			openMainMenu();
 		};
 
 		const openMiscTab = () => {
-			setTab(TabId.MISC);
+			setTab(TabIds.MISC);
 			openMainMenu();
 		};
 
 		const openExtendedTab = () => {
-			setTab(TabId.EXTENSION);
+			setTab(TabIds.EXTENSION);
 			openMainMenu();
 		};
 
@@ -213,7 +236,7 @@ export class Header extends MvuElement {
 		return html`
 			<style>${css}</style>
 			<div class="preload">
-				<div class="${getOrientationClass()} ${getMinWidthClass()}">
+				<div class="${getOrientationClass()} ${getMinWidthClass()} ${getDemoClass()}">
 					<div class='header__logo'>				
 						<div class="action-button">
 								<div class="action-button__border animated-action-button__border ${getAnimatedBorderClass()}">
@@ -226,14 +249,16 @@ export class Header extends MvuElement {
 						<div id='header__text' class='${getOverlayClass()} header__text'>
 							<a  title=${translate('header_action_button_title')} class="eab-logo-link" target="_blank" href="https://www.energieatlas.bayern.de/"></a>
 						</div>
+						<div id='headerMobile' class='${getOverlayClass()} header__text-mobile'>
+							<a  title=${translate('header_action_button_title')} class="eab-logo-link" target="_blank" href="https://www.energieatlas.bayern.de/"></a>
+						</div>
+						<div class='header__logo-badge'>										
+						${getBadgeText()}
+						</div>	
 					</div>		
-					<div id='headerMobile' class='${getOverlayClass()} header__text-mobile'>
-						<a  title=${translate('header_action_button_title')} class="eab-logo-link" target="_blank" href="https://www.energieatlas.bayern.de/"></a>
+					<div id='headerMobile' class='${getOverlayClass()} header__text-mobile'>	
 					</div>
-					<span class='header__emblem_label' >Bayerische Staatsregierung</span>
-					<a  title=${translate('header_emblem_action_title')} class="header_action_link" target="_blank" href="https://www.bayern.de/">
-						<div class='header__emblem'></div>
-					</a>
+					${getEmblem()}
 					<div class="header ${getOverlayClass()}" ?data-register-for-viewport-calc=${isPortrait}>  
 						<button id='header_toggle' class="close-menu" title=${translate('header_close_button_title')}  @click="${toggle}"">
 							<i class="resize-icon "></i>
@@ -251,21 +276,21 @@ export class Header extends MvuElement {
 							</button>
 						</div>
 						<div  class="header__button-container">
-							<button id="topics_button" data-test-id class="${getActiveClass(TabId.TOPICS)}" title=${translate(
+							<button id="topics_button" data-test-id class="${getActiveClass(TabIds.TOPICS)}" title=${translate(
 			'ea_header_tab_topics_title'
 		)} @click="${openTopicsTab}">
 								<span>
 									${translate('ea_header_tab_topics_button')}
 								</span>
 							</button>
-							<button id="extension_button" data-test-id class="${getActiveClass(TabId.EXTENSION)} ${getMinWidthClass()}" title=${translate(
+							<button id="extension_button" data-test-id class="${getActiveClass(TabIds.EXTENSION)} ${getMinWidthClass()}" title=${translate(
 			'ea_header_tab_additional_title'
 		)}  @click="${openExtendedTab}">
 								<span>
 									${translate('ea_header_tab_additional_button')}
 								</span>
 							</button>
-							<button id="maps_button" data-test-id class="${getActiveClass(TabId.MAPS)}" title=${translate(
+							<button id="maps_button" data-test-id class="${getActiveClass(TabIds.MAPS)}" title=${translate(
 			'ea_header_tab_maps_title'
 		)}  @click="${openMapLayerTab}">
 								<span>
@@ -275,7 +300,7 @@ export class Header extends MvuElement {
 									${layerCount}
 								</div>
 							</button>
-							<button id="misc_button" data-test-id class="${getActiveClass(TabId.MISC)}" title=${translate('ea_header_tab_more_title')}  @click="${openMiscTab}">
+							<button id="misc_button" data-test-id class="${getActiveClass(TabIds.MISC)}" title=${translate('ea_header_tab_more_title')}  @click="${openMiscTab}">
 								<span>
 									${translate('header_tab_misc_button')}
 								</span>

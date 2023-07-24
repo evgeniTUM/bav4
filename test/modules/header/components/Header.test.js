@@ -9,7 +9,7 @@ import { setFetching } from '../../../../src/store/network/network.action';
 import { searchReducer } from '../../../../src/store/search/search.reducer';
 import { EventLike } from '../../../../src/utils/storeUtils';
 import { createNoInitialStateMediaReducer } from '../../../../src/store/media/media.reducer';
-import { TabId } from '../../../../src/store/mainMenu/mainMenu.action';
+import { TabIds } from '../../../../src/domain/mainMenu';
 import { modalReducer } from '../../../../src/store/modal/modal.reducer';
 import { REGISTER_FOR_VIEWPORT_CALCULATION_ATTRIBUTE_NAME, TEST_ID_ATTRIBUTE_NAME } from '../../../../src/utils/markup';
 import { setQuery } from '../../../../src/store/search/search.action';
@@ -21,12 +21,12 @@ let store;
 
 describe('Header', () => {
 	const setup = (state = {}, config = {}) => {
-		const { embed = false } = config;
+		const { embed = false, standalone = false } = config;
 
 		const initialState = {
 			mainMenu: {
 				open: true,
-				tab: TabId.TOPICS
+				tab: TabIds.TOPICS
 			},
 			network: {
 				fetching: false,
@@ -54,7 +54,7 @@ describe('Header', () => {
 			media: createNoInitialStateMediaReducer()
 		});
 		$injector
-			.registerSingleton('EnvironmentService', { isEmbedded: () => embed })
+			.registerSingleton('EnvironmentService', { isEmbedded: () => embed, isStandalone: () => standalone })
 			.registerSingleton('TranslationService', { translate: (key) => key });
 
 		return TestUtils.render(Header.tag);
@@ -168,23 +168,27 @@ describe('Header', () => {
 			expect(element.shadowRoot.querySelectorAll('.header')).toHaveSize(1);
 			expect(element.shadowRoot.querySelectorAll('.header__modal-button')).toHaveSize(1);
 			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__modal-button')).display).toBe('none');
-
+//
 			expect(element.shadowRoot.querySelectorAll('.header__button-container')).toHaveSize(1);
 			expect(element.shadowRoot.querySelector('.header__button-container').children.length).toBe(4);
 			expect(element.shadowRoot.querySelector('.header__button-container').children[0].classList.contains('is-active')).toBeTrue();
 			expect(element.shadowRoot.querySelector('.header__button-container').children[0].innerText).toBe('ea_header_tab_topics_button');
-
+//
 			expect(element.shadowRoot.querySelector('.header__button-container').children[1].children[0].innerText).toBe('ea_header_tab_additional_button');
 			expect(element.shadowRoot.querySelector('.header__button-container').children[1].classList.contains('is-active')).toBeFalse();
-
+//
 			expect(element.shadowRoot.querySelector('.header__button-container').children[2].children[0].innerText).toBe('ea_header_tab_maps_button');
 			expect(element.shadowRoot.querySelector('.header__button-container').children[2].children[1].innerText).toBe('1');
 			expect(element.shadowRoot.querySelector('.header__button-container').children[2].classList.contains('is-active')).toBeFalse();
-
+//
 			expect(element.shadowRoot.querySelector('.header__button-container').children[3].innerText).toBe('header_tab_misc_button');
 			expect(element.shadowRoot.querySelector('.header__button-container').children[3].classList.contains('is-active')).toBeFalse();
 
 			expect(element.shadowRoot.querySelector('.header__search').getAttribute('placeholder')).toBe('header_search_placeholder');
+//
+			expect(element.shadowRoot.querySelector('.header__logo-badge').innerText).toBe('header_logo_badge');
+			expect(element.shadowRoot.querySelectorAll('div.header__emblem')).toHaveSize(1);
+			expect(element.shadowRoot.querySelectorAll('a.header__emblem')).toHaveSize(0);
 		});
 
 		it('adds a close button', async () => {
@@ -234,6 +238,18 @@ describe('Header', () => {
 			expect(element.shadowRoot.querySelector('#maps_button').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 			expect(element.shadowRoot.querySelector('#misc_button').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 			expect(element.shadowRoot.querySelector('#input').hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
+		});
+
+		it('renders for standalone', async () => {
+			const element = await setup({}, { standalone: true });
+
+			expect(element.shadowRoot.querySelectorAll('.is-demo')).toBeTruthy();
+
+			expect(element.shadowRoot.querySelectorAll('div.header__emblem')).toHaveSize(0);
+			expect(element.shadowRoot.querySelectorAll('a.header__emblem')).toHaveSize(1);
+			expect(element.shadowRoot.querySelector('.header__logo-badge').innerText).toBe('header_logo_badge_standalone');
+			expect(element.shadowRoot.querySelector('.header__emblem').getAttribute('title')).toBe('header_emblem_title_standalone');
+			expect(element.shadowRoot.querySelector('.header__emblem').getAttribute('href')).toBe('header_emblem_link_standalone');
 		});
 	});
 
@@ -364,13 +380,13 @@ describe('Header', () => {
 		it('updates the store', async () => {
 			const element = await setup();
 			expect(element.shadowRoot.querySelector('.header__button-container').children[0].click());
-			expect(store.getState().mainMenu.tab).toBe(TabId.TOPICS);
+			expect(store.getState().mainMenu.tab).toBe(TabIds.TOPICS);
 			expect(element.shadowRoot.querySelector('.header__button-container').children[1].click());
-			expect(store.getState().mainMenu.tab).toBe(TabId.EXTENSION);
+			expect(store.getState().mainMenu.tab).toBe(TabIds.EXTENSION);
 			expect(element.shadowRoot.querySelector('.header__button-container').children[2].click());
-			expect(store.getState().mainMenu.tab).toBe(TabId.MAPS);
+			expect(store.getState().mainMenu.tab).toBe(TabIds.MAPS);
 			expect(element.shadowRoot.querySelector('.header__button-container').children[3].click());
-			expect(store.getState().mainMenu.tab).toBe(TabId.MISC);
+			expect(store.getState().mainMenu.tab).toBe(TabIds.MISC);
 		});
 	});
 
@@ -571,7 +587,7 @@ describe('Header', () => {
 				const element = await setup(state);
 				element.shadowRoot.querySelector('#input').focus();
 
-				expect(store.getState().mainMenu.tab).toBe(TabId.SEARCH);
+				expect(store.getState().mainMenu.tab).toBe(TabIds.SEARCH);
 			});
 
 			describe('in portrait mode and min-width < 80em', () => {

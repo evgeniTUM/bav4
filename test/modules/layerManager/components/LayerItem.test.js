@@ -9,11 +9,9 @@ import { isTemplateResult } from '../../../../src/utils/checks';
 import { TEST_ID_ATTRIBUTE_NAME } from '../../../../src/utils/markup';
 import { EventLike } from '../../../../src/utils/storeUtils';
 import { positionReducer } from '../../../../src/store/position/position.reducer';
-import { eaReducer } from '../../../../src/ea/store/module/ea.reducer';
-import { setMapResolution } from '../../../../src/ea/store/module/ea.action';
-
-import { GeoResourceFuture, VectorGeoResource, VectorSourceType } from '../../../../src/domain/geoResources';
 import { Spinner } from '../../../../src/modules/commons/components/spinner/Spinner';
+import { GeoResourceFuture, VectorGeoResource, VectorSourceType } from '../../../../src/domain/geoResources';import { eaReducer } from '../../../../src/ea/store/module/ea.reducer';
+import { setMapResolution } from '../../../../src/ea/store/module/ea.action';
 
 window.customElements.define(LayerItem.tag, LayerItem);
 window.customElements.define(Checkbox.tag, Checkbox);
@@ -238,6 +236,53 @@ describe('LayerItem', () => {
 			expect(dragstartContainerSpy).not.toHaveBeenCalled();
 		});
 
+		it('contains a button for info', async () => {
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1,
+				collapsed: true
+			};
+			const element = await setup(layer);
+
+			const infoIcon = element.shadowRoot.querySelector('#info');
+
+			expect(infoIcon).not.toBeNull();
+			expect(infoIcon.title).toEqual('layerManager_info');
+			expect(infoIcon.disabled).toBeFalse();
+			expect(infoIcon.icon).toContain('data:image/svg+xml;base64,PHN2ZyB4bWxuc');
+		});
+
+		it('contains a disabled button for info', async () => {
+			spyOn(geoResourceService, 'byId')
+				.withArgs('geoResourceId0')
+				.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+			const layer = {
+				...createDefaultLayerProperties(),
+				id: 'id0',
+				geoResourceId: 'geoResourceId0',
+				visible: true,
+				zIndex: 0,
+				opacity: 1,
+				collapsed: true,
+				constraints: { metaData: false }
+			};
+			const element = await setup(layer);
+
+		const infoIcon = element.shadowRoot.querySelector('#info');
+
+			expect(infoIcon).not.toBeNull();
+			expect(infoIcon.title).toEqual('layerManager_info');
+			expect(infoIcon.disabled).toBeTrue();
+			expect(infoIcon.icon).toContain('data:image/svg+xml;base64,PHN2ZyB4bWxuc');
+		});
+
 		it('contains test-id attributes', async () => {
 			spyOn(geoResourceService, 'byId')
 				.withArgs('geoResourceId0')
@@ -280,7 +325,9 @@ describe('LayerItem', () => {
 
 		it('does not show a loading hint for Non-GeoResourceFutures', async () => {
 			const geoResourceId = 'geoResourceId0';
-			spyOn(geoResourceService, 'byId').withArgs(geoResourceId).and.returnValue(new VectorGeoResource(geoResourceId, 'label0', VectorSourceType.KML));
+			spyOn(geoResourceService, 'byId')
+				.withArgs(geoResourceId)
+				.and.returnValue(new VectorGeoResource(geoResourceId, 'label0', VectorSourceType.KML));
 			const layer = {
 				...createDefaultLayerProperties(),
 				id: 'id0',
@@ -679,7 +726,33 @@ describe('LayerItem', () => {
 
 			return store;
 		};
+
 		describe('on collapse', () => {
+			it('fires a "collapse" event', async () => {
+				setup();
+				spyOn(geoResourceService, 'byId')
+					.withArgs('geoResourceId0')
+					.and.returnValue(new VectorGeoResource('geoResourceId0', 'label0', VectorSourceType.KML));
+				const element = await TestUtils.render(LayerItem.tag);
+
+				element.layer = { ...layer }; // collapsed = true is initialized
+				element.onCollapse = jasmine.createSpy();
+				const collapseButton = element.shadowRoot.querySelector('button');
+				const spy = jasmine.createSpy();
+				element.addEventListener('collapse', spy);
+
+				collapseButton.click();
+
+				expect(spy).toHaveBeenCalledOnceWith(
+					jasmine.objectContaining({
+						detail: {
+							layer: jasmine.objectContaining({ ...layer, collapsed: false })
+						}
+					})
+				);
+				expect(element.getModel().layer.collapsed).toBeFalse();
+			});
+
 			it('calls the onCollapse callback via property callback', async () => {
 				setup();
 				spyOn(geoResourceService, 'byId')

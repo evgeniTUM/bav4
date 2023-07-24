@@ -11,6 +11,10 @@ describe('i18n for header module', () => {
 		expect(map.header_tab_misc_button).toBe('Mehr...');
 		expect(map.header_tab_misc_title).toBe('Weitere Einstellungen und Informationen');
 		expect(map.header_close_button_title).toBe('Menü schließen');
+		expect(map.header_logo_badge).toBe('V4.1');
+		expect(map.header_logo_badge_standalone).toBe('Demo');
+		expect(map.header_emblem_title_standalone).toBe('bav4 auf github');
+		expect(map.header_emblem_link_standalone).toBe('https://github.com/ldbv-by/bav4/');
 		expect(map.header_search_placeholder).toBe('Suchen');
 	});
 
@@ -24,11 +28,15 @@ describe('i18n for header module', () => {
 		expect(map.header_tab_misc_button).toBe('More...');
 		expect(map.header_tab_misc_title).toBe('Additional settings and information');
 		expect(map.header_close_button_title).toBe('Close menu');
+		expect(map.header_logo_badge).toBe('V4.1');
+		expect(map.header_logo_badge_standalone).toBe('Demo');
+		expect(map.header_emblem_title_standalone).toBe('bav4 on github');
+		expect(map.header_emblem_link_standalone).toBe('https://github.com/ldbv-by/bav4/');
 		expect(map.header_search_placeholder).toBe('Search');
 	});
 
 	it('have the expected amount of translations', () => {
-		const expectedSize = 9;
+		const expectedSize = 12;
 		const deMap = provide('de');
 		const enMap = provide('en');
 

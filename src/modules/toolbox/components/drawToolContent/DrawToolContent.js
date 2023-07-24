@@ -19,6 +19,7 @@ const Update_CollapsedInfo = 'update_collapsedInfo';
 const Update_CollapsedStyle = 'update_collapsedStyle';
 
 /**
+ * Component to control drawing properties
  * @class
  * @author thiloSchlemmer
  * @author alsturm
@@ -34,7 +35,8 @@ export class DrawToolContent extends AbstractToolContent {
 			selectedStyle: null,
 			mode: null,
 			validGeometry: null,
-			tools: null
+			tools: null,
+			fileSaveResult: null
 		});
 
 		const {
@@ -72,7 +74,8 @@ export class DrawToolContent extends AbstractToolContent {
 					selectedStyle: data.selectedStyle ? data.selectedStyle : null,
 					mode: data.mode ? data.mode : null,
 					validGeometry: data.validGeometry ? data.validGeometry : null,
-					tools: setActiveToolByType(model.tools, data.type)
+					tools: setActiveToolByType(model.tools, data.type),
+					fileSaveResult: data?.fileSaveResult?.payload ?? null
 				};
 			case Update_Tools:
 				return { ...model, tools: data };
@@ -214,7 +217,16 @@ export class DrawToolContent extends AbstractToolContent {
 
 	createView(model) {
 		const translate = (key) => this._translationService.translate(key);
-		const { type: preselectedType, style: preselectedStyle, selectedStyle, tools, description, collapsedInfo, collapsedStyle } = model;
+		const {
+			type: preselectedType,
+			style: preselectedStyle,
+			selectedStyle,
+			tools,
+			description,
+			collapsedInfo,
+			collapsedStyle,
+			fileSaveResult
+		} = model;
 		this._showActive(tools);
 		const toolTemplate = (tool) => {
 			const classes = { 'is-active': tool.active };
@@ -398,8 +410,8 @@ export class DrawToolContent extends AbstractToolContent {
 												<div class='color-row'>
 													<div class="tool-container__style_symbol" title="${translate('toolbox_drawTool_style_symbol')}">								
 														<ba-iconselect  id="style_symbol" .title="${translate('toolbox_drawTool_style_symbol_select')}" .value=${style.symbolSrc} .color=${
-							style.color
-						} @select=${onChangeSymbol} ></ba-iconselect>													
+															style.color
+														} @select=${onChangeSymbol} ></ba-iconselect>													
 													</div>	
 												</div>									
 											</div>							
@@ -425,8 +437,8 @@ export class DrawToolContent extends AbstractToolContent {
 								<div class="form-container">
 									<div class="ba-form-element" title="${translate('toolbox_drawTool_style_text')}"">								
 										<input   type="text" id="style_text" name="${translate('toolbox_drawTool_style_text')}" .value=${
-							style.text
-						} @input=${onChangeText} @blur=${preventEmptyString}>
+											style.text
+										} @input=${onChangeText} @blur=${preventEmptyString}>
 										<label for="style_text" class="control-label">${translate('toolbox_drawTool_style_text')}</label><i class="bar"></i>
 										<label class="helper-label">${translate('toolbox_drawTool_style_text_helper')}</label>
 									</div>
@@ -599,7 +611,10 @@ export class DrawToolContent extends AbstractToolContent {
 					</div>
 					<div class="tool-container__form">${getStyleTemplate(drawingType, drawingStyle)}</div>
 					<div class="sub-text">${subText}</div>
-					<div class="chips__container"><ba-profile-chip></ba-profile-chip><ba-share-data-chip></ba-share-data-chip></div>
+					<div class="chips__container">
+						<ba-profile-chip></ba-profile-chip><ba-share-data-chip></ba-share-data-chip>
+						<ba-export-vector-data-chip .exportData=${fileSaveResult?.content}></ba-export-vector-data-chip>
+					</div>
 					<div class="ba-tool-container__actions">${buttons}</div>
 				</div>
 			</div>

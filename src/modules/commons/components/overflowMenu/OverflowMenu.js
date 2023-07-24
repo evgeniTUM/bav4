@@ -29,7 +29,8 @@ const Update_Anchor_Position = 'update_last_anchor_position';
 const DefaultMenuOption = { label: null, icon: null, action: null, disabled: false, isDivider: false };
 
 /**
- * @enum
+ * @readonly
+ * @enum {String}
  */
 export const MenuTypes = Object.freeze({
 	MEATBALL: 'meatball',
@@ -104,8 +105,8 @@ export class OverflowMenu extends MvuElement {
          <button class='anchor'>
             <span id="menu-icon" data-test-id class='menu__button ${type} ' @click=${onClick} >
             </span>
-         </button>	         
-         ${menu}
+			${menu}
+			</button>				      
      </div>`;
 	}
 

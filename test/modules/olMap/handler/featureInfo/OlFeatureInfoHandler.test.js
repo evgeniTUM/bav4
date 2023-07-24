@@ -34,7 +34,14 @@ describe('OlFeatureInfoHandler_Hit_Tolerance_Px', () => {
 
 describe('OlFeatureInfoHandler', () => {
 	const TestDelay = OlFeatureInfoHandler_Query_Resolution_Delay_Ms + 100;
-	const RenderCompleteDelay = 100;
+
+	const renderComplete = (map) => {
+		return new Promise((resolve) => {
+			map.on('rendercomplete', () => {
+				resolve();
+			});
+		});
+	};
 
 	const mockFeatureInfoProvider = (olFeature, layer) => {
 		const geometry = { data: new GeoJSON().writeGeometry(olFeature.getGeometry()), geometryType: FeatureInfoGeometryTypes.GEOJSON };
@@ -142,7 +149,7 @@ describe('OlFeatureInfoHandler', () => {
 
 			handler.register(map);
 
-			await TestUtils.timeout(RenderCompleteDelay);
+			await renderComplete(map);
 			// safe to call map.getPixelFromCoordinate from now on
 			startRequest(matchingCoordinate);
 
@@ -179,7 +186,7 @@ describe('OlFeatureInfoHandler', () => {
 			const map = setupMap();
 			handler.register(map);
 
-			await TestUtils.timeout(RenderCompleteDelay);
+			await renderComplete(map);
 			// safe to call map.getPixelFromCoordinate from now on
 			startRequest(notMatchingCoordinate);
 
@@ -222,7 +229,7 @@ describe('OlFeatureInfoHandler', () => {
 
 			handler.register(map);
 
-			await TestUtils.timeout(RenderCompleteDelay);
+			await renderComplete(map);
 			// safe to call map.getPixelFromCoordinate from now on
 			startRequest(matchingCoordinate);
 
@@ -274,8 +281,17 @@ describe('OlFeatureInfoHandler', () => {
 			expect(store.getState().featureInfo.current).toHaveSize(1);
 			expect(store.getState().highlight.features).toHaveSize(1);
 
-			//we modify the second layer so that it is not queryable anymore
+			//we modify the second layer so that it is not queryable anymore, but the feature1 has a name property
 			modifyLayer(layerId1, { constraints: { hidden: true } });
+			abortOrReset();
+			startRequest(matchingCoordinate);
+
+			await TestUtils.timeout(TestDelay);
+			expect(store.getState().featureInfo.current).toHaveSize(1);
+			expect(store.getState().highlight.features).toHaveSize(1);
+
+			//we modify feature1 by setting the name property to undefined
+			feature1.set('name', undefined);
 			abortOrReset();
 			startRequest(matchingCoordinate);
 
@@ -312,7 +328,7 @@ describe('OlFeatureInfoHandler', () => {
 
 			handler.register(map);
 
-			await TestUtils.timeout(RenderCompleteDelay);
+			await renderComplete(map);
 			// safe to call map.getPixelFromCoordinate from now on
 			startRequest(matchingCoordinate);
 
@@ -349,13 +365,13 @@ describe('OlFeatureInfoHandler', () => {
 
 			handler.register(map);
 
-			await TestUtils.timeout(RenderCompleteDelay);
+			await renderComplete(map);
 			// safe to call map.getPixelFromCoordinate from now on
 			startRequest(matchingCoordinate);
 
 			expect(store.getState().featureInfo.current).toHaveSize(2);
-			expect(store.getState().featureInfo.current[0]).toEqual({ title: 'olMap_handler_featureInfo_not_available', content: '' });
-			expect(store.getState().featureInfo.current[1]).toEqual({ title: 'olMap_handler_featureInfo_not_available', content: '' });
+			expect(store.getState().featureInfo.current[0]).toEqual({ title: 'global_featureInfo_not_available', content: '' });
+			expect(store.getState().featureInfo.current[1]).toEqual({ title: 'global_featureInfo_not_available', content: '' });
 			expect(store.getState().highlight.features).toHaveSize(0);
 		});
 	});

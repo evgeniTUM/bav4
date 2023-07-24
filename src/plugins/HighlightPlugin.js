@@ -5,8 +5,10 @@ import { observe } from '../utils/storeUtils';
 import { BaPlugin } from './BaPlugin';
 import { addLayer, removeLayer } from '../store/layers/layers.action';
 import { addHighlightFeatures, HighlightFeatureType, removeHighlightFeaturesById } from '../store/highlight/highlight.action';
-import { TabId } from '../store/mainMenu/mainMenu.action';
+import { TabIds } from '../domain/mainMenu';
 import { createUniqueId } from '../utils/numberUtils';
+import { $injector } from '../injection/index';
+import { QueryParameters } from '../domain/queryParameters';
 
 /**
  * Id of the layer used for highlight visualization.
@@ -35,12 +37,18 @@ export const SEARCH_RESULT_TEMPORARY_HIGHLIGHT_FEATURE_ID = 'searchResultTempora
  * @author taulinger
  */
 export class HighlightPlugin extends BaPlugin {
+	constructor() {
+		super();
+		const { TranslationService: translationService } = $injector.inject('TranslationService');
+		this._translationService = translationService;
+	}
 	/**
 	 * @override
 	 * @param {Store} store
 	 */
 	async register(store) {
 		const highlightFeatureId = createUniqueId();
+		const translate = (key) => this._translationService.translate(key);
 
 		const onChange = (active) => {
 			if (active) {
@@ -55,7 +63,7 @@ export class HighlightPlugin extends BaPlugin {
 		};
 
 		const onTabChanged = (tab) => {
-			if (tab !== TabId.FEATUREINFO) {
+			if (tab !== TabIds.FEATUREINFO) {
 				removeHighlightFeaturesById([QUERY_RUNNING_HIGHLIGHT_FEATURE_ID, QUERY_SUCCESS_HIGHLIGHT_FEATURE_ID]);
 			}
 		};
@@ -84,6 +92,20 @@ export class HighlightPlugin extends BaPlugin {
 				}
 			}
 		};
+
+		const { EnvironmentService: environmentService } = $injector.inject('EnvironmentService');
+		const crosshair = environmentService.getQueryParams().get(QueryParameters.CROSSHAIR);
+
+		if (crosshair) {
+			setTimeout(() => {
+				addHighlightFeatures({
+					id: createUniqueId(),
+					label: translate('global_marker_symbol_label'),
+					data: { coordinate: store.getState().position.center },
+					type: HighlightFeatureType.DEFAULT
+				});
+			});
+		}
 
 		observe(store, (state) => state.highlight.active, onChange);
 		observe(store, (state) => state.pointer.click, onPointerClick);

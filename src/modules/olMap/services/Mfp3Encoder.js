@@ -23,6 +23,10 @@ const UnitsRatio = 39.37; //inches per meter
 const PointsPerInch = 72; // PostScript points 1/72"
 const PixelSizeInMeter = 0.00028; // based on https://www.adv-online.de/AdV-Produkte/Standards-und-Produktblaetter/AdV-Profile/binarywriterservlet?imgUid=36060b99-b8c4-0a41-ba3c-cdd1072e13d6&uBasVariant=11111111-1111-1111-1111-111111111111  and the calculations of a specific scaleDenominator (p.22)
 
+/**
+ * @readonly
+ * @enum {String}
+ */
 export const MFP_ENCODING_ERROR_TYPE = Object.freeze({
 	MISSING_GEORESOURCE: 'missing_georesource',
 	NOT_EXPORTABLE: 'not_exportable'
@@ -219,9 +223,9 @@ export class BvvMfp3Encoder {
 		return getUniqueCopyrights(geoResources, getZoomLevel(map));
 	}
 
-	_encode(layer, encodingErrorCallback) {
+	_encode(layer, encodingErrorCallback, groupOpacity = 1) {
 		if (layer instanceof LayerGroup) {
-			return this._encodeGroup(layer);
+			return this._encodeGroup(layer, encodingErrorCallback);
 		}
 		const geoResource = this._geoResourceService.byId(layer.get('geoResourceId'));
 		if (!geoResource) {
@@ -233,26 +237,28 @@ export class BvvMfp3Encoder {
 			encodingErrorCallback(geoResource.label, MFP_ENCODING_ERROR_TYPE.NOT_EXPORTABLE);
 			return false;
 		}
+
 		switch (geoResource.getType()) {
 			case GeoResourceTypes.VECTOR:
-				return this._encodeVector(layer);
+				return this._encodeVector(layer, groupOpacity);
 			case GeoResourceTypes.VT: // VectorTiles are currently not supported by MFP but can be replaced by a WMTS substitution
 			case GeoResourceTypes.XYZ:
 			case GeoResourceTypes.WMTS:
-				return this._encodeWMTS(layer, geoResource);
+				return this._encodeWMTS(layer, geoResource, groupOpacity);
 			case GeoResourceTypes.WMS:
-				return this._encodeWMS(layer, geoResource);
+				return this._encodeWMS(layer, geoResource, groupOpacity);
 			default:
 				return false;
 		}
 	}
 
-	_encodeGroup(groupLayer) {
+	_encodeGroup(groupLayer, encodingErrorCallback) {
 		const subLayers = groupLayer.getLayers().getArray();
-		return subLayers.map((l) => this._encode(l));
+		const groupOpacity = groupLayer.getOpacity();
+		return subLayers.map((l) => this._encode(l, encodingErrorCallback, groupOpacity));
 	}
 
-	_encodeWMTS(olLayer, wmtsGeoResource) {
+	_encodeWMTS(olLayer, wmtsGeoResource, groupOpacity) {
 		const getSubstitutionLayer = (layer, geoResource) => {
 			const { LayerService: layerService } = $injector.inject('LayerService');
 			const { grSubstitutions } = this._mfpService.getCapabilities();
@@ -297,7 +303,7 @@ export class BvvMfp3Encoder {
 			const source = wmtsLayer.getSource();
 			const { tileGrid, layer, baseURL, requestEncoding } = source instanceof WMTS ? fromWmtsSource(source) : fromXyzSource(source, wmtsLayer);
 			return {
-				opacity: wmtsLayer.getOpacity(),
+				opacity: groupOpacity !== 1 ? groupOpacity : wmtsLayer.getOpacity(),
 				type: 'wmts',
 				baseURL: baseURL,
 				layer: layer,
@@ -316,7 +322,7 @@ export class BvvMfp3Encoder {
 		return substitutionLayer ? createWmtsSpecs(substitutionLayer) : createEmptySpecsAndWarn();
 	}
 
-	_encodeWMS(olLayer, wmsGeoResource) {
+	_encodeWMS(olLayer, wmsGeoResource, groupOpacity) {
 		// no handling for target srid, it is assumed that the wmsGeoResource also supports the target srid
 		const source = olLayer.getSource();
 		const params = source.getParams();
@@ -331,13 +337,13 @@ export class BvvMfp3Encoder {
 			imageFormat: wmsGeoResource.format,
 			layers: layers,
 			name: wmsGeoResource.id,
-			opacity: olLayer.getOpacity(),
+			opacity: groupOpacity !== 1 ? groupOpacity : olLayer.getOpacity(),
 			styles: styles,
 			customParams: defaultCustomParams
 		};
 	}
 
-	_encodeVector(olVectorLayer) {
+	_encodeVector(olVectorLayer, groupOpacity) {
 		// todo: refactor to utils
 		// adopted/adapted from {@link https://dmitripavlutin.com/javascript-array-group/#:~:text=must%20be%20inserted.-,array.,provided%20by%20core%2Djs%20library. | Array Grouping in JavaScript}
 		const groupBy = (elementsToGroup, groupByFunction) =>
@@ -381,7 +387,7 @@ export class BvvMfp3Encoder {
 		const startResult = { features: [] };
 		// todo: find a better implementation then this mix of feature aggregation (reducer) and style aggregation (cache)
 		const aggregateResults = (encoded, feature) => {
-			const result = this._encodeFeature(feature, olVectorLayer, styleCache);
+			const result = this._encodeFeature(feature, olVectorLayer, styleCache, groupOpacity);
 			return result
 				? {
 						features: [...encoded.features, ...result.features]
@@ -427,7 +433,7 @@ export class BvvMfp3Encoder {
 			  };
 	}
 
-	_encodeFeature(olFeature, olLayer, styleCache, presetStyles = []) {
+	_encodeFeature(olFeature, olLayer, styleCache, groupOpacity, presetStyles = []) {
 		const defaultResult = { features: [] };
 		const resolution = this._mfpProperties.scale / UnitsRatio / PointsPerInch;
 
@@ -514,6 +520,8 @@ export class BvvMfp3Encoder {
 			console.warn('feature not encodable', olFeature);
 			return null;
 		}
+
+		const layerOpacity = groupOpacity !== 1 ? groupOpacity : olLayer.getOpacity();
 		const addOrUpdateEncodedStyle = (olStyle) => {
 			const addEncodedStyle = () => {
 				const encodedStyle = {
@@ -522,11 +530,11 @@ export class BvvMfp3Encoder {
 				};
 				encodedStyle.symbolizers.forEach((symbolizer) => {
 					if (symbolizer.fillOpacity) {
-						symbolizer.fillOpacity *= olLayer.getOpacity();
+						symbolizer.fillOpacity *= layerOpacity;
 					}
 
 					if (symbolizer.strokeOpacity) {
-						symbolizer.strokeOpacity *= olLayer.getOpacity();
+						symbolizer.strokeOpacity *= layerOpacity;
 					}
 				});
 
@@ -560,7 +568,7 @@ export class BvvMfp3Encoder {
 					if (isGeometryFunction) {
 						const geometry = style.getGeometry()(olFeatureToEncode);
 						if (geometry) {
-							const result = this._encodeFeature(new Feature(geometry), olLayer, styleCache, [style]);
+							const result = this._encodeFeature(new Feature(geometry), olLayer, styleCache, groupOpacity, [style]);
 							return result ? { features: [...styleFeatures.features, ...result.features] } : defaultResult;
 						}
 					}

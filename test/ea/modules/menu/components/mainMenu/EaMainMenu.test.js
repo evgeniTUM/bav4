@@ -9,7 +9,8 @@ import { FeatureInfoPanel } from '../../../../../../src/modules/featureInfo/comp
 import { MapsContentPanel } from '../../../../../../src/modules/menu/components/mainMenu/content/maps/MapsContentPanel';
 import { MainMenu } from '../../../../../../src/modules/menu/components/mainMenu/MainMenu';
 import { SearchResultsPanel } from '../../../../../../src/modules/search/components/menu/SearchResultsPanel';
-import { setTab, TabId } from '../../../../../../src/store/mainMenu/mainMenu.action';
+import { TabIds } from '../../../../../../src/domain/mainMenu';
+import { setTab } from '../../../../../../src/store/mainMenu/mainMenu.action';
 import { createNoInitialStateMainMenuReducer } from '../../../../../../src/store/mainMenu/mainMenu.reducer';
 import { createNoInitialStateMediaReducer } from '../../../../../../src/store/media/media.reducer';
 import { TEST_ID_ATTRIBUTE_NAME } from '../../../../../../src/utils/markup';
@@ -59,25 +60,25 @@ describe('EaMainMenu', () => {
 			const element = await setup();
 
 			const contentPanels = element.shadowRoot.querySelectorAll('.tabcontent');
-			expect(contentPanels.length).toBe(Object.keys(TabId).length);
+			expect(contentPanels.length).toBe(Object.keys(TabIds).length);
 			for (let i = 0; i < contentPanels.length; i++) {
 				switch (i) {
-					case TabId.SEARCH:
+					case TabIds.SEARCH:
 						expect(contentPanels[i].innerHTML.toString().includes(SearchResultsPanel.tag)).toBeTrue();
 						break;
-					case TabId.TOPICS:
+					case TabIds.TOPICS:
 						expect(contentPanels[i].innerHTML.toString().includes(EaTopicsContentPanel.tag)).toBeTrue();
 						break;
-					case TabId.FEATUREINFO:
+					case TabIds.FEATUREINFO:
 						expect(contentPanels[i].innerHTML.toString().includes(FeatureInfoPanel.tag)).toBeTrue();
 						break;
-					case TabId.MAPS:
+					case TabIds.MAPS:
 						expect(contentPanels[i].innerHTML.toString().includes(MapsContentPanel.tag)).toBeTrue();
 						break;
-					case TabId.MISC:
+					case TabIds.MISC:
 						expect(contentPanels[i].innerHTML.toString().includes(EaMiscContentPanel.tag)).toBeFalse();
 						break;
-					case TabId.EXTENSION:
+					case TabIds.EXTENSION:
 						expect(contentPanels[i].innerHTML.toString().includes(AdditionalMenu.tag)).toBeTrue();
 				}
 			}
@@ -99,7 +100,7 @@ describe('EaMainMenu', () => {
 		describe('when tab-index changes', () => {
 			const check = (index, panels) => {
 				for (let i = 0; i < panels.length; i++) {
-					expect(panels[i].classList.contains('is-active')).toBe(Object.values(TabId)[i] === index);
+					expect(panels[i].classList.contains('is-active')).toBe(Object.values(TabIds)[i] === index);
 				}
 			};
 
@@ -107,8 +108,8 @@ describe('EaMainMenu', () => {
 				const element = await setup();
 				const contentPanels = element.shadowRoot.querySelectorAll('.tabcontent');
 
-				setTab(TabId.EXTENSION);
-				check(TabId.EXTENSION, contentPanels);
+				setTab(TabIds.EXTENSION);
+				check(TabIds.EXTENSION, contentPanels);
 			});
 		});
 	});

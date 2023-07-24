@@ -7,8 +7,6 @@ import { Fill, Stroke, Style, Circle as CircleStyle, Icon, Text as TextStyle } f
 import { Polygon, LineString, Circle, MultiPoint } from 'ol/geom';
 import { $injector } from '../../../injection';
 import markerIcon from '../assets/marker.svg';
-import locationIcon from '../assets/location.svg';
-import tempLocationIcon from '../assets/temporaryLocation.svg';
 import { isString } from '../../../utils/checks';
 import { getContrastColorFrom, hexToRgb, rgbToHex } from '../../../utils/colors';
 import { AssetSourceType, getAssetSource } from '../../../utils/assets';
@@ -20,7 +18,16 @@ const White_Color = [255, 255, 255];
 const Black_Color = [0, 0, 0];
 const Default_Symbol = 'marker';
 
+/**
+ * @typedef StyleOption
+ * @property {string} [symbolSrc] the URL to the resource of the marker symbol
+ * @property {string} [color] the color as hexadecimal rgb value
+ * @property {number} [scale] the scale; used to scale text or marker symbols
+ * @property {string} [text] the displayed text
+ */
+
 export const DEFAULT_TEXT = 'new text';
+export const DEFAULT_STYLE_OPTION = { symbolSrc: null, color: null, scale: null, text: null };
 
 const getTextStyle = (text, color, scale) => {
 	const strokeWidth = 1;
@@ -216,29 +223,65 @@ export const geojsonStyleFunction = (feature) => {
 	];
 };
 
-export const highlightStyleFunction = () => [
-	new Style({
-		image: new Icon({
-			anchor: [0.5, 1],
-			anchorXUnits: 'fraction',
-			anchorYUnits: 'fraction',
-			src: locationIcon
+export const defaultClusterStyleFunction = () => {
+	const styleCache = {};
+	const clusterShadowStyle = new Style({
+		image: new CircleStyle({
+			radius: 17,
+			fill: new Fill({
+				color: Black_Color.concat([0.15])
+			})
 		})
-	})
-];
+	});
+	return (feature, resolution) => {
+		const getClusterStyle = () => {
+			const cachedStyle = styleCache[size];
+			const createAndCache = () => {
+				const style = [
+					clusterShadowStyle,
+					new Style({
+						image: new CircleStyle({
+							radius: 15,
+							stroke: new Stroke({
+								color: White_Color
+							}),
+							fill: new Fill({
+								color: '#099dda'
+							}),
+							displacement: [0, 1] // displacement needed to place the text centered
+						}),
+						text: new TextStyle({
+							text: size.toString(),
+							scale: 1.5,
+							fill: new Fill({
+								color: White_Color
+							})
+						})
+					})
+				];
+				styleCache[size] = style;
+				return style;
+			};
+			return cachedStyle ? cachedStyle : createAndCache();
+		};
+		const getFeatureStyle = () => {
+			const baseStyle = feature.get('features')[0].getStyle();
+			if (typeof baseStyle === 'function') {
+				return baseStyle(feature, resolution);
+			}
+			return baseStyle;
+		};
+		const size = feature.get('features').length;
+		return size === 1 ? getFeatureStyle() : getClusterStyle();
+	};
+};
 
-export const highlightTemporaryStyleFunction = () => [
-	new Style({
-		image: new Icon({
-			anchor: [0.5, 1],
-			anchorXUnits: 'fraction',
-			anchorYUnits: 'fraction',
-			src: tempLocationIcon
-		})
-	})
-];
-
-export const markerStyleFunction = (styleOption = { symbolSrc: false, color: false, scale: false, text: false }) => {
+/**
+ * Function to style a marker symbol
+ * @param {null|StyleOption} styleOption the styleOption
+ * @returns {Array<Style>} the resulting array of marker styles
+ */
+export const markerStyleFunction = (styleOption = DEFAULT_STYLE_OPTION) => {
 	const markerColor = styleOption.color ? styleOption.color : '#ff0000';
 
 	const rasterIconOptions = {
@@ -272,7 +315,12 @@ export const markerStyleFunction = (styleOption = { symbolSrc: false, color: fal
 	];
 };
 
-export const textStyleFunction = (styleOption = { color: false, scale: false, text: false }) => {
+/**
+ * Function to style a text symbol
+ * @param {StyleOption} styleOption the styleOption
+ * @returns {Array<Style>}  the resulting array of text styles
+ */
+export const textStyleFunction = (styleOption = DEFAULT_STYLE_OPTION) => {
 	const strokeColor = styleOption.color ? styleOption.color : '#ff0000';
 	const textContent = isString(styleOption.text) ? styleOption.text : DEFAULT_TEXT;
 
@@ -285,7 +333,12 @@ export const textStyleFunction = (styleOption = { color: false, scale: false, te
 	];
 };
 
-export const lineStyleFunction = (styleOption = { color: false, text: false }) => {
+/**
+ * Function to style a line geometry
+ * @param {StyleOption} styleOption the styleOption
+ * @returns the resulting array of line styles
+ */
+export const lineStyleFunction = (styleOption = DEFAULT_STYLE_OPTION) => {
 	const strokeColor = styleOption.color ? hexToRgb(styleOption.color) : hexToRgb('#ff0000');
 	const strokeWidth = 3;
 	// TODO: activate TextStyle with:
@@ -301,7 +354,13 @@ export const lineStyleFunction = (styleOption = { color: false, text: false }) =
 		})
 	];
 };
-export const polygonStyleFunction = (styleOption = { color: false, text: false }) => {
+
+/**
+ * Function to style a polygon geometry
+ * @param {StyleOption} styleOption the styleOption
+ * @returns the resulting array of polygon styles
+ */
+export const polygonStyleFunction = (styleOption = DEFAULT_STYLE_OPTION) => {
 	const strokeColor = styleOption.color ? hexToRgb(styleOption.color) : hexToRgb('#ff0000');
 	const strokeWidth = 3;
 	// TODO: activate TextStyle with:

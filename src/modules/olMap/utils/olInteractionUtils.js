@@ -6,6 +6,10 @@ import { modifyStyleFunction } from './olStyleUtils';
 import { $injector } from '../../../injection';
 import { noModifierKeys, singleClick } from 'ol/events/condition';
 
+/**
+ * @readonly
+ * @enum {String}
+ */
 export const InteractionStateType = Object.freeze({
 	ACTIVE: 'active',
 	DRAW: 'draw',
@@ -14,6 +18,10 @@ export const InteractionStateType = Object.freeze({
 	OVERLAY: 'overlay'
 });
 
+/**
+ * @readonly
+ * @enum {String}
+ */
 export const InteractionSnapType = Object.freeze({
 	FIRSTPOINT: 'firstPoint',
 	LASTPOINT: 'lastPoint',
@@ -143,7 +151,7 @@ export const getSelectableFeatures = (map, interactionLayer, pixel) => {
  * removes the defined list of features from the defined layer
  * @param {Array<Feature>} selectedFeatures
  * @param {Layer} interactionLayer the layer, which contains the features
- * @param {Function} additionalAction a additional action before the removing of each feature takes place
+ * @param {Function} [additionalAction] an additional action before the removal of each feature takes place
  */
 export const removeSelectedFeatures = (selectedFeatures, interactionLayer, additionalAction) => {
 	const additionalRemoveAction = typeof additionalAction === 'function' ? additionalAction : () => {};

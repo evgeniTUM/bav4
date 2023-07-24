@@ -19,7 +19,7 @@ describe('Checkbox', () => {
 		});
 
 		it('renders the view', async () => {
-			const element = await TestUtils.render(Checkbox.tag, {}, '<span>some</span>');
+			const element = await TestUtils.render(Checkbox.tag, {}, {}, '<span>some</span>');
 
 			//view
 			expect(element.shadowRoot.querySelector('.ba-checkbox')).toBeTruthy();
@@ -37,7 +37,7 @@ describe('Checkbox', () => {
 		});
 	});
 
-	describe("when property'disabled' changes", () => {
+	describe("when property 'disabled' changes", () => {
 		it('updates the view', async () => {
 			const element = await TestUtils.render(Checkbox.tag);
 			const input = element.shadowRoot.querySelector('input');
@@ -54,7 +54,7 @@ describe('Checkbox', () => {
 		});
 	});
 
-	describe("when property'checked' changes", () => {
+	describe("when property 'checked' changes", () => {
 		it('updates the view', async () => {
 			const element = await TestUtils.render(Checkbox.tag);
 			const input = element.shadowRoot.querySelector('input');
@@ -71,7 +71,7 @@ describe('Checkbox', () => {
 		});
 	});
 
-	describe("when property'title' changes", () => {
+	describe("when property 'title' changes", () => {
 		it('updates the view', async () => {
 			const element = await TestUtils.render(Checkbox.tag);
 			const label = element.shadowRoot.querySelector('label');
@@ -86,6 +86,17 @@ describe('Checkbox', () => {
 
 	describe('event handling', () => {
 		describe('on click', () => {
+			it('fires a "toggle" event', async () => {
+				const element = await TestUtils.render(Checkbox.tag);
+				const spy = jasmine.createSpy();
+				element.addEventListener('toggle', spy);
+
+				element.click();
+
+				expect(spy).toHaveBeenCalledOnceWith(jasmine.objectContaining({ detail: { checked: true } }));
+				expect(element.checked).toBeTrue();
+			});
+
 			it('calls the onToggle callback via property callback', async () => {
 				const element = await TestUtils.render(Checkbox.tag);
 				element.onToggle = jasmine.createSpy();
@@ -98,7 +109,7 @@ describe('Checkbox', () => {
 
 			it('calls the onToggle callback via attribute callback', async () => {
 				spyOn(window, 'alert');
-				const element = await TestUtils.render(Checkbox.tag, { onToggle: "alert('called')" });
+				const element = await TestUtils.render(Checkbox.tag, {}, { onToggle: "alert('called')" });
 
 				element.click();
 
@@ -108,7 +119,7 @@ describe('Checkbox', () => {
 
 			it('does nothing when disabled', async () => {
 				spyOn(window, 'alert');
-				const element = await TestUtils.render(Checkbox.tag, { onToggle: "alert('called')" });
+				const element = await TestUtils.render(Checkbox.tag, {}, { onToggle: "alert('called')" });
 				element.disabled = true;
 				element.onClick = jasmine.createSpy();
 
@@ -120,12 +131,23 @@ describe('Checkbox', () => {
 			});
 		});
 
-		describe('on keyboad ENTER', () => {
+		describe('on keyboard ENTER', () => {
 			const event = new KeyboardEvent('keydown', {
 				key: 'Enter'
 			});
 
-			it('calls the onToggle callback via property callback', async () => {
+			it('fires a "toggle" event', async () => {
+				const element = await TestUtils.render(Checkbox.tag);
+				const spy = jasmine.createSpy();
+				element.addEventListener('toggle', spy);
+
+				element.dispatchEvent(event);
+
+				expect(spy).toHaveBeenCalledOnceWith(jasmine.objectContaining({ detail: { checked: true } }));
+				expect(element.checked).toBeTrue();
+			});
+
+			it('does nothing when it is NOT the correct key', async () => {
 				const element = await TestUtils.render(Checkbox.tag);
 				element.onToggle = jasmine.createSpy();
 
@@ -151,7 +173,7 @@ describe('Checkbox', () => {
 
 			it('calls the onToggle callback via attribute binding', async () => {
 				spyOn(window, 'alert');
-				const element = await TestUtils.render(Checkbox.tag, { onToggle: "alert('called')" });
+				const element = await TestUtils.render(Checkbox.tag, {}, { onToggle: "alert('called')" });
 				element.onToggle = jasmine.createSpy();
 
 				element.dispatchEvent(event);
@@ -172,12 +194,23 @@ describe('Checkbox', () => {
 			});
 		});
 
-		describe('on keyboad SPACE', () => {
+		describe('on keyboard SPACE', () => {
 			const event = new KeyboardEvent('keydown', {
 				key: ' '
 			});
 
-			it('calls the onToggle callback via property callback', async () => {
+			it('fires a "toggle" event', async () => {
+				const element = await TestUtils.render(Checkbox.tag);
+				const spy = jasmine.createSpy();
+				element.addEventListener('toggle', spy);
+
+				element.dispatchEvent(event);
+
+				expect(spy).toHaveBeenCalledOnceWith(jasmine.objectContaining({ detail: { checked: true } }));
+				expect(element.checked).toBeTrue();
+			});
+
+			it('does nothing when it is NOT the correct key', async () => {
 				const element = await TestUtils.render(Checkbox.tag);
 				element.onToggle = jasmine.createSpy();
 
@@ -203,7 +236,7 @@ describe('Checkbox', () => {
 
 			it('calls the onToggle callback via attribute callback', async () => {
 				spyOn(window, 'alert');
-				const element = await TestUtils.render(Checkbox.tag, { onToggle: "alert('called')" });
+				const element = await TestUtils.render(Checkbox.tag, {}, { onToggle: "alert('called')" });
 				element.onToggle = jasmine.createSpy();
 
 				element.dispatchEvent(event);

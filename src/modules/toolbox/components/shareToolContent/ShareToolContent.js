@@ -10,6 +10,7 @@ import css from './shareToolContent.css';
 import { setCurrentTool } from '../../../../store/tools/tools.action';
 
 const Update_fallback_on_internal_implementation = 'update_fallback_on_internal_implementation';
+import { LevelTypes, emitNotification } from '../../../../store/notifications/notifications.action';
 
 /**
  * @class
@@ -113,7 +114,6 @@ export class ShareToolContent extends AbstractToolContent {
 			const content = html`<ba-share-content .urls=${shortUrl}></ba-share-content>`;
 			openModal(title, content);
 		};
-
 		const shareWithShareAPI = async () => {
 			try {
 				const shortUrl = await this._generateShortUrl();
@@ -121,12 +121,13 @@ export class ShareToolContent extends AbstractToolContent {
 				const shareData = {
 					title: translate('toolbox_shareTool_title'),
 					url: shortUrl
-				};
+		};
 
 				await this._window.navigator.share(shareData);
 				setCurrentTool(null);
 			} catch (e) {
 				console.warn('error when using Web Share API, falling back to internal implementation');
+//				emitNotification(translate('toolbox_shareTool_share_api_failed'), LevelTypes.WARN);
 				this.signal(Update_fallback_on_internal_implementation);
 			}
 		};

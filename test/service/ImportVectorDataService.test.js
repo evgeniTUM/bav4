@@ -1,7 +1,7 @@
 import { $injector } from '../../src/injection';
 import { VectorGeoResource, VectorSourceType } from '../../src/domain/geoResources';
 import { SourceType, SourceTypeName, SourceTypeResult, SourceTypeResultStatus } from '../../src/domain/sourceType';
-import { MediaType } from '../../src/services/HttpService';
+import { MediaType } from '../../src/domain/mediaTypes';
 import { ImportVectorDataService } from '../../src/services/ImportVectorDataService';
 import { TestUtils } from '../test-utils';
 import {
@@ -57,7 +57,7 @@ describe('ImportVectorDataService', () => {
 			const geoResourceFuture = instanceUnderTest.forUrl(url, options);
 
 			expect(geoResourceFuture.id).toBe(options.id);
-			expect(geoResourceFuture.label).toBe('');
+			expect(geoResourceFuture.label).toBeNull();
 			expect(geoResourceServiceSpy).toHaveBeenCalledWith(geoResourceFuture);
 			expect(geoResourceFuture.marker).toBe(handledByGeoResourceServiceMarker);
 		});
@@ -75,7 +75,7 @@ describe('ImportVectorDataService', () => {
 			const geoResourceFuture = instanceUnderTest.forUrl(url, options);
 
 			expect(geoResourceFuture.id).toBe(options.id);
-			expect(geoResourceFuture.label).toBe('');
+			expect(geoResourceFuture.label).toBeNull();
 			expect(geoResourceServiceSpy).toHaveBeenCalledWith(geoResourceFuture);
 			expect(geoResourceFuture.marker).toBe(handledByGeoResourceServiceMarker);
 		});
@@ -88,7 +88,7 @@ describe('ImportVectorDataService', () => {
 			const geoResourceFuture = instanceUnderTest.forUrl(url);
 
 			expect(geoResourceFuture.id).toEqual(jasmine.any(String));
-			expect(geoResourceFuture.label).toBe('');
+			expect(geoResourceFuture.label).toBeNull();
 			expect(geoResourceServiceSpy).toHaveBeenCalledWith(geoResourceFuture);
 			expect(geoResourceFuture.marker).toBe(handledByGeoResourceServiceMarker);
 		});

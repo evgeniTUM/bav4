@@ -1,17 +1,17 @@
-import { QueryParameters } from '../../src/domain/queryParameters';
-import { EaModules, EaModulesQueryParameters, setCurrentModule } from '../../src/ea/store/module/ea.action';
-import { eaReducer } from '../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../src/injection';
-import { ShareService } from '../../src/services/ShareService';
 import { addLayer } from '../../src/store/layers/layers.action';
 import { layersReducer } from '../../src/store/layers/layers.reducer';
 import { changeRotation, changeZoomAndCenter } from '../../src/store/position/position.action';
 import { positionReducer } from '../../src/store/position/position.reducer';
 import { setCurrent } from '../../src/store/topics/topics.action';
 import { topicsReducer } from '../../src/store/topics/topics.reducer';
-import { round } from '../../src/utils/numberUtils';
+import { QueryParameters } from '../../src/domain/queryParameters';
+import { ShareService } from '../../src/services/ShareService';
 import { TestUtils } from '../test-utils';
+import { round } from '../../src/utils/numberUtils';
 import { BvvCoordinateRepresentations, GlobalCoordinateRepresentations } from '../../src/domain/coordinateRepresentation';
+import { EaModules, EaModulesQueryParameters, setCurrentModule } from '../../src/ea/store/module/ea.action';
+import { eaReducer } from '../../src/ea/store/module/ea.reducer';
 
 describe('ShareService', () => {
 	const coordinateService = {
@@ -99,10 +99,10 @@ describe('ShareService', () => {
 				const instanceUnderTest = new ShareService();
 				spyOn(geoResourceService, 'byId').and.returnValue({ hidden: false });
 				addLayer('someLayer_123', { geoResourceId: 'someLayer' });
-				addLayer('anotherLayer_123', { geoResourceId: 'anotherLayer' });
+				addLayer('anotherLayer_123', { geoResourceId: 'https://foo.bar/some||thing' });
 
 				const extract = instanceUnderTest._extractLayers();
-				expect(extract[QueryParameters.LAYER]).toEqual(encodeURIComponent(['someLayer', 'anotherLayer']));
+				expect(extract[QueryParameters.LAYER]).toEqual(['someLayer', 'https%3A%2F%2Ffoo.bar%2Fsome%7C%7Cthing']);
 				expect(extract[QueryParameters.LAYER_OPACITY]).not.toBeDefined();
 				expect(extract[QueryParameters.LAYER_VISIBILITY]).not.toBeDefined();
 			});
@@ -115,7 +115,7 @@ describe('ShareService', () => {
 				addLayer('anotherLayer');
 
 				const extract = instanceUnderTest._extractLayers();
-				expect(extract[QueryParameters.LAYER]).toEqual(encodeURIComponent(['anotherLayer']));
+				expect(extract[QueryParameters.LAYER]).toEqual(['anotherLayer']);
 				expect(extract[QueryParameters.LAYER_OPACITY]).not.toBeDefined();
 				expect(extract[QueryParameters.LAYER_VISIBILITY]).not.toBeDefined();
 			});
@@ -130,7 +130,7 @@ describe('ShareService', () => {
 				addLayer('anotherLayer');
 
 				const extract = instanceUnderTest._extractLayers();
-				expect(extract[QueryParameters.LAYER]).toEqual(encodeURIComponent(['anotherLayer']));
+				expect(extract[QueryParameters.LAYER]).toEqual(['anotherLayer']);
 				expect(extract[QueryParameters.LAYER_OPACITY]).not.toBeDefined();
 				expect(extract[QueryParameters.LAYER_VISIBILITY]).not.toBeDefined();
 			});
@@ -143,97 +143,182 @@ describe('ShareService', () => {
 				addLayer('anotherLayer', { visible: false });
 
 				const extract = instanceUnderTest._extractLayers();
-				expect(extract[QueryParameters.LAYER]).toEqual(encodeURIComponent(['someLayer', 'anotherLayer']));
+				expect(extract[QueryParameters.LAYER]).toEqual(['someLayer', 'anotherLayer']);
 				expect(extract[QueryParameters.LAYER_OPACITY]).toEqual([0.5, 1.0]);
 				expect(extract[QueryParameters.LAYER_VISIBILITY]).toEqual([true, false]);
 			});
 		});
 
 		describe('_extractPosition', () => {
-			describe('and rotation = 0', () => {
-				it('extracts the position state', () => {
-					const zoomLevel = 5.35;
-					const viewSrid = 25832;
-					const mapSrid = 3857;
-					setup();
-					const instanceUnderTest = new ShareService();
-					spyOn(mapService, 'getCoordinateRepresentations').and.returnValue([{ code: viewSrid, digits: 3 }]);
-					spyOn(mapService, 'getSrid').and.returnValue(mapSrid);
-					spyOn(mapService, 'getLocalProjectedSrid').and.returnValue(viewSrid);
-					spyOn(coordinateService, 'transform').withArgs([21, 42], mapSrid, viewSrid).and.returnValue([44.12345, 88.12345]);
-					changeZoomAndCenter({ zoom: zoomLevel, center: [21, 42] });
+			describe('from state', () => {
+				describe('and rotation = 0', () => {
+					it('extracts the position state', () => {
+						const zoomLevel = 5.35;
+						const viewSrid = 25832;
+						const mapSrid = 3857;
+						setup();
+						const instanceUnderTest = new ShareService();
+						spyOn(mapService, 'getCoordinateRepresentations').and.returnValue([{ code: viewSrid, digits: 3 }]);
+						spyOn(mapService, 'getSrid').and.returnValue(mapSrid);
+						spyOn(mapService, 'getLocalProjectedSrid').and.returnValue(viewSrid);
+						spyOn(coordinateService, 'transform').withArgs([21, 42], mapSrid, viewSrid).and.returnValue([44.12345, 88.12345]);
+						changeZoomAndCenter({ zoom: zoomLevel, center: [21, 42] });
 
-					const extract = instanceUnderTest._extractPosition();
+						const extract = instanceUnderTest._extractPosition();
 
-					expect(extract[QueryParameters.ZOOM]).toBe(round(zoomLevel, ShareService.ZOOM_LEVEL_PRECISION));
-					expect(extract[QueryParameters.CENTER]).toEqual(['44.123', '88.123']);
-					expect(extract[QueryParameters.ROTATION]).toBeUndefined();
+						expect(extract[QueryParameters.ZOOM]).toBe(round(zoomLevel, ShareService.ZOOM_LEVEL_PRECISION));
+						expect(extract[QueryParameters.CENTER]).toEqual(['44.123', '88.123']);
+						expect(extract[QueryParameters.ROTATION]).toBeUndefined();
+					});
+				});
+
+				describe('and rotation != 0', () => {
+					it('extracts the current position state', () => {
+						const zoomLevel = 5.35;
+						const rotationValue = 0.5347485;
+						const viewSrid = 25832;
+						const mapSrid = 3857;
+						setup();
+						const instanceUnderTest = new ShareService();
+						spyOn(mapService, 'getCoordinateRepresentations').and.returnValue([{ code: viewSrid, digits: 3 }]);
+						spyOn(mapService, 'getSrid').and.returnValue(mapSrid);
+						spyOn(mapService, 'getLocalProjectedSrid').and.returnValue(viewSrid);
+						spyOn(coordinateService, 'transform').withArgs([21, 42], mapSrid, viewSrid).and.returnValue([44.12345, 88.12345]);
+						changeZoomAndCenter({ zoom: zoomLevel, center: [21, 42] });
+						changeRotation(rotationValue);
+
+						const extract = instanceUnderTest._extractPosition();
+
+						expect(extract[QueryParameters.ZOOM]).toBe(round(zoomLevel, ShareService.ZOOM_LEVEL_PRECISION));
+						expect(extract[QueryParameters.CENTER]).toEqual(['44.123', '88.123']);
+						expect(extract[QueryParameters.ROTATION]).toBe(round(rotationValue, ShareService.ROTATION_VALUE_PRECISION));
+					});
+				});
+
+				describe('CoordinateRepresentation is global', () => {
+					it('extracts the position state', () => {
+						const zoomLevel = 5.35;
+						const mapSrid = 3857;
+						setup();
+						const instanceUnderTest = new ShareService();
+						spyOn(mapService, 'getCoordinateRepresentations').and.returnValue([GlobalCoordinateRepresentations.WGS84]);
+						spyOn(mapService, 'getSrid').and.returnValue(mapSrid);
+						spyOn(mapService, 'getLocalProjectedSrid').and.returnValue(25832);
+						spyOn(coordinateService, 'transform')
+							.withArgs([21, 42], mapSrid, GlobalCoordinateRepresentations.WGS84.code)
+							.and.returnValue([11111.111111, 22222.222222]);
+						changeZoomAndCenter({ zoom: zoomLevel, center: [21, 42] });
+
+						const extract = instanceUnderTest._extractPosition();
+
+						expect(extract[QueryParameters.ZOOM]).toBe(round(zoomLevel, ShareService.ZOOM_LEVEL_PRECISION));
+						expect(extract[QueryParameters.CENTER]).toEqual(['11111.11111', '22222.22222']);
+						expect(extract[QueryParameters.ROTATION]).toBeUndefined();
+					});
+				});
+				describe('CoordinateRepresentation is local', () => {
+					it('extracts the position state', () => {
+						const zoomLevel = 5.35;
+						const mapSrid = 3857;
+						setup();
+						const instanceUnderTest = new ShareService();
+						spyOn(mapService, 'getCoordinateRepresentations').and.returnValue([BvvCoordinateRepresentations.UTM32]);
+						spyOn(mapService, 'getSrid').and.returnValue(mapSrid);
+						spyOn(mapService, 'getLocalProjectedSrid').and.returnValue(BvvCoordinateRepresentations.UTM32.code);
+						spyOn(coordinateService, 'transform')
+							.withArgs([21, 42], mapSrid, BvvCoordinateRepresentations.UTM32.code)
+							.and.returnValue([11111.111111, 22222.222222]);
+						changeZoomAndCenter({ zoom: zoomLevel, center: [21, 42] });
+
+						const extract = instanceUnderTest._extractPosition();
+
+						expect(extract[QueryParameters.ZOOM]).toBe(round(zoomLevel, ShareService.ZOOM_LEVEL_PRECISION));
+						expect(extract[QueryParameters.CENTER]).toEqual(['11111', '22222']);
+						expect(extract[QueryParameters.ROTATION]).toBeUndefined();
+					});
 				});
 			});
+			describe('from method parameters', () => {
+				describe('and rotation = 0', () => {
+					it('extracts the position state', () => {
+						const zoomLevel = 5.35;
+						const viewSrid = 25832;
+						const mapSrid = 3857;
+						setup();
+						const instanceUnderTest = new ShareService();
+						spyOn(mapService, 'getCoordinateRepresentations').and.returnValue([{ code: viewSrid, digits: 3 }]);
+						spyOn(mapService, 'getSrid').and.returnValue(mapSrid);
+						spyOn(mapService, 'getLocalProjectedSrid').and.returnValue(viewSrid);
+						spyOn(coordinateService, 'transform').withArgs([21, 42], mapSrid, viewSrid).and.returnValue([44.12345, 88.12345]);
 
-			describe('and rotation != 0', () => {
-				it('extracts the current position state', () => {
-					const zoomLevel = 5.35;
-					const rotationValue = 0.5347485;
-					const viewSrid = 25832;
-					const mapSrid = 3857;
-					setup();
-					const instanceUnderTest = new ShareService();
-					spyOn(mapService, 'getCoordinateRepresentations').and.returnValue([{ code: viewSrid, digits: 3 }]);
-					spyOn(mapService, 'getSrid').and.returnValue(mapSrid);
-					spyOn(mapService, 'getLocalProjectedSrid').and.returnValue(viewSrid);
-					spyOn(coordinateService, 'transform').withArgs([21, 42], mapSrid, viewSrid).and.returnValue([44.12345, 88.12345]);
-					changeZoomAndCenter({ zoom: zoomLevel, center: [21, 42] });
-					changeRotation(rotationValue);
+						const extract = instanceUnderTest._extractPosition([21, 42], zoomLevel);
 
-					const extract = instanceUnderTest._extractPosition();
-
-					expect(extract[QueryParameters.ZOOM]).toBe(round(zoomLevel, ShareService.ZOOM_LEVEL_PRECISION));
-					expect(extract[QueryParameters.CENTER]).toEqual(['44.123', '88.123']);
-					expect(extract[QueryParameters.ROTATION]).toBe(round(rotationValue, ShareService.ROTATION_VALUE_PRECISION));
+						expect(extract[QueryParameters.ZOOM]).toBe(round(zoomLevel, ShareService.ZOOM_LEVEL_PRECISION));
+						expect(extract[QueryParameters.CENTER]).toEqual(['44.123', '88.123']);
+						expect(extract[QueryParameters.ROTATION]).toBeUndefined();
+					});
 				});
-			});
 
-			describe('CoordinateRepresentation is global', () => {
-				it('extracts the position state', () => {
-					const zoomLevel = 5.35;
-					const mapSrid = 3857;
-					setup();
-					const instanceUnderTest = new ShareService();
-					spyOn(mapService, 'getCoordinateRepresentations').and.returnValue([GlobalCoordinateRepresentations.WGS84]);
-					spyOn(mapService, 'getSrid').and.returnValue(mapSrid);
-					spyOn(mapService, 'getLocalProjectedSrid').and.returnValue(25832);
-					spyOn(coordinateService, 'transform')
-						.withArgs([21, 42], mapSrid, GlobalCoordinateRepresentations.WGS84.code)
-						.and.returnValue([11111.111111, 22222.222222]);
-					changeZoomAndCenter({ zoom: zoomLevel, center: [21, 42] });
+				describe('and rotation != 0', () => {
+					it('extracts the current position state', () => {
+						const zoomLevel = 5.35;
+						const rotationValue = 0.5347485;
+						const viewSrid = 25832;
+						const mapSrid = 3857;
+						setup();
+						const instanceUnderTest = new ShareService();
+						spyOn(mapService, 'getCoordinateRepresentations').and.returnValue([{ code: viewSrid, digits: 3 }]);
+						spyOn(mapService, 'getSrid').and.returnValue(mapSrid);
+						spyOn(mapService, 'getLocalProjectedSrid').and.returnValue(viewSrid);
+						spyOn(coordinateService, 'transform').withArgs([21, 42], mapSrid, viewSrid).and.returnValue([44.12345, 88.12345]);
 
-					const extract = instanceUnderTest._extractPosition();
+						const extract = instanceUnderTest._extractPosition([21, 42], zoomLevel, rotationValue);
 
-					expect(extract[QueryParameters.ZOOM]).toBe(round(zoomLevel, ShareService.ZOOM_LEVEL_PRECISION));
-					expect(extract[QueryParameters.CENTER]).toEqual(['11111.11111', '22222.22222']);
-					expect(extract[QueryParameters.ROTATION]).toBeUndefined();
+						expect(extract[QueryParameters.ZOOM]).toBe(round(zoomLevel, ShareService.ZOOM_LEVEL_PRECISION));
+						expect(extract[QueryParameters.CENTER]).toEqual(['44.123', '88.123']);
+						expect(extract[QueryParameters.ROTATION]).toBe(round(rotationValue, ShareService.ROTATION_VALUE_PRECISION));
+					});
 				});
-			});
-			describe('CoordinateRepresentation is local', () => {
-				it('extracts the position state', () => {
-					const zoomLevel = 5.35;
-					const mapSrid = 3857;
-					setup();
-					const instanceUnderTest = new ShareService();
-					spyOn(mapService, 'getCoordinateRepresentations').and.returnValue([BvvCoordinateRepresentations.UTM32]);
-					spyOn(mapService, 'getSrid').and.returnValue(mapSrid);
-					spyOn(mapService, 'getLocalProjectedSrid').and.returnValue(BvvCoordinateRepresentations.UTM32.code);
-					spyOn(coordinateService, 'transform')
-						.withArgs([21, 42], mapSrid, BvvCoordinateRepresentations.UTM32.code)
-						.and.returnValue([11111.111111, 22222.222222]);
-					changeZoomAndCenter({ zoom: zoomLevel, center: [21, 42] });
 
-					const extract = instanceUnderTest._extractPosition();
+				describe('CoordinateRepresentation is global', () => {
+					it('extracts the position state', () => {
+						const zoomLevel = 5.35;
+						const mapSrid = 3857;
+						setup();
+						const instanceUnderTest = new ShareService();
+						spyOn(mapService, 'getCoordinateRepresentations').and.returnValue([GlobalCoordinateRepresentations.WGS84]);
+						spyOn(mapService, 'getSrid').and.returnValue(mapSrid);
+						spyOn(mapService, 'getLocalProjectedSrid').and.returnValue(25832);
+						spyOn(coordinateService, 'transform')
+							.withArgs([21, 42], mapSrid, GlobalCoordinateRepresentations.WGS84.code)
+							.and.returnValue([11111.111111, 22222.222222]);
 
-					expect(extract[QueryParameters.ZOOM]).toBe(round(zoomLevel, ShareService.ZOOM_LEVEL_PRECISION));
-					expect(extract[QueryParameters.CENTER]).toEqual(['11111', '22222']);
-					expect(extract[QueryParameters.ROTATION]).toBeUndefined();
+						const extract = instanceUnderTest._extractPosition([21, 42], zoomLevel);
+
+						expect(extract[QueryParameters.ZOOM]).toBe(round(zoomLevel, ShareService.ZOOM_LEVEL_PRECISION));
+						expect(extract[QueryParameters.CENTER]).toEqual(['11111.11111', '22222.22222']);
+						expect(extract[QueryParameters.ROTATION]).toBeUndefined();
+					});
+				});
+				describe('CoordinateRepresentation is local', () => {
+					it('extracts the position state', () => {
+						const zoomLevel = 5.35;
+						const mapSrid = 3857;
+						setup();
+						const instanceUnderTest = new ShareService();
+						spyOn(mapService, 'getCoordinateRepresentations').and.returnValue([BvvCoordinateRepresentations.UTM32]);
+						spyOn(mapService, 'getSrid').and.returnValue(mapSrid);
+						spyOn(mapService, 'getLocalProjectedSrid').and.returnValue(BvvCoordinateRepresentations.UTM32.code);
+						spyOn(coordinateService, 'transform')
+							.withArgs([21, 42], mapSrid, BvvCoordinateRepresentations.UTM32.code)
+							.and.returnValue([11111.111111, 22222.222222]);
+
+						const extract = instanceUnderTest._extractPosition([21, 42], zoomLevel);
+
+						expect(extract[QueryParameters.ZOOM]).toBe(round(zoomLevel, ShareService.ZOOM_LEVEL_PRECISION));
+						expect(extract[QueryParameters.CENTER]).toEqual(['11111', '22222']);
+						expect(extract[QueryParameters.ROTATION]).toBeUndefined();
+					});
 				});
 			});
 		});
@@ -311,18 +396,85 @@ describe('ShareService', () => {
 		describe('encodeState', () => {
 			const mockFrontendUrl = 'http://frontend.de/';
 
+			it('encodes a state object to url', () => {
+				setup();
+				spyOn(configService, 'getValueAsPath').withArgs('FRONTEND_URL').and.returnValue(mockFrontendUrl);
+				const instanceUnderTest = new ShareService();
+				const expectedResult = 'encoded';
+				spyOn(instanceUnderTest, 'encodeStateForPosition').withArgs({}, {}, []).and.returnValue(expectedResult);
+
+				const encoded = instanceUnderTest.encodeState();
+
+				expect(encoded).toBe(expectedResult);
+			});
+
+			it('encodes a state object to url with extra params', () => {
+				setup();
+				spyOn(configService, 'getValueAsPath').withArgs('FRONTEND_URL').and.returnValue(mockFrontendUrl);
+				const instanceUnderTest = new ShareService();
+				const extraParam = { foo: 'bar' };
+				const expectedResult = 'encoded';
+				spyOn(instanceUnderTest, 'encodeStateForPosition').withArgs({}, extraParam, []).and.returnValue(expectedResult);
+
+				const encoded = instanceUnderTest.encodeState(extraParam);
+
+				expect(encoded).toBe(expectedResult);
+			});
+
+			it('encodes a state object to url with path params', () => {
+				setup();
+				spyOn(configService, 'getValueAsPath').withArgs('FRONTEND_URL').and.returnValue(mockFrontendUrl);
+				const instanceUnderTest = new ShareService();
+				const pathParameters = ['param0', 'param1'];
+				const expectedResult = 'encoded';
+				spyOn(instanceUnderTest, 'encodeStateForPosition').withArgs({}, {}, pathParameters).and.returnValue(expectedResult);
+
+				const encoded = instanceUnderTest.encodeState({}, pathParameters);
+
+				expect(encoded).toBe(expectedResult);
+			});
+		});
+
+		describe('encodeStateForPosition', () => {
+			const mockFrontendUrl = 'http://frontend.de/';
+
 			describe('for pathname "/"', () => {
 				it('encodes a state object to url', () => {
 					setup();
 					spyOn(configService, 'getValueAsPath').withArgs('FRONTEND_URL').and.returnValue(mockFrontendUrl);
 					const instanceUnderTest = new ShareService();
-					spyOn(instanceUnderTest, '_extractPosition').and.returnValue({ z: 5, c: ['44.123', '88.123'] });
+					spyOn(instanceUnderTest, '_extractPosition')
+						.withArgs([44.123, 88.123], 5, 0.5)
+						.and.returnValue({ c: [44.123, 88.123], z: 5, r: 0.5 });
+					spyOn(instanceUnderTest, '_extractLayers').and.returnValue({ l: ['someLayer', 'anotherLayer'] });
+					spyOn(instanceUnderTest, '_extractTopic').and.returnValue({ t: 'someTopic' });
+					const _mergeExtraParamsSpy = spyOn(instanceUnderTest, '_mergeExtraParams').withArgs(jasmine.anything(), {}).and.callThrough();
+
+					const encoded = instanceUnderTest.encodeStateForPosition({ zoom: 5, center: [44.123, 88.123], rotation: 0.5 });
+					const queryParams = new URLSearchParams(new URL(encoded).search);
+
+					expect(encoded.startsWith('http://frontend.de/?')).toBeTrue();
+					expect(queryParams.get(QueryParameters.LAYER)).toBe('someLayer,anotherLayer');
+					expect(queryParams.get(QueryParameters.ZOOM)).toBe('5');
+					expect(queryParams.get(QueryParameters.CENTER)).toBe('44.123,88.123');
+					expect(queryParams.get(QueryParameters.ROTATION)).toBe('0.5');
+					expect(queryParams.get(QueryParameters.TOPIC)).toBe('someTopic');
+					expect(_mergeExtraParamsSpy).toHaveBeenCalled();
+				});
+
+				it('encodes a state object to url removing `index.html` from path', () => {
+					setup();
+					spyOn(configService, 'getValueAsPath').withArgs('FRONTEND_URL').and.returnValue(`${mockFrontendUrl}index.html/`);
+					const instanceUnderTest = new ShareService();
+					spyOn(instanceUnderTest, '_extractPosition')
+						.withArgs([44.123, 88.123], 5, 0.5)
+						.and.returnValue({ c: [44.123, 88.123], z: 5, r: 0.5 });
 					spyOn(instanceUnderTest, '_extractLayers').and.returnValue({ l: ['someLayer', 'anotherLayer'] });
 					spyOn(instanceUnderTest, '_extractTopic').and.returnValue({ t: 'someTopic' });
 					spyOn(instanceUnderTest, '_extractEaModule').and.returnValue({ comp: 'someModule' });
 					const _mergeExtraParamsSpy = spyOn(instanceUnderTest, '_mergeExtraParams').withArgs(jasmine.anything(), {}).and.callThrough();
 
-					const encoded = instanceUnderTest.encodeState();
+					const encoded = instanceUnderTest.encodeStateForPosition({ zoom: 5, center: [44.123, 88.123], rotation: 0.5 });
 					const queryParams = new URLSearchParams(new URL(encoded).search);
 
 					expect(encoded.startsWith('http://frontend.de/?')).toBeTrue();
@@ -339,13 +491,15 @@ describe('ShareService', () => {
 					spyOn(configService, 'getValueAsPath').withArgs('FRONTEND_URL').and.returnValue(mockFrontendUrl);
 					const instanceUnderTest = new ShareService();
 					const extraParam = { foo: 'bar' };
-					spyOn(instanceUnderTest, '_extractPosition').and.returnValue({ z: 5, c: ['44.123', '88.123'] });
+					spyOn(instanceUnderTest, '_extractPosition')
+						.withArgs([44.123, 88.123], 5, 0.5)
+						.and.returnValue({ c: [44.123, 88.123], z: 5, r: 0.5 });
 					spyOn(instanceUnderTest, '_extractLayers').and.returnValue({ l: ['someLayer', 'anotherLayer'] });
 					spyOn(instanceUnderTest, '_extractTopic').and.returnValue({ t: 'someTopic' });
 					spyOn(instanceUnderTest, '_extractEaModule').and.returnValue({ comp: 'someModule' });
 					const _mergeExtraParamsSpy = spyOn(instanceUnderTest, '_mergeExtraParams').withArgs(jasmine.anything(), extraParam).and.callThrough();
 
-					const encoded = instanceUnderTest.encodeState(extraParam);
+					const encoded = instanceUnderTest.encodeStateForPosition({ zoom: 5, center: [44.123, 88.123], rotation: 0.5 }, extraParam);
 					const queryParams = new URLSearchParams(new URL(encoded).search);
 
 					expect(encoded.startsWith('http://frontend.de/?')).toBeTrue();
@@ -363,12 +517,14 @@ describe('ShareService', () => {
 					spyOn(configService, 'getValueAsPath').withArgs('FRONTEND_URL').and.returnValue(mockFrontendUrl);
 					const instanceUnderTest = new ShareService();
 					const pathParameters = ['param0', 'param1'];
-					spyOn(instanceUnderTest, '_extractPosition').and.returnValue({ z: 5, c: ['44.123', '88.123'] });
+					spyOn(instanceUnderTest, '_extractPosition')
+						.withArgs([44.123, 88.123], 5, 0.5)
+						.and.returnValue({ c: [44.123, 88.123], z: 5, r: 0.5 });
 					spyOn(instanceUnderTest, '_extractLayers').and.returnValue({ l: ['someLayer', 'anotherLayer'] });
 					spyOn(instanceUnderTest, '_extractTopic').and.returnValue({ t: 'someTopic' });
 					spyOn(instanceUnderTest, '_extractEaModule').and.returnValue({ comp: 'someModule' });
 
-					const encoded = instanceUnderTest.encodeState({}, pathParameters);
+					const encoded = instanceUnderTest.encodeStateForPosition({ zoom: 5, center: [44.123, 88.123], rotation: 0.5 }, {}, pathParameters);
 					const queryParams = new URLSearchParams(new URL(encoded).search);
 
 					expect(encoded.startsWith('http://frontend.de/param0/param1?')).toBeTrue();
@@ -380,19 +536,43 @@ describe('ShareService', () => {
 				});
 			});
 
-			describe('for existing pathname', () => {
+			describe('for existing pathname e.g. "/app"', () => {
 				const mockFrontendUrl = 'http://frontend.de/app/';
 
 				it('encodes a state object to url', () => {
 					setup();
 					spyOn(configService, 'getValueAsPath').withArgs('FRONTEND_URL').and.returnValue(mockFrontendUrl);
 					const instanceUnderTest = new ShareService();
-					spyOn(instanceUnderTest, '_extractPosition').and.returnValue({ z: 5, c: ['44.123', '88.123'] });
+					spyOn(instanceUnderTest, '_extractPosition')
+						.withArgs([44.123, 88.123], 5, 0.5)
+						.and.returnValue({ c: [44.123, 88.123], z: 5, r: 0.5 });
 					spyOn(instanceUnderTest, '_extractLayers').and.returnValue({ l: ['someLayer', 'anotherLayer'] });
 					spyOn(instanceUnderTest, '_extractTopic').and.returnValue({ t: 'someTopic' });
 					const _mergeExtraParamsSpy = spyOn(instanceUnderTest, '_mergeExtraParams').withArgs(jasmine.anything(), {}).and.callThrough();
 
-					const encoded = instanceUnderTest.encodeState();
+					const encoded = instanceUnderTest.encodeStateForPosition({ zoom: 5, center: [44.123, 88.123], rotation: 0.5 });
+					const queryParams = new URLSearchParams(new URL(encoded).search);
+
+					expect(encoded.startsWith('http://frontend.de/app/?')).toBeTrue();
+					expect(queryParams.get(QueryParameters.LAYER)).toBe('someLayer,anotherLayer');
+					expect(queryParams.get(QueryParameters.ZOOM)).toBe('5');
+					expect(queryParams.get(QueryParameters.CENTER)).toBe('44.123,88.123');
+					expect(queryParams.get(QueryParameters.TOPIC)).toBe('someTopic');
+					expect(_mergeExtraParamsSpy).toHaveBeenCalled();
+				});
+
+				it('encodes a state object to url removing `index.html` from path', () => {
+					setup();
+					spyOn(configService, 'getValueAsPath').withArgs('FRONTEND_URL').and.returnValue(`${mockFrontendUrl}index.html/`);
+					const instanceUnderTest = new ShareService();
+					spyOn(instanceUnderTest, '_extractPosition')
+						.withArgs([44.123, 88.123], 5, 0.5)
+						.and.returnValue({ c: [44.123, 88.123], z: 5, r: 0.5 });
+					spyOn(instanceUnderTest, '_extractLayers').and.returnValue({ l: ['someLayer', 'anotherLayer'] });
+					spyOn(instanceUnderTest, '_extractTopic').and.returnValue({ t: 'someTopic' });
+					const _mergeExtraParamsSpy = spyOn(instanceUnderTest, '_mergeExtraParams').withArgs(jasmine.anything(), {}).and.callThrough();
+
+					const encoded = instanceUnderTest.encodeStateForPosition({ zoom: 5, center: [44.123, 88.123], rotation: 0.5 });
 					const queryParams = new URLSearchParams(new URL(encoded).search);
 
 					expect(encoded.startsWith('http://frontend.de/app/?')).toBeTrue();
@@ -408,12 +588,14 @@ describe('ShareService', () => {
 					spyOn(configService, 'getValueAsPath').withArgs('FRONTEND_URL').and.returnValue(mockFrontendUrl);
 					const instanceUnderTest = new ShareService();
 					const extraParam = { foo: 'bar' };
-					spyOn(instanceUnderTest, '_extractPosition').and.returnValue({ z: 5, c: ['44.123', '88.123'] });
+					spyOn(instanceUnderTest, '_extractPosition')
+						.withArgs([44.123, 88.123], 5, 0.5)
+						.and.returnValue({ c: [44.123, 88.123], z: 5, r: 0.5 });
 					spyOn(instanceUnderTest, '_extractLayers').and.returnValue({ l: ['someLayer', 'anotherLayer'] });
 					spyOn(instanceUnderTest, '_extractTopic').and.returnValue({ t: 'someTopic' });
 					const _mergeExtraParamsSpy = spyOn(instanceUnderTest, '_mergeExtraParams').withArgs(jasmine.anything(), extraParam).and.callThrough();
 
-					const encoded = instanceUnderTest.encodeState(extraParam);
+					const encoded = instanceUnderTest.encodeStateForPosition({ zoom: 5, center: [44.123, 88.123], rotation: 0.5 }, extraParam);
 					const queryParams = new URLSearchParams(new URL(encoded).search);
 
 					expect(encoded.startsWith('http://frontend.de/app/?')).toBeTrue();
@@ -430,11 +612,13 @@ describe('ShareService', () => {
 					spyOn(configService, 'getValueAsPath').withArgs('FRONTEND_URL').and.returnValue(mockFrontendUrl);
 					const instanceUnderTest = new ShareService();
 					const pathParameters = ['param0', 'param1'];
-					spyOn(instanceUnderTest, '_extractPosition').and.returnValue({ z: 5, c: ['44.123', '88.123'] });
+					spyOn(instanceUnderTest, '_extractPosition')
+						.withArgs([44.123, 88.123], 5, 0.5)
+						.and.returnValue({ c: [44.123, 88.123], z: 5, r: 0.5 });
 					spyOn(instanceUnderTest, '_extractLayers').and.returnValue({ l: ['someLayer', 'anotherLayer'] });
 					spyOn(instanceUnderTest, '_extractTopic').and.returnValue({ t: 'someTopic' });
 
-					const encoded = instanceUnderTest.encodeState({}, pathParameters);
+					const encoded = instanceUnderTest.encodeStateForPosition({ zoom: 5, center: [44.123, 88.123], rotation: 0.5 }, {}, pathParameters);
 					const queryParams = new URLSearchParams(new URL(encoded).search);
 
 					expect(encoded.startsWith('http://frontend.de/app/param0/param1?')).toBeTrue();

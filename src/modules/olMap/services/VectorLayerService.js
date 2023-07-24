@@ -4,7 +4,6 @@
 import { VectorSourceType } from '../../../domain/geoResources';
 import VectorSource from 'ol/source/Vector';
 import { $injector } from '../../../injection';
-import { load as featureLoader } from '../utils/feature.provider';
 import { KML, GPX, GeoJSON, WKT } from 'ol/format';
 import VectorLayer from 'ol/layer/Vector';
 import { parse } from '../../../utils/ewkt';
@@ -111,6 +110,18 @@ export class VectorLayerService {
 	}
 
 	/**
+	 * Adds a specific or a default cluster styling for this vector layer
+	 * @param {ol.layer.Vector} olVectorLayer
+	 * @returns olVectorLayer
+	 */
+	_applyClusterStyle(olVectorLayer) {
+		const { StyleService: styleService } = $injector.inject('StyleService');
+		styleService.addClusterStyle(olVectorLayer);
+
+		return olVectorLayer;
+	}
+
+	/**
 	 * Builds an ol VectorLayer from an VectorGeoResource
 	 * @param {string} id layerId
 	 * @param {VectorGeoResource} vectorGeoResource
@@ -126,9 +137,9 @@ export class VectorLayerService {
 			minZoom: minZoom ?? undefined,
 			maxZoom: maxZoom ?? undefined
 		});
-		const vectorSource = vectorGeoResource.url ? this._vectorSourceForUrl(vectorGeoResource) : this._vectorSourceForData(vectorGeoResource);
+		const vectorSource = this._vectorSourceForData(vectorGeoResource);
 		vectorLayer.setSource(vectorSource);
-		return this._applyStyles(vectorLayer, olMap);
+		return vectorGeoResource.isClustered() ? this._applyClusterStyle(vectorLayer) : this._applyStyles(vectorLayer, olMap);
 	}
 
 	/**
@@ -176,28 +187,5 @@ export class VectorLayerService {
 					minDistance: geoResource.clusterParams.minDistance
 			  })
 			: vectorSource;
-	}
-
-	/**
-	 *
-	 * Builds an ol VectorSource from a VectorGeoResource.
-	 * @param {VectorGeoResource} vectorGeoResource
-	 * @param {ol.Map} map
-	 * @returns olVectorSource
-	 */
-	_vectorSourceForUrl(geoResource) {
-		const { UrlService: urlService } = $injector.inject('UrlService');
-		const source = new VectorSource({
-			url: urlService.proxifyInstant(geoResource.url),
-			loader: featureLoader,
-			format: mapVectorSourceTypeToFormat(geoResource.sourceType)
-		});
-		return geoResource.isClustered()
-			? new Cluster({
-					source: source,
-					distance: geoResource.clusterParams.distance,
-					minDistance: geoResource.clusterParams.minDistance
-			  })
-			: source;
 	}
 }

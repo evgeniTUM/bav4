@@ -110,6 +110,7 @@ export class OlMeasurementHandler extends OlLayerHandler {
 		this._helpTooltip = new HelpTooltip();
 		this._helpTooltip.messageProvideFunction = messageProvide;
 		this._measureStateChangedListeners = [];
+		this._drawingListeners = [];
 		this._registeredObservers = [];
 	}
 
@@ -222,17 +223,17 @@ export class OlMeasurementHandler extends OlLayerHandler {
 
 			const changeTool = (features) => {
 				const changeToMeasureTool = (features) => {
-					return features.some((f) => f.getId().startsWith(Tools.DRAWING + '_'));
+					return features.some((f) => f.getId().startsWith(Tools.DRAW + '_'));
 				};
 				if (changeToMeasureTool(features)) {
-					const drawIds = features.filter((f) => f.getId().startsWith(Tools.DRAWING + '_')).map((f) => f.getId());
+					const drawIds = features.filter((f) => f.getId().startsWith(Tools.DRAW + '_')).map((f) => f.getId());
 					setDrawSelection(drawIds);
-					setCurrentTool(Tools.DRAWING);
+					setCurrentTool(Tools.DRAW);
 				}
 			};
 
 			const isToolChangeNeeded = (features) => {
-				return features.some((f) => !f.getId().startsWith(Tools.MEASURING + '_'));
+				return features.some((f) => !f.getId().startsWith(Tools.MEASURE + '_'));
 			};
 			const selectableFeatures = getSelectableFeatures(this._map, this._vectorLayer, pixel);
 			const clickAction = isToolChangeNeeded(selectableFeatures) ? changeTool : addToSelection;
@@ -318,6 +319,7 @@ export class OlMeasurementHandler extends OlLayerHandler {
 
 		this._unreg(this._mapListeners);
 		this._unreg(this._measureStateChangedListeners);
+		this._unreg(this._drawingListeners);
 		this._unsubscribe(this._registeredObservers);
 		this._keyActionMapper.deactivate();
 
@@ -436,9 +438,6 @@ export class OlMeasurementHandler extends OlLayerHandler {
 			style: createSketchStyleFunction(this._styleService.getStyleFunction(StyleTypes.MEASURE))
 		});
 
-		let listener;
-		let zoomListener;
-
 		const finishDistanceOverlay = (event) => {
 			const geometry = event.feature.getGeometry();
 			const distanceOverlay = event.feature.get('measurement');
@@ -448,8 +447,7 @@ export class OlMeasurementHandler extends OlLayerHandler {
 				event.feature.setGeometry(new LineString(lineCoordinates));
 			}
 			this._sketchHandler.deactivate();
-			unByKey(listener);
-			unByKey(zoomListener);
+			this._unreg(this._drawingListeners);
 		};
 
 		draw.on('drawstart', (event) => {
@@ -464,10 +462,10 @@ export class OlMeasurementHandler extends OlLayerHandler {
 				this._overlayService.update(this._sketchHandler.active, this._map, StyleTypes.MEASURE, { geometry: measureGeometry });
 			};
 
-			this._sketchHandler.activate(event.feature, Tools.MEASURING + '_');
+			this._sketchHandler.activate(event.feature, Tools.MEASURE + '_');
 			this._overlayService.add(this._sketchHandler.active, this._map, StyleTypes.MEASURE);
-			listener = event.feature.on('change', onFeatureChange);
-			zoomListener = this._map.getView().on('change:resolution', onResolutionChange);
+			this._drawingListeners.push(event.feature.on('change', onFeatureChange));
+			this._drawingListeners.push(this._map.getView().on('change:resolution', onResolutionChange));
 		});
 
 		draw.on('drawabort', (event) => this._overlayService.remove(event.feature, this._map));

@@ -1,5 +1,6 @@
 import { $injector } from '../../src/injection';
-import { HttpService, MediaType } from '../../src/services/HttpService';
+import { HttpService } from '../../src/services/HttpService';
+import { MediaType } from '../../src/domain/mediaTypes';
 import { getMfpCapabilities, postMfpSpec } from '../../src/services/provider/mfp.provider';
 describe('mfp provider', () => {
 	describe('getMfpCapabilities', () => {
@@ -93,7 +94,7 @@ describe('mfp provider', () => {
 				headers: {
 					'Content-Type': MediaType.JSON
 				},
-				timeout: 20000
+				timeout: 40000
 			};
 			const httpServiceSpy = spyOn(httpService, 'fetch')
 				.withArgs(`${backendUrl}/print/create/${urlId}`, options, abortController)
