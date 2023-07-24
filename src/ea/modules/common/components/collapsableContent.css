@@ -6,6 +6,10 @@
 	background: transparent;
 }
 
+.header {
+	cursor: pointer;
+}
+
 .iscollapse {
 	display: none;
 }
