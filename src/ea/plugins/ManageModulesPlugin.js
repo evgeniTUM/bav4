@@ -71,6 +71,7 @@ export class ManageModulesPlugin extends BaPlugin {
 		const handleLayers = (currentModule, lastModule) => {
 			// remove layers for last module
 			switch (lastModule) {
+				case GeothermModuleContent.name:
 				case EnergyMarketModuleContent.name:
 				case EnergyReportingModuleContent.name:
 					removeLayer(SELECT_LOCATION_LAYER_ID);
@@ -79,13 +80,13 @@ export class ManageModulesPlugin extends BaPlugin {
 				case RedesignModuleContent.name:
 				case ResearchModuleContent.name:
 				case Analyse3DModuleContent.name:
-				case GeothermModuleContent.name:
 					removeLayer(GEO_FEATURE_LAYER_ID);
 					break;
 			}
 
 			// enable layers for new module
 			switch (currentModule) {
+				case GeothermModuleContent.name:
 				case EnergyMarketModuleContent.name:
 				case EnergyReportingModuleContent.name:
 					addLayer(SELECT_LOCATION_LAYER_ID, { label: 'Standortselektion', constraints: { hidden: true, alwaysTop: true } });
@@ -95,7 +96,6 @@ export class ManageModulesPlugin extends BaPlugin {
 				case RedesignModuleContent.name:
 				case ResearchModuleContent.name:
 				case Analyse3DModuleContent.name:
-				case GeothermModuleContent.name:
 					addLayer(GEO_FEATURE_LAYER_ID, { label: 'Verwaltungseinheiten', constraints: { hidden: true, alwaysTop: true } });
 					break;
 			}
