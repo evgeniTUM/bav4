@@ -50,7 +50,7 @@ describe('ManageModulesPlugin', () => {
 		return store;
 	};
 
-	it('toggles select location layer when tool ID equals name of energy-market component', async () => {
+	it('toggles select location layer when tool ID equals name of energy-market/energy-reporting/geotherm component', async () => {
 		const store = setup();
 
 		const instanceUnderTest = new ManageModulesPlugin();
@@ -58,34 +58,17 @@ describe('ManageModulesPlugin', () => {
 
 		expect(store.getState().layers.active.length).toBe(0);
 
-		setCurrentModule(EnergyMarketModuleContent.name);
+		[EnergyMarketModuleContent.name, EnergyReportingModuleContent.name, GeothermModuleContent.name].forEach((tag) => {
+			setCurrentModule(tag);
 
-		expect(store.getState().layers.active.length).toBe(1);
-		expect(store.getState().layers.active[0].id).toBe(SELECT_LOCATION_LAYER_ID);
-		expect(store.getState().layers.active[0].constraints.alwaysTop).toBe(true);
+			expect(store.getState().layers.active.length).toBe(1);
+			expect(store.getState().layers.active[0].id).toBe(SELECT_LOCATION_LAYER_ID);
+			expect(store.getState().layers.active[0].label).toBe('Standortselektion');
 
-		setCurrentModule('something');
+			setCurrentModule('something');
 
-		expect(store.getState().layers.active.length).toBe(0);
-	});
-
-	it('toggles select location layer when tool ID equals name of energy-reporting component', async () => {
-		const store = setup();
-
-		const instanceUnderTest = new ManageModulesPlugin();
-		await instanceUnderTest.register(store);
-
-		expect(store.getState().layers.active.length).toBe(0);
-
-		setCurrentModule(EnergyReportingModuleContent.name);
-
-		expect(store.getState().layers.active.length).toBe(1);
-		expect(store.getState().layers.active[0].id).toBe(SELECT_LOCATION_LAYER_ID);
-		expect(store.getState().layers.active[0].constraints.alwaysTop).toBe(true);
-
-		setCurrentModule('something');
-
-		expect(store.getState().layers.active.length).toBe(0);
+			expect(store.getState().layers.active.length).toBe(0);
+		});
 	});
 
 	it('toggles geofeature layer when tool ID equals name of mixer/research/redesign component', async () => {
@@ -96,13 +79,7 @@ describe('ManageModulesPlugin', () => {
 
 		expect(store.getState().layers.active.length).toBe(0);
 
-		[
-			MixerModuleContent.name,
-			RedesignModuleContent.name,
-			ResearchModuleContent.name,
-			Analyse3DModuleContent.name,
-			GeothermModuleContent.name
-		].forEach((tag) => {
+		[MixerModuleContent.name, RedesignModuleContent.name, ResearchModuleContent.name, Analyse3DModuleContent.name].forEach((tag) => {
 			setCurrentModule(tag);
 
 			expect(store.getState().layers.active.length).toBe(1);

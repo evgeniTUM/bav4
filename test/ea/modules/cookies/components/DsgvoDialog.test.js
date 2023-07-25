@@ -51,8 +51,10 @@ describe('DsgvoDialog', () => {
 		document.cookie = serialize('eab', {}, { maxAge: 0 });
 
 		let actualCookie;
+		let expectedDate;
 		spyOnProperty(document, 'cookie', 'set').and.callFake((c) => {
 			actualCookie = c;
+			expectedDate = new Date();
 			return c;
 		});
 
@@ -60,7 +62,6 @@ describe('DsgvoDialog', () => {
 
 		element.shadowRoot.getElementById('accept-all').click();
 
-		const expectedDate = new Date();
 		expectedDate.setDate(expectedDate.getDate() + 120);
 
 		const actualDate = new Date(actualCookie.match(/Expires=(.*?);/)[1]);
