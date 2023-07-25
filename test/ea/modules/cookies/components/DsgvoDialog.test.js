@@ -85,8 +85,17 @@ describe('DsgvoDialog', () => {
 		it('deactivates web analytics if cookie eab.webanalyse is false', async () => {
 			document.cookie = serialize('eab', JSON.stringify({ base: true, webanalyse: false }));
 
+			const store = TestUtils.setupStoreAndDi(
+				{},
+				{
+					ea: eaReducer,
+					modal: modalReducer
+				}
+			);
+			$injector.registerSingleton('TranslationService', { translate: (key) => key });
 			activateWebAnalytics();
-			await setup();
+
+			await TestUtils.render(DsgvoDialog.tag);
 
 			expect(store.getState().ea.webAnalyticsActive).toBeFalse();
 		});
