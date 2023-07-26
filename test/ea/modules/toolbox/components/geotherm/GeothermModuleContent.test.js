@@ -11,7 +11,7 @@ import { contributionReducer, initialState } from '../../../../../../src/ea/stor
 
 window.customElements.define(GeothermModuleContent.tag, GeothermModuleContent);
 
-describe('GeothermModelContent', () => {
+describe('GeothermModuleContent', () => {
 	let store;
 
 	const testState = {
@@ -26,7 +26,8 @@ describe('GeothermModelContent', () => {
 	};
 
 	const configServiceMock = {
-		getValueAsPath: (v) => v
+		getValueAsPath: (v) => v,
+		getValue() {}
 	};
 
 	const mapServiceMock = { getSrid: () => 4326 };
@@ -109,6 +110,8 @@ describe('GeothermModelContent', () => {
 			expect(element.shadowRoot.querySelector('#kollektor')).toHaveClass('unselected');
 			expect(element.shadowRoot.querySelector('#pumpe')).toHaveClass('unselected');
 			
+			expect(element.shadowRoot.querySelector('#step2')).toBeTruthy();
+			expect(element.shadowRoot.querySelector('#step2').open).toBeFalse();
 		})
 		
 	});
