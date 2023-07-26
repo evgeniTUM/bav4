@@ -3,7 +3,7 @@ import { GeothermModuleContent } from     '../../../../../../src/ea/modules/tool
 import { AbstractModuleContentPanel } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/AbstractModuleContentPanel';
 import { modalReducer } from '../../../../../../src/store/modal/modal.reducer';
 import { toolsReducer } from '../../../../../../src/store/tools/tools.reducer';
-import { setLocation, setTaggingMode } from '../../../../../../src/ea/store/contribution/contribution.action';
+import { setLocation } from '../../../../../../src/ea/store/contribution/contribution.action';
 import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { contributionReducer, initialState } from '../../../../../../src/ea/store/contribution/contribution.reducer';
@@ -40,7 +40,7 @@ describe('GeothermModuleContent', () => {
 
 		const { embed = false, isTouch = false } = config;
 
-		store = TestUtils.setupStoreAndDi(state, {
+		TestUtils.setupStoreAndDi(state, {
 			contribution: contributionReducer,
 			modal: modalReducer,
 			tools: toolsReducer,
