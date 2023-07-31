@@ -12,7 +12,6 @@ import { contributionReducer, initialState } from '../../../../../../src/ea/stor
 window.customElements.define(GeothermModuleContent.tag, GeothermModuleContent);
 
 describe('GeothermModuleContent', () => {
-	let store;
 
 	const testState = {
 		contribution: initialState,

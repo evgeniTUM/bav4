@@ -137,7 +137,7 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 			<div class=".ba-tool-container__content">${translate('ea_geotherm_check_introduction')}</div>
 		</div>`;
 
-		const stepTitle = (text, subtext) => html` <span style="color: var(--primary-color)">${text}${subtext ? ':' : ''}</span>
+		const stepTitle = (text, subtext) => html` <span style="color: var(--primary-color)">${text}${subtext ? '.' : ''}</span>
 			<span style="font-style: italic">${subtext}</span>`;
 
 		const firstButtonClass = model.mode ? (model.mode === MODUS.sonden ? 'active' : 'inactive') : 'unselected';
@@ -195,7 +195,7 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 					<collapsable-content
 						id="step1"
 						.customCSS=${collapsableContentCss}
-						.title=${stepTitle('Schritt 1', 'Technik wählen')}
+						.title=${stepTitle('1', 'Technik wählen')}
 						.open=${model.openSections.includes('step1')}
 						@toggle=${onToggle}
 					>
@@ -215,7 +215,7 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 					<collapsable-content
 						id="step2"
 						.customCSS=${collapsableContentCss}
-						.title=${stepTitle('Schritt 2', 'Standort wählen')}
+						.title=${stepTitle('2', 'Standort wählen')}
 						.open=${model.openSections.includes('step2')}
 						@toggle=${onToggle}
 					>
