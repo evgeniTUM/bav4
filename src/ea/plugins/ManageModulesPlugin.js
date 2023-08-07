@@ -74,12 +74,12 @@ export class ManageModulesPlugin extends BaPlugin {
 				case GeothermModuleContent.name:
 				case EnergyMarketModuleContent.name:
 				case EnergyReportingModuleContent.name:
+				case Analyse3DModuleContent.name:
 					removeLayer(SELECT_LOCATION_LAYER_ID);
 					break;
 				case MixerModuleContent.name:
 				case RedesignModuleContent.name:
 				case ResearchModuleContent.name:
-				case Analyse3DModuleContent.name:
 					removeLayer(GEO_FEATURE_LAYER_ID);
 					break;
 			}
@@ -89,13 +89,13 @@ export class ManageModulesPlugin extends BaPlugin {
 				case GeothermModuleContent.name:
 				case EnergyMarketModuleContent.name:
 				case EnergyReportingModuleContent.name:
+				case Analyse3DModuleContent.name:
 					addLayer(SELECT_LOCATION_LAYER_ID, { label: 'Standortselektion', constraints: { hidden: true, alwaysTop: true } });
 					break;
 
 				case MixerModuleContent.name:
 				case RedesignModuleContent.name:
 				case ResearchModuleContent.name:
-				case Analyse3DModuleContent.name:
 					addLayer(GEO_FEATURE_LAYER_ID, { label: 'Verwaltungseinheiten', constraints: { hidden: true, alwaysTop: true } });
 					break;
 			}

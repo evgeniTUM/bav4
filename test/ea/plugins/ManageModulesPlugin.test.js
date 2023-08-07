@@ -50,7 +50,7 @@ describe('ManageModulesPlugin', () => {
 		return store;
 	};
 
-	it('toggles select location layer when tool ID equals name of energy-market/energy-reporting/geotherm component', async () => {
+	it('toggles select location layer when tool ID equals name of energy-market/energy-reporting/geotherm/analyse3d component', async () => {
 		const store = setup();
 
 		const instanceUnderTest = new ManageModulesPlugin();
@@ -58,7 +58,7 @@ describe('ManageModulesPlugin', () => {
 
 		expect(store.getState().layers.active.length).toBe(0);
 
-		[EnergyMarketModuleContent.name, EnergyReportingModuleContent.name, GeothermModuleContent.name].forEach((tag) => {
+		[EnergyMarketModuleContent.name, EnergyReportingModuleContent.name, GeothermModuleContent.name, Analyse3DModuleContent.name].forEach((tag) => {
 			setCurrentModule(tag);
 
 			expect(store.getState().layers.active.length).toBe(1);
@@ -79,7 +79,7 @@ describe('ManageModulesPlugin', () => {
 
 		expect(store.getState().layers.active.length).toBe(0);
 
-		[MixerModuleContent.name, RedesignModuleContent.name, ResearchModuleContent.name, Analyse3DModuleContent.name].forEach((tag) => {
+		[MixerModuleContent.name, RedesignModuleContent.name, ResearchModuleContent.name].forEach((tag) => {
 			setCurrentModule(tag);
 
 			expect(store.getState().layers.active.length).toBe(1);

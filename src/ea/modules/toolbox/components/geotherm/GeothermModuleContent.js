@@ -5,7 +5,7 @@ import { AbstractModuleContentPanel } from '../../components/moduleContainer/Abs
 import { MODUS } from './CheckModus';
 import css from './container.css';
 import collapsableContentCss from './collapsableContent.css';
-import { BvvCoordinateRepresentations } from '../../../../../domain/coordinateRepresentation';
+import { BvvCoordinateRepresentations, GlobalCoordinateRepresentations } from '../../../../../domain/coordinateRepresentation';
 
 const Reset = 'reset';
 const ActivateMapClick = 'activateMapclick';
@@ -42,7 +42,7 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 	}
 
 	_getCoordinatesString(position) {
-		const transformedCoord = this._coordinateService.transform(position, this._mapService.getSrid(), BvvCoordinateRepresentations.UTM32.code);
+		const transformedCoord = this._coordinateService.transform(position, this._mapService.getSrid(), GlobalCoordinateRepresentations.WGS84);
 		return transformedCoord;
 	}
 
@@ -137,8 +137,9 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 			<div class=".ba-tool-container__content">${translate('ea_geotherm_check_introduction')}</div>
 		</div>`;
 
-		const stepTitle = (text, subtext) => html` <span style="color: var(--primary-color)">${text}${subtext ? ':' : ''}</span>
-			<span style="font-style: italic">${subtext}</span>`;
+		const stepTitle = (text, subtext) =>
+			html` <span style="color: var(--primary-color)">${text}${subtext ? ':' : ''}</span>
+				<span style="font-style: italic">${subtext}</span>`;
 
 		const firstButtonClass = model.mode ? (model.mode === MODUS.sonden ? 'active' : 'inactive') : 'unselected';
 		const secondButtonClass = model.mode ? (model.mode === MODUS.kollektoren ? 'active' : 'inactive') : 'unselected';

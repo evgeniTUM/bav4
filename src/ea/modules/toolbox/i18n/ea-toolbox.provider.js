@@ -36,7 +36,11 @@ export const provide = (lang) => {
 				ea_contribution_coordinates_text: 'Koordinaten des Standorts',
 				ea_contribution_coordinates_tooltip_1: 'Bitte klicken Sie auf "Standort markieren" und klicken Sie in die Karte.',
 				ea_contribution_coordinates_tooltip_2: 'Bitte klicken Sie in die Karte.',
-				ea_contribution_coordinates_placeholder: ''
+				ea_contribution_coordinates_placeholder: '',
+
+				ea_analyse3d_selection_location: 'Standort markieren',
+				ea_analyse3d_button_selection_inactive: 'Standort markieren',
+				ea_analyse3d_button_selection_active: 'Bitte in die Karte klicken'
 			};
 
 		case 'de':
@@ -75,7 +79,11 @@ export const provide = (lang) => {
 				ea_contribution_coordinates_text: 'Koordinaten des Standorts',
 				ea_contribution_coordinates_tooltip_1: 'Bitte klicken Sie auf "Standort markieren" und klicken Sie in die Karte.',
 				ea_contribution_coordinates_tooltip_2: 'Bitte klicken Sie in die Karte.',
-				ea_contribution_coordinates_placeholder: ''
+				ea_contribution_coordinates_placeholder: '',
+
+				ea_analyse3d_selection_location: 'Standort markieren',
+				ea_analyse3d_button_selection_inactive: 'Standort markieren',
+				ea_analyse3d_button_selection_active: 'Bitte in die Karte klicken'
 			};
 
 		default:
