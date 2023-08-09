@@ -13,7 +13,7 @@ export const _definitionToGeoResource = (definition) => {
 		switch (def.type) {
 			case 'wms':
 				return (
-					new WmsGeoResource(def.id, def.label, def.url, def.layers, def.format)
+					new WmsGeoResource(def.id, def.label, def.url, def.layers, def.format, def.opacity )
 						//set specific optional values
 						.setExtraParams(def.extraParams ?? {})
 				);
@@ -79,8 +79,10 @@ export const loadBvvGeoResources = async () => {
 		const geoResources = [];
 		const georesourceDefinitions = await result.json();
 		georesourceDefinitions.forEach((definition) => {
+			window.console.log('loadBvvGeoResources');
 			const geoResource = _definitionToGeoResource(definition);
 			if (geoResource) {
+				window.console.log(geoResource);
 				geoResources.push(geoResource);
 			} else {
 				console.warn('Could not create a GeoResource  for ' + definition.id);
