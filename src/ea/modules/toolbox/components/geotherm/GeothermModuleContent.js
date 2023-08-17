@@ -39,6 +39,7 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 		this._translationService = translationService;
 		this._coordinateService = coordinateService;
 		this._mapService = mapService;
+		this._subscribers = [];
 	}
 
 	_getCoordinatesString(position) {
@@ -93,6 +94,7 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 	reset() {
 		setLocation(null);
 		setTaggingMode(false);
+		this._subscribers.forEach((o) => o());
 		this.signal(Reset, {
 			mode: undefined
 		});
@@ -107,15 +109,17 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 	 * @override
 	 */
 	onInitialize() {
-		this.observe(
-			(state) => state.contribution,
-			(data) => this.signal(Update, data)
-		);
-		this.observe(
-			(state) => state.contribution.position,
-			(data) => this.signal(Position_Change, data),
-			false
-		);
+		this._subscribers = [
+			this.observe(
+				(state) => state.contribution,
+				(data) => this.signal(Update, data)
+			),
+			this.observe(
+				(state) => state.contribution.position,
+				(data) => this.signal(Position_Change, data),
+				false
+			)
+		];
 	}
 	/**
 	 * @override
