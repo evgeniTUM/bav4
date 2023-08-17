@@ -1,46 +1,57 @@
 import { ResearchModuleContent } from '../../../../../../src/ea/modules/toolbox/components/research/ResearchModuleContent';
-import { AbstractModuleContent } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/AbstractModuleContent';
-import { fnModuleCommReducer } from '../../../../../../src/ea/store/fnModuleComm/fnModuleComm.reducer';
-import { geofeatureReducer } from '../../../../../../src/ea/store/geofeature/geofeature.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { TestUtils } from '../../../../../test-utils';
+import { AbstractModuleContentPanel } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/AbstractModuleContentPanel';
+import { initialState } from '../../../../../../src/ea/store/contribution/contribution.reducer';
+import { contributionReducer } from '../../../../../../src/ea/store/contribution/contribution.reducer';
+import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
+import { toolsReducer } from '../../../../../../src/store/tools/tools.reducer';
+import { modalReducer } from '../../../../../../src/store/modal/modal.reducer';
 
 window.customElements.define(ResearchModuleContent.tag, ResearchModuleContent);
 
 describe('ResearchModuleContent', () => {
-	const storeActions = [];
+	let store;
 
-	const configServiceMock = {
-		getValueAsPath() {}
+	const testState = {
+		contribution: initialState,
+		tools: { current: ResearchModuleContent.tag }
 	};
 
-	const setup = async (state) => {
-		storeActions.length = 0;
+	const configServiceMock = {
+		getValueAsPath: (v) => v,
+		getValue: (v) => v
+	};
 
-		TestUtils.setupStoreAndDi(state, {
-			spyReducer: (state, action) => storeActions.push(action),
-			geofeature: geofeatureReducer,
-			fnModuleComm: fnModuleCommReducer
+	const setup = async (customState, config = {}) => {
+		const state = {
+			...testState,
+			...customState
+		};
+
+		const { embed = false, isTouch = false } = config;
+
+		store = TestUtils.setupStoreAndDi(state, {
+			contribution: contributionReducer,
+			modal: modalReducer,
+			tools: toolsReducer,
+			ea: eaReducer
 		});
-		$injector.registerSingleton('TranslationService', { translate: (key) => key }).registerSingleton('ConfigService', configServiceMock);
+		$injector
+			.registerSingleton('EnvironmentService', {
+				isEmbedded: () => embed,
+				isTouch: () => isTouch
+			})
+			.registerSingleton('TranslationService', { translate: (key) => key })
+			.registerSingleton('ConfigService', configServiceMock);
 		return TestUtils.render(ResearchModuleContent.tag);
 	};
 
 	describe('class', () => {
-		it('inherits from AbstractModuleContent', async () => {
+		it('inherits from AbstractModuleContentPanel', async () => {
 			const element = await setup();
 
-			expect(element instanceof AbstractModuleContent).toBeTrue();
-		});
-
-		it('has correct configuration', async () => {
-			const element = await setup();
-			expect(element.getConfig()).toEqual({
-				iframe: 'myResearchIFrame',
-				module: 'recherche',
-				frame_id: 'research_iframe',
-				header_title: 'toolbox_recherche_header'
-			});
+			expect(element instanceof AbstractModuleContentPanel).toBeTrue();
 		});
 	});
 });
