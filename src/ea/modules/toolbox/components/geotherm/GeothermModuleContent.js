@@ -232,8 +232,7 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 							<div class="popup-hint">
 								<div class="bold">Pop-ups im Browser erlaubt?</div>
 								<span>Bitte das Öffnen von Pop-up-Fenstern für die Domain</span>
-								<span class="bold">${window.location.hostname}</span>
-								<span>&nbsp;zulassen.</span>
+								<span class="bold">${window.location.hostname}</span><span>&nbsp;zulassen.</span>
 							</div>
 						</div>
 					</collapsable-content>

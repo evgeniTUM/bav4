@@ -79,10 +79,8 @@ export const loadBvvGeoResources = async () => {
 		const geoResources = [];
 		const georesourceDefinitions = await result.json();
 		georesourceDefinitions.forEach((definition) => {
-			window.console.log('loadBvvGeoResources');
 			const geoResource = _definitionToGeoResource(definition);
 			if (geoResource) {
-				window.console.log(geoResource);
 				geoResources.push(geoResource);
 			} else {
 				console.warn('Could not create a GeoResource  for ' + definition.id);
