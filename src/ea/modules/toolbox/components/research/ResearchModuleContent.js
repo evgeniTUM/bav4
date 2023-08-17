@@ -36,9 +36,6 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 		this._subscribers = [];
 	}
 
-	/**
-	 * @override
-	 */
 	onInitialize() {
 		const loadThemes = async () => {
 			const themes = await this._researchService.themes();
