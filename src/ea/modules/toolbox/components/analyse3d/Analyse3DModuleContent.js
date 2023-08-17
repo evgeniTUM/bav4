@@ -4,9 +4,9 @@ import { $injector } from '../../../../../injection';
 import { AbstractMvuContentPanel } from '../../../../../modules/menu/components/mainMenu/content/AbstractMvuContentPanel';
 import { setLocation, setTaggingMode } from '../../../../store/contribution/contribution.action';
 import css from './analyse3d.css';
-import collapsableContentCSS from './collapsableContent.css';
 
 const Update = 'update';
+const Reset = 'reset';
 
 const initialModel = {
 	isPortrait: false,
@@ -41,21 +41,23 @@ export class Analyse3DModuleContent extends AbstractMvuContentPanel {
 			case Update: {
 				return { ...model, ...data };
 			}
+			case Reset: {
+				return initialModel;
+			}
 		}
 	}
 
 	reset() {
-		this.signal(Update, initialModel);
 		setLocation(null);
 		setTaggingMode(false);
 		this._subscribers.forEach((o) => o());
+		this.signal(Reset);
 	}
 
 	/**
 	 * @override
 	 */
 	onDisconnect() {
-		console.log('...onDisconnect');
 		this.reset();
 	}
 
@@ -63,22 +65,19 @@ export class Analyse3DModuleContent extends AbstractMvuContentPanel {
 	 * @override
 	 */
 	onAfterRender() {
-		console.log('before');
 		setTaggingMode(true);
-		console.log('after');
 	}
 
 	/**
 	 * @override
 	 */
 	onInitialize() {
-		console.log('...onInitialize');
 		const openLinkWithCoordinates = (position) => {
-			if (position) {
-				const utmCoorinates = this._coordinateService.stringify(position, GlobalCoordinateRepresentations.WGS84, { digits: 5 }).replace(' ', ',');
-				const url = `${this._configService.getValue('ANALYSE3D_URL')}${utmCoorinates}`;
-				window.open(url, '_blank');
-			}
+			// if (position) {
+			// 	const utmCoorinates = this._coordinateService.stringify(position, GlobalCoordinateRepresentations.WGS84, { digits: 5 }).replace(' ', ',');
+			// 	const url = `${this._configService.getValue('ANALYSE3D_URL')}${utmCoorinates}`;
+			// 	window.open(url, '_blank');
+			// }
 		};
 
 		this._subscribers = [
@@ -92,7 +91,6 @@ export class Analyse3DModuleContent extends AbstractMvuContentPanel {
 			this.observe(
 				(state) => state.contribution.tagging,
 				(data) => {
-					console.log(data);
 					this.signal(Update, { tagging: data });
 				}
 			)
@@ -104,7 +102,6 @@ export class Analyse3DModuleContent extends AbstractMvuContentPanel {
 	 */
 	createView() {
 		const translate = (key) => this._translationService.translate(key);
-		console.log('render');
 
 		return html` <div>
 			<style>

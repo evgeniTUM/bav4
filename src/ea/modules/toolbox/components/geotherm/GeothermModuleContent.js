@@ -5,7 +5,7 @@ import { AbstractModuleContentPanel } from '../../components/moduleContainer/Abs
 import { MODUS } from './CheckModus';
 import css from './container.css';
 import collapsableContentCss from './collapsableContent.css';
-import { BvvCoordinateRepresentations, GlobalCoordinateRepresentations } from '../../../../../domain/coordinateRepresentation';
+import { GlobalCoordinateRepresentations } from '../../../../../domain/coordinateRepresentation';
 
 const Reset = 'reset';
 const ActivateMapClick = 'activateMapclick';
