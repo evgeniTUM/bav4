@@ -51,6 +51,21 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 	/**
 	 * @override
 	 */
+	onInitialize() {
+		const loadThemes = async () => {
+			const themes = await this._researchService.getThemes();
+			const category = Object.keys(themes)[0];
+			const theme = themes[category][0];
+
+			this.signal(Update, { themes, theme, category });
+		};
+
+		setTimeout(loadThemes);
+	}
+
+	/**
+	 * @override
+	 */
 	update(type, data, model) {
 		switch (type) {
 			case Update: {
