@@ -12,7 +12,10 @@ const initialModel = {
 	themes: {},
 	category: null,
 	theme: null,
+	filters: [],
 	themeSpec: {},
+	resultsMetadata: {},
+	results: {},
 	openSections: ['step1']
 };
 export class ResearchModuleContent extends AbstractModuleContentPanel {
@@ -38,7 +41,7 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 	 */
 	onInitialize() {
 		const loadThemes = async () => {
-			const themes = await this._researchService.getThemes();
+			const themes = await this._researchService.themes();
 			const category = Object.keys(themes)[0];
 			const theme = themes[category][0];
 
@@ -80,38 +83,56 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 	createView(model) {
 		const translate = (key) => this._translationService.translate(key);
 
-		const test = async () => {
-			const test = await this._researchService.getData();
-			console.log(test);
-		};
-
 		const onToggle = (e) => {
 			this.signal(Update, { openSections: [e.target.id] });
 		};
 
 		const onCategoryChanged = (e) => {
-			this.signal(Update, { category: e.target.value });
+			const category = e.target.value;
+			const theme = model.themes[category][0];
+			this.signal(Update, { category, theme });
 		};
 
-		const onThemeChange = (e) => {
-			this.signal(Update, { theme: e.target.value });
+		const onThemeChange = async (e) => {
+			const theme = e.target.value;
+			const resultsMetadata = await this._researchService.queryMetadata(theme, []);
+			this.signal(Update, { theme, resultsMetadata });
+
+			setTimeout(async () => {
+				const testMetadata = await this._researchService.queryMetadata(theme, [
+					{
+						name: 'Inbetriebnahmejahr',
+						type: 'numeric',
+						min: 2015,
+						max: Infinity
+					}
+				]);
+			});
 		};
 
-		const content =
+		const themeSelectionContent =
 			model.themes && model.category
 				? html`
 						<collapsable-content id="step1" .title=${'1. Wählen Sie ein Thema aus'} .open=${model.openSections.includes('step1')} @toggle=${onToggle}>
 							<select id="category" @change=${onCategoryChanged} title="Kategorie" required>
-								${Object.keys(model.themes).map((e) => html`<option value="${e}">${e}</option> `)}
+								${Object.keys(model.themes).map((e) => html`<option value="${e}" ?selected=${e === model.category}>${e}</option>`)}
 								<label for="category">Category</label>
 							</select>
 							<select id="theme" @change=${onThemeChange} title="Thema" required>
-								${model.themes[model.category].map((e) => html`<option value="${e}">${e}</option> `)}
+								${model.themes[model.category].map((e) => html`<option value="${e}" ?selected=${e === model.theme}>${e}</option>`)}
 								<label for="theme">Thema</label>
 							</select>
 						</collapsable-content>
 				  `
 				: '';
+
+		const filterContent = html`
+			<collapsable-content id="step2" .title=${'2. Filtern Sie nach Eigenschaften'} .open=${model.openSections.includes('step2')} @toggle=${onToggle}>
+				${model.filters}
+			</collapsable-content>
+		`;
+
+		const resultsMetadata = JSON.stringify(model.resultsMetadata, null, 2);
 
 		return html`<style>
 				${css}
@@ -119,7 +140,7 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 			<div class="container">
 				<div class="header">${translate('ea_menu_recherche')}</div>
 
-				<div class="content">${content}</div>
+				<div class="content">${themeSelectionContent} ${filterContent} ${resultsMetadata}</div>
 
 				<div class="footer-content"></div>
 			</div>`;
