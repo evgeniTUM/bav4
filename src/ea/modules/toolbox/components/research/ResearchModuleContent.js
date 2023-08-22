@@ -53,7 +53,7 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 	 */
 	onInitialize() {
 		const loadThemes = async () => {
-			const themes = await this._researchService.getThemes();
+			const themes = await this._researchService.themes();
 			const category = Object.keys(themes)[0];
 			const theme = themes[category][0];
 
