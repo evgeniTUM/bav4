@@ -101,7 +101,9 @@ describe('EAContributon', () => {
 		it('email, category and position are required inputs', async () => {
 			const element = await setup();
 
-			expect(element.shadowRoot.querySelector('#coordinates').required).toBeTrue();
+			expect(element.shadowRoot.querySelector('#mode-validation-element').validity.valid).toBeTrue();
+			expect(element.shadowRoot.querySelector('#location-validation-element').validity.valid).toBeTrue();
+
 			expect(element.shadowRoot.querySelector('#category').required).toBeTrue();
 			expect(element.shadowRoot.querySelector('#email').required).toBeTrue();
 
@@ -116,13 +118,7 @@ describe('EAContributon', () => {
 	});
 
 	describe('location handling', () => {
-		it('shows no tag location when not present', async () => {
-			const element = await setup();
-
-			expect(element.shadowRoot.querySelector('.coordinates').value).toEqual('');
-		});
-
-		it('shows tag location when present', async () => {
+		it('uses tag location when present', async () => {
 			const givenCoordinates = [42, 24];
 			const expectedCoordString = '42.00000 24.00000';
 			const stringifyMock = spyOn(coordinateServiceMock, 'stringify').and.returnValue(expectedCoordString);
@@ -133,7 +129,6 @@ describe('EAContributon', () => {
 			setLocation(givenCoordinates);
 
 			expect(stringifyMock).toHaveBeenCalledWith([42, 24], GlobalCoordinateRepresentations.WGS84, { digits: 5 });
-			expect(element.shadowRoot.querySelector('.coordinates').value).toEqual(expectedCoordString);
 		});
 
 		it('activates tagging mode inside the map when "tag" button is clicked', async () => {
@@ -264,7 +259,7 @@ describe('EAContributon', () => {
 			expect(query('#step3').querySelectorAll('textaread').length).toBe(0);
 
 			const textArea = query('textarea');
-			expect(textArea.placeholder).toBe('Bitte hier Korrektur eintragen*');
+			expect(textArea.placeholder).toBe('Bitte hier Korrektur eintragen');
 			expect(textArea.required).toBeTrue();
 		});
 	});
