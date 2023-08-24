@@ -1,6 +1,17 @@
 import { csv2json } from '../utils/eaUtils';
 import csvContent from './research-test-data.csv';
 
+const fieldsSpecs = [
+	{ type: 'enum', name: 'Strom-/ Wärmeerzeugung' },
+	{ type: 'numeric', name: 'Inbetriebnahmejahr' }
+];
+
+const filter = (data, filters) => {
+	const check = (data, filter) => {
+		if (filter.type === 'numeric') return data[filter.name] < filter.max && data[filter.name] > filter.min;
+	};
+	return data.filter((data) => filters.every((filter) => check(data, filter)));
+};
 export class ResearchService {
 	constructor() {
 		this.data = csv2json(csvContent);
@@ -15,18 +26,6 @@ export class ResearchService {
 
 	async queryMetadata(theme, filters) {
 		if (theme === 'Biomasseanlagen') {
-			const fieldsSpecs = [
-				{ type: 'enum', name: 'Strom-/ Wärmeerzeugung' },
-				{ type: 'numeric', name: 'Inbetriebnahmejahr' }
-			];
-
-			const filter = (data, filters) => {
-				const check = (data, filter) => {
-					if (filter.type === 'numeric') return data[filter.name] < filter.max && data[filter.name] > filter.min;
-				};
-				return data.filter((data) => filters.every((filter) => check(data, filter)));
-			};
-
 			const results = filter(this.data, filters);
 
 			const getMetaInfo = (fieldSpec, data) => {
@@ -61,7 +60,13 @@ export class ResearchService {
 		};
 	}
 
-	async query(theme, filters, page) {}
+	async query(theme, filters, page) {
+		if (theme === 'Biomasseanlagen') {
+			const results = filter(this.data, filters);
+			return results;
+		}
+		return [];
+	}
 
 	async regions() {
 		return {};
