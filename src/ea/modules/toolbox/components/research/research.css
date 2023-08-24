@@ -1,7 +1,17 @@
-.content {
-	margin: 2em 1em 0em 1em;
+.container {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
 }
 
-.content div {
-	margin-top: 1em;
+.header {
+	padding: 0.8em 1.5em;
+	font-weight: bold;
+	background: var(--primary-color);
+	color: var(--text3);
+}
+
+.content {
+	overflow-y: scroll;
+	height: 100%;
 }

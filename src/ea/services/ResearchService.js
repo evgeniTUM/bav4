@@ -2,8 +2,18 @@ import { csv2json } from '../utils/eaUtils';
 import csvContent from './research-test-data.csv';
 
 const fieldsSpecs = [
-	{ type: 'enum', name: 'Strom-/ Wärmeerzeugung' },
-	{ type: 'numeric', name: 'Inbetriebnahmejahr' }
+	{ type: 'enum', name: 'Strom-/ Wärmeerzeugung', showInResults: true },
+	{ type: 'enum', name: 'Brennstofftyp', showInResults: true },
+	{ type: 'enum', name: 'Biomethan', showInResults: true },
+	{ type: 'numeric', name: 'Inbetriebnahmejahr', showInResults: true },
+	{ type: 'numeric', name: 'Elektrische Leistung (kW)', showInResults: true },
+	{ type: 'numeric', name: 'Stromproduktion 2021 (kWh)', showInResults: true },
+	{ type: 'numeric', name: 'Volllaststunden (berechnet für Strom)', showInResults: true },
+	{ type: 'numeric', name: 'Nennwärmeleistung Biomasse (MW)', showInResults: true },
+	{ type: 'numeric', name: 'Nennwärmeleistung Gesamt (MW)', showInResults: true },
+	{ type: 'numeric', name: 'Feuerungswärmeleistung (MW)', showInResults: true },
+	{ type: 'enum', name: 'Bürgerenergieanlage', showInResults: true },
+	{ type: 'numeric', name: 'Inbetriebnahmejahr', showInResults: false }
 ];
 
 const filter = (data, filters) => {

@@ -17,7 +17,7 @@ const initialModel = {
 	themeSpec: {},
 	resultsMetadata: {},
 	results: [],
-	openSections: ['step1']
+	openSections: ['step1', 'step2', 'step3']
 };
 export class ResearchModuleContent extends AbstractModuleContentPanel {
 	constructor() {
@@ -103,7 +103,7 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 		const translate = (key) => this._translationService.translate(key);
 
 		const onToggle = (e) => {
-			this.signal(Update, { openSections: [e.target.id] });
+			// this.signal(Update, { openSections: [e.target.id] });
 		};
 
 		const onThemeChange = async (category, theme) => {
@@ -156,8 +156,6 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 						${results}
 					</collapsable-content>
 				</div>
-
-				<div class="footer-content"></div>
 			</div>`;
 	}
 
