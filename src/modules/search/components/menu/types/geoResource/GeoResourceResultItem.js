@@ -110,8 +110,11 @@ export class GeoResourceResultItem extends MvuElement {
 			removeLayer(GeoResourceResultItem._tmpLayerId(result.geoResourceId));
 			//add the "real" layer after some delay, which gives the user a better feedback
 			const id = `${result.geoResourceId}_${createUniqueId()}`;
+			const geoR = this._geoResourceService.byId(result.geoResourceId);
+			const opacity = geoR?.opacity || 1;
+
 			//we ask the GeoResourceService for an optionally updated label
-			addLayer(id, { geoResourceId: result.geoResourceId });
+			addLayer(id, { geoResourceId: result.geoResourceId, opacity });
 
 			if (isPortrait) {
 				//close the main menu

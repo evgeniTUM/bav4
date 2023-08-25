@@ -200,6 +200,29 @@ describe('GeoResourceResultItem', () => {
 				expect(store.getState().layers.active[0].id).toContain(geoResourceId);
 			});
 
+			it('sets the opacity to 1 if layer is unknown', async () => {
+				const element = await setupOnClickTests();
+				const target = element.shadowRoot.querySelector('li');
+				spyOn(geoResourceService, 'byId').withArgs(geoResourceId).and.returnValue(null);
+
+				target.click();
+
+				expect(store.getState().layers.active.length).toBe(1);
+				expect(store.getState().layers.active[0].opacity).toBe(1);
+			});
+
+			it('sets the opacity to the the correct value', async () => {
+				const element = await setupOnClickTests();
+				spyOn(geoResourceService, 'byId').withArgs(geoResourceId).and.returnValue({ opacity: 0.5 });
+
+				const target = element.shadowRoot.querySelector('li');
+
+				target.click();
+
+				expect(store.getState().layers.active.length).toBe(1);
+				expect(store.getState().layers.active[0].opacity).toBe(0.5);
+			});
+
 			it('opens the "maps" tab of the main menu in landscape orientation', async () => {
 				const element = await setupOnClickTests(false);
 

@@ -168,6 +168,24 @@ describe('CatalogLeaf', () => {
 
 					expect(store.getState().layers.active.length).toBe(0);
 				});
+
+				it('sets initial opacity when adding a layer', async () => {
+					const expectedOpacity = 0.42;
+					const geoResourceLabel = 'someLabel';
+					const geoResourceObject = new XyzGeoResource(layer.id, geoResourceLabel, 'someUrl');
+					geoResourceObject.setOpacity(expectedOpacity);
+					spyOn(geoResourceServiceMock, 'byId').withArgs(layer.geoResourceId).and.returnValue(geoResourceObject);
+					//load leaf data
+					const leaf = getLeaf();
+					const element = await setup('foo', []);
+					//assign data
+					element.data = leaf;
+					const checkbox = element.shadowRoot.querySelector('ba-checkbox');
+
+					checkbox.click();
+
+					expect(store.getState().layers.active[0].opacity).toBe(expectedOpacity);
+				});
 			});
 
 			describe('icon info events', () => {
