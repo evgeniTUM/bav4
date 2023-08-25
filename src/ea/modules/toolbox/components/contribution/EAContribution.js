@@ -79,10 +79,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 				return { ...model, categoryFields: {} };
 
 			case Position_Change: {
-				setTimeout(() => setTaggingMode(false), 500);
-
-				if (model.position === null && data) {
-					return { ...model, openSections: model.currentCategory ? model.openSections : 'step3' };
+				if (data) {
+					return { ...model, position: data, openSections: 'step3' };
 				}
 
 				return model;
@@ -277,13 +275,12 @@ export class EAContribution extends AbstractMvuContentPanel {
 			}
 		};
 
+		console.log(model.openSections.includes('step2'));
+		setTaggingMode(model.openSections.includes('step2'));
+
 		const stepTitle = (text, subtext) =>
 			html` <span style="color: var(--primary-color)">${text}${subtext ? ':' : ''}</span>
 				<span style="font-style: italic">${subtext}</span>`;
-
-		const onSelectButtonClick = () => {
-			setTaggingMode(true);
-		};
 
 		const form = html`
 			<form id='report' class='form-content' action="#">
@@ -315,12 +312,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 						.title=${stepTitle('2. Standort des Objektes markieren', getCoordinatesString(model.position))}
 						.open=${model.openSections.includes('step2')} @toggle=${onToggle}>
 						<div>
-							<div class="tag-button">
 								<input class='mode-validation-element' id='location-validation-element'></input>
-								<ba-button style="width:20em" id="tag" .type=${'primary'} @click=${onSelectButtonClick}
-									.label=${translate('ea_contribution_button_tag_subtext' + (model.tagging ? '_tagging' : ''))}>
-								</ba-button>
-							</div>
+							Klicken Sie in die Karte, um den Standort des Objektes zu markieren.
 						</div>
 					</collapsable-content>
 					</div>

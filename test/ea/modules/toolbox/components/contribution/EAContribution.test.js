@@ -125,39 +125,28 @@ describe('EAContributon', () => {
 
 			const element = await setup();
 
-			element.shadowRoot.querySelector('#tag').click();
+			element.shadowRoot.querySelector('#new').click();
 			setLocation(givenCoordinates);
 
 			expect(stringifyMock).toHaveBeenCalledWith([42, 24], GlobalCoordinateRepresentations.WGS84, { digits: 5 });
 		});
 
-		it('activates tagging mode inside the map when "tag" button is clicked', async () => {
+		it('activates tagging mode after contribution mode is selected', async () => {
 			const element = await setup();
-			const tagButton = element.shadowRoot.querySelector('#tag');
+			const newButton = element.shadowRoot.querySelector('#new');
 
 			expect(store.getState().contribution.tagging).toBe(false);
 
-			tagButton.click();
+			newButton.click();
 
 			expect(store.getState().contribution.tagging).toBe(true);
 		});
 
-		it('tag button changes title when tagging mode is active', async () => {
-			const element = await setup();
-			const tagButton = element.shadowRoot.querySelector('#tag');
-
-			expect(tagButton.label).toEqual('ea_contribution_button_tag_subtext');
-
-			setTaggingMode(true);
-
-			expect(tagButton.label).toEqual('ea_contribution_button_tag_subtext_tagging');
-		});
-
-		it('deactivates tagging mode when coordinates are selected', async () => {
+		it('jumps to step3 and deactivates tagging mode when coordinates are selected', async () => {
 			jasmine.clock().install();
 
 			const element = await setup();
-			const tagButton = element.shadowRoot.querySelector('#tag');
+			const tagButton = element.shadowRoot.querySelector('#new');
 
 			tagButton.click();
 			expect(store.getState().contribution.tagging).toBe(true);
@@ -166,6 +155,7 @@ describe('EAContributon', () => {
 			jasmine.clock().tick(500);
 
 			expect(store.getState().contribution.tagging).toBe(false);
+			expect(element.shadowRoot.querySelector('#step3').open).toBeTrue();
 
 			jasmine.clock().uninstall();
 		});
@@ -288,7 +278,6 @@ describe('EAContributon', () => {
 
 			const query = (query) => element.shadowRoot.querySelector(query);
 
-			query('#tag').click();
 			setLocation(expectedCoordinates);
 
 			query('#category').value = expectedCategory;
@@ -359,7 +348,6 @@ describe('EAContributon', () => {
 
 			const query = (query) => element.shadowRoot.querySelector(query);
 
-			query('#tag').click();
 			setLocation(expectedCoordinates);
 
 			query('#category').value = expectedCategory;
@@ -406,7 +394,6 @@ describe('EAContributon', () => {
 
 			query('#new').click();
 
-			query('#tag').click();
 			setLocation([42, 0]);
 
 			query('#category').value = 'Test2';
@@ -433,7 +420,6 @@ describe('EAContributon', () => {
 			const query = (query) => element.shadowRoot.querySelector(query);
 
 			query('#new').click();
-			query('#tag').click();
 			setLocation([42, 2]);
 
 			query('#category').value = 'Test2';
