@@ -1,7 +1,7 @@
 import { GlobalCoordinateRepresentations } from '../../../../../../src/domain/coordinateRepresentation';
 import { MODUS } from '../../../../../../src/ea/modules/toolbox/components/contribution/ContributionModus';
 import { EAContribution } from '../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
-import { setLocation, setTaggingMode } from '../../../../../../src/ea/store/contribution/contribution.action';
+import { setLocation } from '../../../../../../src/ea/store/contribution/contribution.action';
 import { contributionReducer, initialState } from '../../../../../../src/ea/store/contribution/contribution.reducer';
 import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../src/injection';
@@ -101,7 +101,9 @@ describe('EAContributon', () => {
 		it('email, category and position are required inputs', async () => {
 			const element = await setup();
 
-			expect(element.shadowRoot.querySelector('#coordinates').required).toBeTrue();
+			expect(element.shadowRoot.querySelector('#mode-validation-element').validity.valid).toBeTrue();
+			expect(element.shadowRoot.querySelector('#location-validation-element').validity.valid).toBeTrue();
+
 			expect(element.shadowRoot.querySelector('#category').required).toBeTrue();
 			expect(element.shadowRoot.querySelector('#email').required).toBeTrue();
 
@@ -116,53 +118,35 @@ describe('EAContributon', () => {
 	});
 
 	describe('location handling', () => {
-		it('shows no tag location when not present', async () => {
-			const element = await setup();
-
-			expect(element.shadowRoot.querySelector('.coordinates').value).toEqual('');
-		});
-
-		it('shows tag location when present', async () => {
+		it('uses tag location when present', async () => {
 			const givenCoordinates = [42, 24];
 			const expectedCoordString = '42.00000 24.00000';
 			const stringifyMock = spyOn(coordinateServiceMock, 'stringify').and.returnValue(expectedCoordString);
 
 			const element = await setup();
 
-			element.shadowRoot.querySelector('#tag').click();
+			element.shadowRoot.querySelector('#new').click();
 			setLocation(givenCoordinates);
 
 			expect(stringifyMock).toHaveBeenCalledWith([42, 24], GlobalCoordinateRepresentations.WGS84, { digits: 5 });
-			expect(element.shadowRoot.querySelector('.coordinates').value).toEqual(expectedCoordString);
 		});
 
-		it('activates tagging mode inside the map when "tag" button is clicked', async () => {
+		it('activates tagging mode after contribution mode is selected', async () => {
 			const element = await setup();
-			const tagButton = element.shadowRoot.querySelector('#tag');
+			const newButton = element.shadowRoot.querySelector('#new');
 
 			expect(store.getState().contribution.tagging).toBe(false);
 
-			tagButton.click();
+			newButton.click();
 
 			expect(store.getState().contribution.tagging).toBe(true);
 		});
 
-		it('tag button changes title when tagging mode is active', async () => {
-			const element = await setup();
-			const tagButton = element.shadowRoot.querySelector('#tag');
-
-			expect(tagButton.label).toEqual('ea_contribution_button_tag_subtext');
-
-			setTaggingMode(true);
-
-			expect(tagButton.label).toEqual('ea_contribution_button_tag_subtext_tagging');
-		});
-
-		it('deactivates tagging mode when coordinates are selected', async () => {
+		it('jumps to step3 and deactivates tagging mode when coordinates are selected', async () => {
 			jasmine.clock().install();
 
 			const element = await setup();
-			const tagButton = element.shadowRoot.querySelector('#tag');
+			const tagButton = element.shadowRoot.querySelector('#new');
 
 			tagButton.click();
 			expect(store.getState().contribution.tagging).toBe(true);
@@ -171,6 +155,7 @@ describe('EAContributon', () => {
 			jasmine.clock().tick(500);
 
 			expect(store.getState().contribution.tagging).toBe(false);
+			expect(element.shadowRoot.querySelector('#step3').open).toBeTrue();
 
 			jasmine.clock().uninstall();
 		});
@@ -264,7 +249,7 @@ describe('EAContributon', () => {
 			expect(query('#step3').querySelectorAll('textaread').length).toBe(0);
 
 			const textArea = query('textarea');
-			expect(textArea.placeholder).toBe('Bitte hier Korrektur eintragen*');
+			expect(textArea.placeholder).toBe('Bitte hier Korrektur eintragen');
 			expect(textArea.required).toBeTrue();
 		});
 	});
@@ -293,7 +278,6 @@ describe('EAContributon', () => {
 
 			const query = (query) => element.shadowRoot.querySelector(query);
 
-			query('#tag').click();
 			setLocation(expectedCoordinates);
 
 			query('#category').value = expectedCategory;
@@ -364,7 +348,6 @@ describe('EAContributon', () => {
 
 			const query = (query) => element.shadowRoot.querySelector(query);
 
-			query('#tag').click();
 			setLocation(expectedCoordinates);
 
 			query('#category').value = expectedCategory;
@@ -411,7 +394,6 @@ describe('EAContributon', () => {
 
 			query('#new').click();
 
-			query('#tag').click();
 			setLocation([42, 0]);
 
 			query('#category').value = 'Test2';
@@ -438,7 +420,6 @@ describe('EAContributon', () => {
 			const query = (query) => element.shadowRoot.querySelector(query);
 
 			query('#new').click();
-			query('#tag').click();
 			setLocation([42, 2]);
 
 			query('#category').value = 'Test2';

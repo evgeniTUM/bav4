@@ -59,8 +59,15 @@ export class EAContribution extends AbstractMvuContentPanel {
 				return { ...initialModel, ...data };
 
 			case Update: {
+				if (data.openSections) {
+					setTaggingMode(data.openSections.includes('step2'));
+				}
+
 				const modeButtons = this.shadowRoot.getElementById('mode-validation-element');
 				if (modeButtons) modeButtons.setCustomValidity(data.mode || model.mode ? '' : 'Bitte Modus auswählen');
+
+				const locationButton = this.shadowRoot.getElementById('location-validation-element');
+				if (locationButton) locationButton.setCustomValidity(model.position !== null ? '' : 'Bitte Standort auswählen');
 
 				return { ...model, ...data };
 			}
@@ -76,11 +83,9 @@ export class EAContribution extends AbstractMvuContentPanel {
 				return { ...model, categoryFields: {} };
 
 			case Position_Change: {
-				setTimeout(() => setTaggingMode(false), 500);
-
-				if (model.position === null && data) {
-					this.shadowRoot.getElementById('coordinates').setCustomValidity('');
-					return { ...model, openSections: model.currentCategory ? model.openSections : 'step3' };
+				if (data) {
+					setTaggingMode(false);
+					return { ...model, position: data, openSections: ['step3'] };
 				}
 
 				return model;
@@ -126,7 +131,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 		const translate = (key) => this._translationService.translate(key);
 
 		const onClickNewButton = (mode) => () => {
-			this.signal(Update, { mode, openSections: 'step2' });
+			this.signal(Update, { mode, openSections: ['step2'] });
 		};
 
 		const onClickFindButton = () => {
@@ -180,6 +185,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			return html`
 				<div id=${name} title=${name}>
 					<input
+						class=${optional ? '' : 'mandatory'}
 						placeholder=${name + (optional ? '' : '*')}
 						?required=${!optional}
 						type=${type}
@@ -195,7 +201,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			this.signal(Update, { currentCategory: e.target.value, categoryFields: {} });
 			model.categoryFields = {};
 			this.shadowRoot.querySelectorAll('.category-fields input').forEach((i) => (i.value = ''));
-			this.signal(Update, { openSections: 'step4' });
+			this.signal(Update, { openSections: ['step4'] });
 		};
 
 		const categoryFields = {};
@@ -274,12 +280,9 @@ export class EAContribution extends AbstractMvuContentPanel {
 			}
 		};
 
-		const stepTitle = (text, subtext) => html` <span style="color: var(--primary-color)">${text}${subtext ? ':' : ''}</span>
-			<span style="font-style: italic">${subtext}</span>`;
-
-		const onSelectButtonClick = () => {
-			setTaggingMode(true);
-		};
+		const stepTitle = (text, subtext) =>
+			html` <span style="color: var(--primary-color)">${text}${subtext ? ':' : ''}</span>
+				<span style="font-style: italic">${subtext}</span>`;
 
 		const form = html`
 			<form id='report' class='form-content' action="#">
@@ -311,18 +314,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 						.title=${stepTitle('2. Standort des Objektes markieren', getCoordinatesString(model.position))}
 						.open=${model.openSections.includes('step2')} @toggle=${onToggle}>
 						<div>
-							<div title=${translate(model.tagging ? 'ea_contribution_coordinates_tooltip_2' : 'ea_contribution_coordinates_tooltip_1')}>
-								<label for="coordinates">${translate('ea_contribution_coordinates_text')}</label>	
-								<input id='coordinates' name='coordinates' class="coordinates" 
-									oninvalid="this.setCustomValidity('Bitte Standort markieren')"
-									placeholder=${translate('ea_contribution_coordinates_placeholder')}
-									value=${getCoordinatesString()} required></input>
-							</div>
-							<div class="tag-button">
-								<ba-button style="width:20em" id="tag" .type=${'primary'} @click=${onSelectButtonClick}
-									.label=${translate('ea_contribution_button_tag_subtext' + (model.tagging ? '_tagging' : ''))}>
-								</ba-button>
-							</div>
+								<input class='mode-validation-element' id='location-validation-element'></input>
+							Klicken Sie in die Karte, um den Standort des Objektes zu markieren.
 						</div>
 					</collapsable-content>
 					</div>
@@ -344,11 +337,12 @@ export class EAContribution extends AbstractMvuContentPanel {
 					<collapsable-content id='step4' .customCSS=${collapsableContentCss}
 						.title=${stepTitle('4. Angaben zum Objekt')} .open=${model.openSections.includes('step4')}
 						@toggle=${onToggle}>
-						<div class='fields-help'>Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</div>
+
+						${isCorrection ? '' : html` <div class="fields-help">Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</div>`}
 
 ${isCorrection ? '' : html`<div class="category-fields">${categoryFields[model.currentCategory]}</div>`}
 
-						<textarea placeholder=${isCorrection ? 'Bitte hier Korrektur eintragen*' : 'Zusätzliche Information'} 
+						<textarea placeholder=${isCorrection ? 'Bitte hier Korrektur eintragen' : 'Zusätzliche Information'} 
 							id="additional-info" name='additionalInfo' value=${model.description} ?required=${isCorrection}
 							@input=${(e) => this.signal(Update, { additionalInfo: e.target.value })}></textarea>
 
@@ -357,11 +351,10 @@ ${isCorrection ? '' : html`<div class="category-fields">${categoryFields[model.c
 
 					<div class='step'>
 					<collapsable-content id='step5' .customCSS=${collapsableContentCss}
-						.title=${stepTitle('5. E-Mail Adresse')} .open=${model.openSections.includes('step5')} 
+						.title=${stepTitle('5. E-Mail-Adresse')} .open=${model.openSections.includes('step5')} 
 						@toggle=${onToggle}>
-						<input id='email' placeholder='Ihre E-Mail-Adresse*' required  type='email' name="email" 
+						<input id='email' placeholder='Ihre E-Mail-Adresse' required  type='email' name="email" 
 							@input=${(e) => this.signal(Update, { email: e.target.value })}>
-						
 						<p>
 							<br/>
 							Wir behalten uns vor, Meldungen nicht zu übernehmen. Wir beachten die Vorschriften des 
