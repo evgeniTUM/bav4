@@ -59,6 +59,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 				return { ...initialModel, ...data };
 
 			case Update: {
+				if (data.openSections) {
+					setTaggingMode(data.openSections.includes('step2'));
+				}
+
 				const modeButtons = this.shadowRoot.getElementById('mode-validation-element');
 				if (modeButtons) modeButtons.setCustomValidity(data.mode || model.mode ? '' : 'Bitte Modus auswählen');
 
@@ -80,7 +84,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 			case Position_Change: {
 				if (data) {
-					return { ...model, position: data, openSections: 'step3' };
+					setTaggingMode(false);
+					return { ...model, position: data, openSections: ['step3'] };
 				}
 
 				return model;
@@ -126,7 +131,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 		const translate = (key) => this._translationService.translate(key);
 
 		const onClickNewButton = (mode) => () => {
-			this.signal(Update, { mode, openSections: 'step2' });
+			this.signal(Update, { mode, openSections: ['step2'] });
 		};
 
 		const onClickFindButton = () => {
@@ -196,7 +201,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			this.signal(Update, { currentCategory: e.target.value, categoryFields: {} });
 			model.categoryFields = {};
 			this.shadowRoot.querySelectorAll('.category-fields input').forEach((i) => (i.value = ''));
-			this.signal(Update, { openSections: 'step4' });
+			this.signal(Update, { openSections: ['step4'] });
 		};
 
 		const categoryFields = {};
@@ -274,9 +279,6 @@ export class EAContribution extends AbstractMvuContentPanel {
 				submit();
 			}
 		};
-
-		console.log(model.openSections.includes('step2'));
-		setTaggingMode(model.openSections.includes('step2'));
 
 		const stepTitle = (text, subtext) =>
 			html` <span style="color: var(--primary-color)">${text}${subtext ? ':' : ''}</span>

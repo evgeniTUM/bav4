@@ -1,7 +1,7 @@
 import { GlobalCoordinateRepresentations } from '../../../../../../src/domain/coordinateRepresentation';
 import { MODUS } from '../../../../../../src/ea/modules/toolbox/components/contribution/ContributionModus';
 import { EAContribution } from '../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
-import { setLocation, setTaggingMode } from '../../../../../../src/ea/store/contribution/contribution.action';
+import { setLocation } from '../../../../../../src/ea/store/contribution/contribution.action';
 import { contributionReducer, initialState } from '../../../../../../src/ea/store/contribution/contribution.reducer';
 import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../src/injection';
