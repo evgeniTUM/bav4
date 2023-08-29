@@ -10,7 +10,7 @@ import { observe } from '../../../../../../../utils/storeUtils';
 import { HelpTooltip } from '../../../../../../../modules/olMap/tooltip/HelpTooltip';
 import { highlightCoordinateFeatureStyleFunction } from '../../../../../../../modules/olMap/handler/highlight/styleUtils';
 import { OlLayerHandler } from '../../../../../../../modules/olMap/handler/OlLayerHandler';
-import { setMapCursorStyle } from '../../../../../../store/mapclick/mapclick.action';
+import { setMapCursorStyle } from '../../../../../../store/module/ea.action';
 
 export const SELECT_LOCATION_LAYER_ID = 'select_location_layer_id';
 
@@ -112,8 +112,8 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 		this._helpTooltip.messageProvideFunction = () => 'Standort markieren';
 
 		return [
-			observe(store, (state) => state.contribution.position, onPositionChanged, false),
-			observe(store, (state) => state.contribution.tagging, onTaggingChanged, false)
+			observe(store, (state) => state.locationSelection.position, onPositionChanged, false),
+			observe(store, (state) => state.locationSelection.tagging, onTaggingChanged, false)
 		];
 	}
 }

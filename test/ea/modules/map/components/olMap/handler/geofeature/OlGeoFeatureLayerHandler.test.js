@@ -305,10 +305,10 @@ describe('OlGeoFeatureLayerHandler', () => {
 					classUnderTest.activate(map);
 
 					activateMapClick();
-					expect(store.getState().mapclick.mapCursorStyle).toEqual('crosshair');
+					expect(store.getState().ea.mapCursorStyle).toEqual('crosshair');
 
 					deactivateMapClick();
-					expect(store.getState().mapclick.mapCursorStyle).toEqual('auto');
+					expect(store.getState().ea.mapCursorStyle).toEqual('auto');
 				});
 			});
 		});

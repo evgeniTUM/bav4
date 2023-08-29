@@ -20,7 +20,7 @@ export const initialState = {
 	position: null
 };
 
-export const contributionReducer = (state = initialState, action) => {
+export const locationSelection = (state = initialState, action) => {
 	const { type, payload } = action;
 	switch (type) {
 		case DESCRIPTION_CHANGED: {

@@ -27,7 +27,7 @@ import { importReducer } from '../store/import/import.reducer';
 import { mfpReducer } from '../store/mfp/mfp.reducer';
 import { eaReducer } from '../ea/store/module/ea.reducer';
 import { fnModuleCommReducer } from '../ea/store/fnModuleComm/fnModuleComm.reducer';
-import { contributionReducer } from '../ea/store/locationSelection/locationSelection.reducer';
+import { locationSelection } from '../ea/store/locationSelection/locationSelection.reducer';
 import { geofeatureReducer } from '../ea/store/geofeature/geofeature.reducer';
 import { mapclickReducer } from '../ea/store/mapclick/mapclick.reducer';
 import { bottomSheetReducer } from '../store/bottomSheet/bottomSheet.reducer';
@@ -70,7 +70,7 @@ export class StoreService {
 			media: createMediaReducer(),
 			mapclick: mapclickReducer,
 			geofeature: geofeatureReducer,
-			contribution: contributionReducer,
+			contribution: locationSelection,
 			fnModuleComm: fnModuleCommReducer,
 			ea: eaReducer,
 			import: importReducer,

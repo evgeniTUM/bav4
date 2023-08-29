@@ -10,8 +10,9 @@ import { OlLayerHandler } from '../../../../../../../modules/olMap/handler/OlLay
 import { HelpTooltip } from '../../../../../../../modules/olMap/tooltip/HelpTooltip';
 import { fit } from '../../../../../../../store/position/position.action';
 import { observe } from '../../../../../../../utils/storeUtils';
-import { deactivateMapClick, requestMapClick, setMapCursorStyle } from '../../../../../../store/mapclick/mapclick.action';
+import { deactivateMapClick, requestMapClick } from '../../../../../../store/mapclick/mapclick.action';
 import { createStyleFnFromJson } from './styleUtils';
+import { setMapCursorStyle } from '../../../../../../store/module/ea.action';
 
 export const GEO_FEATURE_LAYER_ID = 'geofeature_layer';
 
