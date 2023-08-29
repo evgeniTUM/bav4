@@ -11,11 +11,6 @@ export const initialState = {
 	tagging: false,
 
 	/**
-	 * @type {String}
-	 */
-	description: null,
-
-	/**
 	 * @property {array<number>}
 	 */
 	position: null,
@@ -29,12 +24,6 @@ export const initialState = {
 export const locationSelection = (state = initialState, action) => {
 	const { type, payload } = action;
 	switch (type) {
-		case DESCRIPTION_CHANGED: {
-			return {
-				...state,
-				description: payload
-			};
-		}
 		case SET_LOCATION: {
 			return {
 				...state,
