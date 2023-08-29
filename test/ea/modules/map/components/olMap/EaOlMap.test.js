@@ -1,7 +1,6 @@
 import VectorLayer from 'ol/layer/Vector';
 import { EaOlMap } from '../../../../../../src/ea/modules/map/components/olMap/EaOlMap';
 import { geofeatureReducer } from '../../../../../../src/ea/store/geofeature/geofeature.reducer';
-import { setMapCursorStyle } from '../../../../../../src/ea/store/mapclick/mapclick.action';
 import { mapclickReducer } from '../../../../../../src/ea/store/mapclick/mapclick.reducer';
 import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../src/injection';
@@ -18,6 +17,7 @@ import { pointerReducer } from '../../../../../../src/store/pointer/pointer.redu
 import { changeZoom } from '../../../../../../src/store/position/position.action';
 import { positionReducer } from '../../../../../../src/store/position/position.reducer';
 import { TestUtils } from '../../../../../test-utils';
+import { setMapCursorStyle } from '../../../../../../src/ea/store/module/ea.action';
 
 window.customElements.define(EaOlMap.tag, EaOlMap);
 

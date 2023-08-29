@@ -2,7 +2,7 @@
  * Action creators to handle user contributions of new energy facilities
  * @module ea/contribution/action
  */
-import { SET_LOCATION, DESCRIPTION_CHANGED, TAGGING_MODE_CHANGED } from './contribution.reducer';
+import { SET_LOCATION, DESCRIPTION_CHANGED, TAGGING_MODE_CHANGED } from './locationSelection.reducer';
 import { $injector } from '../../../injection';
 
 const getStore = () => {

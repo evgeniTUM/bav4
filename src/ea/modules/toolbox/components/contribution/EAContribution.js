@@ -1,7 +1,7 @@
 import { html, nothing } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { AbstractMvuContentPanel } from '../../../../../modules/menu/components/mainMenu/content/AbstractMvuContentPanel';
-import { setLocation, setTaggingMode } from '../../../../store/contribution/contribution.action';
+import { setLocation, setTaggingMode } from '../../../../store/locationSelection/locationSelection.action';
 import { setCurrentModule } from '../../../../store/module/ea.action';
 import { ResearchModuleContent } from '../research/ResearchModuleContent';
 import { MODUS } from './ContributionModus';

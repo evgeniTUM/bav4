@@ -32,7 +32,7 @@ export class EaOlMap extends OlMap {
 	onInitialize() {
 		super.onInitialize();
 		this.observe(
-			(state) => state.mapclick.mapCursorStyle,
+			(state) => state.ea.mapCursorStyle,
 			(style) => {
 				this._cursorStyle = style;
 				this.render();

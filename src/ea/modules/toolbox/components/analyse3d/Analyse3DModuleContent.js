@@ -1,7 +1,7 @@
 import { html } from 'lit-html';
 import { GlobalCoordinateRepresentations } from '../../../../../domain/coordinateRepresentation';
 import { $injector } from '../../../../../injection';
-import { setLocation, setTaggingMode } from '../../../../store/contribution/contribution.action';
+import { setLocation, setTaggingMode } from '../../../../store/locationSelection/locationSelection.action';
 import css from './analyse3d.css';
 import { AbstractModuleContentPanel } from '../moduleContainer/AbstractModuleContentPanel';
 

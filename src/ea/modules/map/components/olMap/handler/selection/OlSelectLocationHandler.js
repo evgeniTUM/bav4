@@ -5,7 +5,7 @@ import MapBrowserEventType from 'ol/MapBrowserEventType';
 import { unByKey } from 'ol/Observable';
 import { Vector as VectorSource } from 'ol/source';
 import { $injector } from '../../../../../../../injection';
-import { setLocation } from '../../../../../../store/contribution/contribution.action';
+import { setLocation } from '../../../../../../store/locationSelection/locationSelection.action';
 import { observe } from '../../../../../../../utils/storeUtils';
 import { HelpTooltip } from '../../../../../../../modules/olMap/tooltip/HelpTooltip';
 import { highlightCoordinateFeatureStyleFunction } from '../../../../../../../modules/olMap/handler/highlight/styleUtils';
@@ -41,7 +41,6 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 		this._map = olMap;
 
 		this._unregisterList = this._register(this._storeService.getStore());
-		this._helpTooltip.messageProvideFunction = () => 'Standort markieren';
 
 		return this._layer;
 	}
@@ -109,6 +108,8 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 
 			this._map.renderSync();
 		};
+
+		this._helpTooltip.messageProvideFunction = () => 'Standort markieren';
 
 		return [
 			observe(store, (state) => state.contribution.position, onPositionChanged, false),

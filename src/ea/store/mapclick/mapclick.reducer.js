@@ -15,12 +15,7 @@ export const initialState = {
 	/**
 	 * @property {boolean}
 	 */
-	active: false,
-	/**
-	 * The style of the cursor on the map.
-	 * @property {string}
-	 */
-	mapCursorStyle: 'auto'
+	active: false
 };
 
 export const mapclickReducer = (state = initialState, action) => {
