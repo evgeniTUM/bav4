@@ -111,11 +111,11 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 	onInitialize() {
 		this._subscribers = [
 			this.observe(
-				(state) => state.contribution,
+				(state) => state.locationSelection,
 				(data) => this.signal(Update, data)
 			),
 			this.observe(
-				(state) => state.contribution.position,
+				(state) => state.locationSelection.position,
 				(data) => this.signal(Position_Change, data),
 				false
 			)

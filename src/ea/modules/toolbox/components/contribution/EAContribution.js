@@ -115,12 +115,12 @@ export class EAContribution extends AbstractMvuContentPanel {
 	 */
 	onInitialize() {
 		this.observe(
-			(state) => state.contribution.position,
+			(state) => state.locationSelection.position,
 			(data) => this.signal(Position_Change, data),
 			false
 		);
 		this.observe(
-			(state) => state.contribution,
+			(state) => state.locationSelection,
 			(data) => this.signal(Update, data)
 		);
 	}

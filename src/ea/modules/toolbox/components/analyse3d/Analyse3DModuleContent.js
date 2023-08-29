@@ -75,14 +75,14 @@ export class Analyse3DModuleContent extends AbstractModuleContentPanel {
 
 		this._subscribers = [
 			this.observe(
-				(state) => state.contribution.position,
+				(state) => state.locationSelection.position,
 				(data) => {
 					this.signal(Update, { position: data });
 					openLinkWithCoordinates(data);
 				}
 			),
 			this.observe(
-				(state) => state.contribution.tagging,
+				(state) => state.locationSelection.tagging,
 				(data) => {
 					this.signal(Update, { tagging: data });
 				}

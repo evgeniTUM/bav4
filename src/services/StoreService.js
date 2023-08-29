@@ -70,7 +70,7 @@ export class StoreService {
 			media: createMediaReducer(),
 			mapclick: mapclickReducer,
 			geofeature: geofeatureReducer,
-			contribution: locationSelection,
+			locationSelection: locationSelection,
 			fnModuleComm: fnModuleCommReducer,
 			ea: eaReducer,
 			import: importReducer,
