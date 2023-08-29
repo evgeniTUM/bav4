@@ -104,9 +104,8 @@ export class Analyse3DModuleContent extends AbstractModuleContentPanel {
 			<div class="container">
 				<div class="header">${translate('ea_menu_analyse3d')}</div>
 				<div class="content">
-					Mit der 3D-Analyse können Sie sich in einer 3D-Landschaft Bayerns frei bewegen, Erneuerbare-Energien-Anlagen (Windenergie- und
-					PV-Freiflächenanlagen) setzen und aus beliebiger Perspektive betrachten. So erhalten Sie einen Eindruck von der Sichtbarkeit geplanter
-					Anlagen und dem landschaftlichen Wandel.
+					Mit der 3D-Analyse können Sie sich in einer 3D-Landschaft Bayerns frei bewegen, Windenergie- und PV-Freiflächenanlagen setzen und aus
+					beliebiger Perspektive betrachten. So erhalten Sie einen Eindruck von der Sichtbarkeit und Wirkung geplanter Anlagen im Landschaftsbild.
 					<br />
 
 					<div class="analyse3d-info">
