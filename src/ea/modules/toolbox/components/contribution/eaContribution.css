@@ -206,7 +206,7 @@ button:hover {
 	pointer-events: none;
 }
 
-.control-label.required {
+.mandatory {
 	font-weight: bold;
 }
 
@@ -216,14 +216,6 @@ input {
 
 ::placeholder {
 	opacity: 0.6;
-}
-
-input:required::placeholder {
-	font-weight: bold;
-}
-
-textarea:required::placeholder {
-	font-weight: bold;
 }
 
 .error {
