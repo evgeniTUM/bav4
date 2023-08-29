@@ -14,7 +14,8 @@ export const provide = (lang) => {
 				ea_geotherm_check_kollektoren_button_tag_tooltip: 'Prüfung für Erdwärmekollektoren',
 				ea_geotherm_check_pumpen_button_tag_title: 'Grundwasserwärmepumpen',
 				ea_geotherm_check_pumpen_button_tag_tooltip: 'Prüfung für Wärmepumpen',
-				ea_geotherm_footer: 'Dieses Angebot stammt aus dem UmweltAtlas Bayern des Bayerischen Landesamts für Umwelt. Weitere Informationen finden Sie unter: ',
+				ea_geotherm_footer:
+					'Dieses Angebot stammt aus dem UmweltAtlas Bayern des Bayerischen Landesamts für Umwelt. Weitere Informationen finden Sie unter: ',
 				module_prevent_switching_tool: 'Please close the current tool first',
 				toolbox_redesign_header: 'Mischpult "Redesign"',
 				ea_contribution_additional_input: 'Zusätzlicher Text',
@@ -38,7 +39,8 @@ export const provide = (lang) => {
 				ea_contribution_coordinates_tooltip_2: 'Bitte klicken Sie in die Karte.',
 				ea_contribution_coordinates_placeholder: '',
 
-				ea_analyse3d_selection_location: 'Standort markieren',
+				ea_select_location: 'Standort markieren',
+				ea_select_region: 'Gebiet auswählen',
 				ea_analyse3d_button_selection_inactive: 'Standort markieren',
 				ea_analyse3d_button_selection_active: 'Bitte in die Karte klicken'
 			};
@@ -50,7 +52,8 @@ export const provide = (lang) => {
 				toolbox_analyse3d: '3D-Analyse Wind und PV',
 				toolbox_recherche_header: 'Daten-Recherche und Download',
 				toolbox_geotherm: 'Standortcheck Oberflächennahe Geothermie',
-				ea_geotherm_check_introduction: 'Prüfen Sie in zwei Schritten, ob ein ausgewählter Standort für Erdwärmesonden, -kollektoren oder Grundwasserwärmepumpen geeignet ist:',
+				ea_geotherm_check_introduction:
+					'Prüfen Sie in zwei Schritten, ob ein ausgewählter Standort für Erdwärmesonden, -kollektoren oder Grundwasserwärmepumpen geeignet ist:',
 				ea_geotherm_check_sonden_button_tag_title: 'Erdwärmesonde',
 				ea_geotherm_check_sonden_button_tag_tooltip: 'Prüfung für Erdwärmesonden',
 				ea_geotherm_check_kollektoren_button_tag_title: 'Erdwärmekollektor',
@@ -81,7 +84,8 @@ export const provide = (lang) => {
 				ea_contribution_coordinates_tooltip_2: 'Bitte klicken Sie in die Karte.',
 				ea_contribution_coordinates_placeholder: '',
 
-				ea_analyse3d_selection_location: 'Standort markieren',
+				ea_select_location: 'Standort markieren',
+				ea_select_region: 'Gebiet auswählen',
 				ea_analyse3d_button_selection_inactive: 'Standort markieren',
 				ea_analyse3d_button_selection_active: 'Bitte in die Karte klicken'
 			};

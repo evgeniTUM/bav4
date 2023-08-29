@@ -1,7 +1,8 @@
-export const DESCRIPTION_CHANGED = 'ea/contribution/description';
-export const SET_LOCATION = 'ea/contribution/set_location';
-export const SET_STATE = 'ea/contribution/set_state';
-export const TAGGING_MODE_CHANGED = 'ea/contribution/tagging_mode';
+export const DESCRIPTION_CHANGED = 'ea/locationSelection/description';
+export const SET_LOCATION = 'ea/locationSelection/set_location';
+export const SET_STATE = 'ea/locationSelection/set_state';
+export const TAGGING_MODE_CHANGED = 'ea/locationSelection/tagging_mode';
+export const SET_TOOLTIP_TEXT = 'ea/locationSelection/tooltip/set';
 
 export const initialState = {
 	/**
@@ -17,7 +18,12 @@ export const initialState = {
 	/**
 	 * @property {array<number>}
 	 */
-	position: null
+	position: null,
+
+	/**
+	 * @property {String}
+	 */
+	tooltipText: 'Standort markieren'
 };
 
 export const locationSelection = (state = initialState, action) => {
@@ -39,6 +45,12 @@ export const locationSelection = (state = initialState, action) => {
 			return {
 				...state,
 				tagging: payload
+			};
+		}
+		case SET_TOOLTIP_TEXT: {
+			return {
+				...state,
+				tooltipText: payload
 			};
 		}
 	}

@@ -2,7 +2,7 @@
  * Action creators to handle user contributions of new energy facilities
  * @module ea/contribution/action
  */
-import { SET_LOCATION, DESCRIPTION_CHANGED, TAGGING_MODE_CHANGED } from './locationSelection.reducer';
+import { SET_LOCATION, DESCRIPTION_CHANGED, TAGGING_MODE_CHANGED, SET_TOOLTIP_TEXT } from './locationSelection.reducer';
 import { $injector } from '../../../injection';
 
 const getStore = () => {
@@ -40,6 +40,16 @@ export const setLocation = (position) => {
 export const setTaggingMode = (enabled) => {
 	getStore().dispatch({
 		type: TAGGING_MODE_CHANGED,
+		payload: enabled
+	});
+};
+
+/**
+ * Set the text for the mouseover tooltip.
+ */
+export const setTooltipText = (enabled) => {
+	getStore().dispatch({
+		type: SET_TOOLTIP_TEXT,
 		payload: enabled
 	});
 };

@@ -17,9 +17,10 @@ export const SELECT_LOCATION_LAYER_ID = 'select_location_layer_id';
 export class OlSelectLocationHandler extends OlLayerHandler {
 	constructor() {
 		super(SELECT_LOCATION_LAYER_ID, { preventDefaultClickHandling: false, preventDefaultContextClickHandling: false });
-		const { StoreService } = $injector.inject('StoreService');
+		const { StoreService, TranslationService } = $injector.inject('StoreService', 'TranslationService');
 		this._helpTooltip = new HelpTooltip();
 		this._storeService = StoreService;
+		this._translationService = TranslationService;
 		this._positionFeature = new Feature();
 		this._layer = null;
 		this._map = null;
@@ -59,6 +60,7 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 	}
 
 	_register(store) {
+		const translate = (key) => this._translationService.translate(key);
 		let tagging = false;
 
 		const onClick = (event) => {
@@ -109,11 +111,14 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 			this._map.renderSync();
 		};
 
-		this._helpTooltip.messageProvideFunction = () => 'Standort markieren';
+		const onTooltipTextChanged = (text_id) => {
+			this._helpTooltip.messageProvideFunction = () => translate(text_id);
+		};
 
 		return [
 			observe(store, (state) => state.locationSelection.position, onPositionChanged, false),
-			observe(store, (state) => state.locationSelection.tagging, onTaggingChanged, false)
+			observe(store, (state) => state.locationSelection.tagging, onTaggingChanged, false),
+			observe(store, (state) => state.locationSelection.tooltipText, onTooltipTextChanged, false)
 		];
 	}
 }

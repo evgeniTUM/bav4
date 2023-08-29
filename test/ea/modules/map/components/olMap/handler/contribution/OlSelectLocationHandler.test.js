@@ -9,7 +9,7 @@ import {
 import { $injector } from '../../../../../../../../src/injection';
 import { TestUtils } from '../../../../../../../test-utils.js';
 import { initialState, locationSelection } from '../../../../../../../../src/ea/store/locationSelection/locationSelection.reducer';
-import { setLocation, setTaggingMode } from '../../../../../../../../src/ea/store/locationSelection/locationSelection.action';
+import { setLocation, setTaggingMode, setTooltipText } from '../../../../../../../../src/ea/store/locationSelection/locationSelection.action';
 import { eaReducer } from '../../../../../../../../src/ea/store/module/ea.reducer';
 
 describe('OlSelectLocationHandler', () => {
@@ -92,6 +92,19 @@ describe('OlSelectLocationHandler', () => {
 
 			setTaggingMode(false);
 			expect(classUnderTest._helpTooltip._map).toBeNull();
+		});
+
+		it('sets mouseover tooltip on locationSeleciton.tooltipText change', async () => {
+			const expectedText = 'tooltip text';
+			const map = setupMap();
+			setup();
+
+			const classUnderTest = new OlSelectLocationHandler();
+			classUnderTest.activate(map);
+
+			setTooltipText(expectedText);
+
+			expect(classUnderTest._helpTooltip._tooltipMessageProvideFunction()).toEqual(expectedText);
 		});
 
 		it('sets mouse cursor over map to crosshair when tagging mode active', async () => {

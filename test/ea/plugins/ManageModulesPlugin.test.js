@@ -21,6 +21,7 @@ import { NOTIFICATION_ADDED } from '../../../src/store/notifications/notificatio
 import { TestUtils } from '../../test-utils.js';
 import { EnergyReportingModuleContent } from '../../../src/ea/modules/toolbox/components/contribution/EnergyReportingModuleContent.js';
 import { addLayer } from '../../../src/store/layers/layers.action.js';
+import { locationSelection } from '../../../src/ea/store/locationSelection/locationSelection.reducer.js';
 
 describe('ManageModulesPlugin', () => {
 	const windowMock = {
@@ -43,6 +44,7 @@ describe('ManageModulesPlugin', () => {
 			spyReducer: (state, action) => storeActions.push(action),
 			layers: layersReducer,
 			ea: eaReducer,
+			locationSelection: locationSelection,
 			mainMenu: createMainMenuReducer()
 		});
 
@@ -68,6 +70,36 @@ describe('ManageModulesPlugin', () => {
 			setCurrentModule('something');
 
 			expect(store.getState().layers.active.length).toBe(0);
+		});
+	});
+
+	it('sets tooltip to "ea_select_region" for Analyse3D/Geotherm module', async () => {
+		const store = setup();
+
+		const instanceUnderTest = new ManageModulesPlugin();
+		await instanceUnderTest.register(store);
+
+		expect(store.getState().layers.active.length).toBe(0);
+
+		[GeothermModuleContent.name, Analyse3DModuleContent.name].forEach((tag) => {
+			setCurrentModule(tag);
+
+			expect(store.getState().locationSelection.tooltipText).toBe('ea_select_region');
+		});
+	});
+
+	it('sets tooltip to "ea_select_location" for EnergyMarket/EnergyReporting module', async () => {
+		const store = setup();
+
+		const instanceUnderTest = new ManageModulesPlugin();
+		await instanceUnderTest.register(store);
+
+		expect(store.getState().layers.active.length).toBe(0);
+
+		[EnergyMarketModuleContent.name, EnergyReportingModuleContent.name].forEach((tag) => {
+			setCurrentModule(tag);
+
+			expect(store.getState().locationSelection.tooltipText).toBe('ea_select_location');
 		});
 	});
 
