@@ -84,7 +84,8 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 			case Position_Change: {
 				if (data) {
-					setTaggingMode(false);
+					setTimeout(() => setTaggingMode(false), 500);
+
 					return { ...model, position: data, openSections: ['step3'] };
 				}
 
