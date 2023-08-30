@@ -7,7 +7,6 @@ import { EnergyReportingModuleContent } from '../../../../../../../../src/ea/mod
 import { GeothermModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/geotherm/GeothermModuleContent';
 import { MixerModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/mixer/MixerModuleContent';
 import { ResearchModuleContent } from '../../../../../../../../src/ea/modules/toolbox/components/research/ResearchModuleContent';
-import { contributionReducer } from '../../../../../../../../src/ea/store/contribution/contribution.reducer';
 import { eaReducer, SET_CURRENT_MODULE } from '../../../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../../../src/injection';
 import { MvuElement } from '../../../../../../../../src/modules/MvuElement';
@@ -36,8 +35,7 @@ describe('AdditionalMenu', () => {
 			spyReducer: (state, action) => storeActions.push(action),
 			media: createNoInitialStateMediaReducer(),
 			network: networkReducer,
-			ea: eaReducer,
-			contribution: contributionReducer
+			ea: eaReducer
 		});
 		$injector
 			.registerSingleton('EnvironmentService', {

@@ -6,11 +6,11 @@ import {
 	OlSelectLocationHandler,
 	SELECT_LOCATION_LAYER_ID
 } from '../../../../../../../../src/ea/modules/map/components/olMap/handler/selection/OlSelectLocationHandler';
-import { setLocation, setTaggingMode } from '../../../../../../../../src/ea/store/contribution/contribution.action';
-import { contributionReducer, initialState } from '../../../../../../../../src/ea/store/contribution/contribution.reducer';
 import { $injector } from '../../../../../../../../src/injection';
 import { TestUtils } from '../../../../../../../test-utils.js';
-import { mapclickReducer } from '../../../../../../../../src/ea/store/mapclick/mapclick.reducer';
+import { initialState, locationSelection } from '../../../../../../../../src/ea/store/locationSelection/locationSelection.reducer';
+import { setLocation, setTaggingMode, setTooltipText } from '../../../../../../../../src/ea/store/locationSelection/locationSelection.action';
+import { eaReducer } from '../../../../../../../../src/ea/store/module/ea.reducer';
 
 describe('OlSelectLocationHandler', () => {
 	const translationServiceMock = { translate: (key) => key };
@@ -19,8 +19,8 @@ describe('OlSelectLocationHandler', () => {
 	};
 	const setup = (state = defaultState) => {
 		const store = TestUtils.setupStoreAndDi(state, {
-			contribution: contributionReducer,
-			mapclick: mapclickReducer
+			locationSelection: locationSelection,
+			ea: eaReducer
 		});
 		$injector.registerSingleton('TranslationService', translationServiceMock);
 		return store;
@@ -94,6 +94,19 @@ describe('OlSelectLocationHandler', () => {
 			expect(classUnderTest._helpTooltip._map).toBeNull();
 		});
 
+		it('sets mouseover tooltip on locationSeleciton.tooltipText change', async () => {
+			const expectedText = 'tooltip text';
+			const map = setupMap();
+			setup();
+
+			const classUnderTest = new OlSelectLocationHandler();
+			classUnderTest.activate(map);
+
+			setTooltipText(expectedText);
+
+			expect(classUnderTest._helpTooltip._tooltipMessageProvideFunction()).toEqual(expectedText);
+		});
+
 		it('sets mouse cursor over map to crosshair when tagging mode active', async () => {
 			const map = setupMap();
 			const store = setup();
@@ -102,10 +115,10 @@ describe('OlSelectLocationHandler', () => {
 			classUnderTest.activate(map);
 
 			setTaggingMode(true);
-			expect(store.getState().mapclick.mapCursorStyle).toEqual('crosshair');
+			expect(store.getState().ea.mapCursorStyle).toEqual('crosshair');
 
 			setTaggingMode(false);
-			expect(store.getState().mapclick.mapCursorStyle).toEqual('auto');
+			expect(store.getState().ea.mapCursorStyle).toEqual('auto');
 		});
 
 		it('prevents default click handling when tagging mode active', async () => {

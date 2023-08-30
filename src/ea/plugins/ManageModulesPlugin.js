@@ -18,6 +18,7 @@ import { ResearchModuleContent } from '../modules/toolbox/components/research/Re
 import { clearMap } from '../store/geofeature/geofeature.action';
 import { deactivateAllGeoResources, EaModulesQueryParameters, EaModules, setCurrentModule } from '../store/module/ea.action';
 import { EnergyReportingModuleContent } from '../modules/toolbox/components/contribution/EnergyReportingModuleContent';
+import { setTooltipText } from '../store/locationSelection/locationSelection.action';
 
 export class ManageModulesPlugin extends BaPlugin {
 	constructor() {
@@ -86,10 +87,14 @@ export class ManageModulesPlugin extends BaPlugin {
 
 			// enable layers for new module
 			switch (currentModule) {
+				case Analyse3DModuleContent.name:
 				case GeothermModuleContent.name:
+					setTooltipText('ea_select_region');
+					addLayer(SELECT_LOCATION_LAYER_ID, { label: 'Standortselektion', constraints: { hidden: true, alwaysTop: true } });
+					break;
 				case EnergyMarketModuleContent.name:
 				case EnergyReportingModuleContent.name:
-				case Analyse3DModuleContent.name:
+					setTooltipText('ea_select_location');
 					addLayer(SELECT_LOCATION_LAYER_ID, { label: 'Standortselektion', constraints: { hidden: true, alwaysTop: true } });
 					break;
 

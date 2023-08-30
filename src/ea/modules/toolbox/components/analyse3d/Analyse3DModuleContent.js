@@ -1,7 +1,7 @@
 import { html } from 'lit-html';
 import { GlobalCoordinateRepresentations } from '../../../../../domain/coordinateRepresentation';
 import { $injector } from '../../../../../injection';
-import { setLocation, setTaggingMode } from '../../../../store/contribution/contribution.action';
+import { setLocation, setTaggingMode } from '../../../../store/locationSelection/locationSelection.action';
 import css from './analyse3d.css';
 import { AbstractModuleContentPanel } from '../moduleContainer/AbstractModuleContentPanel';
 
@@ -75,14 +75,14 @@ export class Analyse3DModuleContent extends AbstractModuleContentPanel {
 
 		this._subscribers = [
 			this.observe(
-				(state) => state.contribution.position,
+				(state) => state.locationSelection.position,
 				(data) => {
 					this.signal(Update, { position: data });
 					openLinkWithCoordinates(data);
 				}
 			),
 			this.observe(
-				(state) => state.contribution.tagging,
+				(state) => state.locationSelection.tagging,
 				(data) => {
 					this.signal(Update, { tagging: data });
 				}
@@ -104,9 +104,8 @@ export class Analyse3DModuleContent extends AbstractModuleContentPanel {
 			<div class="container">
 				<div class="header">${translate('ea_menu_analyse3d')}</div>
 				<div class="content">
-					Mit der 3D-Analyse können Sie sich in einer 3D-Landschaft Bayerns frei bewegen, Erneuerbare-Energien-Anlagen (Windenergie- und
-					PV-Freiflächenanlagen) setzen und aus beliebiger Perspektive betrachten. So erhalten Sie einen Eindruck von der Sichtbarkeit geplanter
-					Anlagen und dem landschaftlichen Wandel.
+					Mit der 3D-Analyse können Sie sich in einer 3D-Landschaft Bayerns frei bewegen, Windenergie- und PV-Freiflächenanlagen setzen und aus
+					beliebiger Perspektive betrachten. So erhalten Sie einen Eindruck von der Sichtbarkeit und Wirkung geplanter Anlagen im Landschaftsbild.
 					<br />
 
 					<div class="analyse3d-info">

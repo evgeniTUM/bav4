@@ -5,21 +5,22 @@ import MapBrowserEventType from 'ol/MapBrowserEventType';
 import { unByKey } from 'ol/Observable';
 import { Vector as VectorSource } from 'ol/source';
 import { $injector } from '../../../../../../../injection';
-import { setLocation } from '../../../../../../store/contribution/contribution.action';
+import { setLocation } from '../../../../../../store/locationSelection/locationSelection.action';
 import { observe } from '../../../../../../../utils/storeUtils';
 import { HelpTooltip } from '../../../../../../../modules/olMap/tooltip/HelpTooltip';
 import { highlightCoordinateFeatureStyleFunction } from '../../../../../../../modules/olMap/handler/highlight/styleUtils';
 import { OlLayerHandler } from '../../../../../../../modules/olMap/handler/OlLayerHandler';
-import { setMapCursorStyle } from '../../../../../../store/mapclick/mapclick.action';
+import { setMapCursorStyle } from '../../../../../../store/module/ea.action';
 
 export const SELECT_LOCATION_LAYER_ID = 'select_location_layer_id';
 
 export class OlSelectLocationHandler extends OlLayerHandler {
 	constructor() {
 		super(SELECT_LOCATION_LAYER_ID, { preventDefaultClickHandling: false, preventDefaultContextClickHandling: false });
-		const { StoreService } = $injector.inject('StoreService');
+		const { StoreService, TranslationService } = $injector.inject('StoreService', 'TranslationService');
 		this._helpTooltip = new HelpTooltip();
 		this._storeService = StoreService;
+		this._translationService = TranslationService;
 		this._positionFeature = new Feature();
 		this._layer = null;
 		this._map = null;
@@ -41,7 +42,6 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 		this._map = olMap;
 
 		this._unregisterList = this._register(this._storeService.getStore());
-		this._helpTooltip.messageProvideFunction = () => 'Standort markieren';
 
 		return this._layer;
 	}
@@ -60,6 +60,7 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 	}
 
 	_register(store) {
+		const translate = (key) => this._translationService.translate(key);
 		let tagging = false;
 
 		const onClick = (event) => {
@@ -110,9 +111,14 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 			this._map.renderSync();
 		};
 
+		const onTooltipTextChanged = (text_id) => {
+			this._helpTooltip.messageProvideFunction = () => translate(text_id);
+		};
+
 		return [
-			observe(store, (state) => state.contribution.position, onPositionChanged, false),
-			observe(store, (state) => state.contribution.tagging, onTaggingChanged, false)
+			observe(store, (state) => state.locationSelection.position, onPositionChanged, false),
+			observe(store, (state) => state.locationSelection.tagging, onTaggingChanged, false),
+			observe(store, (state) => state.locationSelection.tooltipText, onTooltipTextChanged, false)
 		];
 	}
 }

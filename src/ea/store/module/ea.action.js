@@ -20,7 +20,8 @@ import {
 	SET_MAP_RESOLUTION,
 	SET_PREVIEW_GEORESOURCE_ID,
 	ACTIVATE_INFO_POPUP,
-	DEACTIVATE_INFO_POPUP
+	DEACTIVATE_INFO_POPUP,
+	SET_CURSOR_STYLE
 } from './ea.reducer';
 
 /**
@@ -198,5 +199,15 @@ export const deactivateInfoPopup = (msgId) => {
 	getStore().dispatch({
 		type: DEACTIVATE_INFO_POPUP,
 		payload: msgId
+	});
+};
+
+/**
+ * Sets the cursor style over the map.
+ */
+export const setMapCursorStyle = (style) => {
+	getStore().dispatch({
+		type: SET_CURSOR_STYLE,
+		payload: style
 	});
 };

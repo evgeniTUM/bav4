@@ -1,8 +1,8 @@
 import { GlobalCoordinateRepresentations } from '../../../../../../src/domain/coordinateRepresentation';
 import { MODUS } from '../../../../../../src/ea/modules/toolbox/components/contribution/ContributionModus';
 import { EAContribution } from '../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
-import { setLocation } from '../../../../../../src/ea/store/contribution/contribution.action';
-import { contributionReducer, initialState } from '../../../../../../src/ea/store/contribution/contribution.reducer';
+import { setLocation } from '../../../../../../src/ea/store/locationSelection/locationSelection.action';
+import { initialState, locationSelection } from '../../../../../../src/ea/store/locationSelection/locationSelection.reducer';
 import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { AbstractMvuContentPanel } from '../../../../../../src/modules/menu/components/mainMenu/content/AbstractMvuContentPanel';
@@ -30,7 +30,7 @@ describe('EAContributon', () => {
 	let store;
 
 	const testState = {
-		contribution: initialState,
+		locationSelection: initialState,
 		tools: { current: EAContribution.tag }
 	};
 
@@ -56,7 +56,7 @@ describe('EAContributon', () => {
 		const { embed = false, isTouch = false } = config;
 
 		store = TestUtils.setupStoreAndDi(state, {
-			contribution: contributionReducer,
+			locationSelection: locationSelection,
 			modal: modalReducer,
 			tools: toolsReducer,
 			ea: eaReducer
@@ -111,9 +111,9 @@ describe('EAContributon', () => {
 		});
 
 		it('resets position on activate', async () => {
-			await setup({ contribution: { ...initialState, position: [4, 2] } });
+			await setup({ locationSelection: { ...initialState, position: [4, 2] } });
 
-			expect(store.getState().contribution.position).toEqual(null);
+			expect(store.getState().locationSelection.position).toEqual(null);
 		});
 	});
 
@@ -135,11 +135,11 @@ describe('EAContributon', () => {
 			const element = await setup();
 			const newButton = element.shadowRoot.querySelector('#new');
 
-			expect(store.getState().contribution.tagging).toBe(false);
+			expect(store.getState().locationSelection.tagging).toBe(false);
 
 			newButton.click();
 
-			expect(store.getState().contribution.tagging).toBe(true);
+			expect(store.getState().locationSelection.tagging).toBe(true);
 		});
 
 		it('jumps to step3 and deactivates tagging mode when coordinates are selected', async () => {
@@ -149,12 +149,12 @@ describe('EAContributon', () => {
 			const tagButton = element.shadowRoot.querySelector('#new');
 
 			tagButton.click();
-			expect(store.getState().contribution.tagging).toBe(true);
+			expect(store.getState().locationSelection.tagging).toBe(true);
 
 			setLocation([42, 24]);
 			jasmine.clock().tick(500);
 
-			expect(store.getState().contribution.tagging).toBe(false);
+			expect(store.getState().locationSelection.tagging).toBe(false);
 			expect(element.shadowRoot.querySelector('#step3').open).toBeTrue();
 
 			jasmine.clock().uninstall();
@@ -443,8 +443,8 @@ describe('EAContributon', () => {
 			expect(element.getModel().mode).toBeUndefined();
 			expect(element.getModel().categoriesSpecification).toEqual(SAMPLE_JSON_SPEC);
 
-			expect(store.getState().contribution.tagging).toBeFalse();
-			expect(store.getState().contribution.position).toBeNull();
+			expect(store.getState().locationSelection.tagging).toBeFalse();
+			expect(store.getState().locationSelection.position).toBeNull();
 		});
 
 		it('resets categoryFields after category change', async () => {

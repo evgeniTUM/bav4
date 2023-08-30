@@ -1,4 +1,4 @@
-import { activateMapClick, deactivateMapClick, requestMapClick, setMapCursorStyle } from '../../../../src/ea/store/mapclick/mapclick.action';
+import { activateMapClick, deactivateMapClick, requestMapClick } from '../../../../src/ea/store/mapclick/mapclick.action';
 import { mapclickReducer } from '../../../../src/ea/store/mapclick/mapclick.reducer';
 import { TestUtils } from '../../../test-utils';
 
@@ -16,7 +16,6 @@ describe('mapclickReducer', () => {
 		expect(mapclick.active).toBe(false);
 		expect(mapclick.coordinate).toBe(null);
 		expect(mapclick.listener_id).toBe(null);
-		expect(mapclick.mapCursorStyle).toBe('auto');
 	});
 
 	it('activate mapclick', () => {
@@ -42,13 +41,5 @@ describe('mapclickReducer', () => {
 		requestMapClick([1, 2]);
 
 		expect(store.getState().mapclick.coordinate.payload).toEqual([1, 2]);
-	});
-
-	it('changes cursor style', () => {
-		const store = setup();
-
-		setMapCursorStyle('crosshair');
-
-		expect(store.getState().mapclick.mapCursorStyle).toEqual('crosshair');
 	});
 });

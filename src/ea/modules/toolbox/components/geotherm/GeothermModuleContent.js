@@ -1,6 +1,6 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
-import { setLocation, setTaggingMode } from '../../../../store/contribution/contribution.action';
+import { setLocation, setTaggingMode } from '../../../../store/locationSelection/locationSelection.action';
 import { AbstractModuleContentPanel } from '../../components/moduleContainer/AbstractModuleContentPanel';
 import { MODUS } from './CheckModus';
 import css from './container.css';
@@ -111,11 +111,11 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 	onInitialize() {
 		this._subscribers = [
 			this.observe(
-				(state) => state.contribution,
+				(state) => state.locationSelection,
 				(data) => this.signal(Update, data)
 			),
 			this.observe(
-				(state) => state.contribution.position,
+				(state) => state.locationSelection.position,
 				(data) => this.signal(Position_Change, data),
 				false
 			)

@@ -1,8 +1,8 @@
 import { GlobalCoordinateRepresentations } from '../../../../../../src/domain/coordinateRepresentation';
 import { Analyse3DModuleContent } from '../../../../../../src/ea/modules/toolbox/components/analyse3d/Analyse3DModuleContent';
 import { AbstractModuleContentPanel } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/AbstractModuleContentPanel';
-import { setLocation } from '../../../../../../src/ea/store/contribution/contribution.action';
-import { contributionReducer, initialState } from '../../../../../../src/ea/store/contribution/contribution.reducer';
+import { setLocation } from '../../../../../../src/ea/store/locationSelection/locationSelection.action';
+import { initialState, locationSelection } from '../../../../../../src/ea/store/locationSelection/locationSelection.reducer';
 import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { modalReducer } from '../../../../../../src/store/modal/modal.reducer';
@@ -15,7 +15,7 @@ describe('Analyse3DModuleContent', () => {
 	let store;
 
 	const testState = {
-		contribution: initialState,
+		locationSelection: initialState,
 		tools: { current: Analyse3DModuleContent.tag }
 	};
 
@@ -38,7 +38,7 @@ describe('Analyse3DModuleContent', () => {
 		const { embed = false, isTouch = false } = config;
 
 		store = TestUtils.setupStoreAndDi(state, {
-			contribution: contributionReducer,
+			locationSelection: locationSelection,
 			modal: modalReducer,
 			tools: toolsReducer,
 			ea: eaReducer
@@ -60,7 +60,7 @@ describe('Analyse3DModuleContent', () => {
 		await TestUtils.timeout(10);
 
 		expect(element instanceof AbstractModuleContentPanel).toBeTrue();
-		expect(store.getState().contribution.tagging).toBe(true);
+		expect(store.getState().locationSelection.tagging).toBe(true);
 
 		const givenCoordinates = [42.42, 24.24];
 

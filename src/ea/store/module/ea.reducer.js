@@ -12,6 +12,7 @@ export const DEACTIVATE_WEBANALYTICS = 'ea/webanalytics/deactivate';
 export const ACTIVATE_WEBANALYTICS = 'ea/webanalytics/activate';
 export const DEACTIVATE_INFO_POPUP = 'ea/infopopup/deactivate';
 export const ACTIVATE_INFO_POPUP = 'ea/info_popup/activate';
+export const SET_CURSOR_STYLE = 'ea/map_cursor_style/set';
 
 export const initialState = {
 	/**
@@ -66,7 +67,13 @@ export const initialState = {
 	 * The id of the info popup to display.
 	 * @property {String|null}
 	 */
-	infoPopupId: null
+	infoPopupId: null,
+
+	/**
+	 * The style of the cursor on the map.
+	 * @property {string}
+	 */
+	mapCursorStyle: 'auto'
 };
 
 export const eaReducer = (state = initialState, action) => {
@@ -162,6 +169,12 @@ export const eaReducer = (state = initialState, action) => {
 				...state,
 				infoPopupId: payload,
 				infoPopupActive: true
+			};
+		}
+		case SET_CURSOR_STYLE: {
+			return {
+				...state,
+				mapCursorStyle: payload
 			};
 		}
 	}
