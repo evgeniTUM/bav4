@@ -12,13 +12,14 @@ const fieldsSpecs = [
 	{ type: 'numeric', name: 'Nennwärmeleistung Biomasse (MW)', showInResults: true },
 	{ type: 'numeric', name: 'Nennwärmeleistung Gesamt (MW)', showInResults: true },
 	{ type: 'numeric', name: 'Feuerungswärmeleistung (MW)', showInResults: true },
-	{ type: 'enum', name: 'Bürgerenergieanlage', showInResults: true },
-	{ type: 'numeric', name: 'Inbetriebnahmejahr', showInResults: false }
+	{ type: 'enum', name: 'Bürgerenergieanlage', showInResults: true }
 ];
 
 const filter = (data, filters) => {
 	const check = (data, filter) => {
 		if (filter.type === 'numeric') return data[filter.name] < filter.max && data[filter.name] > filter.min;
+		if (filter.type === 'enum') return filter.values.incudes(data[filter.name]);
+		return true;
 	};
 	return data.filter((data) => filters.every((filter) => check(data, filter)));
 };
@@ -71,6 +72,7 @@ export class ResearchService {
 	}
 
 	async query(theme, filters, page) {
+		console.log(filters);
 		if (theme === 'Biomasseanlagen') {
 			const results = filter(this.data, filters);
 			return results;

@@ -113,7 +113,7 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 
 		const onMinMaxChange = (f) => async (min, max) => {
 			const filters = { ...model.filters };
-			filters[f.name] = { ...f, min, max };
+			filters[f.name] = { ...f, min: Number(min), max: Number(max) };
 			const queryFilters = Object.values(filters);
 			const results = await this._researchService.query(model.theme, queryFilters, 1);
 			this.signal(Update, { filters, results });
