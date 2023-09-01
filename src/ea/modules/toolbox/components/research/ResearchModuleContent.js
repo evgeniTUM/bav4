@@ -143,7 +143,7 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 		const onMinMaxChange = (f) => async (min, max) => {
 			const filters = { ...model.filters };
 			filters[f.name] = { ...f, min: Number(min), max: Number(max) };
-			await updateResults({ ...model, filters });
+			await updateResults({ ...model, filters, page: 0 });
 		};
 
 		const onPageChanged = (pageDelta) => async () => {
@@ -159,7 +159,7 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 		const fieldsToShow = model.themeSpec.fields.filter((f) => f.properties.includes(FieldProperties.VIEWABLE));
 		const results = resultsElement(model.queryResult, fieldsToShow);
 
-		const onTabClicked = (tab) => () => {
+		const onTabChanged = (tab) => () => {
 			this.signal(Update, { openTab: tab });
 		};
 
@@ -187,8 +187,10 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 				</collapsable-content>
 			`,
 			html`
-				<button @click=${onPageChanged(-1)}>Previous Page</button>
-				<button @click=${onPageChanged(1)}>Next Page</button>
+				<div style="display: flex">
+					<button .label=${'Previous'} @click=${onPageChanged(-1)}>Previous Page</button>
+					<button .label=${'Next'} @click=${onPageChanged(1)}>Next Page</button>
+				</div>
 				${results}
 			`,
 			html``
@@ -201,11 +203,10 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 				<div class="header">${translate('ea_menu_recherche')}</div>
 
 				<div class="content">
-					${JSON.stringify(model.themeSpec)}
-					<div class="tab-buttons">
-						<button @click=${onTabClicked(1)}>Abfrage</button>
-						<button @click=${onTabClicked(2)}>Ergebnis</button>
-						<button @click=${onTabClicked(3)}>Export</button>
+					<div style="display:flex">
+						<ba-button .label=${'Abfrage'} @click=${onTabChanged(1)}>Abfrage</ba-button>
+						<ba-button .label=${'Ergebnis'} @click=${onTabChanged(2)}>Ergebnis</ba-button>
+						<ba-button .label=${'Export'} @click=${onTabChanged(3)}>Export</ba-button>
 					</div>
 
 					${tabs[model.openTab - 1]}

@@ -2,6 +2,11 @@ import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import { FieldProperties } from '../../../../services/ResearchService';
+import { Injector } from '../../../../../injection/core/injector';
+import { getPointResolution } from '../../../../../../node_modules/ol/proj';
+import { Circle } from '../../../../../../node_modules/ol/geom';
+import { fit } from '../../../../../store/position/position.action';
+import { setClick } from '../../../../../store/pointer/pointer.action';
 
 export function themeSelectionElement(model, onChange) {
 	const { themes, theme, category } = model;
@@ -54,22 +59,40 @@ export function filterElement(fieldSpec, filter, onChange) {
 }
 
 export function resultsElement(queryResult, fieldsToShow) {
+	const onClick = (result) => () => {
+		const { MapService: mapService, CoordinateService: coordinateService } = $injector.inject('MapService', 'CoordinateService');
+		const position_UTM32N = [Number(result['Ostwert_UTM32N']), Number(result['Nordwert_UTM32N'])];
+		const coordinate = coordinateService.transform(position_UTM32N, 25832, mapService.getSrid());
+		console.log(coordinate);
+
+		const circle = new Circle(coordinate, 500 / getPointResolution('EPSG:' + mapService.getSrid(), 1, [coordinate[0], coordinate[1]], 'm'));
+		setClick({
+			coordinate
+		});
+		fit(circle.getExtent());
+	};
 	return html`Showing: ${queryResult.results.length} of ${queryResult.hits} hits 
 	<br></br>
 	Hits: ${queryResult.page * queryResult.pageSize} -
-		${(queryResult.page + 1) * queryResult.pageSize} hits
+		${(queryResult.page + 1) * queryResult.pageSize}
 		<hr></hr>
-		<ul>
-			${queryResult.results.map(
-				(r) =>
-					html`<li>
-						<div>
-							<div style="font-weight: bold">${r.Name}</div>
-							<ul>
-								${fieldsToShow.map((f) => html` <li>${f.name}: ${r[f.name]}</li> `)}
-							</ul>
-						</div>
-					</li> `
-			)}
-		</ul>`;
+
+		<div style="overflow-y: auto">
+			<ul>
+				${queryResult.results.map(
+					(r) =>
+						html`<li>
+							<div style="border-bottom: solid">
+								<div style="display:flex; justify-content: space-between">
+									<div style="font-weight: bold">${r.Name}</div>
+									<button @click=${onClick(r)}>anzeigen</button>
+								</div>
+								<ul>
+									${fieldsToShow.map((f) => html` <li><span style="color: gray">${f.name}:</span> ${r[f.name]}</li> `)}
+								</ul>
+							</div>
+						</li> `
+				)}
+			</ul>
+		</div>`;
 }
