@@ -3,9 +3,14 @@ import { AbstractModuleContentPanel } from '../moduleContainer/AbstractModuleCon
 import { $injector } from '../../../../../injection';
 import css from './research.css';
 import { resultsElement, themeSelectionElement, filterElement } from './research-elements';
+import { FieldProperties } from '../../../../services/ResearchService';
 
 const Update = 'update';
+const Update_NextPage = 'update_next_page';
+const Update_PreviousPage = 'update_next_page';
 const Reset = 'reset';
+
+const PAGING_SIZE = 20;
 
 const initialModel = {
 	isPortrait: false,
@@ -14,10 +19,17 @@ const initialModel = {
 	category: null,
 	theme: null,
 	filters: {},
-	themeSpec: {},
-	resultsMetadata: {},
-	results: [],
-	openSections: ['step1', 'step2', 'step3']
+	themeSpec: { fields: [] },
+	queryResult: {
+		hits: 0,
+		results: [],
+		pageSize: PAGING_SIZE,
+		page: 0
+	},
+	openSections: ['step1', 'step2', 'step3'],
+	openTab: 1,
+	page: 0,
+	sortField: null
 };
 export class ResearchModuleContent extends AbstractModuleContentPanel {
 	constructor() {
@@ -58,12 +70,12 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 			const category = Object.keys(themes)[0];
 			const theme = themes[category][0];
 
-			const resultsMetadata = await this._researchService.queryMetadata(theme, []);
+			const themeSpec = await this._researchService.queryMetadata(theme, []);
 			const filters = {};
-			resultsMetadata.fields.forEach((f) => {
+			themeSpec.fields.forEach((f) => {
 				if (f.type === 'numeric') filters[f.name] = { min: f.min, max: f.max };
 			});
-			this.signal(Update, { themes, category, theme, resultsMetadata, filters });
+			this.signal(Update, { themes, category, theme, themeSpec, filters });
 		};
 
 		setTimeout(loadThemes);
@@ -76,6 +88,17 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 		switch (type) {
 			case Update: {
 				const test = { ...model, ...data };
+				return test;
+			}
+			case Update_NextPage: {
+				const hits = model.queryResult ? model.queryResult.hits : 0;
+				const page = model.page + (model.page === hits / PAGING_SIZE ? 0 : 1);
+				const test = { ...model, page };
+				return test;
+			}
+			case Update_PreviousPage: {
+				const page = model.page === 0 ? 0 : model.page - 1;
+				const test = { ...model, page };
 				return test;
 			}
 			case Reset: {
@@ -107,24 +130,69 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 		};
 
 		const onThemeChange = async (category, theme) => {
-			const resultsMetadata = await this._researchService.queryMetadata(theme, []);
-			this.signal(Update, { category, theme, resultsMetadata });
+			const themeSpec = await this._researchService.queryMetadata(theme, []);
+			this.signal(Update, { category, theme, themeSpec });
+		};
+
+		const updateResults = async (newModel) => {
+			const queryFilters = Object.values(newModel.filters);
+			const queryResult = await this._researchService.query(newModel.theme, queryFilters, newModel.sortField, PAGING_SIZE, newModel.page);
+			this.signal(Update, { ...newModel, queryResult });
 		};
 
 		const onMinMaxChange = (f) => async (min, max) => {
 			const filters = { ...model.filters };
 			filters[f.name] = { ...f, min: Number(min), max: Number(max) };
-			const queryFilters = Object.values(filters);
-			const results = await this._researchService.query(model.theme, queryFilters, 1);
-			this.signal(Update, { filters, results });
+			await updateResults({ ...model, filters });
 		};
-		const filters = model.resultsMetadata?.fields?.map((f) =>
-			filterElement({ name: f.name, type: f.type, maxLimit: f.max, minLimit: f.min }, model.filters[f.name], onMinMaxChange(f))
+
+		const onPageChanged = (pageDelta) => async () => {
+			const newPage = model.page + pageDelta;
+			if (newPage > model.queryResult.hits / PAGING_SIZE || newPage < 0) return;
+			await updateResults({ ...model, page: newPage });
+		};
+
+		const filters = model.themeSpec?.fields?.map((f) =>
+			filterElement({ ...f, maxLimit: f.max, minLimit: f.min }, model.filters[f.name], onMinMaxChange(f))
 		);
 
-		const results = resultsElement(model.results);
+		const fieldsToShow = model.themeSpec.fields.filter((f) => f.properties.includes(FieldProperties.VIEWABLE));
+		const results = resultsElement(model.queryResult, fieldsToShow);
 
-		const resultsMetadata = JSON.stringify(model.filters, null, 2);
+		const onTabClicked = (tab) => () => {
+			this.signal(Update, { openTab: tab });
+		};
+
+		const tabs = [
+			html`
+				Treffer: ${model.queryResult?.hits}
+				<collapsable-content id="step1" .title=${'1. Wählen Sie ein Thema aus'} .open=${model.openSections.includes('step1')} @toggle=${onToggle}>
+					${themeSelectionElement(
+						{
+							themes: model.themes,
+							category: model.category,
+							theme: model.theme
+						},
+						onThemeChange
+					)}
+				</collapsable-content>
+
+				<collapsable-content
+					id="step2"
+					.title=${'2. Filtern Sie nach Eigenschaften'}
+					.open=${model.openSections.includes('step2')}
+					@toggle=${onToggle}
+				>
+					${filters}
+				</collapsable-content>
+			`,
+			html`
+				<button @click=${onPageChanged(-1)}>Previous Page</button>
+				<button @click=${onPageChanged(1)}>Next Page</button>
+				${results}
+			`,
+			html``
+		];
 
 		return html`<style>
 				${css}
@@ -133,28 +201,14 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 				<div class="header">${translate('ea_menu_recherche')}</div>
 
 				<div class="content">
-					<collapsable-content id="step1" .title=${'1. Wählen Sie ein Thema aus'} .open=${model.openSections.includes('step1')} @toggle=${onToggle}>
-						${themeSelectionElement(
-							{
-								themes: model.themes,
-								category: model.category,
-								theme: model.theme
-							},
-							onThemeChange
-						)}
-					</collapsable-content>
+					${JSON.stringify(model.themeSpec)}
+					<div class="tab-buttons">
+						<button @click=${onTabClicked(1)}>Abfrage</button>
+						<button @click=${onTabClicked(2)}>Ergebnis</button>
+						<button @click=${onTabClicked(3)}>Export</button>
+					</div>
 
-					<collapsable-content
-						id="step2"
-						.title=${'2. Filtern Sie nach Eigenschaften'}
-						.open=${model.openSections.includes('step2')}
-						@toggle=${onToggle}
-					>
-						${filters}
-					</collapsable-content>
-					<collapsable-content id="step3" .title=${'3. Treffer'} .open=${model.openSections.includes('step3')} @toggle=${onToggle}>
-						${results}
-					</collapsable-content>
+					${tabs[model.openTab - 1]}
 				</div>
 			</div>`;
 	}

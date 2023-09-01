@@ -15,3 +15,7 @@
 	overflow-y: scroll;
 	height: 100%;
 }
+
+.tab-buttons {
+	border-bottom: solid;
+}

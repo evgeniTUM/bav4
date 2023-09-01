@@ -1,18 +1,21 @@
 import { csv2json } from '../utils/eaUtils';
 import csvContent from './research-test-data.csv';
 
+export const FieldProperties = Object.freeze({ VIEWABLE: 'viewable', QUERYABLE: 'queryable', EXPORTABLE: 'exportable' });
+const p = FieldProperties;
+
 const fieldsSpecs = [
-	{ type: 'enum', name: 'Strom-/ Wärmeerzeugung', showInResults: true },
-	{ type: 'enum', name: 'Brennstofftyp', showInResults: true },
-	{ type: 'enum', name: 'Biomethan', showInResults: true },
-	{ type: 'numeric', name: 'Inbetriebnahmejahr', showInResults: true },
-	{ type: 'numeric', name: 'Elektrische Leistung (kW)', showInResults: true },
-	{ type: 'numeric', name: 'Stromproduktion 2021 (kWh)', showInResults: true },
-	{ type: 'numeric', name: 'Volllaststunden (berechnet für Strom)', showInResults: true },
-	{ type: 'numeric', name: 'Nennwärmeleistung Biomasse (MW)', showInResults: true },
-	{ type: 'numeric', name: 'Nennwärmeleistung Gesamt (MW)', showInResults: true },
-	{ type: 'numeric', name: 'Feuerungswärmeleistung (MW)', showInResults: true },
-	{ type: 'enum', name: 'Bürgerenergieanlage', showInResults: true }
+	{ type: 'enum', name: 'Strom-/ Wärmeerzeugung', properties: [p.VIEWABLE, p.QUERYABLE, p.EXPORTABLE] },
+	{ type: 'enum', name: 'Brennstofftyp', properties: [p.VIEWABLE, p.QUERYABLE] },
+	{ type: 'enum', name: 'Biomethan', properties: [p.VIEWABLE, p.QUERYABLE, p.EXPORTABLE] },
+	{ type: 'numeric', name: 'Inbetriebnahmejahr', properties: [p.VIEWABLE, p.QUERYABLE, p.EXPORTABLE] },
+	{ type: 'numeric', name: 'Elektrische Leistung (kW)', properties: [p.VIEWABLE, p.QUERYABLE, p.EXPORTABLE] },
+	{ type: 'numeric', name: 'Stromproduktion 2021 (kWh)', properties: [p.VIEWABLE, p.QUERYABLE, p.EXPORTABLE] },
+	{ type: 'numeric', name: 'Volllaststunden (berechnet für Strom)', properties: [p.QUERYABLE, p.EXPORTABLE] },
+	{ type: 'numeric', name: 'Nennwärmeleistung Biomasse (MW)', properties: [p.QUERYABLE, p.EXPORTABLE] },
+	{ type: 'numeric', name: 'Nennwärmeleistung Gesamt (MW)', properties: [p.QUERYABLE, p.EXPORTABLE] },
+	{ type: 'numeric', name: 'Feuerungswärmeleistung (MW)', properties: [p.QUERYABLE, p.EXPORTABLE] },
+	{ type: 'enum', name: 'Bürgerenergieanlage', properties: [p.QUERYABLE, p.EXPORTABLE] }
 ];
 
 const filter = (data, filters) => {
@@ -71,13 +74,25 @@ export class ResearchService {
 		};
 	}
 
-	async query(theme, filters, page) {
-		console.log(filters);
+	async query(theme, filters, sortField, pageSize, page) {
 		if (theme === 'Biomasseanlagen') {
 			const results = filter(this.data, filters);
-			return results;
+			const sortedResult = sortField ? results.sort((a, b) => a[sortField] < b[sortField]) : results;
+
+			const pagingResults = sortedResult.slice(page * pageSize, page * pageSize + pageSize);
+			return {
+				hits: results.length,
+				results: pagingResults,
+				pageSize,
+				page
+			};
 		}
-		return [];
+		return {
+			hits: 0,
+			results: [],
+			pageSize,
+			page
+		};
 	}
 
 	async regions() {

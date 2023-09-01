@@ -1,6 +1,7 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
+import { FieldProperties } from '../../../../services/ResearchService';
 
 export function themeSelectionElement(model, onChange) {
 	const { themes, theme, category } = model;
@@ -32,7 +33,7 @@ export function themeSelectionElement(model, onChange) {
 }
 
 export function filterElement(fieldSpec, filter, onChange) {
-	if (fieldSpec.type === 'numeric') {
+	if (fieldSpec.properties.includes(FieldProperties.QUERYABLE) && fieldSpec.type === 'numeric') {
 		const { type, name, minLimit, maxLimit } = fieldSpec;
 		const { min, max } = filter;
 
@@ -52,9 +53,23 @@ export function filterElement(fieldSpec, filter, onChange) {
 	return html``;
 }
 
-export function resultsElement(results) {
-	return html` Results: ${results.length}
+export function resultsElement(queryResult, fieldsToShow) {
+	return html`Showing: ${queryResult.results.length} of ${queryResult.hits} hits 
+	<br></br>
+	Hits: ${queryResult.page * queryResult.pageSize} -
+		${(queryResult.page + 1) * queryResult.pageSize} hits
+		<hr></hr>
 		<ul>
-			${results.map((r) => html`<li>${r.Name}</li>`)}
+			${queryResult.results.map(
+				(r) =>
+					html`<li>
+						<div>
+							<div style="font-weight: bold">${r.Name}</div>
+							<ul>
+								${fieldsToShow.map((f) => html` <li>${f.name}: ${r[f.name]}</li> `)}
+							</ul>
+						</div>
+					</li> `
+			)}
 		</ul>`;
 }
