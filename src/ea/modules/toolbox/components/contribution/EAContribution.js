@@ -339,7 +339,14 @@ export class EAContribution extends AbstractMvuContentPanel {
 						.title=${stepTitle('4. Angaben zum Objekt')} .open=${model.openSections.includes('step4')}
 						@toggle=${onToggle}>
 
-						${isCorrection ? '' : html` <div class="fields-help">Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</div>`}
+						${
+							isCorrection
+								? ''
+								: html` <div class="fields-help">
+										Übersicht der Angaben<br />
+										- Pflichtangaben mit * und in Fettdruck
+								  </div>`
+						}
 
 ${isCorrection ? '' : html`<div class="category-fields">${categoryFields[model.currentCategory]}</div>`}
 
