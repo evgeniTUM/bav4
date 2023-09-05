@@ -48,6 +48,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 		this._coordinateService = coordinateService;
 		this._configService = configService;
 		this._httpService = httpService;
+		this._subscribers = [];
 	}
 
 	/**
@@ -95,12 +96,13 @@ export class EAContribution extends AbstractMvuContentPanel {
 	}
 
 	reset() {
+		setLocation(null);
+		setTaggingMode(false);
+		this._subscribers.forEach((o) => o());
 		this.signal(Reset, {
 			mode: this.getModel().energyMarketMode ? MODUS.market : undefined,
 			categoriesSpecification: this.getModel().categoriesSpecification
 		});
-		setLocation(null);
-		setTaggingMode(false);
 	}
 
 	/**
@@ -114,15 +116,17 @@ export class EAContribution extends AbstractMvuContentPanel {
 	 * @override
 	 */
 	onInitialize() {
-		this.observe(
-			(state) => state.locationSelection.position,
-			(data) => this.signal(Position_Change, data),
-			false
-		);
-		this.observe(
-			(state) => state.locationSelection,
-			(data) => this.signal(Update, data)
-		);
+		this._subscribers = [
+			this.observe(
+				(state) => state.locationSelection.position,
+				(data) => this.signal(Position_Change, data),
+				false
+			),
+			this.observe(
+				(state) => state.locationSelection,
+				(data) => this.signal(Update, data)
+			)
+		];
 	}
 
 	/**
