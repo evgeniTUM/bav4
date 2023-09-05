@@ -140,10 +140,18 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 			this.signal(Update, { ...newModel, queryResult });
 		};
 
-		const onMinMaxChange = (f) => async (min, max) => {
-			const filters = { ...model.filters };
-			filters[f.name] = { ...f, min: Number(min), max: Number(max) };
-			await updateResults({ ...model, filters, page: 0 });
+		const onChange = (f) => async (change) => {
+			if (change.type === 'numeric') {
+				const { min, max } = change;
+				const filters = { ...model.filters };
+				filters[f.name] = { ...f, min: Number(min), max: Number(max) };
+				await updateResults({ ...model, filters, page: 0 });
+			} else if (change.type === 'enum') {
+				const { values } = change;
+				const filters = { ...model.filters };
+				filters[f.name] = { ...f, values };
+				await updateResults({ ...model, filters, page: 0 });
+			}
 		};
 
 		const onPageChanged = (pageDelta) => async () => {
@@ -153,7 +161,7 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 		};
 
 		const filters = model.themeSpec?.fields?.map((f) =>
-			filterElement({ ...f, maxLimit: f.max, minLimit: f.min }, model.filters[f.name], onMinMaxChange(f))
+			filterElement({ ...f, maxLimit: f.max, minLimit: f.min }, model.filters[f.name], onChange(f))
 		);
 
 		const fieldsToShow = model.themeSpec.fields.filter((f) => f.properties.includes(FieldProperties.VIEWABLE));

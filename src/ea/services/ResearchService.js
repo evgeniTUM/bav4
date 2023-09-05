@@ -21,7 +21,7 @@ const fieldsSpecs = [
 const filter = (data, filters) => {
 	const check = (data, filter) => {
 		if (filter.type === 'numeric') return data[filter.name] < filter.max && data[filter.name] > filter.min;
-		if (filter.type === 'enum') return filter.values.incudes(data[filter.name]);
+		if (filter.type === 'enum') return filter.values.includes(data[filter.name]);
 		return true;
 	};
 	return data.filter((data) => filters.every((filter) => check(data, filter)));
@@ -70,7 +70,8 @@ export class ResearchService {
 			};
 		}
 		return {
-			results: 0
+			results: 0,
+			fields: []
 		};
 	}
 

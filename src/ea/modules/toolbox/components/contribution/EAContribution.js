@@ -296,10 +296,6 @@ export class EAContribution extends AbstractMvuContentPanel {
 			html` <span style="color: var(--primary-color)">${text}${subtext ? ':' : ''}</span>
 				<span style="font-style: italic">${subtext}</span>`;
 
-		const onSelectButtonClick = () => {
-			setTaggingMode(true);
-		};
-
 		const form = html`
 			<form id='report' class='form-content' action="#">
 
