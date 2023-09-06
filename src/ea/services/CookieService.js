@@ -51,8 +51,8 @@ export class CookieService {
 	 * Deletes old deprecated cookies.
 	 */
 	deleteDeprecatedCookies() {
-		document.cookie = 'eab=;path=/;domain=www.karten.energieatlas.bayern.de;expires=Thu, 01 Jan 1970 00:00:01 GMT';
-		document.cookie = 'eab=;path=/;domain=www.karten-test.energieatlas.bayern.de;expires=Thu, 01 Jan 1970 00:00:01 GMT';
+		document.cookie = 'eab=;path=/;host=www.karten.energieatlas.bayern.de;expires=Thu, 01 Jan 1970 00:00:01 GMT';
+		document.cookie = 'eab=;path=/;host=www.karten-test.energieatlas.bayern.de;expires=Thu, 01 Jan 1970 00:00:01 GMT';
 	}
 
 	deleteCookie(name) {
