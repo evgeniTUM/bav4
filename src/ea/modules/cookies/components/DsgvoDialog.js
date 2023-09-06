@@ -40,7 +40,7 @@ export class DsgvoDialog extends MvuElement {
 
 		const loadedSettings = parseEabCookies();
 
-		if (loadedSettings.matomo && loadedSettings.webanalyse) {
+		if (loadedSettings.webanalyse) {
 			activateWebAnalytics();
 		} else {
 			deactivateWebAnalytics();
@@ -75,8 +75,8 @@ export class DsgvoDialog extends MvuElement {
 
 		const openSettings = () => {
 			const onToggle = (event) => {
-				settings.functional = event.detail.checked;
-				settings.matomo = event.detail.checked;
+				settings.functional = false;
+				settings.matomo = false;
 				settings.webanalyse = event.detail.checked;
 			};
 

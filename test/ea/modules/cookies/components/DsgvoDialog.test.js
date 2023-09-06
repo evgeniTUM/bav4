@@ -88,7 +88,7 @@ describe('DsgvoDialog', () => {
 		it('activates web analytics if cookie eab.webanalyse is true', async () => {
 			spyOn(cookieServiceMock, 'getCookie')
 				.withArgs('eab')
-				.and.returnValue(JSON.stringify({ functional: true, matomo: true, webanalyse: true }));
+				.and.returnValue(JSON.stringify({ functional: false, matomo: false, webanalyse: true }));
 
 			await setup();
 
