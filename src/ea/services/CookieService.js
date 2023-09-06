@@ -51,9 +51,8 @@ export class CookieService {
 	 * Deletes old deprecated cookies.
 	 */
 	deleteDeprecatedCookies() {
-		const oldDomain = new URL(window.location.href).hostname;
-		const newDomain = this.getDomainWithoutSubdomain(window.location.href);
-		if (newDomain !== oldDomain) document.cookie = 'eab=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT';
+		document.cookie = 'eab=;path=/;host=www.karten.energieatlas.bayern.de;expires=Thu, 01 Jan 1970 00:00:01 GMT';
+		document.cookie = 'eab=;path=/;host=www.karten-test.energieatlas.bayern.de;expires=Thu, 01 Jan 1970 00:00:01 GMT';
 	}
 
 	deleteCookie(name) {
