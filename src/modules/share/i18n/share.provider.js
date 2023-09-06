@@ -10,7 +10,9 @@ export const provide = (lang) => {
 				share_clipboard_link_notification_text: 'The link',
 				share_clipboard_success: 'was copied to clipboard',
 				share_clipboard_error: '"Copy to clipboard" is not available',
-				share_assistChip_share_stored_data: 'Share data'
+				share_assistChip_share_stored_data: 'Share data',
+				share_dialog_toggle_active_tooltip: 'Deactivate edit mode',
+				share_dialog_toggle_inactive_tooltip: 'Activate edit mode'
 			};
 
 		case 'de':
@@ -23,7 +25,9 @@ export const provide = (lang) => {
 				share_clipboard_link_notification_text: 'Der Link',
 				share_clipboard_success: 'wurde in die Zwischenablage kopiert',
 				share_clipboard_error: '"In die Zwischenablage kopieren" steht nicht zur Verfügung',
-				share_assistChip_share_stored_data: 'Daten teilen'
+				share_assistChip_share_stored_data: 'Daten teilen',
+				share_dialog_toggle_active_tooltip: 'Bearbeitungsmodus deaktivieren',
+				share_dialog_toggle_inactive_tooltip: 'Bearbeitungsmodus aktivieren'
 			};
 
 		default:
