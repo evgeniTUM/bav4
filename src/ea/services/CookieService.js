@@ -29,12 +29,11 @@ export class CookieService {
 	setCookie(name, settings, exdays) {
 		const expirationDate = new Date();
 		expirationDate.setDate(expirationDate.getDate() + exdays);
-		const host = this.getDomainWithoutSubdomain(window.location.href);
+		const domain = this.getDomainWithoutSubdomain(window.location.href);
 		const options = {
 			expires: expirationDate,
-			sameSite: 'lax',
 			path: '/',
-			domain: host
+			domain
 		};
 		document.cookie = serialize(name, settings, options);
 	}
@@ -48,10 +47,18 @@ export class CookieService {
 		return cookie;
 	}
 
+	/**
+	 * Deletes old deprecated cookies.
+	 */
+	deleteDeprecatedCookies() {
+		document.cookie = 'eab=;path=/;domain=www.karten.energieatlas.bayern.de;expires=Thu, 01 Jan 1970 00:00:01 GMT';
+		document.cookie = 'eab=;path=/;domain=www.karten-test.energieatlas.bayern.de;expires=Thu, 01 Jan 1970 00:00:01 GMT';
+	}
+
 	deleteCookie(name) {
 		if (this.getCookie(name)) {
-			const host = this.getDomainWithoutSubdomain(window.location.href);
-			document.cookie = name + '=' + ';path=/' + ';domain=' + host + ';expires=Thu, 01 Jan 1970 00:00:01 GMT';
+			const domain = this.getDomainWithoutSubdomain(window.location.href);
+			document.cookie = name + '=' + ';path=/' + ';domain=' + domain + ';expires=Thu, 01 Jan 1970 00:00:01 GMT';
 		}
 	}
 }
