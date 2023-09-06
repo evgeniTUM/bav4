@@ -40,7 +40,7 @@ describe('DsgvoDialog', () => {
 		it('is not shown when functional cookie is set', async () => {
 			spyOn(cookieServiceMock, 'getCookie')
 				.withArgs('eab')
-				.and.returnValue(JSON.stringify({ functional: true, webanalyse: false }));
+				.and.returnValue(JSON.stringify({ functional: false, matomo: true, webanalyse: false }));
 
 			const element = await setup();
 
@@ -53,14 +53,24 @@ describe('DsgvoDialog', () => {
 			expect(element.shadowRoot.children.length).toBeGreaterThan(0);
 		});
 
-		it('is shown when functional cookie is false', async () => {
+		it('is not shown when functional property exists and is false', async () => {
 			spyOn(cookieServiceMock, 'getCookie')
 				.withArgs('eab')
-				.and.returnValue(JSON.stringify({ functional: false, webanalyse: false }));
+				.and.returnValue(JSON.stringify({ functional: false, matomo: false, webanalyse: false }));
 
 			const element = await setup();
 
-			expect(element.shadowRoot.children.length).toBeGreaterThan(0);
+			expect(element.shadowRoot.children.length).toBe(0);
+		});
+
+		it('is not shown when functional property exists and is true', async () => {
+			spyOn(cookieServiceMock, 'getCookie')
+				.withArgs('eab')
+				.and.returnValue(JSON.stringify({ functional: true, matomo: false, webanalyse: false }));
+
+			const element = await setup();
+
+			expect(element.shadowRoot.children.length).toBe(0);
 		});
 	});
 
@@ -71,14 +81,14 @@ describe('DsgvoDialog', () => {
 
 		element.shadowRoot.getElementById('accept-all').click();
 
-		expect(cookieSpy).toHaveBeenCalledWith('eab', JSON.stringify({ functional: true, webanalyse: true }), 120);
+		expect(cookieSpy).toHaveBeenCalledWith('eab', JSON.stringify({ functional: true, matomo: true, webanalyse: true }), 120);
 	});
 
 	describe('popup,', () => {
 		it('activates web analytics if cookie eab.webanalyse is true', async () => {
 			spyOn(cookieServiceMock, 'getCookie')
 				.withArgs('eab')
-				.and.returnValue(JSON.stringify({ functional: true, webanalyse: true }));
+				.and.returnValue(JSON.stringify({ functional: true, matomo: true, webanalyse: true }));
 
 			await setup();
 
@@ -88,7 +98,7 @@ describe('DsgvoDialog', () => {
 		it('deactivates web analytics if cookie eab.webanalyse is false', async () => {
 			spyOn(cookieServiceMock, 'getCookie')
 				.withArgs('eab')
-				.and.returnValue(JSON.stringify({ functional: true, webanalyse: false }));
+				.and.returnValue(JSON.stringify({ functional: false, matomo: false, webanalyse: false }));
 
 			activateWebAnalytics();
 			await setup();
@@ -112,7 +122,7 @@ describe('DsgvoDialog', () => {
 
 			element.shadowRoot.getElementById('accept-all').click();
 
-			expect(cookieSpySet).toHaveBeenCalledWith('eab', JSON.stringify({ functional: true, webanalyse: true }), 120);
+			expect(cookieSpySet).toHaveBeenCalledWith('eab', JSON.stringify({ functional: true, matomo: true, webanalyse: true }), 120);
 			expect(cookieSpyGet).toHaveBeenCalledWith('eab');
 		});
 
@@ -123,7 +133,7 @@ describe('DsgvoDialog', () => {
 
 			element.shadowRoot.getElementById('reject-all').click();
 
-			expect(cookieSpy).toHaveBeenCalledWith('eab', JSON.stringify({ functional: true, webanalyse: false }), 120);
+			expect(cookieSpy).toHaveBeenCalledWith('eab', JSON.stringify({ functional: false, matomo: false, webanalyse: false }), 120);
 			expect(cookieSpyGet).toHaveBeenCalledTimes(2);
 		});
 	});

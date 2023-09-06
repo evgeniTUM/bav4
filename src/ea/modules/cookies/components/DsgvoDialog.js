@@ -40,17 +40,17 @@ export class DsgvoDialog extends MvuElement {
 
 		const loadedSettings = parseEabCookies();
 
-		if (loadedSettings.functional && loadedSettings.webanalyse) {
+		if (loadedSettings.matomo && loadedSettings.webanalyse) {
 			activateWebAnalytics();
 		} else {
 			deactivateWebAnalytics();
 		}
 
-		if (loadedSettings.functional) {
+		if ('functional' in loadedSettings) {
 			return nothing;
 		}
 
-		const settings = { functional: true, webanalyse: false };
+		const settings = { functional: false, matomo: false, webanalyse: false };
 
 		const saveSettings = () => {
 			this._cookieService.setCookie('eab', JSON.stringify(settings), 120);
@@ -60,17 +60,23 @@ export class DsgvoDialog extends MvuElement {
 		};
 
 		const acceptAll = () => {
+			settings.functional = true;
+			settings.matomo = true;
 			settings.webanalyse = true;
 			saveSettings();
 		};
 
 		const rejectAll = () => {
+			settings.functional = false;
+			settings.matomo = false;
 			settings.webanalyse = false;
 			saveSettings();
 		};
 
 		const openSettings = () => {
 			const onToggle = (event) => {
+				settings.functional = event.detail.checked;
+				settings.matomo = event.detail.checked;
 				settings.webanalyse = event.detail.checked;
 			};
 
