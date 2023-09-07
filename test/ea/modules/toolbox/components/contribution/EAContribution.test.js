@@ -1,6 +1,5 @@
 import { GlobalCoordinateRepresentations } from '../../../../../../src/domain/coordinateRepresentation';
-import { MODUS } from '../../../../../../src/ea/modules/toolbox/components/contribution/ContributionModus';
-import { EAContribution } from '../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
+import { CONTRIBUTION_TYPE, EAContribution, MODUS } from '../../../../../../src/ea/modules/toolbox/components/contribution/EAContribution';
 import { setLocation } from '../../../../../../src/ea/store/locationSelection/locationSelection.action';
 import { initialState, locationSelection } from '../../../../../../src/ea/store/locationSelection/locationSelection.reducer';
 import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
@@ -163,7 +162,7 @@ describe('EAContributon', () => {
 
 	it('opens the research module when "find" button is clicked', async () => {
 		const element = await setup();
-		element.mode = MODUS.market;
+		element.type = CONTRIBUTION_TYPE.MARKET;
 		const findButton = element.shadowRoot.querySelector('#search');
 
 		findButton.click();
@@ -257,7 +256,7 @@ describe('EAContributon', () => {
 	describe('mode energy-reporting', () => {
 		it('does not show find button', async () => {
 			const element = await setup();
-			element.mode = MODUS.report;
+			element.type = CONTRIBUTION_TYPE.REPORT;
 
 			const findButton = element.shadowRoot.querySelector('#search');
 
@@ -273,11 +272,12 @@ describe('EAContributon', () => {
 
 			const element = await setup();
 
-			element.mode = MODUS.report;
+			element.type = CONTRIBUTION_TYPE.REPORT;
 			element.categories = SAMPLE_JSON_SPEC;
 
 			const query = (query) => element.shadowRoot.querySelector(query);
 
+			query('#new').click();
 			setLocation(expectedCoordinates);
 
 			query('#category').value = expectedCategory;
@@ -342,12 +342,13 @@ describe('EAContributon', () => {
 			const postSpy = spyOn(httpServiceMock, 'post').and.returnValue({ status: 200 });
 
 			const element = await setup();
-			element.mode = MODUS.market;
+			element.type = CONTRIBUTION_TYPE.MARKET;
 
 			element.categories = SAMPLE_JSON_SPEC;
 
 			const query = (query) => element.shadowRoot.querySelector(query);
 
+			query('#new').click();
 			setLocation(expectedCoordinates);
 
 			query('#category').value = expectedCategory;
@@ -413,7 +414,7 @@ describe('EAContributon', () => {
 			spyOn(httpServiceMock, 'post').and.returnValue({ status: 200 });
 
 			const element = await setup();
-			element.mode = MODUS.report;
+			element.type = CONTRIBUTION_TYPE.REPORT;
 
 			element.categories = SAMPLE_JSON_SPEC;
 
@@ -440,7 +441,8 @@ describe('EAContributon', () => {
 			expect(element.shadowRoot.querySelectorAll('collapsable-content').length).toBe(5);
 			expect(element.shadowRoot.querySelector('#failure-message')).toBeNull();
 
-			expect(element.getModel().mode).toBeUndefined();
+			expect(element.getModel().mode).toEqual(MODUS.UNSELECTED);
+			expect(element.getModel().type).toEqual(CONTRIBUTION_TYPE.REPORT);
 			expect(element.getModel().categoriesSpecification).toEqual(SAMPLE_JSON_SPEC);
 
 			expect(store.getState().locationSelection.tagging).toBeFalse();
@@ -449,7 +451,7 @@ describe('EAContributon', () => {
 
 		it('resets categoryFields after category change', async () => {
 			const element = await setup();
-			element.mode = MODUS.report;
+			element.type = CONTRIBUTION_TYPE.REPORT;
 
 			element.categories = SAMPLE_JSON_SPEC;
 

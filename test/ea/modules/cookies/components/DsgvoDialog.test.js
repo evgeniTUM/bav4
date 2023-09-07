@@ -1,4 +1,3 @@
-import { parse, serialize } from 'cookie';
 import { DsgvoDialog } from '../../../../../src/ea/modules/cookies/components/DsgvoDialog';
 import { activateWebAnalytics } from '../../../../../src/ea/store/module/ea.action';
 import { eaReducer } from '../../../../../src/ea/store/module/ea.reducer';
@@ -11,71 +10,85 @@ window.customElements.define(DsgvoDialog.tag, DsgvoDialog);
 describe('DsgvoDialog', () => {
 	let store;
 
+	const cookieServiceMock = {
+		setCookie: () => {},
+		getCookie: () => undefined,
+		deleteDeprecatedCookies: () => {}
+	};
+
 	const setup = async (state = {}) => {
 		store = TestUtils.setupStoreAndDi(state, {
 			ea: eaReducer,
 			modal: modalReducer
 		});
+
 		$injector.registerSingleton('TranslationService', { translate: (key) => key });
+		$injector.registerSingleton('CookieService', cookieServiceMock);
 
 		return await TestUtils.render(DsgvoDialog.tag);
 	};
 
 	describe('rendering,', () => {
-		it('is not shown when base cookie is set', async () => {
-			document.cookie = serialize('eab', JSON.stringify({ base: true, webanalyse: false }));
+		it('deletes deprecated cookies', async () => {
+			const deleteDeprecatedCookiesSpy = spyOn(cookieServiceMock, 'deleteDeprecatedCookies');
+
+			await setup();
+
+			expect(deleteDeprecatedCookiesSpy).toHaveBeenCalled();
+		});
+
+		it('is not shown when functional cookie is set', async () => {
+			spyOn(cookieServiceMock, 'getCookie')
+				.withArgs('eab')
+				.and.returnValue(JSON.stringify({ functional: false, matomo: true, webanalyse: false }));
 
 			const element = await setup();
 
 			expect(element.shadowRoot.children.length).toBe(0);
 		});
 
-		it('is shown when base cookie is not set', async () => {
-			document.cookie = serialize('eab', {}, { maxAge: 0 });
-
+		it('is shown when functional cookie is not set', async () => {
 			const element = await setup();
 
 			expect(element.shadowRoot.children.length).toBeGreaterThan(0);
 		});
 
-		it('is shown when base cookie is false', async () => {
-			document.cookie = serialize('eab', JSON.stringify({ base: false, webanalyse: false }));
+		it('is not shown when functional property exists and is false', async () => {
+			spyOn(cookieServiceMock, 'getCookie')
+				.withArgs('eab')
+				.and.returnValue(JSON.stringify({ functional: false, matomo: false, webanalyse: false }));
 
 			const element = await setup();
 
-			expect(element.shadowRoot.children.length).toBeGreaterThan(0);
+			expect(element.shadowRoot.children.length).toBe(0);
+		});
+
+		it('is not shown when functional property exists and is true', async () => {
+			spyOn(cookieServiceMock, 'getCookie')
+				.withArgs('eab')
+				.and.returnValue(JSON.stringify({ functional: true, matomo: false, webanalyse: false }));
+
+			const element = await setup();
+
+			expect(element.shadowRoot.children.length).toBe(0);
 		});
 	});
 
-	it('creates eab cookie property with 120 days expiration, SameSite=Lax and Path=/', async () => {
-		document.cookie = serialize('eab', {}, { maxAge: 0 });
-
-		let actualCookie;
-		let expectedDate;
-		spyOnProperty(document, 'cookie', 'set').and.callFake((c) => {
-			actualCookie = c;
-			expectedDate = new Date();
-			return c;
-		});
+	it('creates eab cookie property with 120 days expiration and Path=/', async () => {
+		const cookieSpy = spyOn(cookieServiceMock, 'setCookie');
 
 		const element = await setup();
 
 		element.shadowRoot.getElementById('accept-all').click();
 
-		expectedDate.setDate(expectedDate.getDate() + 120);
-
-		const actualDate = new Date(actualCookie.match(/Expires=(.*?);/)[1]);
-		const actualPath = actualCookie.match(/Path=(.*?);/)[1];
-		const actualSameSite = actualCookie.match(/SameSite=(.*)/)[1];
-
-		expect(actualDate.toString()).toEqual(expectedDate.toString());
-		expect(actualPath).toEqual('/');
-		expect(actualSameSite).toEqual('Lax');
+		expect(cookieSpy).toHaveBeenCalledWith('eab', JSON.stringify({ functional: true, matomo: true, webanalyse: true }), 120);
 	});
 
 	describe('popup,', () => {
 		it('activates web analytics if cookie eab.webanalyse is true', async () => {
-			document.cookie = serialize('eab', JSON.stringify({ base: true, webanalyse: true }));
+			spyOn(cookieServiceMock, 'getCookie')
+				.withArgs('eab')
+				.and.returnValue(JSON.stringify({ functional: false, matomo: false, webanalyse: true }));
 
 			await setup();
 
@@ -83,7 +96,9 @@ describe('DsgvoDialog', () => {
 		});
 
 		it('deactivates web analytics if cookie eab.webanalyse is false', async () => {
-			document.cookie = serialize('eab', JSON.stringify({ base: true, webanalyse: false }));
+			spyOn(cookieServiceMock, 'getCookie')
+				.withArgs('eab')
+				.and.returnValue(JSON.stringify({ functional: false, matomo: false, webanalyse: false }));
 
 			const store = TestUtils.setupStoreAndDi(
 				{},
@@ -93,6 +108,7 @@ describe('DsgvoDialog', () => {
 				}
 			);
 			$injector.registerSingleton('TranslationService', { translate: (key) => key });
+			$injector.registerSingleton('CookieService', cookieServiceMock);
 			activateWebAnalytics();
 
 			await TestUtils.render(DsgvoDialog.tag);
@@ -101,8 +117,6 @@ describe('DsgvoDialog', () => {
 		});
 
 		it('has a link to the privacy policy', async () => {
-			document.cookie = serialize('eab', {}, { maxAge: 0 });
-
 			const element = await setup();
 
 			const link = element.shadowRoot.getElementById('privacy-policy-link');
@@ -112,32 +126,30 @@ describe('DsgvoDialog', () => {
 		});
 
 		it('saves cookies and reload on "accept all" button click', async () => {
-			document.cookie = serialize('eab', {}, { maxAge: 0 });
-
+			const cookieSpyGet = spyOn(cookieServiceMock, 'getCookie').and.callThrough();
+			const cookieSpySet = spyOn(cookieServiceMock, 'setCookie');
 			const element = await setup();
 
 			element.shadowRoot.getElementById('accept-all').click();
 
-			expect(JSON.parse(parse(document.cookie).eab)).toEqual({ base: true, webanalyse: true });
-			expect(element.shadowRoot.children.length).toBe(0);
+			expect(cookieSpySet).toHaveBeenCalledWith('eab', JSON.stringify({ functional: true, matomo: true, webanalyse: true }), 120);
+			expect(cookieSpyGet).toHaveBeenCalledWith('eab');
 		});
 
 		it('saves cookies and reload on "reject all" button click', async () => {
-			document.cookie = serialize('eab', {}, { maxAge: 0 });
-
+			const cookieSpyGet = spyOn(cookieServiceMock, 'getCookie').and.callThrough();
+			const cookieSpy = spyOn(cookieServiceMock, 'setCookie');
 			const element = await setup();
 
 			element.shadowRoot.getElementById('reject-all').click();
 
-			expect(JSON.parse(parse(document.cookie).eab)).toEqual({ base: true, webanalyse: false });
-			expect(element.shadowRoot.children.length).toBe(0);
+			expect(cookieSpy).toHaveBeenCalledWith('eab', JSON.stringify({ functional: false, matomo: false, webanalyse: false }), 120);
+			expect(cookieSpyGet).toHaveBeenCalledTimes(2);
 		});
 	});
 
 	describe('modal dialog,', () => {
 		it('opens modal dialog on "cookie settings" button click', async () => {
-			document.cookie = serialize('eab', {}, { maxAge: 0 });
-
 			const element = await setup();
 
 			element.shadowRoot.getElementById('cookie-settings').click();
@@ -145,8 +157,6 @@ describe('DsgvoDialog', () => {
 		});
 
 		it('closes modal dialog on "accept all" button click', async () => {
-			document.cookie = serialize('eab', {}, { maxAge: 0 });
-
 			const element = await setup();
 
 			element.shadowRoot.getElementById('cookie-settings').click();
@@ -156,8 +166,6 @@ describe('DsgvoDialog', () => {
 		});
 
 		it('closes modal dialog on "reject all" button click', async () => {
-			document.cookie = serialize('eab', {}, { maxAge: 0 });
-
 			const element = await setup();
 
 			element.shadowRoot.getElementById('cookie-settings').click();

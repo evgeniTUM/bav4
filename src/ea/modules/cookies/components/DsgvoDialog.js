@@ -1,4 +1,3 @@
-import { parse, serialize } from 'cookie';
 import { html, nothing } from 'lit-html';
 import { $injector } from '../../../../injection';
 import { MvuElement } from '../../../../modules/MvuElement';
@@ -10,9 +9,10 @@ export class DsgvoDialog extends MvuElement {
 	constructor() {
 		super();
 
-		const { TranslationService } = $injector.inject('TranslationService');
+		const { TranslationService, CookieService } = $injector.inject('TranslationService', 'CookieService');
 
 		this._translationService = TranslationService;
+		this._cookieService = CookieService;
 	}
 
 	/**
@@ -23,12 +23,13 @@ export class DsgvoDialog extends MvuElement {
 	createView() {
 		const translate = (key) => this._translationService.translate(key);
 
+		this._cookieService.deleteDeprecatedCookies();
 		const parseEabCookies = () => {
-			const cookies = parse(document.cookie);
+			const eabCookie = this._cookieService.getCookie('eab');
 
-			if (cookies.eab) {
+			if (eabCookie) {
 				try {
-					return JSON.parse(cookies.eab);
+					return JSON.parse(eabCookie);
 				} catch (e) {
 					console.warn('Parsing of cookie property eab failed: ' + e);
 				}
@@ -39,45 +40,43 @@ export class DsgvoDialog extends MvuElement {
 
 		const loadedSettings = parseEabCookies();
 
-		if (loadedSettings.base && loadedSettings.webanalyse) {
+		if (loadedSettings.webanalyse) {
 			activateWebAnalytics();
 		} else {
 			deactivateWebAnalytics();
 		}
 
-		if (loadedSettings.base) {
+		if ('functional' in loadedSettings) {
 			return nothing;
 		}
 
-		const settings = { base: true, webanalyse: false };
+		const settings = { functional: false, matomo: false, webanalyse: false };
 
 		const saveSettings = () => {
-			const expirationDate = new Date();
-			expirationDate.setDate(expirationDate.getDate() + 120);
-			const options = {
-				expires: expirationDate,
-				sameSite: 'lax',
-				path: '/'
-			};
-
-			document.cookie = serialize('eab', JSON.stringify(settings), options);
+			this._cookieService.setCookie('eab', JSON.stringify(settings), 120);
 
 			closeModal();
 			this.onModelChanged();
 		};
 
 		const acceptAll = () => {
+			settings.functional = true;
+			settings.matomo = true;
 			settings.webanalyse = true;
 			saveSettings();
 		};
 
 		const rejectAll = () => {
+			settings.functional = false;
+			settings.matomo = false;
 			settings.webanalyse = false;
 			saveSettings();
 		};
 
 		const openSettings = () => {
 			const onToggle = (event) => {
+				settings.functional = false;
+				settings.matomo = false;
 				settings.webanalyse = event.detail.checked;
 			};
 

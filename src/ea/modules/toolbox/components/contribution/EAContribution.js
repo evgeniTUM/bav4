@@ -4,7 +4,6 @@ import { AbstractMvuContentPanel } from '../../../../../modules/menu/components/
 import { setLocation, setTaggingMode } from '../../../../store/locationSelection/locationSelection.action';
 import { setCurrentModule } from '../../../../store/module/ea.action';
 import { ResearchModuleContent } from '../research/ResearchModuleContent';
-import { MODUS } from './ContributionModus';
 import css from './eaContribution.css';
 import collapsableContentCss from './collapsableContent.css';
 import validationCss from './validation.css';
@@ -16,8 +15,20 @@ const Update_Field = 'update_field';
 const Reset_Fields = 'reset_fields';
 const Position_Change = 'position_change';
 
+export const MODUS = Object.freeze({
+	NEW: 'Neumeldung',
+	CORRECTION: 'Korrektur',
+	UNSELECTED: ''
+});
+
+export const CONTRIBUTION_TYPE = Object.freeze({
+	REPORT: 'Neumeldung',
+	MARKET: 'Börse'
+});
+
 const initialModel = {
-	mode: undefined,
+	type: undefined,
+	mode: MODUS.UNSELECTED,
 	isPortrait: false,
 	hasMinWidth: false,
 	showInvalidFields: false,
@@ -62,14 +73,15 @@ export class EAContribution extends AbstractMvuContentPanel {
 				if (data.openSections) {
 					setTaggingMode(data.openSections.includes('step2'));
 				}
+				const newModel = { ...model, ...data };
 
 				const modeButtons = this.shadowRoot.getElementById('mode-validation-element');
-				if (modeButtons) modeButtons.setCustomValidity(data.mode || model.mode ? '' : 'Bitte Modus auswählen');
+				if (modeButtons) modeButtons.setCustomValidity(newModel.mode === MODUS.UNSELECTED ? 'Bitte Modus auswählen' : '');
 
 				const locationButton = this.shadowRoot.getElementById('location-validation-element');
-				if (locationButton) locationButton.setCustomValidity(model.position !== null ? '' : 'Bitte Standort auswählen');
+				if (locationButton) locationButton.setCustomValidity(newModel.position === null ? 'Bitte Standort auswählen' : '');
 
-				return { ...model, ...data };
+				return newModel;
 			}
 
 			case Update_Field: {
@@ -96,7 +108,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 
 	reset() {
 		this.signal(Reset, {
-			mode: this.getModel().energyMarketMode ? MODUS.market : undefined,
+			type: this.getModel().type,
 			categoriesSpecification: this.getModel().categoriesSpecification
 		});
 		setLocation(null);
@@ -131,7 +143,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 	createView(model) {
 		const translate = (key) => this._translationService.translate(key);
 
-		const onClickNewButton = (mode) => () => {
+		const onClickModeButton = (mode) => () => {
 			this.signal(Update, { mode, openSections: ['step2'] });
 		};
 
@@ -167,7 +179,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 				.join('\n');
 
 			const json = {
-				reportType: model.mode,
+				reportType: model.type === CONTRIBUTION_TYPE.MARKET ? CONTRIBUTION_TYPE.MARKET : model.mode,
 				coordinates: getCoordinatesString(),
 				additionalInfo: model.additionalInfo,
 				email: model.email,
@@ -210,10 +222,10 @@ export class EAContribution extends AbstractMvuContentPanel {
 			categoryFields[e['ee-name']] = e['ee-angaben'].map((e) => createField(e.name, e.optional));
 		});
 
-		const energyMarketMode = model.mode === MODUS.market;
-		const isCorrection = model.mode === MODUS.correction;
+		const isMarket = model.type === CONTRIBUTION_TYPE.MARKET;
+		const isCorrection = model.mode === MODUS.CORRECTION;
 
-		const introduction = energyMarketMode
+		const introduction = isMarket
 			? html`<div class="introduction">
 					Melden Sie Abwärmequellen/-senken oder Dach-/Freiflächen zur PV-Nutzung. Die Suche nach Einträgen in den Börsen erfolgt über die
 					Daten-Recherche.
@@ -223,29 +235,29 @@ export class EAContribution extends AbstractMvuContentPanel {
 					Objekten.
 			  </div>`;
 
-		const buttonHeaders = energyMarketMode
+		const buttonHeaders = isMarket
 			? html`<div class="button-header">Meldung neuer Einträge</div>
 					<div class="button-header">Bestehende Einträge durchsuchen</div>
 					<div class="arrow-down"></div>
 					<div class="arrow-down"></div>`
 			: '';
 
-		const firstButtonClass = model.mode ? (energyMarketMode || !isCorrection ? 'active' : 'inactive') : 'unselected';
-		const secondButtonClass = model.mode ? (energyMarketMode || isCorrection ? 'active' : 'inactive') : 'unselected';
+		const firstButtonClass = model.mode === MODUS.UNSELECTED ? 'unselected' : model.mode === MODUS.NEW ? 'active' : 'inactive';
+		const secondButtonClass = model.mode === MODUS.UNSELECTED ? 'unselected' : model.mode === MODUS.CORRECTION ? 'active' : 'inactive';
 
 		const firstButton = html`
 			<button
 				id="new"
 				type="button"
 				class=${firstButtonClass}
-				@click=${onClickNewButton(energyMarketMode ? MODUS.market : MODUS.report)}
+				@click=${onClickModeButton(MODUS.NEW)}
 				title=${translate('ea_contribution_button_tag_tooltip')}
 			>
 				<div class="button-icon tag-icon"></div>
 				${translate('ea_contribution_button_tag_title')}
 			</button>
 		`;
-		const secondButton = energyMarketMode
+		const secondButton = isMarket
 			? html`<button
 					id="search"
 					type="button"
@@ -260,7 +272,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 					id="correction"
 					type="button"
 					class=${secondButtonClass}
-					@click=${onClickNewButton(MODUS.correction)}
+					@click=${onClickModeButton(MODUS.CORRECTION)}
 					title=${translate('ea_contribution_button_correction_tooltip')}
 			  >
 					<div class="button-icon correction-icon"></div>
@@ -339,7 +351,14 @@ export class EAContribution extends AbstractMvuContentPanel {
 						.title=${stepTitle('4. Angaben zum Objekt')} .open=${model.openSections.includes('step4')}
 						@toggle=${onToggle}>
 
-						${isCorrection ? '' : html` <div class="fields-help">Übersicht der notwendigen Angaben (Pflichtangaben mit * und in Fettdruck):</div>`}
+						${
+							isCorrection
+								? ''
+								: html` <div class="fields-help">
+										Übersicht der Angaben<br />
+										- Pflichtangaben mit * und in Fettdruck
+								  </div>`
+						}
 
 ${isCorrection ? '' : html`<div class="category-fields">${categoryFields[model.currentCategory]}</div>`}
 
@@ -407,12 +426,12 @@ ${isCorrection ? '' : html`<div class="category-fields">${categoryFields[model.c
 		this.signal(Update, { categoriesSpecification: cat });
 	}
 
-	get mode() {
-		return this.getModel().mode;
+	get type() {
+		return this.getModel().type;
 	}
 
-	set mode(m) {
-		this.signal(Update, { mode: m });
+	set type(m) {
+		this.signal(Update, { type: m });
 	}
 
 	static get name() {
