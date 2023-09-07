@@ -4,7 +4,7 @@ import { MvuElement } from '../../../../../modules/MvuElement';
 import { csv2json, generateJsonCategorySpecFromCSV } from '../../../../utils/eaUtils';
 import csvContent from './assets/energyMarketCategories.csv';
 import css from './container.css';
-import { MODUS } from './ContributionModus';
+import { CONTRIBUTION_TYPE } from './EAContribution';
 
 export class EnergyMarketModuleContent extends MvuElement {
 	constructor() {
@@ -38,7 +38,7 @@ export class EnergyMarketModuleContent extends MvuElement {
 			<div class="container">
 				<div class="header">${translate('ea_menu_boerse')}</div>
 				<div class="content">
-					<ea-feature-contribution .mode=${MODUS.market} .categories=${categories}></ea-feature-contribution>
+					<ea-feature-contribution .type=${CONTRIBUTION_TYPE.MARKET} .categories=${categories}></ea-feature-contribution>
 				</div>
 			</div>
 		`;
