@@ -8,23 +8,14 @@ import css from './eaContribution.css';
 import collapsableContentCss from './collapsableContent.css';
 import validationCss from './validation.css';
 import { GlobalCoordinateRepresentations } from '../../../../../domain/coordinateRepresentation';
+import { MODUS } from './ContributionEnums';
+import { TYPE } from './ContributionEnums';
 
 const Update = 'update';
 const Reset = 'reset';
 const Update_Field = 'update_field';
 const Reset_Fields = 'reset_fields';
 const Position_Change = 'position_change';
-
-export const MODUS = Object.freeze({
-	NEW: 'Neumeldung',
-	CORRECTION: 'Korrektur',
-	UNSELECTED: ''
-});
-
-export const CONTRIBUTION_TYPE = Object.freeze({
-	REPORT: 'Neumeldung',
-	MARKET: 'Börse'
-});
 
 const initialModel = {
 	type: undefined,
@@ -179,7 +170,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 				.join('\n');
 
 			const json = {
-				reportType: model.type === CONTRIBUTION_TYPE.MARKET ? CONTRIBUTION_TYPE.MARKET : model.mode,
+				reportType: model.type === TYPE.MARKET ? TYPE.MARKET : model.mode,
 				coordinates: getCoordinatesString(),
 				additionalInfo: model.additionalInfo,
 				email: model.email,
@@ -222,7 +213,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 			categoryFields[e['ee-name']] = e['ee-angaben'].map((e) => createField(e.name, e.optional));
 		});
 
-		const isMarket = model.type === CONTRIBUTION_TYPE.MARKET;
+		const isMarket = model.type === TYPE.MARKET;
 		const isCorrection = model.mode === MODUS.CORRECTION;
 
 		const introduction = isMarket
