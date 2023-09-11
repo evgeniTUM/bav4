@@ -85,6 +85,7 @@ Wärmenetz,Erweiterungsmöglichkeit (Wärmequellen und/oder -abnehmer),FALSE,tex
 Wärmenetz,Inbetriebnahmejahr,FALSE,text
 Wärmenetz,Energieträger der Wärmequelle,FALSE,text
 Wärmenetz,Anlagenschlüssel,TRUE,text
+Wärmenetz,Objektnummer der Wärmequelle,TRUE,text
 Wärmenetz,Primärenergiefaktor,TRUE,text
 Wärmenetz,Versorgte Objekte,TRUE,text
 Wärmenetz,Link zur Webseite,TRUE,text
@@ -95,6 +96,8 @@ Wärmenetz,Ansprechpartner,TRUE,text
 Wärmenetz,Ansprechpartner Telefon,TRUE,text
 Wärmenetz,Ansprechpartner E-Mail,TRUE,text
 Wärmenetz,Stand,TRUE,text
+Kommunale Wärmeplanung, Link zur Webseite,FALSE,text
+Kommunale Wärmeplanung, Name der Webseite,TRUE,text
 Anlage Tiefe Geothermie,Energieerzeugung (Strom/Wärme/Strom + Wärme),FALSE,text
 Anlage Tiefe Geothermie,Nennwärmeleistung,FALSE,text
 Anlage Tiefe Geothermie,Inbetriebnahmedatum,FALSE,text

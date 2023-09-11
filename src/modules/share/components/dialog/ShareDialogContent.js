@@ -96,7 +96,12 @@ export class ShareDialogContent extends MvuElement {
 					<h4>${translate('share_dialog_link_title')}</h4>
 					<div class="share_copy_toggle">
 						<span class="share_copy">${translate('share_dialog_link')}</span>
-						<ba-toggle id="toggle" .checked=${checkedToggle} .title=${'Toggle'} @toggle=${onToggle}></ba-toggle>
+						<ba-toggle
+							id="toggle"
+							.checked=${checkedToggle}
+							.title=${checkedToggle ? translate('share_dialog_toggle_active_tooltip') : translate('share_dialog_toggle_inactive_tooltip')}
+							@toggle=${onToggle}
+						></ba-toggle>
 					</div>
 			  </div>`
 			: html.nothing;
