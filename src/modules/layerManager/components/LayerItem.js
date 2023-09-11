@@ -197,8 +197,11 @@ export class LayerItem extends AbstractMvuContentPanel {
 			iscollapse: layer.collapsed
 		};
 
-		const openGeoResourceInfoPanel = async () => {
-			openModal(layer.label, this._getInfoPanelFor(layer.geoResourceId));
+		const openGeoResourceInfoPanel = () => {
+			const {
+				layer: { label, geoResourceId }
+			} = this.getModel();
+			openModal(label, html`<ba-georesourceinfo-panel .geoResourceId=${geoResourceId}></ba-georesourceinfo-panel>`);
 		};
 
 		const validResolution = checkIfResolutionValid(layer.geoResourceId, this, model.mapResolution);
@@ -279,10 +282,6 @@ export class LayerItem extends AbstractMvuContentPanel {
 					</div>
 				</div>
 			</div>`;
-	}
-
-	_getInfoPanelFor(georesourceId) {
-		return html`<ba-georesourceinfo-panel .geoResourceId=${georesourceId}></ba-georesourceinfo-panel>`;
 	}
 
 	set layer(value) {

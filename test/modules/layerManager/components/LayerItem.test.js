@@ -10,8 +10,10 @@ import { TEST_ID_ATTRIBUTE_NAME } from '../../../../src/utils/markup';
 import { EventLike } from '../../../../src/utils/storeUtils';
 import { positionReducer } from '../../../../src/store/position/position.reducer';
 import { Spinner } from '../../../../src/modules/commons/components/spinner/Spinner';
-import { GeoResourceFuture, VectorGeoResource, VectorSourceType } from '../../../../src/domain/geoResources';import { eaReducer } from '../../../../src/ea/store/module/ea.reducer';
+import { GeoResourceFuture, VectorGeoResource, VectorSourceType } from '../../../../src/domain/geoResources';
+import { eaReducer } from '../../../../src/ea/store/module/ea.reducer';
 import { setMapResolution } from '../../../../src/ea/store/module/ea.action';
+import { GeoResourceInfoPanel } from '../../../../src/modules/geoResourceInfo/components/GeoResourceInfoPanel';
 
 window.customElements.define(LayerItem.tag, LayerItem);
 window.customElements.define(Checkbox.tag, Checkbox);
@@ -45,15 +47,18 @@ describe('LayerItem', () => {
 		};
 	};
 
+	let store;
+
 	describe('when layer item is rendered', () => {
 		const geoResourceService = { byId: () => {}, addOrReplace: () => {} };
 
 		const setup = async (layer) => {
-			TestUtils.setupStoreAndDi(
+			store = TestUtils.setupStoreAndDi(
 				{},
 				{
 					layers: layersReducer,
-					ea: eaReducer
+					ea: eaReducer,
+					modal: modalReducer
 				}
 			);
 			$injector
@@ -275,7 +280,7 @@ describe('LayerItem', () => {
 			};
 			const element = await setup(layer);
 
-		const infoIcon = element.shadowRoot.querySelector('#info');
+			const infoIcon = element.shadowRoot.querySelector('#info');
 
 			expect(infoIcon).not.toBeNull();
 			expect(infoIcon.title).toEqual('layerManager_info');
@@ -315,12 +320,14 @@ describe('LayerItem', () => {
 				collapsed: true
 			};
 			const element = await setup(layer);
-			const spy = spyOn(element, '_getInfoPanelFor').and.callThrough();
 
 			const infoIcon = element.shadowRoot.querySelector('#info');
 			infoIcon.click();
 
-			expect(spy).toHaveBeenCalledWith(layer.geoResourceId);
+			expect(store.getState().modal.data.title).toBe('label0');
+			const wrapperElement = TestUtils.renderTemplateResult(store.getState().modal.data.content);
+			expect(wrapperElement.querySelectorAll(GeoResourceInfoPanel.tag)).toHaveSize(1);
+			expect(wrapperElement.querySelector(GeoResourceInfoPanel.tag).geoResourceId).toBe('geoResourceId0');
 		});
 
 		it('does not show a loading hint for Non-GeoResourceFutures', async () => {
