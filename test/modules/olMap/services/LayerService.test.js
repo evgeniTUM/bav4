@@ -117,7 +117,9 @@ describe('LayerService', () => {
 			});
 
 			it('converts a WmsGeoresource to a olLayer filtering out extra-parameter legendUrl', () => {
-				const instanceUnderTest = setup();
+				const mockImageLoadFunction = () => {};
+				const providerSpy = jasmine.createSpy().and.returnValue(mockImageLoadFunction);
+				const instanceUnderTest = setup(providerSpy);
 				const wmsGeoresource = new WmsGeoResource('geoResourceId', 'label', 'https://some.url', 'layer', 'image/png');
 				wmsGeoresource.setExtraParams({ legendUrl: 'https://foo.bar' });
 
