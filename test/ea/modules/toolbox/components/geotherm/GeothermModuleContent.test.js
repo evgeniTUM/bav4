@@ -27,7 +27,11 @@ describe('GeothermModuleContent', () => {
 		getValue() {}
 	};
 
-	const mapServiceMock = { getSrid: () => 4326 };
+	const mapServiceMock = {
+		getSrid: () => 4326,
+		getLocalProjectedSrid: () => 4326,
+		getCoordinateRepresentations: (a) => a
+	};
 
 	const setup = async (customState, config = {}) => {
 		const state = {
@@ -89,9 +93,9 @@ describe('GeothermModuleContent', () => {
 			expect(element.shadowRoot.querySelector('#step2').open).toBeTrue();
 
 			//überprüfung der Anzeige via css Klassen kollektor ist activ, alle anderen buttons sind inactive
-			expect(element.shadowRoot.querySelector('#sonde')).toHaveClass('inactive');
+			expect(element.shadowRoot.querySelector('#sonde')).toHaveClass('unselected');
 			expect(element.shadowRoot.querySelector('#kollektor')).toHaveClass('active');
-			expect(element.shadowRoot.querySelector('#pumpe')).toHaveClass('inactive');
+			expect(element.shadowRoot.querySelector('#pumpe')).toHaveClass('unselected');
 		});
 		it('click button 3 afterward click in map and expect change of state for all buttons to unselected', async () => {
 			const element = await setup();
