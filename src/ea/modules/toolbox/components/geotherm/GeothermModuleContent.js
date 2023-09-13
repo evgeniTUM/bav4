@@ -6,6 +6,7 @@ import { MODUS } from './CheckModus';
 import css from './container.css';
 import collapsableContentCss from './collapsableContent.css';
 import { GlobalCoordinateRepresentations } from '../../../../../domain/coordinateRepresentation';
+import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 
 const Reset = 'reset';
 const ActivateMapClick = 'activateMapclick';
@@ -43,7 +44,13 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 	}
 
 	_getCoordinatesString(position) {
-		const transformedCoord = this._coordinateService.transform(position, this._mapService.getSrid(), GlobalCoordinateRepresentations.WGS84);
+		// we use the defined SRID for local projected tasks (if available) otherwise WGS84
+		const { digits, code } =
+			this._mapService
+				.getCoordinateRepresentations(position)
+				.filter((cr) => cr.code)
+				.filter((cr) => cr.code === this._mapService.getLocalProjectedSrid())[0] ?? GlobalCoordinateRepresentations.WGS84;
+		const transformedCoord = this._coordinateService.transform(position, this._mapService.getSrid(), code).map((n) => n.toFixed(digits));
 		return transformedCoord;
 	}
 
@@ -145,9 +152,9 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 			html` <span style="color: var(--primary-color)">${text}${subtext ? '.' : ''}</span>
 				<span style="font-style: italic">${subtext}</span>`;
 
-		const firstButtonClass = model.mode ? (model.mode === MODUS.sonden ? 'active' : 'inactive') : 'unselected';
-		const secondButtonClass = model.mode ? (model.mode === MODUS.kollektoren ? 'active' : 'inactive') : 'unselected';
-		const thirdButtonClass = model.mode ? (model.mode === MODUS.pumpen ? 'active' : 'inactive') : 'unselected';
+		const firstButtonClass = model.mode ? (model.mode === MODUS.sonden ? 'active' : 'unselected') : 'unselected';
+		const secondButtonClass = model.mode ? (model.mode === MODUS.kollektoren ? 'active' : 'unselected') : 'unselected';
+		const thirdButtonClass = model.mode ? (model.mode === MODUS.pumpen ? 'active' : 'unselected') : 'unselected';
 
 		const firstButton = html`
 			<button
@@ -175,6 +182,7 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 			</button>
 		`;
 
+		const getTranslatedHtml = (key) => html`${unsafeHTML(translate(key))}`;
 		const thirdButton = html`
 			<button
 				class="button-container button"
@@ -242,7 +250,7 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 					</collapsable-content>
 					<div class="footer-content">
 						<span
-							>${translate('ea_geotherm_footer')}
+							>${getTranslatedHtml('ea_geotherm_footer')}
 							<a target="_blank" class="link_textteil">Oberfl&auml;chennahe Geothermie: Standortauskunft</a>.</span
 						>
 					</div>

@@ -1,40 +1,41 @@
 .button-container {
-    display: flow-root;
+	display: flow-root;
 }
 
 .ba-list-item {
-    justify-content: center;
+	justify-content: center;
 }
 
 .ba-list-item__pre {
-    min-width: 35em;
+	min-width: 35em;
 }
 
-
-#step2  div {
-    margin-top: 1em;
+#step2 div {
+	margin-top: 1em;
 }
-#step2  ul {
-    padding-left: 1em;
-    margin-top: 1em;
-    display: flex;
-    flex-direction: column;
-    list-style: none;
+#step2 ul {
+	padding-left: 1em;
+	margin-top: 1em;
+	display: flex;
+	flex-direction: column;
+	list-style: none;
 }
 
 #step2 ul li::before {
-  content: "\2022";
-  color: var(--primary-color);
-  font-weight: bold;
-  display: inline-block; 
-  width: 1em;
-  margin-left: -1em;  
+	content: '\2022';
+	color: var(--primary-color);
+	font-weight: bold;
+	display: inline-block;
+	width: 1em;
+	margin-left: -1em;
 }
 
 a.link_textteil {
-  margin-bottom: 4px;
-  color:var(--primary-color);
-  display: inline-block;
+	margin-bottom: 4px;
+	color: var(--primary-color);
+	display: inline-block;
 }
 
-
+button {
+	line-height: 1.6;
+}
