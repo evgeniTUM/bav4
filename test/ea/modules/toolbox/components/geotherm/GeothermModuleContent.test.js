@@ -7,6 +7,7 @@ import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { initialState, locationSelection } from '../../../../../../src/ea/store/locationSelection/locationSelection.reducer';
 import { setLocation } from '../../../../../../src/ea/store/locationSelection/locationSelection.action';
+import { GlobalCoordinateRepresentations } from '../../../../../../src/domain/coordinateRepresentation';
 
 window.customElements.define(GeothermModuleContent.tag, GeothermModuleContent);
 
@@ -98,12 +99,22 @@ describe('GeothermModuleContent', () => {
 			expect(element.shadowRoot.querySelector('#pumpe')).toHaveClass('unselected');
 		});
 		it('click button 3 afterward click in map and expect change of state for all buttons to unselected', async () => {
+			const givenCoordinates = [42.42, 24.24];
+			const windowOpenSpy = spyOn(window, 'open');
+			spyOn(configServiceMock, 'getValue').withArgs('GEOTHERM_CHECK_URL_SONDEN').and.returnValue('https://geotherm_check_url_sonden/');
+			spyOn(coordinateServiceMock, 'stringify')
+				.withArgs(givenCoordinates, GlobalCoordinateRepresentations.WGS84, { digits: 5 })
+				.and.returnValue('42.42000,24.24000');
+			const expectedUrl = 'https://geotherm_check_url_sonden/&location=42.42000,24.24000';
+
 			const element = await setup();
 
 			element.shadowRoot.querySelector('#sonde').click();
 			expect(element.shadowRoot.querySelector('#sonde')).toHaveClass('active');
 
-			setLocation([42, 24]);
+			setLocation(givenCoordinates);
+
+			expect(windowOpenSpy).toHaveBeenCalledWith(expectedUrl, '_blank');
 
 			expect(element.shadowRoot.querySelector('#sonde')).toHaveClass('unselected');
 			expect(element.shadowRoot.querySelector('#kollektor')).toHaveClass('unselected');
