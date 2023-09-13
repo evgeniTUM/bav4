@@ -22,15 +22,15 @@ describe('tests for EaProcessEnvConfigService', () => {
 				MODULE_BACKEND_URL: 'MODULE_BACKEND_URL_value',
 				MATOMO_URL: 'MATOMO_URL_value',
 				MATOMO_ID: 'MATOMO_ID_value',
-				GEOTHERM_CHECK_URL_SONDEN : 'https://www.umweltatlas.bayern.de/standortauskunft/rest/reporting/sta_geothermie_ews/generate',
-				GEOTHERM_CHECK_URL_KOLLEKTOREN : 'https://www.umweltatlas.bayern.de/standortauskunft/rest/reporting/sta_geothermie_ek/generate',
-				GEOTHERM_CHECK_URL_PUMPEN : 'https://www.umweltatlas.bayern.de/standortauskunft/rest/reporting/sta_geothermie_gwwp/generate',
-				ANALYSE3D_URL : 'https://3dview.energieatlas.bayern.de/3D-Analyse/?start=geo:'
+				GEOTHERM_CHECK_URL_SONDEN: 'https://www.umweltatlas.bayern.de/standortauskunft/rest/reporting/sta_geothermie_ews/generate',
+				GEOTHERM_CHECK_URL_KOLLEKTOREN: 'https://www.umweltatlas.bayern.de/standortauskunft/rest/reporting/sta_geothermie_ek/generate',
+				GEOTHERM_CHECK_URL_PUMPEN: 'https://www.umweltatlas.bayern.de/standortauskunft/rest/reporting/sta_geothermie_gwwp/generate',
+				ANALYSE3D_URL: 'https://3dview.energieatlas.bayern.de/3D-Analyse/?start=geo:'
 			};
 
 			const configService = new EaProcessEnvConfigService();
 
-			//Compare the result to the testdata by using the original with associative array 
+			//Compare the result to the testdata by using the original with associative array
 			expect(configService.getValue('MODULE_BACKEND_URL')).toBe(process.env['MODULE_BACKEND_URL']);
 			expect(configService.getValue('MATOMO_URL')).toBe(process.env['MATOMO_URL']);
 			expect(configService.getValue('MATOMO_ID')).toBe(process.env['MATOMO_ID']);
@@ -46,15 +46,15 @@ describe('tests for EaProcessEnvConfigService', () => {
 				MODULE_BACKEND_URL: 'MODULE_BACKEND_URL_value',
 				MATOMO_URL: 'MATOMO_URL_value',
 				MATOMO_ID: 'MATOMO_ID_value',
-				GEOTHERM_CHECK_URL_SONDEN : 'https://www.umweltatlas.bayern.de/standortauskunft/rest/reporting/sta_geothermie_ews/generate',
-				GEOTHERM_CHECK_URL_KOLLEKTOREN : 'https://www.umweltatlas.bayern.de/standortauskunft/rest/reporting/sta_geothermie_ek/generate',
-				GEOTHERM_CHECK_URL_PUMPEN : 'https://www.umweltatlas.bayern.de/standortauskunft/rest/reporting/sta_geothermie_gwwp/generate',
-				ANALYSE3D_URL : 'https://3dview.energieatlas.bayern.de/3D-Analyse/?start=geo:'
+				GEOTHERM_CHECK_URL_SONDEN: 'https://www.umweltatlas.bayern.de/standortauskunft/rest/reporting/sta_geothermie_ews/generate',
+				GEOTHERM_CHECK_URL_KOLLEKTOREN: 'https://www.umweltatlas.bayern.de/standortauskunft/rest/reporting/sta_geothermie_ek/generate',
+				GEOTHERM_CHECK_URL_PUMPEN: 'https://www.umweltatlas.bayern.de/standortauskunft/rest/reporting/sta_geothermie_gwwp/generate',
+				ANALYSE3D_URL: 'https://3dview.energieatlas.bayern.de/3D-Analyse/?start=geo:'
 			};
 
 			const configService = new EaProcessEnvConfigService();
 
-			//Compare the result to the testdata by using the original with associative array 
+			//Compare the result to the testdata by using the original with associative array
 			expect(configService.getValue('MODULE_BACKEND_URL')).toBe(window.ba_externalConfigProperties['MODULE_BACKEND_URL']);
 			expect(configService.getValue('MATOMO_URL')).toBe(window.ba_externalConfigProperties['MATOMO_URL']);
 			expect(configService.getValue('MATOMO_ID')).toBe(window.ba_externalConfigProperties['MATOMO_ID']);

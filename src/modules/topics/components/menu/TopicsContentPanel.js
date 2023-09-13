@@ -124,8 +124,8 @@ export class TopicsContentPanel extends AbstractContentPanel {
 					${helper.renderTopicStyle(topic)}
 					</style>
 					<button id='button-${topic.id}' data-test-id tabindex='${helper.getTabIndex()}' class="topic topic-${topic.id} ba-list-item  ${helper.getActiveClass(
-								topic.id
-							)}" @click=${() => helper.changeTopic(topic)}>
+						topic.id
+					)}" @click=${() => helper.changeTopic(topic)}>
 						<span class="ba-list-item__pre">
 							<span class="ba-list-item__icon icon-${topic.id}">
 							${helper.renderTopicIcon(topic)}

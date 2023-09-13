@@ -24,7 +24,7 @@
 	margin-top: 1em;
 	margin-bottom: 2em;
 	margin-left: 1em;
-		display: flex;
+	display: flex;
 }
 
 .fields-help {
@@ -39,7 +39,6 @@
 .button-header {
 	text-align: center;
 }
-
 
 .button-icon {
 	height: 3em;
@@ -61,7 +60,6 @@
 	background-color: var(--primary-color);
 	color: white;
 }
-
 
 button:hover {
 	filter: brightness(0.9);
@@ -99,7 +97,7 @@ button:hover {
 	position: relative;
 	z-index: 1;
 
-	width:100%;
+	width: 100%;
 	/* width: 15em; */
 	justify-self: center;
 }
@@ -213,7 +211,8 @@ textarea:required::placeholder {
 	padding: 1em;
 	justify-content: right;
 	display: flex;
-	align-items: flex-end;}
+	align-items: flex-end;
+}
 
 .footer-buttons {
 	width: 100%;
@@ -225,9 +224,9 @@ textarea:required::placeholder {
 	align-items: flex-end;
 }
 .popup-hint {
-  margin-left: 5px;
-  color: var(--info-color);
+	margin-left: 5px;
+	color: var(--info-color);
 }
 .popup-hint .bold {
-  font-weight: bold;
+	font-weight: bold;
 }

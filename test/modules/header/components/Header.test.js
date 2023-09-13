@@ -172,25 +172,25 @@ describe('Header', () => {
 			expect(element.shadowRoot.querySelectorAll('.header')).toHaveSize(1);
 			expect(element.shadowRoot.querySelectorAll('.header__modal-button')).toHaveSize(1);
 			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__modal-button')).display).toBe('none');
-//
+			//
 			expect(element.shadowRoot.querySelectorAll('.header__button-container')).toHaveSize(1);
 			expect(element.shadowRoot.querySelector('.header__button-container').children.length).toBe(4);
 			expect(element.shadowRoot.querySelector('.header__button-container').children[0].classList.contains('is-active')).toBeTrue();
 			expect(element.shadowRoot.querySelector('.header__button-container').children[0].innerText).toBe('ea_header_tab_topics_button');
-//
+			//
 			expect(element.shadowRoot.querySelector('.header__button-container').children[1].children[0].innerText).toBe('ea_header_tab_additional_button');
 			expect(element.shadowRoot.querySelector('.header__button-container').children[1].classList.contains('is-active')).toBeFalse();
-//
+			//
 			expect(element.shadowRoot.querySelector('.header__button-container').children[2].children[0].innerText).toBe('ea_header_tab_maps_button');
 			expect(element.shadowRoot.querySelector('.header__button-container').children[2].children[1].innerText).toBe('1');
 			expect(element.shadowRoot.querySelector('.header__button-container').children[2].classList.contains('is-active')).toBeFalse();
-//
+			//
 			expect(element.shadowRoot.querySelector('.header__button-container').children[3].innerText).toBe('header_tab_misc_button');
 			expect(element.shadowRoot.querySelector('.header__button-container').children[3].classList.contains('is-active')).toBeFalse();
 
 			expect(element.shadowRoot.querySelectorAll('.header_search_icon')).toHaveSize(1);
 			expect(element.shadowRoot.querySelector('.header__search').getAttribute('placeholder')).toBe('header_search_placeholder');
-//
+			//
 			expect(element.shadowRoot.querySelector('.header__logo-badge').innerText).toBe('header_logo_badge');
 			expect(element.shadowRoot.querySelectorAll('div.header__emblem')).toHaveSize(1);
 			expect(element.shadowRoot.querySelectorAll('a.header__emblem')).toHaveSize(0);

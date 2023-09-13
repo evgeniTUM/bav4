@@ -164,10 +164,10 @@ export class Header extends MvuElement {
 						class="header__emblem"
 						target="_blank"
 				  ></a>`
-				: html`<span class='header__emblem_label' >Bayerische Staatsregierung</span>
-					<a  title=${translate('header_emblem_action_title')} class="header_action_link" target="_blank" href="https://www.bayern.de/">
-						<div class='header__emblem'></div>
-					</a>`;
+				: html`<span class="header__emblem_label">Bayerische Staatsregierung</span>
+						<a title=${translate('header_emblem_action_title')} class="header_action_link" target="_blank" href="https://www.bayern.de/">
+							<div class="header__emblem"></div>
+						</a>`;
 		};
 
 		const layerCount = layers.length;
@@ -279,22 +279,22 @@ export class Header extends MvuElement {
 						</div>
 						<div  class="header__button-container">
 							<button id="topics_button" data-test-id class="${getActiveClass(TabIds.TOPICS)}" title=${translate(
-			'ea_header_tab_topics_title'
-		)} @click="${openTopicsTab}">
+								'ea_header_tab_topics_title'
+							)} @click="${openTopicsTab}">
 								<span>
 									${translate('ea_header_tab_topics_button')}
 								</span>
 							</button>
 							<button id="extension_button" data-test-id class="${getActiveClass(TabIds.EXTENSION)} ${getMinWidthClass()}" title=${translate(
-			'ea_header_tab_additional_title'
-		)}  @click="${openExtendedTab}">
+								'ea_header_tab_additional_title'
+							)}  @click="${openExtendedTab}">
 								<span>
 									${translate('ea_header_tab_additional_button')}
 								</span>
 							</button>
 							<button id="maps_button" data-test-id class="${getActiveClass(TabIds.MAPS)}" title=${translate(
-			'ea_header_tab_maps_title'
-		)}  @click="${openMapLayerTab}">
+								'ea_header_tab_maps_title'
+							)}  @click="${openMapLayerTab}">
 								<span>
 									${translate('ea_header_tab_maps_button')}
 								</span>

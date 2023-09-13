@@ -50,7 +50,7 @@ export class CatalogLeaf extends AbstractContentPanel {
 
 			const onToggle = (event) => {
 				if (event.detail.checked) {
-					addLayer(geoR.id, { opacity : geoR.opacity });
+					addLayer(geoR.id, { opacity: geoR.opacity });
 				} else {
 					removeLayer(geoR.id);
 				}

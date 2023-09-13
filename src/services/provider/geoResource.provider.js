@@ -13,7 +13,7 @@ export const _definitionToGeoResource = (definition) => {
 		switch (def.type) {
 			case 'wms':
 				return (
-					new WmsGeoResource(def.id, def.label, def.url, def.layers, def.format, def.opacity )
+					new WmsGeoResource(def.id, def.label, def.url, def.layers, def.format, def.opacity)
 						//set specific optional values
 						.setExtraParams(def.extraParams ?? {})
 				);

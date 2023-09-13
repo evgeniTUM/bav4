@@ -5,7 +5,6 @@ import { html } from 'lit-html';
 import moduleContentPanelCss from './abstractModuleContentPanel.css';
 import { AbstractMvuContentPanel } from '../../../../../modules/menu/components/mainMenu/content/AbstractMvuContentPanel';
 
-
 /**
  * Base class for all content panels of modules .
  * Just prepends common CSS classes.
