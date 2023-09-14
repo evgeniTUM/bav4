@@ -73,7 +73,7 @@ describe('ManageModulesPlugin', () => {
 		});
 	});
 
-	it('sets tooltip to "ea_select_region" for Analyse3D/Geotherm module', async () => {
+	it('sets tooltip to "ea_select_region" for Analyse3D', async () => {
 		const store = setup();
 
 		const instanceUnderTest = new ManageModulesPlugin();
@@ -81,14 +81,28 @@ describe('ManageModulesPlugin', () => {
 
 		expect(store.getState().layers.active.length).toBe(0);
 
-		[GeothermModuleContent.name, Analyse3DModuleContent.name].forEach((tag) => {
+		[Analyse3DModuleContent.name].forEach((tag) => {
 			setCurrentModule(tag);
 
 			expect(store.getState().locationSelection.tooltipText).toBe('ea_select_region');
 		});
 	});
 
-	it('sets tooltip to "ea_select_location" for EnergyMarket/EnergyReporting module', async () => {
+	it('sets tooltip to "ea_select_region" for Geotherm module', async () => {
+		const store = setup();
+
+		const instanceUnderTest = new ManageModulesPlugin();
+		await instanceUnderTest.register(store);
+
+		expect(store.getState().layers.active.length).toBe(0);
+
+		[GeothermModuleContent.name].forEach((tag) => {
+			setCurrentModule(tag);
+			expect(store.getState().locationSelection.tooltipText).toBe('ea_select_location');
+		});
+	});
+
+	it('sets tooltip to "ea_mark_location" for EnergyMarket/EnergyReporting module', async () => {
 		const store = setup();
 
 		const instanceUnderTest = new ManageModulesPlugin();
@@ -99,7 +113,7 @@ describe('ManageModulesPlugin', () => {
 		[EnergyMarketModuleContent.name, EnergyReportingModuleContent.name].forEach((tag) => {
 			setCurrentModule(tag);
 
-			expect(store.getState().locationSelection.tooltipText).toBe('ea_select_location');
+			expect(store.getState().locationSelection.tooltipText).toBe('ea_mark_location');
 		});
 	});
 

@@ -38,8 +38,8 @@ export const provide = (lang) => {
 				ea_contribution_coordinates_tooltip_1: 'Bitte klicken Sie auf "Standort markieren" und klicken Sie in die Karte.',
 				ea_contribution_coordinates_tooltip_2: 'Bitte klicken Sie in die Karte.',
 				ea_contribution_coordinates_placeholder: '',
-
-				ea_select_location: 'Standort markieren',
+				ea_select_location: 'Standort auswählen',
+				ea_mark_location: 'Standort markieren',
 				ea_select_region: 'Gebiet auswählen',
 				ea_analyse3d_button_selection_inactive: 'Standort markieren',
 				ea_analyse3d_button_selection_active: 'Bitte in die Karte klicken'
@@ -82,8 +82,8 @@ export const provide = (lang) => {
 				ea_contribution_coordinates_tooltip_1: 'Bitte klicken Sie auf "Standort markieren" und klicken Sie in die Karte.',
 				ea_contribution_coordinates_tooltip_2: 'Bitte klicken Sie in die Karte.',
 				ea_contribution_coordinates_placeholder: '',
-
-				ea_select_location: 'Standort markieren',
+				ea_select_location: 'Standort auswählen',
+				ea_mark_location: 'Standort markieren',
 				ea_select_region: 'Gebiet auswählen',
 				ea_analyse3d_button_selection_inactive: 'Standort markieren',
 				ea_analyse3d_button_selection_active: 'Bitte in die Karte klicken'
