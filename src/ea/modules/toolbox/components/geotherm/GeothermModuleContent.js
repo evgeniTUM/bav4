@@ -251,7 +251,9 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 					<div class="footer-content">
 						<span
 							>${getTranslatedHtml('ea_geotherm_footer')}
-							<a target="_blank" class="link_textteil">Oberfl&auml;chennahe Geothermie: Standortauskunft</a>.</span
+							<a href="https://www.energieatlas.bayern.de/hilfe/karten/HilfeAnalyse/HilfeStandortcheck" target="_blank" class="link_textteil"
+								>Oberfl&auml;chennahe Geothermie: Standortauskunft</a
+							>.</span
 						>
 					</div>
 				</div>
