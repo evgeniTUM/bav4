@@ -18,6 +18,7 @@ export class AdministrationService {
 	/**
 	 *
 	 * @param {administrationProvider} [administrationProvider=loadBvvAdministration]
+	 * @param {isOutOfBavariaProvider} [isOutOfBavariaProvider=isOutOfBavaria]
 	 */
 	constructor(administrationProvider = loadBvvAdministration, isOutOfBavariaProvider = isOutOfBavaria) {
 		this._administrationProvider = administrationProvider;
@@ -49,7 +50,7 @@ export class AdministrationService {
 	 * @param {Coordinate} coordinate3857
 	 * @returns {boolean} is outside of bavaria
 	 */
-	async isOutsideOfBavaria(coordinate3857) {
+	async isOutOfBavaria(coordinate3857) {
 		if (!isCoordinate(coordinate3857)) {
 			throw new TypeError("Parameter 'coordinate3857' must be a coordinate");
 		}

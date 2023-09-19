@@ -1,4 +1,5 @@
 import { Map, View } from 'ol';
+import MapBrowserEventType from 'ol/MapBrowserEventType';
 import TileLayer from 'ol/layer/Tile';
 import { fromLonLat } from 'ol/proj';
 import { OSM, TileDebug } from 'ol/source';
@@ -11,18 +12,24 @@ import { TestUtils } from '../../../../../../../test-utils.js';
 import { initialState, locationSelection } from '../../../../../../../../src/ea/store/locationSelection/locationSelection.reducer';
 import { setLocation, setTaggingMode, setTooltipText } from '../../../../../../../../src/ea/store/locationSelection/locationSelection.action';
 import { eaReducer } from '../../../../../../../../src/ea/store/module/ea.reducer';
+import { simulateMapBrowserEvent } from '../../../../../../../modules/olMap/mapTestUtils';
+import { LevelTypes } from '../../../../../../../../src/store/notifications/notifications.action';
+import { notificationReducer } from '../../../../../../../../src/store/notifications/notifications.reducer';
 
 describe('OlSelectLocationHandler', () => {
 	const translationServiceMock = { translate: (key) => key };
+	const administrationServiceMock = { isOutOfBavaria: async (coordinate3857) => false };
 	const defaultState = {
-		contribution: initialState
+		locationSelection: initialState
 	};
 	const setup = (state = defaultState) => {
 		const store = TestUtils.setupStoreAndDi(state, {
 			locationSelection: locationSelection,
-			ea: eaReducer
+			ea: eaReducer,
+			notifications: notificationReducer
 		});
 		$injector.registerSingleton('TranslationService', translationServiceMock);
+		$injector.registerSingleton('AdministrationService', administrationServiceMock);
 		return store;
 	};
 
@@ -135,6 +142,58 @@ describe('OlSelectLocationHandler', () => {
 			setTaggingMode(false);
 			expect(classUnderTest._options.preventDefaultClickHandling).toEqual(false);
 			expect(classUnderTest._options.preventDefaultContextClickHandling).toEqual(false);
+		});
+
+		it('sets new location on mouse click if coordiantes click inside bavaria', async () => {
+			spyOn(administrationServiceMock, 'isOutOfBavaria').and.returnValue(false);
+
+			const map = setupMap();
+			const store = setup();
+
+			const classUnderTest = new OlSelectLocationHandler();
+			classUnderTest.activate(map);
+
+			setTaggingMode(true);
+
+			simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, 600, 0);
+			await TestUtils.timeout();
+
+			expect(store.getState().locationSelection.position).toEqual([600, 0]);
+		});
+
+		it('does not set location if click outside bavaria', async () => {
+			spyOn(administrationServiceMock, 'isOutOfBavaria').and.returnValue(true);
+
+			const map = setupMap();
+			const store = setup();
+
+			const classUnderTest = new OlSelectLocationHandler();
+			classUnderTest.activate(map);
+
+			setTaggingMode(true);
+
+			simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, 600, 0);
+			await TestUtils.timeout();
+
+			expect(store.getState().locationSelection.position).toBeNull();
+		});
+
+		it('emits a user warning if click outside bavaria', async () => {
+			spyOn(administrationServiceMock, 'isOutOfBavaria').and.returnValue(true);
+
+			const map = setupMap();
+			const store = setup();
+
+			const classUnderTest = new OlSelectLocationHandler();
+			classUnderTest.activate(map);
+
+			setTaggingMode(true);
+
+			simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, 600, 0);
+			await TestUtils.timeout();
+
+			expect(store.getState().notifications.latest.payload.level).toEqual(LevelTypes.WARN);
+			expect(store.getState().notifications.latest.payload.content).toBe('ea_notification_coordinates_outside_bavaria');
 		});
 	});
 });

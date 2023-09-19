@@ -44,7 +44,7 @@ describe('AdministrationService', () => {
 				);
 				const mockCoordinate = [0, 0];
 
-				const result = await instanceUnderTest.isOutsideOfBavaria(mockCoordinate);
+				const result = await instanceUnderTest.isOutOfBavaria(mockCoordinate);
 
 				expect(result).toEqual(v);
 			});
