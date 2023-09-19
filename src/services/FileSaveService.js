@@ -4,7 +4,7 @@
 
 import { MediaType } from '../domain/mediaTypes';
 
-const DEFAULT_FILE_NAME_PREFIX = 'bayernatlas';
+const DEFAULT_FILE_NAME_PREFIX = 'energieatlas';
 
 /**
  * Service for saving files

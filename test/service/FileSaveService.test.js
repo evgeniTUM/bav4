@@ -28,7 +28,7 @@ describe('FileSaveService', () => {
 			expect(createUrlSpy).toHaveBeenCalledWith(jasmine.any(Blob));
 			expect(revokeUrlSpy).toHaveBeenCalledWith('foo');
 			expect(ankerMock.href).toBe('foo');
-			expect(ankerMock.download).toMatch(/^bayernatlas_\d{14}\.json/);
+			expect(ankerMock.download).toMatch(/^energieatlas_\d{14}\.json/);
 			expect(ankerClickSpy).toHaveBeenCalled();
 		});
 
@@ -94,7 +94,7 @@ describe('FileSaveService', () => {
 			expect(createUrlSpy).toHaveBeenCalledWith(jasmine.any(Blob));
 			expect(revokeUrlSpy).toHaveBeenCalledWith('foo');
 			expect(ankerMock.href).toBe('foo');
-			expect(ankerMock.download).toMatch(/^bayernatlas_\d{14}/);
+			expect(ankerMock.download).toMatch(/^energieatlas_\d{14}/);
 			expect(ankerClickSpy).toHaveBeenCalled();
 		});
 		describe('when mapping MIME-Types', () => {
@@ -113,7 +113,7 @@ describe('FileSaveService', () => {
 				const instanceUnderTest = new FileSaveService();
 				instanceUnderTest.saveAs(content, mimetype);
 
-				expect(ankerMock.download).toMatch(/^bayernatlas_\d{14}\.json/);
+				expect(ankerMock.download).toMatch(/^energieatlas_\d{14}\.json/);
 			});
 
 			it('maps text/html to html', () => {
@@ -131,7 +131,7 @@ describe('FileSaveService', () => {
 				const instanceUnderTest = new FileSaveService();
 				instanceUnderTest.saveAs(content, mimetype);
 
-				expect(ankerMock.download).toMatch(/^bayernatlas_\d{14}\.html/);
+				expect(ankerMock.download).toMatch(/^energieatlas_\d{14}\.html/);
 			});
 
 			it('maps text/plain to txt', () => {
@@ -149,7 +149,7 @@ describe('FileSaveService', () => {
 				const instanceUnderTest = new FileSaveService();
 				instanceUnderTest.saveAs(content, mimetype);
 
-				expect(ankerMock.download).toMatch(/^bayernatlas_\d{14}\.txt/);
+				expect(ankerMock.download).toMatch(/^energieatlas_\d{14}\.txt/);
 			});
 
 			it('maps application/vnd.google-earth.kml+xml to kml', () => {
@@ -167,7 +167,7 @@ describe('FileSaveService', () => {
 				const instanceUnderTest = new FileSaveService();
 				instanceUnderTest.saveAs(content, mimetype);
 
-				expect(ankerMock.download).toMatch(/^bayernatlas_\d{14}\.kml/);
+				expect(ankerMock.download).toMatch(/^energieatlas_\d{14}\.kml/);
 			});
 
 			it('maps application/gpx+xml to gpx', () => {
@@ -185,7 +185,7 @@ describe('FileSaveService', () => {
 				const instanceUnderTest = new FileSaveService();
 				instanceUnderTest.saveAs(content, mimetype);
 
-				expect(ankerMock.download).toMatch(/^bayernatlas_\d{14}\.gpx/);
+				expect(ankerMock.download).toMatch(/^energieatlas_\d{14}\.gpx/);
 			});
 
 			it('maps application/geo+json to geojson', () => {
@@ -203,7 +203,7 @@ describe('FileSaveService', () => {
 				const instanceUnderTest = new FileSaveService();
 				instanceUnderTest.saveAs(content, mimetype);
 
-				expect(ankerMock.download).toMatch(/^bayernatlas_\d{14}\.geojson/);
+				expect(ankerMock.download).toMatch(/^energieatlas_\d{14}\.geojson/);
 			});
 		});
 	});

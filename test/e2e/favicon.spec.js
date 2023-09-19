@@ -26,8 +26,8 @@ test.describe('favicons', () => {
 					type: 'image/png'
 				}
 			],
-			name: 'BayernAtlas',
-			short_name: 'BayernAtlas',
+			name: 'EnergieAtlas-Bayern',
+			short_name: 'EnergieAtlas-Bayern',
 			orientation: 'portrait',
 			display: 'standalone',
 			start_url: '/',

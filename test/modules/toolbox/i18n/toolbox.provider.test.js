@@ -40,7 +40,7 @@ describe('i18n for menu module', () => {
 		expect(map.toolbox_measureTool_stats_area).toBe('Fläche');
 		expect(map.toolbox_measureTool_start_new).toBe('Neue Messung');
 		expect(map.toolbox_shareTool_header).toBe('Teilen');
-		expect(map.toolbox_shareTool_embed).toBe('BayernAtlas-IFrame');
+		expect(map.toolbox_shareTool_embed).toBe('EnergieAtlas-Bayern-IFrame');
 		expect(map.toolbox_shareTool_preview).toBe('Vorschau');
 		expect(map.toolbox_shareTool_disclaimer).toBe(
 			'Sie können die Karte in Ihre Website oder ein Blog einbetten. Mit dem Einbetten dieser Karte stimmen Sie den <a href="https://www.energieatlas.bayern.de/hilfe/karten/HilfeTech/HilfeNutzung" target="_blank" tabindex="0"> Nutzungsbedingungen</a> zu.'
@@ -49,7 +49,7 @@ describe('i18n for menu module', () => {
 		expect(map.toolbox_shareTool_qr).toBe('QR-Code');
 		expect(map.toolbox_shareTool_share).toBe('Teilen');
 		expect(map.toolbox_shareTool_button_modal).toBe('Link generieren');
-		expect(map.toolbox_shareTool_share_link_readonly).toBe('Link zum teilen des BayernAtlas');
+		expect(map.toolbox_shareTool_share_link_readonly).toBe('Link zum teilen des EnergieAtlas-Bayern');
 		expect(map.toolbox_shareTool_share_api_failed).toBe('Das Teilen ist fehlgeschlagen');
 		expect(map.toolbox_shareTool_link).toBe('Link');
 		expect(map.toolbox_measureTool_delete_point).toBe('letzten Punkt löschen');
@@ -144,14 +144,14 @@ describe('i18n for menu module', () => {
 		expect(map.toolbox_measureTool_stats_area).toBe('Area');
 		expect(map.toolbox_measureTool_start_new).toBe('Start New');
 		expect(map.toolbox_shareTool_header).toBe('Share');
-		expect(map.toolbox_shareTool_embed).toBe('BayernAtlas-IFrame');
+		expect(map.toolbox_shareTool_embed).toBe('EnergieAtlas-Bayern-IFrame');
 		expect(map.toolbox_shareTool_preview).toBe('Preview');
 		expect(map.toolbox_shareTool_disclaimer).toBe('You can embed the map into your website or blog by accepting the terms of use.');
 		expect(map.toolbox_shareTool_mail).toBe('Mail');
 		expect(map.toolbox_shareTool_qr).toBe('QR-Code');
 		expect(map.toolbox_shareTool_share).toBe('Share');
 		expect(map.toolbox_shareTool_button_modal).toBe('Generate URL');
-		expect(map.toolbox_shareTool_share_link_readonly).toBe('Link to share BayernAtlas');
+		expect(map.toolbox_shareTool_share_link_readonly).toBe('Link to share EnergieAtlas-Bayern');
 		expect(map.toolbox_shareTool_share_api_failed).toBe('Sharing has failed');
 		expect(map.toolbox_shareTool_link).toBe('Link');
 		expect(map.toolbox_measureTool_delete_point).toBe('Delete last point');
