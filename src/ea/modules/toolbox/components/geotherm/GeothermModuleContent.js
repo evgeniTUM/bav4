@@ -223,8 +223,8 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 								<span class="ba-list-item__pre"> ${thirdButton} </span>
 							</li>
 						</ul>
-						<br />
-					</collapsable-content>
+						<br /> </collapsable-content
+					><
 					<collapsable-content
 						id="step2"
 						.customCSS=${collapsableContentCss}
@@ -232,7 +232,6 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 						.open=${model.openSections.includes('step2')}
 						@toggle=${onToggle}
 					>
-						<br />
 						Klicken Sie nun in die Karte um Ihren gewünschten Standort auszuwählen.
 						<div>
 							<span>Es öffnet sich ein PDF mit Infos zu:</span>
