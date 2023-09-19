@@ -154,7 +154,6 @@ export class MapContextMenuContent extends MvuElement {
 					</ul>
 					<div class="chips">
 						<ba-share-position-chip .center=${coordinate}></ba-share-position-chip>
-						<ba-map-feedback-chip .center=${coordinate}></ba-map-feedback-chip>
 					</div>
 				</div>
 			`;

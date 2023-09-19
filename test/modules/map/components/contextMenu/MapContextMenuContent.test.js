@@ -101,8 +101,7 @@ describe('OlMapContextMenuContent', () => {
 			expect(element.shadowRoot.querySelectorAll('ba-share-position-chip')).toHaveSize(1);
 			expect(element.shadowRoot.querySelectorAll('ba-share-position-chip')[0].center).toBe(coordinateMock);
 
-			expect(element.shadowRoot.querySelectorAll('ba-map-feedback-chip')).toHaveSize(1);
-			expect(element.shadowRoot.querySelectorAll('ba-map-feedback-chip')[0].center).toBe(coordinateMock);
+			expect(element.shadowRoot.querySelectorAll('ba-map-feedback-chip')).toHaveSize(0);
 		});
 
 		it('copies a coordinate to the clipboard', async () => {
