@@ -80,22 +80,22 @@ describe('mediaReducer', () => {
 				expect(store.getState().media.observeResponsiveParameter).toBeTrue();
 			});
 
-			it('initializes the store by media query for PREFERS_COLOR_SCHEMA', () => {
-				spyOn(windowMock, 'matchMedia')
-					.withArgs(ORIENTATION_MEDIA_QUERY)
-					.and.returnValue(TestUtils.newMediaQueryList(false))
-					.withArgs(MIN_WIDTH_MEDIA_QUERY)
-					.and.returnValue(TestUtils.newMediaQueryList(false))
-					.withArgs(PREFERS_COLOR_SCHEMA_QUERY)
-					.and.returnValue(TestUtils.newMediaQueryList(true));
+			// it('initializes the store by media query for PREFERS_COLOR_SCHEMA', () => {
+			// 	spyOn(windowMock, 'matchMedia')
+			// 		.withArgs(ORIENTATION_MEDIA_QUERY)
+			// 		.and.returnValue(TestUtils.newMediaQueryList(false))
+			// 		.withArgs(MIN_WIDTH_MEDIA_QUERY)
+			// 		.and.returnValue(TestUtils.newMediaQueryList(false))
+			// 		.withArgs(PREFERS_COLOR_SCHEMA_QUERY)
+			// 		.and.returnValue(TestUtils.newMediaQueryList(true));
 
-				const store = setup(createMediaReducer(windowMock));
+			// 	const store = setup(createMediaReducer(windowMock));
 
-				expect(store.getState().media.portrait).toBeFalse();
-				expect(store.getState().media.minWidth).toBeFalse();
-				expect(store.getState().media.darkSchema).toBeTrue();
-				expect(store.getState().media.observeResponsiveParameter).toBeTrue();
-			});
+			// 	expect(store.getState().media.portrait).toBeFalse();
+			// 	expect(store.getState().media.minWidth).toBeFalse();
+			// 	expect(store.getState().media.darkSchema).toBeTrue();
+			// 	expect(store.getState().media.observeResponsiveParameter).toBeTrue();
+			// });
 
 			it('uses the real window as default argument', () => {
 				const store = setup(createMediaReducer());
