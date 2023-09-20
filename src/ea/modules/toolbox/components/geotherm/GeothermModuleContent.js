@@ -223,8 +223,8 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 								<span class="ba-list-item__pre"> ${thirdButton} </span>
 							</li>
 						</ul>
-						<br /> </collapsable-content
-					><
+						<br />
+					</collapsable-content>
 					<collapsable-content
 						id="step2"
 						.customCSS=${collapsableContentCss}
