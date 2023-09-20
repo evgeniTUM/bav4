@@ -84,7 +84,6 @@ Wärmenetz,Vorlauftemperatur (°C),FALSE,text
 Wärmenetz,Erweiterungsmöglichkeit (Wärmequellen und/oder -abnehmer),FALSE,text
 Wärmenetz,Inbetriebnahmejahr,FALSE,text
 Wärmenetz,Energieträger der Wärmequelle,FALSE,text
-Wärmenetz,Anlagenschlüssel,TRUE,text
 Wärmenetz,Objektnummer der Wärmequelle,TRUE,text
 Wärmenetz,Primärenergiefaktor,TRUE,text
 Wärmenetz,Versorgte Objekte,TRUE,text
