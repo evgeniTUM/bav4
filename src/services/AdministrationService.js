@@ -1,7 +1,7 @@
 /**
  * @module services/AdministrationService
  */
-import { loadBvvAdministration } from './provider/administration.provider';
+import { isOutOfBavaria, loadBvvAdministration } from './provider/administration.provider';
 import { isCoordinate } from '../utils/checks';
 
 /**
@@ -18,9 +18,11 @@ export class AdministrationService {
 	/**
 	 *
 	 * @param {administrationProvider} [administrationProvider=loadBvvAdministration]
+	 * @param {isOutOfBavariaProvider} [isOutOfBavariaProvider=isOutOfBavaria]
 	 */
-	constructor(administrationProvider = loadBvvAdministration) {
+	constructor(administrationProvider = loadBvvAdministration, isOutOfBavariaProvider = isOutOfBavaria) {
 		this._administrationProvider = administrationProvider;
+		this._isOutOfBavariaProvider = isOutOfBavariaProvider;
 	}
 
 	/**
@@ -37,6 +39,23 @@ export class AdministrationService {
 		try {
 			const administration = await this._administrationProvider(coordinate3857);
 			return administration;
+		} catch (e) {
+			throw new Error('Could not load administration from provider', { cause: e });
+		}
+	}
+
+	/**
+	 *
+	 * An async function that checks if coordinates are outside of bavaria.
+	 * @param {Coordinate} coordinate3857
+	 * @returns {boolean} is outside of bavaria
+	 */
+	async isOutOfBavaria(coordinate3857) {
+		if (!isCoordinate(coordinate3857)) {
+			throw new TypeError("Parameter 'coordinate3857' must be a coordinate");
+		}
+		try {
+			return await this._isOutOfBavariaProvider(coordinate3857);
 		} catch (e) {
 			throw new Error('Could not load administration from provider', { cause: e });
 		}

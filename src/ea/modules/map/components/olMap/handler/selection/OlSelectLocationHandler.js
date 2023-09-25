@@ -11,15 +11,21 @@ import { HelpTooltip } from '../../../../../../../modules/olMap/tooltip/HelpTool
 import { highlightCoordinateFeatureStyleFunction } from '../../../../../../../modules/olMap/handler/highlight/styleUtils';
 import { OlLayerHandler } from '../../../../../../../modules/olMap/handler/OlLayerHandler';
 import { setMapCursorStyle } from '../../../../../../store/module/ea.action';
+import { LevelTypes, emitNotification } from '../../../../../../../store/notifications/notifications.action';
 
 export const SELECT_LOCATION_LAYER_ID = 'select_location_layer_id';
 
 export class OlSelectLocationHandler extends OlLayerHandler {
 	constructor() {
 		super(SELECT_LOCATION_LAYER_ID, { preventDefaultClickHandling: false, preventDefaultContextClickHandling: false });
-		const { StoreService, TranslationService } = $injector.inject('StoreService', 'TranslationService');
+		const { StoreService, TranslationService, AdministrationService } = $injector.inject(
+			'StoreService',
+			'TranslationService',
+			'AdministrationService'
+		);
 		this._helpTooltip = new HelpTooltip();
 		this._storeService = StoreService;
+		this._administrationService = AdministrationService;
 		this._translationService = TranslationService;
 		this._positionFeature = new Feature();
 		this._layer = null;
@@ -63,12 +69,19 @@ export class OlSelectLocationHandler extends OlLayerHandler {
 		const translate = (key) => this._translationService.translate(key);
 		let tagging = false;
 
-		const onClick = (event) => {
-			const position = event.coordinate;
-			if (!(tagging && position)) {
+		const onClick = async (event) => {
+			const newPosition = event.coordinate;
+			if (!(tagging && newPosition)) {
 				return;
 			}
-			setLocation(position);
+
+			const isOutOfBavaria = await this._administrationService.isOutOfBavaria(newPosition);
+			if (isOutOfBavaria) {
+				emitNotification(translate('ea_notification_coordinates_outside_bavaria'), LevelTypes.WARN);
+				return;
+			}
+
+			setLocation(newPosition);
 		};
 
 		const onMove = (event) => {

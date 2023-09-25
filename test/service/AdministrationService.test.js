@@ -1,22 +1,26 @@
 import { AdministrationService } from '../../src/services/AdministrationService';
-import { loadBvvAdministration } from '../../src/services/provider/administration.provider';
+import { isOutOfBavaria, loadBvvAdministration } from '../../src/services/provider/administration.provider';
 
 describe('AdministrationService', () => {
-	const setup = (provider = loadBvvAdministration) => {
-		return new AdministrationService(provider);
+	const setup = (provider1 = loadBvvAdministration, provider2 = isOutOfBavaria) => {
+		return new AdministrationService(provider1, provider2);
 	};
 
 	describe('init', () => {
 		it('initializes the service with custom provider', async () => {
-			const customProvider = async () => {};
-			const instanceUnderTest = setup(customProvider);
+			const customProvider = async () => 1;
+			const customProvider2 = async () => 2;
+			const instanceUnderTest = setup(customProvider, customProvider2);
 			expect(instanceUnderTest._administrationProvider).toBeDefined();
 			expect(instanceUnderTest._administrationProvider).toEqual(customProvider);
+			expect(instanceUnderTest._isOutOfBavariaProvider).toBeDefined();
+			expect(instanceUnderTest._isOutOfBavariaProvider).toEqual(customProvider2);
 		});
 
 		it('initializes the service with default provider', async () => {
 			const instanceUnderTest = new AdministrationService();
 			expect(instanceUnderTest._administrationProvider).toEqual(loadBvvAdministration);
+			expect(instanceUnderTest._isOutOfBavariaProvider).toEqual(isOutOfBavaria);
 		});
 
 		it('provides the administration values', async () => {
@@ -30,6 +34,20 @@ describe('AdministrationService', () => {
 
 			expect(result.gemeinde).toEqual(administrationMock.gemeinde);
 			expect(result.gemarkung).toEqual(administrationMock.gemarkung);
+		});
+
+		it('provides the administration values', async () => {
+			[true, false].forEach((v) => async () => {
+				const instanceUnderTest = setup(
+					async () => {},
+					async () => v
+				);
+				const mockCoordinate = [0, 0];
+
+				const result = await instanceUnderTest.isOutOfBavaria(mockCoordinate);
+
+				expect(result).toEqual(v);
+			});
 		});
 	});
 
