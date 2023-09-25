@@ -3,7 +3,7 @@ export const provide = (lang) => {
 		case 'en':
 			return {
 				//the first part of the snake_case key should be the name of the related module
-				iframe_non_embedded_hint: 'The EnergieAtlas-Bayern Iframe API must be used in an iframe.',
+				iframe_non_embedded_hint: 'The Energie-Atlas Bayern Iframe API must be used in an iframe.',
 				iframe_generator_width: 'Width',
 				iframe_generator_height: 'Height',
 				iframe_generator_clipboard_success: 'The HTML code was copied to the clipboard',
@@ -13,7 +13,7 @@ export const provide = (lang) => {
 				iframe_generator_toggle_title: 'Embedded map will expand to fit the width of its container.',
 				iframe_generator_copy_icon: 'Copy to clipboard',
 				iframe_activate_map_button: 'Activate map',
-				iframe_view_larger_map_chip: 'View in EnergieAtlas-Bayern',
+				iframe_view_larger_map_chip: 'View in Energie-Atlas Bayern',
 				iframe_drawTool_label: 'Drawing',
 				iframe_drawTool_enable: 'Enable the drawing tool',
 				iframe_drawTool_disable: 'Disable the drawing tool',
@@ -28,7 +28,7 @@ export const provide = (lang) => {
 		case 'de':
 			return {
 				//the first part of the snake_case key should be the name of the related module
-				iframe_non_embedded_hint: 'Die EnergieAtlas-Bayern Iframe API muss über ein Inlineframe-Element eingebunden werden.',
+				iframe_non_embedded_hint: 'Die Energie-Atlas Bayern Iframe API muss über ein Inlineframe-Element eingebunden werden.',
 				iframe_generator_width: 'Breite',
 				iframe_generator_height: 'Höhe',
 				iframe_generator_clipboard_success: 'Der HTML Code wurde in die Zwischenablage kopiert',
@@ -38,7 +38,7 @@ export const provide = (lang) => {
 				iframe_generator_toggle_title: 'Eingebettete Karte wird sich erweitern, um sich der Breite Ihres Containers anzupassen.',
 				iframe_generator_copy_icon: 'In die Zwischenablage kopieren',
 				iframe_activate_map_button: 'Karte aktivieren',
-				iframe_view_larger_map_chip: 'Im EnergieAtlas-Bayern ansehen',
+				iframe_view_larger_map_chip: 'Im Energie-Atlas Bayern ansehen',
 				iframe_drawTool_label: 'Zeichnen',
 				iframe_drawTool_enable: 'Zeichnen aktivieren',
 				iframe_drawTool_disable: 'Zeichnen deaktivieren',
