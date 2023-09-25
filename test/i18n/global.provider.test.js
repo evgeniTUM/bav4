@@ -17,7 +17,7 @@ describe('global i18n', () => {
 		expect(map.global_import_authenticationModal_title).toBe('Authentication required');
 		expect(map.global_locally_imported_dataset_copyright_label).toBe('Dataset and/or style provided by third party');
 		expect(map.global_share_unsupported_geoResource_warning).toBe("The following layers won't be shared:");
-		expect(map.global_privacy_policy_url).toBe('https://geoportal.bayern.de/geoportalbayern/seiten/datenschutz.html');
+		expect(map.global_privacy_policy_url).toBe('https://www.energieatlas.bayern.de/service/datenschutz.html');
 		expect(map.global_marker_symbol_label).toBe('Marker');
 		expect(map.global_featureInfo_not_available).toBe('FeatureInfo is not available');
 	});
@@ -38,7 +38,7 @@ describe('global i18n', () => {
 		expect(map.global_import_authenticationModal_title).toBe('Anmeldung erforderlich');
 		expect(map.global_locally_imported_dataset_copyright_label).toBe('Mit Darstellung durch den Anwender');
 		expect(map.global_share_unsupported_geoResource_warning).toBe('Folgende Ebenen werden nicht geteilt:');
-		expect(map.global_privacy_policy_url).toBe('https://geoportal.bayern.de/geoportalbayern/seiten/datenschutz.html');
+		expect(map.global_privacy_policy_url).toBe('https://www.energieatlas.bayern.de/service/datenschutz.html');
 		expect(map.global_marker_symbol_label).toBe('Markierung');
 		expect(map.global_featureInfo_not_available).toBe('FeatureInfo ist nicht verfügbar');
 	});
