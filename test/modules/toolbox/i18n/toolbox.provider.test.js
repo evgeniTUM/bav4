@@ -40,7 +40,7 @@ describe('i18n for menu module', () => {
 		expect(map.toolbox_measureTool_stats_area).toBe('Fläche');
 		expect(map.toolbox_measureTool_start_new).toBe('Neue Messung');
 		expect(map.toolbox_shareTool_header).toBe('Teilen');
-		expect(map.toolbox_shareTool_embed).toBe('Energie Atlas Bayern-IFrame');
+		expect(map.toolbox_shareTool_embed).toBe('Energie-Atlas Bayern-IFrame');
 		expect(map.toolbox_shareTool_preview).toBe('Vorschau');
 		expect(map.toolbox_shareTool_disclaimer).toBe(
 			'Sie können die Karte in Ihre Website oder ein Blog einbetten. Mit dem Einbetten dieser Karte stimmen Sie den <a href="https://www.energieatlas.bayern.de/hilfe/karten/HilfeTech/HilfeNutzung" target="_blank" tabindex="0"> Nutzungsbedingungen</a> zu.'
