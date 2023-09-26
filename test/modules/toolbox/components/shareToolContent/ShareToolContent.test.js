@@ -1,5 +1,6 @@
 import { $injector } from '../../../../../src/injection';
 import { Checkbox } from '../../../../../src/modules/commons/components/checkbox/Checkbox';
+import { IframeGenerator } from '../../../../../src/modules/iframe/components/generator/IframeGenerator';
 import { ShareDialogContent } from '../../../../../src/modules/share/components/dialog/ShareDialogContent';
 import { ShareToolContent } from '../../../../../src/modules/toolbox/components/shareToolContent/ShareToolContent';
 import { modalReducer } from '../../../../../src/store/modal/modal.reducer';
@@ -264,6 +265,54 @@ describe('ShareToolContent', () => {
 					expect(windowOpenSpy).toHaveBeenCalledWith(mailUrl);
 					expect(warnSpy).toHaveBeenCalledWith('Could not share content: Error: Could not open window');
 				});
+			});
+		});
+	});
+
+	describe('iframe container', () => {
+		it('renders UI elements', async () => {
+			const element = await setup();
+			const checkbox = element.shadowRoot.querySelector('ba-checkbox');
+			const button = element.shadowRoot.querySelector('.preview_button');
+
+			expect(window.getComputedStyle(button).display).toBe('block');
+			const title = element.shadowRoot.querySelectorAll('.ba-tool-container__title');
+			expect(window.getComputedStyle(title[1]).display).toBe('block');
+			const content = element.shadowRoot.querySelectorAll('.ba-tool-container__content');
+			expect(window.getComputedStyle(content[1]).display).toBe('block');
+
+			expect(button.disabled).toBeTrue();
+			expect(checkbox.checked).toBeFalse();
+			expect(element.shadowRoot.querySelector('.disclaimer-text').innerText).toBe('toolbox_shareTool_disclaimer');
+		});
+
+		describe('on checkbox click', () => {
+			it('enables/disables the preview button', async () => {
+				const element = await setup();
+				const checkbox = element.shadowRoot.querySelector('ba-checkbox');
+				const button = element.shadowRoot.querySelector('.preview_button');
+
+				checkbox.click();
+
+				expect(button.disabled).toBeFalse();
+
+				checkbox.click();
+
+				expect(button.disabled).toBeTrue();
+			});
+
+			it('opens the modal with IframeGenerator as content', async () => {
+				const element = await setup();
+				const checkbox = element.shadowRoot.querySelector('ba-checkbox');
+				const button = element.shadowRoot.querySelector('.preview_button');
+
+				checkbox.click();
+				button.click();
+
+				await TestUtils.timeout();
+				expect(store.getState().modal.data.title).toBe('toolbox_shareTool_embed');
+				const wrapperElement = TestUtils.renderTemplateResult(store.getState().modal.data.content);
+				expect(wrapperElement.querySelectorAll(IframeGenerator.tag)).toHaveSize(1);
 			});
 		});
 	});
