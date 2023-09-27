@@ -13,6 +13,7 @@ import { observe } from '../../../../../../../utils/storeUtils';
 import { deactivateMapClick, requestMapClick } from '../../../../../../store/mapclick/mapclick.action';
 import { createStyleFnFromJson } from './styleUtils';
 import { setMapCursorStyle } from '../../../../../../store/module/ea.action';
+import { LevelTypes, emitNotification } from '../../../../../../../store/notifications/notifications.action';
 
 export const GEO_FEATURE_LAYER_ID = 'geofeature_layer';
 
@@ -23,17 +24,19 @@ export const GEO_FEATURE_LAYER_ID = 'geofeature_layer';
 export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 	constructor() {
 		super(GEO_FEATURE_LAYER_ID, { preventDefaultClickHandling: false, preventDefaultContextClickHandling: false });
-		const { StoreService, CoordinateService, MapService, TranslationService } = $injector.inject(
+		const { StoreService, CoordinateService, MapService, TranslationService, AdministrationService } = $injector.inject(
 			'StoreService',
 			'CoordinateService',
 			'MapService',
-			'TranslationService'
+			'TranslationService',
+			'AdministrationService'
 		);
 
 		this._translationService = TranslationService;
 		this._storeService = StoreService;
 		this._coordinateService = CoordinateService;
 		this._mapService = MapService;
+		this._administrationService = AdministrationService;
 		this._helpTooltip = new HelpTooltip();
 		this._vectorLayer = null;
 
@@ -96,11 +99,20 @@ export class OlGeoFeatureLayerHandler extends OlLayerHandler {
 	}
 
 	_setup(store) {
-		const onMapClick = (event) => {
+		const translate = (key) => this._translationService.translate(key);
+
+		const onMapClick = async (event) => {
 			const state = store.getState();
 
 			if (state.mapclick.active) {
-				requestMapClick(event.coordinate);
+				const coordinates = event.coordinate;
+
+				const isOutOfBavaria = await this._administrationService.isOutOfBavaria(coordinates);
+				if (isOutOfBavaria) {
+					emitNotification(translate('ea_notification_coordinates_outside_bavaria'), LevelTypes.WARN);
+					return;
+				}
+				requestMapClick(coordinates);
 			}
 		};
 
