@@ -18,7 +18,7 @@ import { notificationReducer } from '../../../../../../../../src/store/notificat
 
 describe('OlSelectLocationHandler', () => {
 	const translationServiceMock = { translate: (key) => key };
-	const administrationServiceMock = { isOutOfBavaria: async (coordinate3857) => false };
+	const administrationServiceMock = { isOutOfBavaria: async () => false };
 	const defaultState = {
 		locationSelection: initialState
 	};
