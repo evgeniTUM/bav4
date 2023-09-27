@@ -9,20 +9,20 @@ describe('i18n for feedback module', () => {
 		expect(map.feedback_categorySelection_error).toBe('Pflichtfeld');
 		expect(map.feedback_changeDescription).toBe('Ihre Nachricht');
 		expect(map.feedback_disclaimer).toBe(
-			'Das LDBV behält sich grundsätzlich vor, Meldungen nicht zu übernehmen. Für evtl. Rückfragen, sowie zur Information über die weitere Bearbeitung, empfehlen wir die Angabe Ihrer E-Mail-Adresse.'
+			'Für evtl. Rückfragen sowie zur Information über die weitere Bearbeitung empfehlen wir die Angabe Ihrer E-Mail-Adresse.'
 		);
 		expect(map.feedback_eMail_error).toBe('Keine gültige E-Mail-Adresse');
 		expect(map.feedback_eMail_helper).toBe('Optional');
 		expect(map.feedback_eMail).toBe('Ihre E-Mail-Adresse');
 		expect(map.feedback_required_field_error).toBe('Pflichtfeld');
 		expect(map.feedback_required_field_helper).toBe('Pflichtfeld');
-		expect(map.feedback_saved_successfully).toBe('Ihr Feedback wurde gespeichert');
+		expect(map.feedback_saved_successfully).toBe('Ihr Feedback wurde erfolgreich versendet');
 		expect(map.feedback_submit).toBe('Senden');
 		expect(map.feedback_toggleFeedback_generalButton_sub).toBe(
 			'Machen Sie Änderungs- oder Verbesserungsvorschläge oder teilen Sie uns Ihre Meinung mit.'
 		);
 		expect(map.feedback_toggleFeedback_mapButton_sub).toBe('Melden Sie uns Korrekturvorschläge zu den Karteninhalten.');
-		expect(map.feedback_generalFeedback_could_not_save).toBe('Ihr Feedback konnte nicht gespeichert werden');
+		expect(map.feedback_generalFeedback_could_not_save).toBe('Ihr Feedback konnte nicht versendet werden');
 		expect(map.feedback_generalFeedback_rating).toBe('Würden Sie den Energie-Atlas Bayern weiterempfehlen?');
 		expect(map.feedback_generalFeedback_rating_scale_0).toBe('Sehr wahrscheinlich');
 		expect(map.feedback_generalFeedback_rating_scale_5).toBe('Sehr unwahrscheinlich');
@@ -46,7 +46,7 @@ describe('i18n for feedback module', () => {
 		expect(map.feedback_categorySelection_error).toBe('required field');
 		expect(map.feedback_changeDescription).toBe('Your message');
 		expect(map.feedback_disclaimer).toBe(
-			'In some cases, the LDBV cannot adopt your feedback. For questions relating to your feedback and to keep you informed about the work in progress we recommend submitting your email address as well.'
+			'For questions relating to your feedback and to keep you informed about the work in progress we recommend submitting your email address as well.'
 		);
 		expect(map.feedback_eMail_error).toBe('No valid e-mail address');
 		expect(map.feedback_eMail_helper).toBe('Optional');
@@ -57,7 +57,7 @@ describe('i18n for feedback module', () => {
 		expect(map.feedback_submit).toBe('Submit');
 		expect(map.feedback_toggleFeedback_generalButton_sub).toBe('Make suggestions for changes or improvements, or report errors.');
 		expect(map.feedback_toggleFeedback_mapButton_sub).toBe('Send us suggestions for corrections to the map content.');
-		expect(map.feedback_generalFeedback_could_not_save).toBe('Your feedback could not be saved');
+		expect(map.feedback_generalFeedback_could_not_save).toBe('Your feedback could not be sent');
 		expect(map.feedback_generalFeedback_rating).toBe('Would you recommend the Energie-Atlas Bayern?');
 		expect(map.feedback_generalFeedback_rating_scale_0).toBe('Very unlikely');
 		expect(map.feedback_generalFeedback_rating_scale_5).toBe('Very likely');

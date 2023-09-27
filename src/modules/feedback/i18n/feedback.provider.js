@@ -7,7 +7,7 @@ export const provide = (lang) => {
 				feedback_categorySelection_error: 'required field',
 				feedback_changeDescription: 'Your message',
 				feedback_disclaimer:
-					'For questions relating to your feedback and to keep you informed about the work in progress we recommend submitting your email address as well',
+					'For questions relating to your feedback and to keep you informed about the work in progress we recommend submitting your email address as well.',
 				feedback_eMail_error: 'No valid e-mail address',
 				feedback_eMail_helper: 'Optional',
 				feedback_eMail: 'Your email address',
@@ -28,8 +28,7 @@ export const provide = (lang) => {
 				feedback_mapFeedback_text_after: ' and fill out the form. Your message will be displayed publicly in the feedback window in a timely manner.',
 				feedback_mapFeedback_text_before: 'Please mark the place where you would like to make a correction suggestion in the',
 				feedback_mapFeedback_text_map: 'map',
-				feedback_mapFeedback: 'Map - Feedback',
-				feedback_privacyPolicy_url: 'https://www.energieatlas.bayern.de/datenschutz'
+				feedback_mapFeedback: 'Map - Feedback'
 			};
 
 		case 'de':
@@ -38,7 +37,7 @@ export const provide = (lang) => {
 				feedback_categorySelection_helper: 'Bitte auswählen,',
 				feedback_categorySelection_error: 'Pflichtfeld',
 				feedback_changeDescription: 'Ihre Nachricht',
-				feedback_disclaimer: 'Für evtl. Rückfragen sowie zur Information über die weitere Bearbeitung empfehlen wir die Angabe Ihrer E-Mail-Adresse',
+				feedback_disclaimer: 'Für evtl. Rückfragen sowie zur Information über die weitere Bearbeitung empfehlen wir die Angabe Ihrer E-Mail-Adresse.',
 				feedback_eMail_error: 'Keine gültige E-Mail-Adresse',
 				feedback_eMail_helper: 'Optional',
 				feedback_eMail: 'Ihre E-Mail-Adresse',
@@ -59,8 +58,7 @@ export const provide = (lang) => {
 				feedback_mapFeedback_text_after: ' und füllen das Formular aus. Ihre Meldung wird zeitnah öffentlich im Feedback-Fenster angezeigt.',
 				feedback_mapFeedback_text_before: 'Markieren Sie bitte die Stelle, an der Sie einen Korrekturvorschlag machen möchten, in der',
 				feedback_mapFeedback_text_map: 'Karte',
-				feedback_mapFeedback: 'Feedback zur Karte',
-				feedback_privacyPolicy_url: 'https://www.energieatlas.bayern.de/datenschutz'
+				feedback_mapFeedback: 'Feedback zur Karte'
 			};
 
 		default:
