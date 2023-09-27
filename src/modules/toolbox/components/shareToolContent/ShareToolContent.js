@@ -9,6 +9,7 @@ import { openModal } from '../../../../store/modal/modal.action';
 import { AbstractToolContent } from '../toolContainer/AbstractToolContent';
 import css from './shareToolContent.css';
 import { setCurrentTool } from '../../../../store/tools/tools.action';
+import { LevelTypes, emitNotification } from '../../../../store/notifications/notifications.action';
 
 const Update_fallback_on_internal_implementation = 'update_fallback_on_internal_implementation';
 
@@ -130,24 +131,16 @@ export class ShareToolContent extends AbstractToolContent {
 				const shortUrl = await this._generateShortUrl();
 
 				const shareData = {
-					title: translate('toolbox_shareTool_title'),
 					url: shortUrl
 				};
 
 				await this._window.navigator.share(shareData);
-				setCurrentTool(null);
 			} catch (e) {
+				emitNotification(translate('toolbox_shareTool_share_api_failed'), LevelTypes.WARN);
 				console.warn('error when using Web Share API, falling back to internal implementation');
-				//				emitNotification(translate('toolbox_shareTool_share_api_failed'), LevelTypes.WARN);
 				this.signal(Update_fallback_on_internal_implementation);
 			}
 		};
-
-		setTimeout(async () => {
-			if (this._useShareApi()) {
-				shareWithShareAPI();
-			}
-		});
 
 		const getToolTemplate = (tool) => {
 			const buttonContent = html`
