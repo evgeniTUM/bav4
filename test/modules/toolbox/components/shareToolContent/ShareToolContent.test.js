@@ -4,6 +4,8 @@ import { IframeGenerator } from '../../../../../src/modules/iframe/components/ge
 import { ShareDialogContent } from '../../../../../src/modules/share/components/dialog/ShareDialogContent';
 import { ShareToolContent } from '../../../../../src/modules/toolbox/components/shareToolContent/ShareToolContent';
 import { modalReducer } from '../../../../../src/store/modal/modal.reducer';
+import { LevelTypes } from '../../../../../src/store/notifications/notifications.action';
+import { notificationReducer } from '../../../../../src/store/notifications/notifications.reducer';
 import { toolsReducer } from '../../../../../src/store/tools/tools.reducer';
 import { TestUtils } from '../../../../test-utils';
 
@@ -32,6 +34,7 @@ describe('ShareToolContent', () => {
 
 		store = TestUtils.setupStoreAndDi(state, {
 			tools: toolsReducer,
+			notifications: notificationReducer,
 			modal: modalReducer
 		});
 		$injector
@@ -90,42 +93,49 @@ describe('ShareToolContent', () => {
 				expect(element.shadowRoot.querySelector('.tool-container__icon').classList).toContain('share');
 			});
 
-			it('triggers sharing on init', async () => {
-				const mockShortUrl = 'https://short/url';
-				const mockShareData = {
-					title: 'toolbox_shareTool_title',
-					url: mockShortUrl
-				};
-				const windowMock = {
-					open() {},
-					navigator: {
-						share() {}
-					}
-				};
-				const windowShareSpy = spyOn(windowMock.navigator, 'share');
-				const config = { windowMock };
-				const element = await setup(config);
-				spyOn(element, '_generateShortUrl').and.returnValue(mockShortUrl);
+			describe('on share button click', () => {
+				it('initializes share api button', async () => {
+					const mockShortUrl = 'https://short/url';
+					const mockShareData = {
+						url: mockShortUrl
+					};
+					const windowMock = {
+						open() {},
+						navigator: {
+							share() {}
+						}
+					};
+					const windowShareSpy = spyOn(windowMock.navigator, 'share');
+					const config = { windowMock };
+					const element = await setup(config);
+					spyOn(element, '_generateShortUrl').and.returnValue(mockShortUrl);
 
-				await TestUtils.timeout();
-				expect(windowShareSpy).toHaveBeenCalledWith(mockShareData);
-			});
+					element.shadowRoot.querySelectorAll('.tool-container__button')[0].click();
 
-			it('closes tool window on success', async () => {
-				const mockShortUrl = 'https://short/url';
-				const windowMock = {
-					navigator: {
-						share() {}
-					}
-				};
-				spyOn(windowMock.navigator, 'share').and.returnValue(Promise.resolve(() => {}));
-				const config = { windowMock };
-				const element = await setup(config);
-				spyOn(element, '_generateShortUrl').and.returnValue(mockShortUrl);
+					await TestUtils.timeout();
+					expect(windowShareSpy).toHaveBeenCalledWith(mockShareData);
+				});
 
-				await TestUtils.timeout();
+				it('logs a warn statement on share api reject', async () => {
+					const mockShortUrl = 'https://short/url';
+					const mockErrorMsg = 'something got wrong';
+					const windowMock = {
+						navigator: {
+							share() {}
+						}
+					};
+					spyOn(windowMock.navigator, 'share').and.returnValue(Promise.reject(new Error(mockErrorMsg)));
+					const config = { windowMock };
+					const element = await setup(config);
+					spyOn(element, '_generateShortUrl').and.returnValue(mockShortUrl);
+					const shareButton = element.shadowRoot.querySelectorAll('.tool-container__button')[0];
 
-				expect(store.getState().tools.current).toBeNull();
+					shareButton.click();
+
+					await TestUtils.timeout();
+					expect(store.getState().notifications.latest.payload.content).toBe('toolbox_shareTool_share_api_failed');
+					expect(store.getState().notifications.latest.payload.level).toEqual(LevelTypes.WARN);
+				});
 			});
 
 			it('falls back on own implementation on share api error', async () => {
@@ -141,6 +151,10 @@ describe('ShareToolContent', () => {
 				const config = { windowMock };
 				const element = await setup(config);
 				spyOn(element, '_generateShortUrl').and.returnValue(mockShortUrl);
+
+				expect(element.shadowRoot.querySelector('.tool-container__buttons').childElementCount).toBe(1);
+
+				element.shadowRoot.querySelectorAll('.tool-container__button')[0].click();
 
 				jasmine.clock().tick(100);
 				jasmine.clock().uninstall();
