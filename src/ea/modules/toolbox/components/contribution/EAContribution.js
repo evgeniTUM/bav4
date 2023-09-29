@@ -50,6 +50,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 		this._coordinateService = coordinateService;
 		this._configService = configService;
 		this._httpService = httpService;
+		this._subscribers = [];
 	}
 
 	/**
@@ -104,8 +105,6 @@ export class EAContribution extends AbstractMvuContentPanel {
 			type: this.getModel().type,
 			categoriesSpecification: this.getModel().categoriesSpecification
 		});
-		setLocation(null);
-		setTaggingMode(false);
 	}
 
 	reset() {
@@ -124,15 +123,17 @@ export class EAContribution extends AbstractMvuContentPanel {
 	 * @override
 	 */
 	onInitialize() {
-		this.observe(
-			(state) => state.contribution.position,
-			(data) => this.signal(Position_Change, data),
-			false
-		);
-		this.observe(
-			(state) => state.contribution,
-			(data) => this.signal(Update, data)
-		);
+		this._subscribers = [
+			this.observe(
+				(state) => state.contribution.position,
+				(data) => this.signal(Position_Change, data),
+				false
+			),
+			this.observe(
+				(state) => state.contribution,
+				(data) => this.signal(Update, data)
+			)
+		];
 	}
 
 	/**
