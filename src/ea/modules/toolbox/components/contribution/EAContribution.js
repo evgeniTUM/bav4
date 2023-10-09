@@ -90,7 +90,7 @@ export class EAContribution extends AbstractMvuContentPanel {
 				if (data) {
 					setTimeout(() => setTaggingMode(false), 500);
 
-					return { ...model, position: data, openSections: ['step3'] };
+					return { ...model, statusMessage: undefined, position: data, openSections: ['step3'] };
 				}
 
 				return model;
@@ -98,14 +98,18 @@ export class EAContribution extends AbstractMvuContentPanel {
 		}
 	}
 
-	reset() {
+	softReset() {
 		setLocation(null);
 		setTaggingMode(false);
-		this._subscribers.forEach((o) => o());
 		this.signal(Reset, {
 			type: this.getModel().type,
 			categoriesSpecification: this.getModel().categoriesSpecification
 		});
+	}
+
+	reset() {
+		this._subscribers.forEach((o) => o());
+		this.softReset();
 	}
 
 	/**
@@ -392,7 +396,7 @@ ${isCorrection ? '' : html`<div class="category-fields">${categoryFields[model.c
 		<div>${model.statusMessage}</div>
 				<div class='form-buttons'>
 					<ba-button id="back" .label=${translate('ea_contribution_button_back')} 
-						.type=${'primary'} @click=${() => this.reset()} >
+						.type=${'primary'} @click=${() => this.softReset()} >
 						Senden
 					</button>
 				</div>

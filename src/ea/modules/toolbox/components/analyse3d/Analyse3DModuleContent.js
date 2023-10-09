@@ -129,7 +129,7 @@ export class Analyse3DModuleContent extends AbstractModuleContentPanel {
 				<div class="footer-content">
 					<span
 						>Weitere Informationen zur 3D-Analyse finden Sie in der
-						<a target="_blank" href="https://www.energieatlas.bayern.de/hilfe/karten/HilfeZusatzfunktionen/HilfeAnalyse3D" class="link_textteil"
+						<a target="_blank" href="https://www.energieatlas.bayern.de/hilfe/karten/HilfeAnalyse/HilfeAnalyse3D" class="link_textteil"
 							>Energie-Atlas-Hilfe</a
 						>.</span
 					>

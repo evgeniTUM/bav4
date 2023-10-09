@@ -14,6 +14,9 @@ import { GeoResourceFuture, VectorGeoResource, VectorSourceType } from '../../..
 import { eaReducer } from '../../../../src/ea/store/module/ea.reducer';
 import { setMapResolution } from '../../../../src/ea/store/module/ea.action';
 import { GeoResourceInfoPanel } from '../../../../src/modules/geoResourceInfo/components/GeoResourceInfoPanel';
+import cloneSvg from '../../../../src/modules/layerManager/components/assets/clone.svg';
+import zoomToExtentSvg from '../../../../src/modules/layerManager/components/assets/zoomToExtent.svg';
+import infoSvg from '../../../../src/modules/layerManager/components/assets/info.svg';
 
 window.customElements.define(LayerItem.tag, LayerItem);
 window.customElements.define(Checkbox.tag, Checkbox);

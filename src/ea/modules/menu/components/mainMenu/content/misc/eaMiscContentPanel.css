@@ -60,6 +60,12 @@
 	background: linear-gradient(90deg, rgba(8, 131, 181, 1) 0%, rgba(43, 91, 148, 1) 100%);
 }
 
+.feedback {
+	mask-image: url('assets/chatleftdots.svg');
+	-webkit-mask-image: url('assets/chatleftdots.svg');
+	transform: scale(0.7);
+}
+
 .slider-container {
 	width: 50%;
 	padding-top: 1em;

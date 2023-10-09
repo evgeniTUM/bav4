@@ -18,6 +18,8 @@ import { $injector } from '../../../../../../../../src/injection';
 import { FIT_REQUESTED } from '../../../../../../../../src/store/position/position.reducer';
 import { simulateMapBrowserEvent } from '../../../../../../../modules/olMap/mapTestUtils';
 import { TestUtils } from '../../../../../../../test-utils.js';
+import { LevelTypes } from '../../../../../../../../src/store/notifications/notifications.action';
+import { notificationReducer } from '../../../../../../../../src/store/notifications/notifications.reducer';
 
 const GEOJSON_SAMPLE_DATA = {
 	type: 'Feature',
@@ -39,6 +41,7 @@ describe('OlGeoFeatureLayerHandler', () => {
 	const translationServiceMock = { translate: (key) => key };
 	const coordinateServiceMock = {};
 	const mapServiceMock = { getSrid: () => 4326 };
+	const administrationServiceMock = { isOutOfBavaria: async () => false };
 
 	const storeActions = [];
 
@@ -49,11 +52,13 @@ describe('OlGeoFeatureLayerHandler', () => {
 			spyReducer: (state, action) => storeActions.push(action),
 			geofeature: geofeatureReducer,
 			mapclick: mapclickReducer,
+			notifications: notificationReducer,
 			ea: eaReducer
 		});
 		$injector
 			.registerSingleton('TranslationService', translationServiceMock)
 			.registerSingleton('CoordinateService', coordinateServiceMock)
+			.registerSingleton('AdministrationService', administrationServiceMock)
 			.registerSingleton('MapService', mapServiceMock);
 		return store;
 	};
@@ -230,13 +235,30 @@ describe('OlGeoFeatureLayerHandler', () => {
 					});
 
 					it("sends a 'mapclick/request' event on mouse click", async () => {
+						spyOn(administrationServiceMock, 'isOutOfBavaria').and.returnValue(false);
 						const coordinate = [38, 75];
 
 						simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, ...coordinate);
+						await TestUtils.timeout();
 
 						const mapclickRequestActions = storeActions.filter((a) => a.type === MAPCLICK_REQUEST);
 						expect(mapclickRequestActions).toHaveSize(1);
 						expect(mapclickRequestActions[0].payload.payload).toEqual(coordinate);
+					});
+
+					it('if click outside of bavaria does not set location and emits a user warning', async () => {
+						spyOn(administrationServiceMock, 'isOutOfBavaria').and.returnValue(true);
+
+						const coordinate = [38, 75];
+
+						simulateMapBrowserEvent(map, MapBrowserEventType.CLICK, ...coordinate);
+						await TestUtils.timeout();
+
+						const mapclickRequestActions = storeActions.filter((a) => a.type === MAPCLICK_REQUEST);
+						expect(mapclickRequestActions).toHaveSize(0);
+
+						expect(store.getState().notifications.latest.payload.level).toEqual(LevelTypes.WARN);
+						expect(store.getState().notifications.latest.payload.content).toBe('ea_notification_coordinates_outside_bavaria');
 					});
 
 					it('deactivates defaultClickHandling', async () => {

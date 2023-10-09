@@ -34,3 +34,25 @@ export const loadBvvAdministration = async (coordinate3857) => {
 			throw new Error(`Administration could not be retrieved: Http-Status ${result.status}`);
 	}
 };
+
+/**
+ * Uses the BVV service to check if coordinates are outside of bavaria.
+ * @function
+ * @param {coordinate} coordinate3857
+ * @returns {Promise<boolean>} true if coordinates outside of bavaria, false otherwise
+ */
+export const isOutOfBavaria = async (coordinate3857) => {
+	const { HttpService: httpService, ConfigService: configService } = $injector.inject('HttpService', 'ConfigService');
+
+	const url = configService.getValueAsPath('BACKEND_URL') + 'administration/isOutOfBavaria';
+
+	const result = await httpService.get(`${url}/${coordinate3857[0]}/${coordinate3857[1]}`);
+
+	switch (result.status) {
+		case 200: {
+			return await result.json();
+		}
+		default:
+			throw new Error(`Administration could not be retrieved: Http-Status ${result.status}`);
+	}
+};

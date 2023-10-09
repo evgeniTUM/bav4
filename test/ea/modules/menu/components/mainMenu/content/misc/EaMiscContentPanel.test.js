@@ -58,15 +58,15 @@ describe('EaMiscContentPanel', () => {
 			expect(links[2].title).toEqual('ea_menu_misc_content_panel_newsletter_tooltip');
 			expect(links[2].querySelector('.ba-list-item__text').innerText).toEqual('ea_menu_misc_content_panel_newsletter');
 
-			expect(links[3].href).toEqual('https://www.energieatlas.bayern.de/service/impressum.html');
+			expect(links[3].href).toEqual('https://www.energieatlas.bayern.de/service/kontakt.html');
 			expect(links[3].target).toEqual('_blank');
-			expect(links[3].title).toEqual('ea_menu_misc_content_panel_imprint_tooltip');
-			expect(links[3].querySelector('.ba-list-item__text').innerText).toEqual('ea_menu_misc_content_panel_imprint');
+			expect(links[3].title).toEqual('ea_menu_misc_content_panel_contact_tooltip');
+			expect(links[3].querySelector('.ba-list-item__text').innerText).toEqual('ea_menu_misc_content_panel_contact');
 
-			expect(links[4].href).toEqual('https://www.energieatlas.bayern.de/service/kontakt.html');
+			expect(links[4].href).toEqual('https://www.energieatlas.bayern.de/service/impressum.html');
 			expect(links[4].target).toEqual('_blank');
-			expect(links[4].title).toEqual('ea_menu_misc_content_panel_contact_tooltip');
-			expect(links[4].querySelector('.ba-list-item__text').innerText).toEqual('ea_menu_misc_content_panel_contact');
+			expect(links[4].title).toEqual('ea_menu_misc_content_panel_imprint_tooltip');
+			expect(links[4].querySelector('.ba-list-item__text').innerText).toEqual('ea_menu_misc_content_panel_imprint');
 
 			expect(links[5].href).toEqual('https://www.energieatlas.bayern.de/service/datenschutz.html');
 			expect(links[5].target).toEqual('_blank');

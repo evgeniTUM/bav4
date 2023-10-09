@@ -232,7 +232,6 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 						.open=${model.openSections.includes('step2')}
 						@toggle=${onToggle}
 					>
-						<br />
 						Klicken Sie nun in die Karte um Ihren gewünschten Standort auszuwählen.
 						<div>
 							<span>Es öffnet sich ein PDF mit Infos zu:</span>
@@ -251,7 +250,9 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 					<div class="footer-content">
 						<span
 							>${getTranslatedHtml('ea_geotherm_footer')}
-							<a target="_blank" class="link_textteil">Oberfl&auml;chennahe Geothermie: Standortauskunft</a>.</span
+							<a href="https://www.energieatlas.bayern.de/hilfe/karten/HilfeAnalyse/HilfeStandortcheck" target="_blank" class="link_textteil"
+								>Oberfl&auml;chennahe Geothermie: Standortauskunft</a
+							>.</span
 						>
 					</div>
 				</div>

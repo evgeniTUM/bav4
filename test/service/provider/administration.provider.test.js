@@ -1,5 +1,5 @@
 import { $injector } from '../../../src/injection';
-import { loadBvvAdministration } from '../../../src/services/provider/administration.provider';
+import { isOutOfBavaria, loadBvvAdministration } from '../../../src/services/provider/administration.provider';
 
 describe('Administration provider', () => {
 	describe('Bvv Administration provider', () => {
@@ -29,6 +29,20 @@ describe('Administration provider', () => {
 			expect(httpServiceSpy).toHaveBeenCalled();
 			expect(administration.community).toEqual(administrationMock.gemeinde);
 			expect(administration.district).toEqual(administrationMock.gemarkung);
+		});
+
+		it('isOutOfBavaria returns boolean value if coordinates outside of bavaria', async () => {
+			[false, true].forEach((v) => async () => {
+				const backendUrl = 'https://backend.url';
+				const configServiceSpy = spyOn(configService, 'getValueAsPath').withArgs('BACKEND_URL').and.returnValue(backendUrl);
+				const httpServiceSpy = spyOn(httpService, 'get').and.returnValue(Promise.resolve(new Response(JSON.stringify(v))));
+
+				const result = await isOutOfBavaria(coordinateMock);
+
+				expect(configServiceSpy).toHaveBeenCalled();
+				expect(httpServiceSpy).toHaveBeenCalled();
+				expect(result).toEqual(v);
+			});
 		});
 
 		it('throws error when backend request cannot be fulfilled', async () => {

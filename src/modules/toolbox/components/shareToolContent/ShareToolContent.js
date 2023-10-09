@@ -4,10 +4,12 @@
 import { html } from 'lit-html';
 import { repeat } from 'lit-html/directives/repeat.js';
 import { $injector } from '../../../../injection';
+import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { openModal } from '../../../../store/modal/modal.action';
 import { AbstractToolContent } from '../toolContainer/AbstractToolContent';
 import css from './shareToolContent.css';
 import { setCurrentTool } from '../../../../store/tools/tools.action';
+import { LevelTypes, emitNotification } from '../../../../store/notifications/notifications.action';
 
 const Update_fallback_on_internal_implementation = 'update_fallback_on_internal_implementation';
 
@@ -107,6 +109,17 @@ export class ShareToolContent extends AbstractToolContent {
 	createView() {
 		const translate = (key) => this._translationService.translate(key);
 
+		const onToggle = (event) => {
+			//Todo: This is workaround until all commons components / ba-button is reworked
+			//then we bind a local field to the disabled property and just call render() afterwards
+			this.shadowRoot.querySelector('.preview_button').disabled = !event.detail.checked;
+		};
+
+		const onPreview = () => {
+			const content = html`<ba-iframe-generator></ba-iframe-generator>`;
+			openModal(translate('toolbox_shareTool_embed'), content);
+		};
+
 		const shareWithoutShareAPI = async () => {
 			const shortUrl = await this._generateShortUrl();
 			const title = translate('toolbox_shareTool_share');
@@ -118,24 +131,16 @@ export class ShareToolContent extends AbstractToolContent {
 				const shortUrl = await this._generateShortUrl();
 
 				const shareData = {
-					title: translate('toolbox_shareTool_title'),
 					url: shortUrl
 				};
 
 				await this._window.navigator.share(shareData);
-				setCurrentTool(null);
 			} catch (e) {
+				emitNotification(translate('toolbox_shareTool_share_api_failed'), LevelTypes.WARN);
 				console.warn('error when using Web Share API, falling back to internal implementation');
-				//				emitNotification(translate('toolbox_shareTool_share_api_failed'), LevelTypes.WARN);
 				this.signal(Update_fallback_on_internal_implementation);
 			}
 		};
-
-		setTimeout(async () => {
-			if (this._useShareApi()) {
-				shareWithShareAPI();
-			}
-		});
 
 		const getToolTemplate = (tool) => {
 			const buttonContent = html`
@@ -192,6 +197,21 @@ export class ShareToolContent extends AbstractToolContent {
 							(tool) => getToolTemplate(tool)
 						)}
 					</div>
+				</div>
+				<div class="ba-tool-container__title">${translate('toolbox_shareTool_embed')}</div>
+				<div class="ba-tool-container__content">
+					<ba-checkbox class="tool-container__checkbox" tabindex="0" @toggle=${onToggle} .checked=${false}>
+						<span class="disclaimer-text">${unsafeHTML(`${translate('toolbox_shareTool_disclaimer')}`)}</span>
+					</ba-checkbox>
+				</div>
+				<div class="ba-tool-container__actions">
+					<ba-button
+						class="preview_button"
+						.type=${'primary'}
+						.label=${translate('toolbox_shareTool_preview')}
+						.disabled=${true}
+						@click=${onPreview}
+					></ba-button>
 				</div>
 			</div>
 		`;

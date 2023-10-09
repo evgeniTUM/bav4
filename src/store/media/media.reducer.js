@@ -66,7 +66,7 @@ export const createMediaReducer = (_window = window) => {
 		/**
 		 * @property {boolean}
 		 */
-		darkSchema: _window.matchMedia(PREFERS_COLOR_SCHEMA_QUERY).matches,
+		darkSchema: false,
 		/**
 		 * @property {boolean}
 		 */
