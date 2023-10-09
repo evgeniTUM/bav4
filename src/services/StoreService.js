@@ -112,6 +112,7 @@ export class StoreService {
 				IframeContainerPlugin: iframeContainerPlugin,
 				SharePlugin: sharePlugin,
 				ToolsPlugin: toolsPlugin,
+				BeforeUnloadPlugin: beforeUnloadPlugin,
 				IframeGeometryIdPlugin: iframeGeometryIdPlugin,
 				HistoryStatePlugin: historyStatePlugin,
 				ObserveStateForEncodingPlugin: observeStateForEncodingPlugin
@@ -141,6 +142,7 @@ export class StoreService {
 				'IframeContainerPlugin',
 				'SharePlugin',
 				'ToolsPlugin',
+				'BeforeUnloadPlugin',
 				'IframeGeometryIdPlugin',
 				'HistoryStatePlugin',
 				'InfoPopupPlugin',
@@ -175,6 +177,7 @@ export class StoreService {
 				await iframeContainerPlugin.register(this._store);
 				await sharePlugin.register(this._store);
 				await toolsPlugin.register(this._store);
+				await beforeUnloadPlugin.register(this._store);
 				await iframeGeometryIdPlugin.register(this._store);
 				await historyStatePlugin.register(this._store);
 				await observeStateForEncodingPlugin.register(this._store); // should be registered as last plugin
