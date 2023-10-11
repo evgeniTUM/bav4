@@ -228,7 +228,7 @@ describe('MapService', () => {
 		});
 
 		it('returns null when element is not available', () => {
-			spyOn(document, 'querySelector').withArgs('ea-page-container');
+			spyOn(document, 'querySelector').withArgs('ea-page-container').and.returnValue(null).withArgs('ba-footer').and.returnValue(null);
 			const instanceUnderTest = setup();
 
 			const element = instanceUnderTest.getScaleLineContainer();
