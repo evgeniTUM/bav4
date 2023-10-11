@@ -257,7 +257,9 @@ export class Header extends MvuElement {
 						</div>	
 					</div>		
 					<div id='headerMobile' class='${getOverlayClass()} header__text-mobile'>	
+						<a  title=${translate('header_action_button_title')} class="eab-logo-link" target="_blank" href="https://www.energieatlas.bayern.de/"></a>
 					</div>
+					<span class='header__emblem_label' >Bayerische Staatsregierung</span>
 					${getEmblem()}
 					<div class="header ${getOverlayClass()}" ?data-register-for-viewport-calc=${isPortrait}>  
 						<button id='header_toggle' class="close-menu" title=${translate('header_close_button_title')}  @click="${toggle}"">

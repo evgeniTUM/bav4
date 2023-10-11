@@ -158,7 +158,8 @@ export class MapService {
 	 * @returns {HTMLElement|null} element or `null`;
 	 */
 	getScaleLineContainer() {
-		const element = document.querySelector('ea-page-container')?.shadowRoot.querySelector('ba-footer')?.shadowRoot.querySelector('.scale');
+		const rootElement = document.querySelector('ea-page-container')?.shadowRoot ?? document;
+		const element = rootElement.querySelector('ba-footer')?.shadowRoot.querySelector('.scale');
 		return element ?? null;
 	}
 
