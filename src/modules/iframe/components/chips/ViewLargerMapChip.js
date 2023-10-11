@@ -3,7 +3,7 @@
  */
 import { $injector } from '../../../../injection';
 import { MvuElement } from '../../../MvuElement';
-import baSvg from './assets/ba.svg';
+import eabSvg from './assets/eab.svg';
 import { html, nothing } from 'lit-html';
 import css from './viewLargerMapChip.css';
 import { QueryParameters } from '../../../../domain/queryParameters';
@@ -61,17 +61,9 @@ export class ViewLargerMapChip extends MvuElement {
 
 		const translate = (key) => this._translationService.translate(key);
 
-		const iconClass = `.chips__icon {	
-			mask-size:cover;
-			mask : url("${baSvg}");			
-			-webkit-mask-image : url("${baSvg}");			
-			-webkit-mask-size:cover;			
-		}`;
-
 		return this._environmentService.isEmbedded()
 			? html` <style>
-						${iconClass}
-							${css}
+						${css}
 					</style>
 					<a class="chips__button" href=${href} target="_blank">
 						<span class="chips__icon"></span>
