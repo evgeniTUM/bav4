@@ -36,8 +36,8 @@ Abwärmeinformationsbörse: Abwärmequellen,Anzahl der Anlagen,FALSE,text
 Abwärmeinformationsbörse: Abwärmequellen,Wärmeträger (gasförmig/flüssig),FALSE,text
 Abwärmeinformationsbörse: Abwärmequellen,Temperaturbereich,FALSE,text
 Abwärmeinformationsbörse: Abwärmequellen,Abwärmemenge,FALSE,text
-Abwärmeinformationsbörse: Abwärmequellen,Abwärmeleistung,FALSE,text
 Abwärmeinformationsbörse: Abwärmequellen,Betriebsdauer,FALSE,text
+Abwärmeinformationsbörse: Abwärmequellen,Abwärmeleistung,TRUE,text
 Abwärmeinformationsbörse: Abwärmequellen,Details zur Betriebsdauer,TRUE,text
 Abwärmeinformationsbörse: Abwärmequellen,Abwärmequelle,TRUE,text
 Abwärmeinformationsbörse: Abwärmequellen,Anlagenschlüssel,TRUE,text
@@ -45,7 +45,7 @@ Abwärmeinformationsbörse: Abwärmequellen,Firma,TRUE,text
 Abwärmeinformationsbörse: Abwärmequellen,Anschrift der Firma,TRUE,text
 Abwärmeinformationsbörse: Abwärmequellen,Betreiber,TRUE,text
 Abwärmeinformationsbörse: Abwärmequellen,Link zur Webseite,TRUE,text
-Abwärmeinformationsbörse: Abwärmequellen,Name der Webseite Webseite,TRUE,text
+Abwärmeinformationsbörse: Abwärmequellen,Name der Webseite,TRUE,text
 Abwärmeinformationsbörse: Abwärmequellen,Stand,TRUE,text
 Abwärmeinformationsbörse: Abwärmesenken,Ansprechpartner,FALSE,text
 Abwärmeinformationsbörse: Abwärmesenken,Ansprechpartner Telefon,FALSE,text
@@ -53,7 +53,7 @@ Abwärmeinformationsbörse: Abwärmesenken,Ansprechpartner E-Mail,FALSE,text
 Abwärmeinformationsbörse: Abwärmesenken,Wärmeträger (Dampf/Luft/Wasser),FALSE,text
 Abwärmeinformationsbörse: Abwärmesenken,Temperaturbereich,FALSE,text
 Abwärmeinformationsbörse: Abwärmesenken,Abwärmemenge,FALSE,text
-Abwärmeinformationsbörse: Abwärmesenken,Abwärmeleistung,FALSE,text
+Abwärmeinformationsbörse: Abwärmesenken,Abwärmeleistung,TRUE,text
 Abwärmeinformationsbörse: Abwärmesenken,Betriebsdauer,TRUE,text
 Abwärmeinformationsbörse: Abwärmesenken,Details zur Betriebsdauer,TRUE,text
 Abwärmeinformationsbörse: Abwärmesenken,Anlagenschlüssel,TRUE,text
@@ -70,4 +70,4 @@ Abwärmeinformationsbörse: Abwärmequellen kommunales Abwasser,Ansprechpartner 
 Abwärmeinformationsbörse: Abwärmequellen kommunales Abwasser,Ansprechpartner E-Mail,FALSE,text
 Abwärmeinformationsbörse: Abwärmequellen kommunales Abwasser,Bezeichnung der Anlagen,FALSE,text
 Abwärmeinformationsbörse: Abwärmequellen kommunales Abwasser,Abwassermenge (m3/a),FALSE,text
-Abwärmeinformationsbörse: Abwärmequellen,Stand,TRUE,text
+Abwärmeinformationsbörse: Abwärmequellen kommunales Abwasser,Stand,TRUE,text
