@@ -49,7 +49,7 @@ describe('ViewLargerMapChip', () => {
 			const element = await setup();
 
 			expect(element.shadowRoot.styleSheets.length).toBe(2);
-			expect(element.shadowRoot.styleSheets[1].cssRules.item(0).cssText).toContain('.chips__icon {');
+			expect(element.shadowRoot.styleSheets[1].cssRules.item(0).cssText).not.toContain('.chips__icon {');
 
 			expect(element.shadowRoot.querySelectorAll('.chips__button')).toHaveSize(1);
 			const link = element.shadowRoot.querySelectorAll('.chips__button');
@@ -77,7 +77,7 @@ describe('ViewLargerMapChip', () => {
 			const element = await setup({ embed: true });
 
 			expect(element.shadowRoot.styleSheets.length).toBe(2);
-			expect(element.shadowRoot.styleSheets[1].cssRules.item(0).cssText).toContain('.chips__icon {');
+			expect(element.shadowRoot.styleSheets[1].cssRules.item(0).cssText).not.toContain('.chips__icon {');
 
 			expect(element.shadowRoot.querySelectorAll('.chips__button')).toHaveSize(1);
 			const link = element.shadowRoot.querySelectorAll('.chips__button');
