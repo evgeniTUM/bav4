@@ -8,7 +8,6 @@ import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { openModal } from '../../../../store/modal/modal.action';
 import { AbstractToolContent } from '../toolContainer/AbstractToolContent';
 import css from './shareToolContent.css';
-import { setCurrentTool } from '../../../../store/tools/tools.action';
 import { LevelTypes, emitNotification } from '../../../../store/notifications/notifications.action';
 
 const Update_fallback_on_internal_implementation = 'update_fallback_on_internal_implementation';
