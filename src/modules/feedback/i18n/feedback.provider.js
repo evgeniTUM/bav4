@@ -7,7 +7,7 @@ export const provide = (lang) => {
 				feedback_categorySelection_error: 'required field',
 				feedback_changeDescription: 'Your message',
 				feedback_disclaimer:
-					'For questions relating to your feedback and to keep you informed about the work in progress we recommend submitting your email address as well.',
+					'For questions relating to your feedback and to keep you informed about the work in progress we recommend submitting your email address as well',
 				feedback_eMail_error: 'No valid e-mail address',
 				feedback_eMail_helper: 'Optional',
 				feedback_eMail: 'Your email address',
@@ -37,7 +37,7 @@ export const provide = (lang) => {
 				feedback_categorySelection_helper: 'Bitte auswählen,',
 				feedback_categorySelection_error: 'Pflichtfeld',
 				feedback_changeDescription: 'Ihre Nachricht',
-				feedback_disclaimer: 'Für evtl. Rückfragen sowie zur Information über die weitere Bearbeitung empfehlen wir die Angabe Ihrer E-Mail-Adresse.',
+				feedback_disclaimer: 'Für evtl. Rückfragen sowie zur Information über die weitere Bearbeitung empfehlen wir die Angabe Ihrer E-Mail-Adresse',
 				feedback_eMail_error: 'Keine gültige E-Mail-Adresse',
 				feedback_eMail_helper: 'Optional',
 				feedback_eMail: 'Ihre E-Mail-Adresse',
