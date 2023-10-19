@@ -99,6 +99,11 @@ describe('Header', () => {
 			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__logo')).display).toBe('block');
 			expect(window.getComputedStyle(element.shadowRoot.querySelector('#headerMobile')).display).toBe('none');
 			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header_search_icon')).opacity).toBe('1');
+
+			// eab specific
+			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__emblem_label')).display).toBe('block');
+			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__emblem')).display).toBe('block');
+			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__text')).display).toBe('block');
 		});
 
 		it('layouts for portrait and width >= 80em', async () => {
@@ -118,6 +123,11 @@ describe('Header', () => {
 			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__logo')).display).toBe('none');
 			expect(window.getComputedStyle(element.shadowRoot.querySelector('#headerMobile')).display).toBe('block');
 			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header_search_icon')).opacity).toBe('0');
+
+			// eab specific
+			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__emblem_label')).display).toBe('block');
+			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__emblem')).display).toBe('block');
+			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__text')).display).toBe('block');
 		});
 
 		it('layouts for landscape and width < 80em', async () => {
@@ -137,6 +147,11 @@ describe('Header', () => {
 			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__logo')).display).toBe('none');
 			expect(window.getComputedStyle(element.shadowRoot.querySelector('#headerMobile')).display).toBe('block');
 			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header_search_icon')).opacity).toBe('0');
+
+			// eab specific
+			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__emblem_label')).display).toBe('none');
+			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__emblem')).display).toBe('none');
+			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__text')).display).toBe('block');
 		});
 
 		it('layouts for portrait and layouts for width < 80em', async () => {
@@ -156,6 +171,11 @@ describe('Header', () => {
 			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__logo')).display).toBe('none');
 			expect(window.getComputedStyle(element.shadowRoot.querySelector('#headerMobile')).display).toBe('block');
 			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header_search_icon')).opacity).toBe('0');
+
+			// eab specific
+			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__emblem_label')).display).toBe('none');
+			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__emblem')).display).toBe('none');
+			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__text')).display).toBe('block');
 		});
 	});
 
