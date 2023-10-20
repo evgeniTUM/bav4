@@ -232,7 +232,7 @@ export class GeothermModuleContent extends AbstractModuleContentPanel {
 						.open=${model.openSections.includes('step2')}
 						@toggle=${onToggle}
 					>
-						Klicken Sie nun in die Karte um Ihren gewünschten Standort auszuwählen.
+						Klicken Sie nun in die Karte, um Ihren gewünschten Standort auszuwählen.
 						<div>
 							<span>Es öffnet sich ein PDF mit Infos zu:</span>
 							<ul>
