@@ -6,6 +6,7 @@ import { ManageModulesPlugin } from '../plugins/ManageModulesPlugin';
 import { LegendPlugin } from '../plugins/LegendPlugin';
 import { WebAnalyticsPlugin } from '../plugins/WebAnalyticsPlugin';
 import { WmsCapabilitiesService } from '../services/WmsCapabilitiesService';
+import { ResearchService } from '../services/ResearchService';
 import { LayerVisibilityNotificationPlugin } from '../plugins/LayerVisibilityNotificationPlugin';
 import { InfoPopupPlugin } from '../plugins/InfoPopupPlugin';
 import { EaInfoPopupService } from '../services/EaInfoPopupService';
@@ -21,6 +22,7 @@ export const eaConfig = () => {
 		.registerSingleton('InfoPopupPlugin', new InfoPopupPlugin())
 		.registerSingleton('LayerVisibilityNotificationPlugin', new LayerVisibilityNotificationPlugin())
 		.registerSingleton('EaInfoPopupService', new EaInfoPopupService())
+		.registerSingleton('ResearchService', new ResearchService())
 		.register('CookieService', CookieService)
 		.registerModule(eaMapModule);
 };

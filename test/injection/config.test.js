@@ -80,6 +80,17 @@ describe('injector configuration', () => {
 		expect($injector.getScope('OlElevationProfileHandler')).toBe(Injector.SCOPE_PERLOOKUP);
 		expect($injector.getScope('OlMfpHandler')).toBe(Injector.SCOPE_PERLOOKUP);
 
+		// EAB modules
+		expect($injector.getScope('WmsCapabilitiesService')).toBe(Injector.SCOPE_SINGLETON);
+		expect($injector.getScope('ManageModulesPlugin')).toBe(Injector.SCOPE_SINGLETON);
+		expect($injector.getScope('LegendPlugin')).toBe(Injector.SCOPE_SINGLETON);
+		expect($injector.getScope('WebAnalyticsPlugin')).toBe(Injector.SCOPE_SINGLETON);
+		expect($injector.getScope('InfoPopupPlugin')).toBe(Injector.SCOPE_SINGLETON);
+		expect($injector.getScope('LayerVisibilityNotificationPlugin')).toBe(Injector.SCOPE_SINGLETON);
+		expect($injector.getScope('EaInfoPopupService')).toBe(Injector.SCOPE_SINGLETON);
+		expect($injector.getScope('ResearchService')).toBe(Injector.SCOPE_SINGLETON);
+		expect($injector.getScope('CookieService')).toBe(Injector.SCOPE_PERLOOKUP);
+
 		// topic module
 		expect($injector.getScope('CatalogService')).toBe(Injector.SCOPE_SINGLETON);
 	});
