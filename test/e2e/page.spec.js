@@ -62,20 +62,21 @@ test.describe('page', () => {
 			expect(description).toBe(templateParameters.description);
 		});
 
-		test('should contain 5 top level ba-components', async ({ page }) => {
-			expect(await page.locator('body > *').count()).toBe(5);
+		test('should contain 6 top level ba-components', async ({ page }) => {
+			expect(await page.locator('body > *').count()).toBe(6);
 
 			expect(await page.locator('body > ea-page-container').count()).toBe(1);
 			expect(await page.locator('body > ba-dnd-import-panel').count()).toBe(1);
 			expect(await page.locator('body > ba-modal').count()).toBe(1);
 			expect(await page.locator('body > ba-map-context-menu').count()).toBe(1);
 			expect(await page.locator('body > ea-dsgvo-dialog').count()).toBe(1);
+			expect(await page.locator('body > ba-notification-panel').count()).toBe(1);
 		});
 
-		test('should contain ea-page-container with 12 components', async ({ page }) => {
+		test('should contain ea-page-container with 11 components', async ({ page }) => {
 			// expect(await page.locator('ea-page-container > *').count()).toBe(13);
 			const path = '.page > .row > .main > ';
-			expect(await page.locator(path + '*').count()).toEqual(12);
+			expect(await page.locator(path + '*').count()).toEqual(11);
 
 			expect(await page.locator(path + 'ba-header').count()).toBe(1);
 			expect(await page.locator(path + 'ba-footer').count()).toBe(1);
@@ -87,7 +88,6 @@ test.describe('page', () => {
 			expect(await page.locator(path + 'ba-tool-container').count()).toBe(1);
 			expect(await page.locator(path + 'ba-nonembedded-hint').count()).toBe(1);
 			expect(await page.locator(path + 'ba-theme-provider').count()).toBe(1);
-			expect(await page.locator(path + 'ba-notification-panel').count()).toBe(1);
 			expect(await page.locator(path + 'ea-legend').count()).toBe(1);
 		});
 	});
