@@ -6,7 +6,6 @@ import {
 } from '../../../../../../../src/modules/search/components/menu/types/geoResource/GeoResourceResultItem';
 import { GeoResourceSearchResult } from '../../../../../../../src/modules/search/services/domain/searchResult';
 import { TestUtils } from '../../../../../../test-utils.js';
-import { createNoInitialStateMediaReducer } from '../../../../../../../src/store/media/media.reducer';
 import { TabIds } from '../../../../../../../src/domain/mainMenu';
 import { $injector } from '../../../../../../../src/injection';
 import { positionReducer } from '../../../../../../../src/store/position/position.reducer';
@@ -30,16 +29,12 @@ describe('GeoResourceResultItem', () => {
 	let store;
 	const setup = (state = {}) => {
 		const initialState = {
-			media: {
-				portrait: false
-			},
 			...state
 		};
 
 		store = TestUtils.setupStoreAndDi(initialState, {
 			layers: layersReducer,
 			mainMenu: createNoInitialStateMainMenuReducer(),
-			media: createNoInitialStateMediaReducer(),
 			position: positionReducer
 		});
 
@@ -170,7 +165,7 @@ describe('GeoResourceResultItem', () => {
 			const geoResourceId = 'geoResourceId';
 			// const layerId = 'layerId';
 
-			const setupOnClickTests = async (portraitOrientation) => {
+			const setupOnClickTests = async () => {
 				const previewLayer = createDefaultLayer(GeoResourceResultItem._tmpLayerId(geoResourceId), geoResourceId);
 				const data = new GeoResourceSearchResult(geoResourceId, 'label', 'labelFormatted');
 				const element = await setup({
@@ -180,9 +175,6 @@ describe('GeoResourceResultItem', () => {
 					mainMenu: {
 						tab: TabIds.SEARCH,
 						open: true
-					},
-					media: {
-						portrait: portraitOrientation
 					}
 				});
 				element.data = data;
@@ -222,24 +214,77 @@ describe('GeoResourceResultItem', () => {
 				expect(store.getState().layers.active.length).toBe(1);
 				expect(store.getState().layers.active[0].opacity).toBe(0.5);
 			});
+		});
 
-			it('opens the "maps" tab of the main menu in landscape orientation', async () => {
-				const element = await setupOnClickTests(false);
+		describe('when this geoResourceId is already active', () => {
+			const layerId1 = 'layerId0';
+			const geoResourceId = 'geoResourceId';
+			const layer1 = {
+				constraints: [],
+				id: layerId1,
+				geoResourceId,
+				visible: false,
+				zIndex: 0
+			};
+			const layerId2 = 'layerId0';
+			const layer2 = {
+				constraints: [],
+				id: layerId2,
+				geoResourceId,
+				visible: false,
+				zIndex: 0
+			};
 
-				const target = element.shadowRoot.querySelector('li');
-				target.click();
+			describe('on mouse enter', () => {
+				it('does not add a preview layer', async () => {
+					const data = new GeoResourceSearchResult(geoResourceId, 'label', 'labelFormatted');
+					const state = {
+						layers: {
+							active: [layer1, layer2],
+							background: 'bg0'
+						}
+					};
+					const element = await setup(state);
+					element.data = data;
 
-				expect(store.getState().mainMenu.tab).toBe(TabIds.MAPS);
-				expect(store.getState().mainMenu.open).toBeTrue();
+					const target = element.shadowRoot.querySelector('li');
+					target.dispatchEvent(new Event('mouseenter'));
+					expect(element._timeoutId).toBeNull();
+					jasmine.clock().tick(LOADING_PREVIEW_DELAY_MS + 100);
+
+					expect(element._timeoutId).toBeNull();
+					expect(store.getState().layers.active.length).toBe(2);
+					expect(store.getState().layers.active[0].id).toBe(layerId1);
+					expect(store.getState().layers.active[1].id).toBe(layerId2);
+				});
 			});
 
-			it('closes the main menu in portrait orientation', async () => {
-				const element = await setupOnClickTests(true);
+			describe('on click', () => {
+				const setupOnClickTests = async () => {
+					const data = new GeoResourceSearchResult(geoResourceId, 'label', 'labelFormatted');
+					const state = {
+						layers: {
+							active: [layer1, layer2]
+						},
+						mainMenu: {
+							tab: TabIds.SEARCH,
+							open: true
+						}
+					};
+					const element = await setup(state);
+					element.data = data;
 
-				const target = element.shadowRoot.querySelector('li');
-				target.click();
+					return element;
+				};
 
-				expect(store.getState().mainMenu.open).toBeFalse();
+				it('removes all layers with this geoResourceId', async () => {
+					const element = await setupOnClickTests();
+					const target = element.shadowRoot.querySelector('li');
+
+					target.click();
+
+					expect(store.getState().layers.active.length).toBe(0);
+				});
 			});
 		});
 	});

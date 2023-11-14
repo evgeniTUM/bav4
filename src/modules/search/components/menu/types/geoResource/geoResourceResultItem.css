@@ -43,7 +43,7 @@
 	background: var(--text2);
 	margin-right: 0.5em;
 }
-.ba-list-item:hover .ba-list-item__icon {
+.ba-list-item__icon_active {
 	background: var(--primary-color);
 }
 .ba-list-item__text {
