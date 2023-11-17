@@ -1,12 +1,12 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
-import { FieldProperties } from '../../../../services/ResearchService';
 import { Injector } from '../../../../../injection/core/injector';
 import { getPointResolution } from '../../../../../../node_modules/ol/proj';
 import { Circle } from '../../../../../../node_modules/ol/geom';
 import { fit } from '../../../../../store/position/position.action';
 import { setClick } from '../../../../../store/pointer/pointer.action';
+import { FieldProperties } from '../../../../domain/researchTypes';
 
 export function themeSelectionElement(model, onChange) {
 	const { themes, theme, category } = model;

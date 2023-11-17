@@ -3,7 +3,7 @@ import { AbstractModuleContentPanel } from '../moduleContainer/AbstractModuleCon
 import { $injector } from '../../../../../injection';
 import css from './research.css';
 import { resultsElement, themeSelectionElement, filterElement } from './research-elements';
-import { FieldProperties } from '../../../../services/ResearchService';
+import { FieldProperties } from '../../../../domain/researchTypes';
 
 const Update = 'update';
 const Update_NextPage = 'update_next_page';
@@ -49,18 +49,6 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 		this._subscribers = [];
 	}
 
-	onInitialize() {
-		const loadThemes = async () => {
-			const themes = await this._researchService.themes();
-			const category = Object.keys(themes)[0];
-			const theme = themes[category][0];
-
-			this.signal(Update, { themes, theme, category });
-		};
-
-		setTimeout(loadThemes);
-	}
-
 	/**
 	 * @override
 	 */
@@ -70,7 +58,7 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 			const category = Object.keys(themes)[0];
 			const theme = themes[category][0];
 
-			const themeSpec = await this._researchService.queryMetadata(theme, []);
+			const themeSpec = await this._researchService.queryMetadata(theme);
 			const filters = {};
 			themeSpec.fields.forEach((f) => {
 				if (f.type === 'numeric') filters[f.name] = { min: f.min, max: f.max };
@@ -125,12 +113,20 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 	createView(model) {
 		const translate = (key) => this._translationService.translate(key);
 
+		const test = async () => {
+			const { HttpService } = $injector.inject('HttpService');
+			const result = await HttpService.fetch('./test');
+			console.log(result);
+		};
+
+		setTimeout(test);
+
 		const onToggle = (e) => {
 			// this.signal(Update, { openSections: [e.target.id] });
 		};
 
 		const onThemeChange = async (category, theme) => {
-			const themeSpec = await this._researchService.queryMetadata(theme, []);
+			const themeSpec = await this._researchService.queryMetadata(theme);
 			this.signal(Update, { category, theme, themeSpec });
 		};
 
