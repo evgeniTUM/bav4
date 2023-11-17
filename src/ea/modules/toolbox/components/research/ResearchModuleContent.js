@@ -15,9 +15,9 @@ const PAGING_SIZE = 20;
 const initialModel = {
 	isPortrait: false,
 	hasMinWidth: false,
-	themes: {},
-	category: null,
-	theme: null,
+	themeGroups: [],
+	selectedThemeGroupName: null,
+	selectedThemeId: null,
 	filters: {},
 	themeSpec: { fields: [] },
 	queryResult: {
@@ -54,16 +54,16 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 	 */
 	onInitialize() {
 		const loadThemes = async () => {
-			const themes = await this._researchService.themes();
-			const category = Object.keys(themes)[0];
-			const theme = themes[category][0];
+			const themeGroups = (await this._researchService.loadThemeGroups()).themegroups;
+			const selectedThemeGroupName = themeGroups[0].groupname;
+			const selectedThemeId = themeGroups[0].themes[0].themeId;
 
-			const themeSpec = await this._researchService.queryMetadata(theme);
+			const themeSpec = await this._researchService.queryMetadata(selectedThemeId);
 			const filters = {};
 			themeSpec.fields.forEach((f) => {
 				if (f.type === 'numeric') filters[f.name] = { min: f.min, max: f.max };
 			});
-			this.signal(Update, { themes, category, theme, themeSpec, filters });
+			this.signal(Update, { themeGroups, selectedThemeGroupName, selectedThemeId, themeSpec, filters });
 		};
 
 		setTimeout(loadThemes);
@@ -112,27 +112,21 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 	 */
 	createView(model) {
 		const translate = (key) => this._translationService.translate(key);
-
-		const test = async () => {
-			const { HttpService } = $injector.inject('HttpService');
-			const result = await HttpService.fetch('./test');
-			console.log(result);
-		};
-
-		setTimeout(test);
+		console.log(model);
 
 		const onToggle = (e) => {
 			// this.signal(Update, { openSections: [e.target.id] });
 		};
 
-		const onThemeChange = async (category, theme) => {
-			const themeSpec = await this._researchService.queryMetadata(theme);
-			this.signal(Update, { category, theme, themeSpec });
+		const onThemeChange = async (selectedThemeGroupName, selectedThemeId) => {
+			console.log(selectedThemeGroupName, selectedThemeId);
+			const themeSpec = await this._researchService.queryMetadata(selectedThemeId);
+			this.signal(Update, { selectedThemeGroupName, selectedThemeId, themeSpec });
 		};
 
 		const updateResults = async (newModel) => {
 			const queryFilters = Object.values(newModel.filters);
-			const queryResult = await this._researchService.query(newModel.theme, queryFilters, newModel.sortField, PAGING_SIZE, newModel.page);
+			const queryResult = await this._researchService.queryFeatures(newModel.theme, queryFilters, newModel.sortField, PAGING_SIZE, newModel.page);
 			this.signal(Update, { ...newModel, queryResult });
 		};
 
@@ -173,9 +167,9 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 				<collapsable-content id="step1" .title=${'1. Wählen Sie ein Thema aus'} .open=${model.openSections.includes('step1')} @toggle=${onToggle}>
 					${themeSelectionElement(
 						{
-							themes: model.themes,
-							category: model.category,
-							theme: model.theme
+							themeGroups: model.themeGroups,
+							selectedThemeGroupName: model.selectedThemeGroupName,
+							selectedThemeId: model.selectedThemeId
 						},
 						onThemeChange
 					)}

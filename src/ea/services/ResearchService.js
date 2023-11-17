@@ -5,7 +5,7 @@ export class ResearchService {
 		this.providers = providers;
 	}
 
-	async themes() {
+	async loadThemeGroups() {
 		return this.providers.loadThemeGroups();
 	}
 
@@ -13,7 +13,7 @@ export class ResearchService {
 		return this.providers.themeMetadata(theme);
 	}
 
-	async query(theme, filters, sortField, pageSize, page) {
+	async queryFeatures(theme, filters, sortField, pageSize, page) {
 		return this.providers.queryFeatures(theme, filters, pageSize, page);
 	}
 }
