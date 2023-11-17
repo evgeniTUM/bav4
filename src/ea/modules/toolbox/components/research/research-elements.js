@@ -1,7 +1,5 @@
 import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
-import { MvuElement } from '../../../../../modules/MvuElement';
-import { Injector } from '../../../../../injection/core/injector';
 import { getPointResolution } from '../../../../../../node_modules/ol/proj';
 import { Circle } from '../../../../../../node_modules/ol/geom';
 import { fit } from '../../../../../store/position/position.action';
@@ -9,32 +7,33 @@ import { setClick } from '../../../../../store/pointer/pointer.action';
 import { FieldProperties } from '../../../../domain/researchTypes';
 
 export function themeSelectionElement(model, onChange) {
-	const { themes, theme, category } = model;
+	const { selectedThemeGroupName, selectedThemeId, themeGroups } = model;
 
 	const onCategoryChange = (e) => {
-		const category = e.target.value;
-		const theme = themes[category][0];
-		console.log(category, theme);
-		onChange(category, theme);
+		const themeGroupName = e.target.value;
+		const themeGroup = themeGroups.find((tg) => tg.groupname === themeGroupName);
+		onChange(themeGroupName, themeGroup.themes[0].themeId);
 	};
 
 	const onThemeChange = (e) => {
-		const theme = e.target.value;
-		onChange(category, theme);
+		const themeId = e.target.value;
+		onChange(selectedThemeGroupName, parseInt(themeId));
 	};
 
-	return themes && category
-		? html`
-				<select id="category" @change=${onCategoryChange} title="Kategorie" required>
-					${Object.keys(themes).map((e) => html`<option value="${e}" ?selected=${e === category}>${e}</option>`)}
-					<label for="category">Category</label>
-				</select>
-				<select id="theme" @change=${onThemeChange} title="Thema" required>
-					${themes[category].map((e) => html`<option value="${e}" ?selected=${e === theme}>${e}</option>`)}
-					<label for="theme">Thema</label>
-				</select>
-		  `
-		: '';
+	if (themeGroups.length === 0) return html``;
+
+	const themeGroup = themeGroups.find((tg) => tg.groupname === selectedThemeGroupName) ?? themeGroups[0];
+
+	return html`
+		<select id="category" @change=${onCategoryChange} title="Kategorie" required>
+			${themeGroups.map((tg) => html`<option value="${tg.groupname}" ?selected=${tg.groupname === selectedThemeGroupName}>${tg.groupname}</option>`)}
+			<label for="category">Category</label>
+		</select>
+		<select id="theme" @change=${onThemeChange} title="Thema" required>
+			${themeGroup.themes.map((t) => html`<option value="${t.themeId}" ?selected=${t.themeId === selectedThemeId}>${t.displayname}</option>`)}
+			<label for="theme">Thema</label>
+		</select>
+	`;
 }
 
 export function filterElement(fieldSpec, filter, onChange) {

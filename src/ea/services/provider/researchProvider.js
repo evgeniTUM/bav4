@@ -35,13 +35,38 @@ const filter = (data, filters) => {
 
 const loadThemeGroupsMock = async () => {
 	return {
-		Biomasse: ['Biomasseanlagen', 'Strom aus Biomasse - Installierte Leistung'],
-		Solarenergie: ['Photovoltaikanlagen', 'Solarflächenbörse - gemeldete Dachflächen']
+		themegroups: [
+			{
+				groupname: 'Biomasse',
+				themes: [
+					{
+						themeId: 1,
+						displayname: 'Biomasseanlagen',
+						geoResourceId: 'a701a9ef-5af4-453e-8669-fd939246845'
+					},
+					{
+						themeId: 4,
+						displayname: 'Strom aus Biomasse - Installierte Leistung'
+					}
+				]
+			},
+			{
+				groupname: 'Energie',
+				themes: [
+					{
+						themeId: 2,
+						displayname: 'KWK-Anlagen',
+						geoResourceId: 'a701a9ef-5af4-453e-8669-fd939246845'
+					},
+					{ themeId: 3, displayname: 'Abfallheizkraftwerke', featureResourceId: 3 }
+				]
+			}
+		]
 	};
 };
 
-const themeMetadataMock = async (theme) => {
-	if (theme === 'Biomasseanlagen') {
+const themeMetadataMock = async (themeId) => {
+	if (themeId === 1) {
 		const getMetaInfo = (fieldSpec, data) => {
 			if (fieldSpec.type === 'numeric') {
 				const values = data.map((d) => Number(d[fieldSpec.name]));
