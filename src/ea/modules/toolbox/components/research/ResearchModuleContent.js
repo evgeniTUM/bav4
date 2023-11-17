@@ -19,7 +19,7 @@ const initialModel = {
 	selectedThemeGroupName: null,
 	selectedThemeId: null,
 	filters: {},
-	themeSpec: { fields: [] },
+	themeSpec: { propertyDefinitions: [] },
 	queryResult: {
 		hits: 0,
 		results: [],
@@ -54,14 +54,14 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 	 */
 	onInitialize() {
 		const loadThemes = async () => {
-			const themeGroups = (await this._researchService.loadThemeGroups()).themegroups;
-			const selectedThemeGroupName = themeGroups[0].groupname;
+			const themeGroups = (await this._researchService.loadThemeGroups()).themeGroups;
+			const selectedThemeGroupName = themeGroups[0].grouGpname;
 			const selectedThemeId = themeGroups[0].themes[0].themeId;
 
 			const themeSpec = await this._researchService.queryMetadata(selectedThemeId);
 			const filters = {};
-			themeSpec.fields.forEach((f) => {
-				if (f.type === 'numeric') filters[f.name] = { min: f.min, max: f.max };
+			themeSpec.propertyDefinitions.forEach((f) => {
+				if (f.type === 'numeric') filters[f.originalKey] = { min: f.min, max: f.max };
 			});
 			this.signal(Update, { themeGroups, selectedThemeGroupName, selectedThemeId, themeSpec, filters });
 		};
@@ -112,14 +112,12 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 	 */
 	createView(model) {
 		const translate = (key) => this._translationService.translate(key);
-		console.log(model);
 
 		const onToggle = (e) => {
 			// this.signal(Update, { openSections: [e.target.id] });
 		};
 
 		const onThemeChange = async (selectedThemeGroupName, selectedThemeId) => {
-			console.log(selectedThemeGroupName, selectedThemeId);
 			const themeSpec = await this._researchService.queryMetadata(selectedThemeId);
 			this.signal(Update, { selectedThemeGroupName, selectedThemeId, themeSpec });
 		};
@@ -134,12 +132,12 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 			if (change.type === 'numeric') {
 				const { min, max } = change;
 				const filters = { ...model.filters };
-				filters[f.name] = { ...f, min: Number(min), max: Number(max) };
+				filters[f.originalKey] = { ...f, min: Number(min), max: Number(max) };
 				await updateResults({ ...model, filters, page: 0 });
 			} else if (change.type === 'enum') {
 				const { values } = change;
 				const filters = { ...model.filters };
-				filters[f.name] = { ...f, values };
+				filters[f.originalKey] = { ...f, values };
 				await updateResults({ ...model, filters, page: 0 });
 			}
 		};
@@ -150,11 +148,11 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 			await updateResults({ ...model, page: newPage });
 		};
 
-		const filters = model.themeSpec?.fields?.map((f) =>
-			filterElement({ ...f, maxLimit: f.max, minLimit: f.min }, model.filters[f.name], onChange(f))
+		const filters = model.themeSpec?.propertyDefinitions?.map((f) =>
+			filterElement({ ...f, maxLimit: f.max, minLimit: f.min }, model.filters[f.originalKey], onChange(f))
 		);
 
-		const fieldsToShow = model.themeSpec.fields.filter((f) => f.properties.includes(FieldProperties.VIEWABLE));
+		const fieldsToShow = model.themeSpec.propertyDefinitions.filter((f) => f.properties.includes(FieldProperties.VIEWABLE));
 		const results = resultsElement(model.queryResult, fieldsToShow);
 
 		const onTabChanged = (tab) => () => {
