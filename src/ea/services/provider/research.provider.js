@@ -1,6 +1,7 @@
 /**
  * @module ea/services/provider/research_provider
  */
+import { $injector } from '../../../injection/index';
 import { FieldProperties, ScopeFilters, SortDirections, Types } from '../../domain/researchTypes';
 import { csv2json } from '../../utils/eaUtils';
 import csvContent from './research-test-data.csv';
@@ -210,6 +211,25 @@ const queryFeaturesMock = async (themeId, regionFilters, propertyFilters, sortin
 		hits: 0,
 		features: []
 	};
+};
+
+/**
+ * Uses the EAB endpoint to load the theme groups
+ * @function
+ * @type {module:services/ResearchService~researchProvider}
+ */
+export const loadThemeGroups = async () => {
+	const { HttpService: httpService, ConfigService: configService } = $injector.inject('HttpService', 'ConfigService');
+
+	const url = configService.getValueAsPath('BACKEND_URL') + 'research/themeGroups';
+
+	const result = await httpService.get(`${url}`);
+
+	if (result.ok) {
+		const payload = await result.json();
+		return payload;
+	}
+	throw new Error('Theme Groups could not be retrieved');
 };
 
 export const researchProviders = {
