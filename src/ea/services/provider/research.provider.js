@@ -1,7 +1,6 @@
 /**
  * @module ea/services/provider/research_provider
  */
-import { $injector } from '../../../injection';
 import { FieldProperties, ScopeFilters, SortDirections, Types } from '../../domain/researchTypes';
 import { csv2json } from '../../utils/eaUtils';
 import csvContent from './research-test-data.csv';
@@ -112,35 +111,33 @@ const filter = (data, filters) => {
 };
 
 const loadThemeGroupsMock = async () => {
-	return {
-		themeGroups: [
-			{
-				groupName: 'Biomasse',
-				themes: [
-					{
-						themeId: 1,
-						displayName: 'Biomasseanlagen',
-						geoResourceId: 'a701a9ef-5af4-453e-8669-fd939246845'
-					},
-					{
-						themeId: 4,
-						displayName: 'Strom aus Biomasse - Installierte Leistung'
-					}
-				]
-			},
-			{
-				groupName: 'Energie',
-				themes: [
-					{
-						themeId: 2,
-						displayName: 'KWK-Anlagen',
-						geoResourceId: 'a701a9ef-5af4-453e-8669-fd939246845'
-					},
-					{ themeId: 3, displayName: 'Abfallheizkraftwerke', featureResourceId: 3 }
-				]
-			}
-		]
-	};
+	return [
+		{
+			groupName: 'Biomasse',
+			themes: [
+				{
+					themeId: 1,
+					displayName: 'Biomasseanlagen',
+					geoResourceId: 'a701a9ef-5af4-453e-8669-fd939246845'
+				},
+				{
+					themeId: 4,
+					displayName: 'Strom aus Biomasse - Installierte Leistung'
+				}
+			]
+		},
+		{
+			groupName: 'Energie',
+			themes: [
+				{
+					themeId: 2,
+					displayName: 'KWK-Anlagen',
+					geoResourceId: 'a701a9ef-5af4-453e-8669-fd939246845'
+				},
+				{ themeId: 3, displayName: 'Abfallheizkraftwerke', featureResourceId: 3 }
+			]
+		}
+	];
 };
 
 const themeMetadataMock = async (themeId) => {
@@ -175,29 +172,43 @@ const themeMetadataMock = async (themeId) => {
 	}
 	return {
 		themeId,
-		results: 0,
+		featureCount: 0,
 		propertyDefinitions: []
 	};
 };
 
-const queryFeaturesMock = async (theme, filters, sortField, pageSize, page) => {
-	if (theme === 'Biomasseanlagen') {
-		const results = filter(DATA, filters);
-		const sortedResult = sortField ? results.sort((a, b) => a[sortField] < b[sortField]) : results;
+const queryFeaturesMock = async (themeId, regionFilters, propertyFilters, sorting, pageSize, page) => {
+	if (themeId === 1) {
+		const results = filter(DATA, propertyFilters);
+		const sortingFn = sorting.sortDirections === SortDirections.ASCENDING ? (a, b) => a < b : (a, b) => a > b;
+		const sortedResult = sorting ? results.sort((a, b) => sortingFn(a[sorting.originalKey], b[sorting.originalKey])) : results;
 
 		const pagingResults = sortedResult.slice(page * pageSize, page * pageSize + pageSize);
 		return {
+			featureRequest: {
+				themeId,
+				regionFilters,
+				propertyFilters,
+				sorting,
+				page,
+				pageSize
+			},
 			hits: results.length,
-			results: pagingResults,
-			pageSize,
-			page
+			features: pagingResults
 		};
 	}
+
 	return {
+		featureRequest: {
+			themeId,
+			regionFilters,
+			propertyFilters,
+			sorting,
+			page,
+			pageSize
+		},
 		hits: 0,
-		results: [],
-		pageSize,
-		page
+		features: []
 	};
 };
 

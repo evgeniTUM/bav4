@@ -12,12 +12,12 @@ export function themeSelectionElement(model, onChange) {
 	const onCategoryChange = (e) => {
 		const themeGroupName = e.target.value;
 		const themeGroup = themeGroups.find((tg) => tg.groupName === themeGroupName);
-		onChange(themeGroupName, themeGroup.themes[0].themeId);
+		onChange(themeGroupName, themeGroups, themeGroup.themes[0].themeId);
 	};
 
 	const onThemeChange = (e) => {
 		const themeId = e.target.value;
-		onChange(selectedThemeGroupName, parseInt(themeId));
+		onChange(selectedThemeGroupName, themeGroups, parseInt(themeId));
 	};
 
 	if (themeGroups.length === 0) return html``;
@@ -36,11 +36,11 @@ export function themeSelectionElement(model, onChange) {
 	`;
 }
 
-export function filterElement(fieldSpec, filter, onChange) {
+export function filterElement(fieldSpec, propertyFilter, onChange) {
 	if (fieldSpec.properties.includes(FieldProperties.QUERYABLE)) {
 		if (fieldSpec.type === Types.NUMERIC) {
 			const { displayName, minLimit, maxLimit } = fieldSpec;
-			const { min, max } = filter;
+			const { min, max } = propertyFilter;
 
 			const changeMin = (event) => onChange({ type: Types.NUMERIC, min: event.target.value, max });
 			const changeMax = (event) => onChange({ type: Types.NUMERIC, min, max: event.target.value });
@@ -85,15 +85,19 @@ export function resultsElement(queryResult, fieldsToShow) {
 		});
 		fit(circle.getExtent());
 	};
-	return html`Showing: ${queryResult.results.length} of ${queryResult.hits} hits 
+	if (!queryResult) return html`No features were queried yet`;
+
+	const request = queryResult.featureRequest;
+
+	return html`Showing: ${queryResult.features.length} of ${queryResult.hits} hits 
 	<br></br>
-	Hits: ${queryResult.page * queryResult.pageSize} -
-		${(queryResult.page + 1) * queryResult.pageSize}
+	Hits: ${request.page * request.pageSize} -
+		${(request.page + 1) * request.pageSize}
 		<hr></hr>
 
 		<div style="overflow-y: auto">
 			<ul>
-				${queryResult.results.map(
+				${queryResult.features.map(
 					(r) =>
 						html`<li>
 							<div style="border-bottom: solid">
