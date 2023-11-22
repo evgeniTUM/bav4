@@ -117,7 +117,7 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 		};
 
 		const updateResults = async (newModel) => {
-			const queryFilters = Object.values(newModel.propertyFilters);
+			const queryFilters = Object.values(newModel.propertyFilters).filter((f) => !(f.values && f.values.length === 0));
 			const sorting = {
 				originalKey: model.sortField,
 				sortDirectio: SortDirections.ASCENDING
@@ -146,7 +146,6 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 			await updateResults({ ...model, page: newPage });
 		};
 
-		console.log(model);
 		const propertyFilters = model.themeSpec?.propertyDefinitions?.map((f) =>
 			filterElement({ ...f, maxLimit: f.max, minLimit: f.min }, model.propertyFilters[f.originalKey], onChange(f))
 		);

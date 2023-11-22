@@ -64,7 +64,7 @@ export function filterElement(fieldSpec, propertyFilter, onChange) {
 			return html`
 				<label for=${displayName}><span style="font-weight: bold">${displayName}</span></label>
 				<select @change=${onValuesChanged} name=${displayName} id=${displayName} multiple>
-					${values.map((v) => html` <option value=${v}>${v}</option> `)}
+					${values.map((v) => html` <option value=${v} ?checked=${values.includes(v)}>${v}</option> `)}
 				</select>
 			`;
 		}
