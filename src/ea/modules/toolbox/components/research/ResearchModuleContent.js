@@ -50,7 +50,17 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 		themeSpec.propertyDefinitions.forEach((f) => {
 			if (f.type === Types.NUMERIC) propertyFilters[f.originalKey] = { min: f.min, max: f.max };
 		});
-		this.signal(Update, { themeGroups, selectedThemeGroupName, selectedThemeId, themeSpec, propertyFilters });
+
+		const sortField = themeSpec.propertyDefinitions[0].originalKey;
+
+		const newModel = { ...initialModel, themeGroups, selectedThemeGroupName, selectedThemeId, themeSpec, propertyFilters, sortField };
+		const sorting = {
+			originalKey: sortField,
+			sortDirectio: SortDirections.ASCENDING
+		};
+
+		const queryResult = await this._researchService.queryFeatures(newModel.selectedThemeId, [], [], sorting, PAGING_SIZE, newModel.page);
+		this.signal(Update, { ...newModel, queryResult });
 	}
 
 	/**
