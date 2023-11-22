@@ -1,4 +1,4 @@
-import { researchProviders } from './provider/researchProvider';
+import { researchProviders } from './provider/research.provider';
 
 export class ResearchService {
 	constructor(providers = researchProviders) {
@@ -13,7 +13,7 @@ export class ResearchService {
 		return this.providers.themeMetadata(theme);
 	}
 
-	async queryFeatures(theme, filters, sortField, pageSize, page) {
-		return this.providers.queryFeatures(theme, filters, pageSize, page);
+	async queryFeatures(themeId, regionFilters, propertyFilters, sorting, pageSize, page) {
+		return this.providers.queryFeatures(themeId, regionFilters, propertyFilters, sorting, pageSize, page);
 	}
 }
