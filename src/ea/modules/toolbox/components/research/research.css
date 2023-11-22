@@ -19,3 +19,7 @@
 .tab-buttons {
 	border-bottom: solid;
 }
+
+option:checked {
+	background-color: gray;
+}
