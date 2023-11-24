@@ -118,8 +118,7 @@ const loadThemeGroupsMock = async () => {
 			themes: [
 				{
 					themeId: 1,
-					displayName: 'Biomasseanlagen',
-					geoResourceId: 'a701a9ef-5af4-453e-8669-fd939246845'
+					displayName: 'Biomasseanlagen'
 				},
 				{
 					themeId: 4,
@@ -132,10 +131,12 @@ const loadThemeGroupsMock = async () => {
 			themes: [
 				{
 					themeId: 2,
-					displayName: 'KWK-Anlagen',
-					geoResourceId: 'a701a9ef-5af4-453e-8669-fd939246845'
+					displayName: 'KWK-Anlagen'
 				},
-				{ themeId: 3, displayName: 'Abfallheizkraftwerke', featureResourceId: 3 }
+				{
+					themeId: 3,
+					displayName: 'Abfallheizkraftwerke'
+				}
 			]
 		}
 	];
@@ -168,12 +169,14 @@ const themeMetadataMock = async (themeId) => {
 		return {
 			themeId,
 			featureCount: DATA.length,
+			geoResourceId: 'a701a9ef-5af4-453e-8669-fd939246845f',
 			propertyDefinitions
 		};
 	}
 	return {
 		themeId,
 		featureCount: 0,
+		geoResourceId: 'some-id',
 		propertyDefinitions: []
 	};
 };
