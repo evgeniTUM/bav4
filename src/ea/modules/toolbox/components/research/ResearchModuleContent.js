@@ -51,7 +51,7 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 			if (f.type === Types.NUMERIC) propertyFilters[f.originalKey] = { min: f.min, max: f.max };
 		});
 
-		const sortField = themeSpec.propertyDefinitions[0].originalKey;
+		const sortField = themeSpec.propertyDefinitions[0]?.originalKey;
 
 		const newModel = { ...initialModel, themeGroups, selectedThemeGroupName, selectedThemeId, themeSpec, propertyFilters, sortField };
 		const sorting = {
@@ -161,11 +161,13 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 		);
 
 		const fieldsToShow = model.themeSpec.propertyDefinitions.filter((f) => f.properties.includes(FieldProperties.VIEWABLE));
-		const features = resultsElement(model.queryResult, fieldsToShow);
+		const features = resultsElement(model.queryResult, fieldsToShow, model.themeSpec.geoResourceId);
 
 		const onTabChanged = (tab) => () => {
 			this.signal(Update, { openTab: tab });
 		};
+
+		const onThemeChange = (themeGroup, themeId) => this.loadTheme(themeId, model.themeGroups, themeGroup);
 
 		const tabs = [
 			html`
@@ -177,7 +179,7 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 							selectedThemeGroupName: model.selectedThemeGroupName,
 							selectedThemeId: model.selectedThemeId
 						},
-						this.loadTheme
+						onThemeChange
 					)}
 				</collapsable-content>
 

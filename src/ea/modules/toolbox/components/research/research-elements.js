@@ -5,6 +5,7 @@ import { Circle } from '../../../../../../node_modules/ol/geom';
 import { fit } from '../../../../../store/position/position.action';
 import { setClick } from '../../../../../store/pointer/pointer.action';
 import { FieldProperties, Types } from '../../../../domain/researchTypes';
+import { activateGeoResource } from '../../../../store/module/ea.action';
 
 export function themeSelectionElement(model, onChange) {
 	const { selectedThemeGroupName, selectedThemeId, themeGroups } = model;
@@ -12,12 +13,12 @@ export function themeSelectionElement(model, onChange) {
 	const onCategoryChange = (e) => {
 		const themeGroupName = e.target.value;
 		const themeGroup = themeGroups.find((tg) => tg.groupName === themeGroupName);
-		onChange(themeGroupName, themeGroups, themeGroup.themes[0].themeId);
+		onChange(themeGroupName, themeGroup.themes[0].themeId);
 	};
 
 	const onThemeChange = (e) => {
 		const themeId = e.target.value;
-		onChange(selectedThemeGroupName, themeGroups, parseInt(themeId));
+		onChange(selectedThemeGroupName, parseInt(themeId));
 	};
 
 	if (themeGroups.length === 0) return html``;
@@ -73,9 +74,13 @@ export function filterElement(fieldSpec, propertyFilter, onChange) {
 	return html``;
 }
 
-export function resultsElement(queryResult, fieldsToShow) {
+export function resultsElement(queryResult, fieldsToShow, geoResourceId) {
 	const onClick = (result) => () => {
 		const { MapService: mapService, CoordinateService: coordinateService } = $injector.inject('MapService', 'CoordinateService');
+
+		console.log(geoResourceId);
+		activateGeoResource(geoResourceId);
+
 		const position_UTM32N = [Number(result['Ostwert_UTM32N']), Number(result['Nordwert_UTM32N'])];
 		const coordinate = coordinateService.transform(position_UTM32N, 25832, mapService.getSrid());
 
