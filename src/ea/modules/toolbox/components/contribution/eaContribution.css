@@ -231,3 +231,8 @@ input {
 	border-width: 1px;
 	border-color: var(--primary-bg-color);
 }
+
+textarea {
+	resize: vertical;
+	min-height: 3em;
+}
