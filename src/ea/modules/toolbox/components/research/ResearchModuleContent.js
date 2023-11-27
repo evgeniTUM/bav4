@@ -3,7 +3,7 @@ import { AbstractModuleContentPanel } from '../moduleContainer/AbstractModuleCon
 import { $injector } from '../../../../../injection';
 import css from './research.css';
 import { resultsElement, themeSelectionElement, filterElement } from './research-elements';
-import { FieldProperties } from '../../../../services/ResearchService';
+import { FieldProperties, SortDirections, Types } from '../../../../domain/researchTypes';
 
 const Update = 'update';
 const Update_NextPage = 'update_next_page';
@@ -15,17 +15,12 @@ const PAGING_SIZE = 20;
 const initialModel = {
 	isPortrait: false,
 	hasMinWidth: false,
-	themes: {},
-	category: null,
-	theme: null,
-	filters: {},
-	themeSpec: { fields: [] },
-	queryResult: {
-		hits: 0,
-		results: [],
-		pageSize: PAGING_SIZE,
-		page: 0
-	},
+	themeGroups: [],
+	selectedThemeGroupName: null,
+	selectedThemeId: null,
+	propertyFilters: {},
+	themeSpec: { propertyDefinitions: [], featureCount: 0 },
+	queryResult: undefined,
 	openSections: ['step1', 'step2', 'step3'],
 	openTab: 1,
 	page: 0,
@@ -49,16 +44,23 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 		this._subscribers = [];
 	}
 
-	onInitialize() {
-		const loadThemes = async () => {
-			const themes = await this._researchService.themes();
-			const category = Object.keys(themes)[0];
-			const theme = themes[category][0];
+	async loadTheme(selectedThemeId, themeGroups, selectedThemeGroupName) {
+		const themeSpec = await this._researchService.queryMetadata(selectedThemeId);
+		const propertyFilters = {};
+		themeSpec.propertyDefinitions.forEach((f) => {
+			if (f.type === Types.NUMERIC) propertyFilters[f.originalKey] = { min: f.min, max: f.max };
+		});
 
-			this.signal(Update, { themes, theme, category });
+		const sortField = themeSpec.propertyDefinitions[0]?.originalKey;
+
+		const newModel = { ...initialModel, themeGroups, selectedThemeGroupName, selectedThemeId, themeSpec, propertyFilters, sortField };
+		const sorting = {
+			originalKey: sortField,
+			sortDirectio: SortDirections.ASCENDING
 		};
 
-		setTimeout(loadThemes);
+		const queryResult = await this._researchService.queryFeatures(newModel.selectedThemeId, [], [], sorting, PAGING_SIZE, newModel.page);
+		this.signal(Update, { ...newModel, queryResult });
 	}
 
 	/**
@@ -66,16 +68,11 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 	 */
 	onInitialize() {
 		const loadThemes = async () => {
-			const themes = await this._researchService.themes();
-			const category = Object.keys(themes)[0];
-			const theme = themes[category][0];
+			const themeGroups = await this._researchService.loadThemeGroups();
+			const selectedThemeGroupName = themeGroups[0].grouGpname;
+			const selectedThemeId = themeGroups[0].themes[0].themeId;
 
-			const themeSpec = await this._researchService.queryMetadata(theme, []);
-			const filters = {};
-			themeSpec.fields.forEach((f) => {
-				if (f.type === 'numeric') filters[f.name] = { min: f.min, max: f.max };
-			});
-			this.signal(Update, { themes, category, theme, themeSpec, filters });
+			this.loadTheme(selectedThemeId, themeGroups, selectedThemeGroupName);
 		};
 
 		setTimeout(loadThemes);
@@ -91,7 +88,7 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 				return test;
 			}
 			case Update_NextPage: {
-				const hits = model.queryResult ? model.queryResult.hits : 0;
+				const hits = model.queryResult ? model.queryResult.features.length : 0;
 				const page = model.page + (model.page === hits / PAGING_SIZE ? 0 : 1);
 				const test = { ...model, page };
 				return test;
@@ -129,28 +126,27 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 			// this.signal(Update, { openSections: [e.target.id] });
 		};
 
-		const onThemeChange = async (category, theme) => {
-			const themeSpec = await this._researchService.queryMetadata(theme, []);
-			this.signal(Update, { category, theme, themeSpec });
-		};
-
 		const updateResults = async (newModel) => {
-			const queryFilters = Object.values(newModel.filters);
-			const queryResult = await this._researchService.query(newModel.theme, queryFilters, newModel.sortField, PAGING_SIZE, newModel.page);
+			const queryFilters = Object.values(newModel.propertyFilters).filter((f) => !(f.values && f.values.length === 0));
+			const sorting = {
+				originalKey: model.sortField,
+				sortDirectio: SortDirections.ASCENDING
+			};
+			const queryResult = await this._researchService.queryFeatures(newModel.selectedThemeId, [], queryFilters, sorting, PAGING_SIZE, newModel.page);
 			this.signal(Update, { ...newModel, queryResult });
 		};
 
 		const onChange = (f) => async (change) => {
-			if (change.type === 'numeric') {
+			if (change.type === Types.NUMERIC) {
 				const { min, max } = change;
-				const filters = { ...model.filters };
-				filters[f.name] = { ...f, min: Number(min), max: Number(max) };
-				await updateResults({ ...model, filters, page: 0 });
-			} else if (change.type === 'enum') {
+				const propertyFilters = { ...model.propertyFilters };
+				propertyFilters[f.originalKey] = { ...f, min: Number(min), max: Number(max) };
+				await updateResults({ ...model, propertyFilters, page: 0 });
+			} else if (change.type === Types.ENUM) {
 				const { values } = change;
-				const filters = { ...model.filters };
-				filters[f.name] = { ...f, values };
-				await updateResults({ ...model, filters, page: 0 });
+				const propertyFilters = { ...model.propertyFilters };
+				propertyFilters[f.originalKey] = { ...f, values };
+				await updateResults({ ...model, propertyFilters, page: 0 });
 			}
 		};
 
@@ -160,26 +156,28 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 			await updateResults({ ...model, page: newPage });
 		};
 
-		const filters = model.themeSpec?.fields?.map((f) =>
-			filterElement({ ...f, maxLimit: f.max, minLimit: f.min }, model.filters[f.name], onChange(f))
+		const propertyFilters = model.themeSpec?.propertyDefinitions?.map((f) =>
+			filterElement({ ...f, maxLimit: f.max, minLimit: f.min }, model.propertyFilters[f.originalKey], onChange(f))
 		);
 
-		const fieldsToShow = model.themeSpec.fields.filter((f) => f.properties.includes(FieldProperties.VIEWABLE));
-		const results = resultsElement(model.queryResult, fieldsToShow);
+		const fieldsToShow = model.themeSpec.propertyDefinitions.filter((f) => f.properties.includes(FieldProperties.VIEWABLE));
+		const features = resultsElement(model.queryResult, fieldsToShow, model.themeSpec.geoResourceId);
 
 		const onTabChanged = (tab) => () => {
 			this.signal(Update, { openTab: tab });
 		};
 
+		const onThemeChange = (themeGroup, themeId) => this.loadTheme(themeId, model.themeGroups, themeGroup);
+
 		const tabs = [
 			html`
-				Treffer: ${model.queryResult?.hits}
+				Treffer: ${model.queryResult ? model.queryResult.hits : model.themeSpec?.featureCount}
 				<collapsable-content id="step1" .title=${'1. Wählen Sie ein Thema aus'} .open=${model.openSections.includes('step1')} @toggle=${onToggle}>
 					${themeSelectionElement(
 						{
-							themes: model.themes,
-							category: model.category,
-							theme: model.theme
+							themeGroups: model.themeGroups,
+							selectedThemeGroupName: model.selectedThemeGroupName,
+							selectedThemeId: model.selectedThemeId
 						},
 						onThemeChange
 					)}
@@ -191,7 +189,7 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 					.open=${model.openSections.includes('step2')}
 					@toggle=${onToggle}
 				>
-					${filters}
+					${propertyFilters}
 				</collapsable-content>
 			`,
 			html`
@@ -199,7 +197,7 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 					<button .label=${'Previous'} @click=${onPageChanged(-1)}>Previous Page</button>
 					<button .label=${'Next'} @click=${onPageChanged(1)}>Next Page</button>
 				</div>
-				${results}
+				${features}
 			`,
 			html``
 		];
