@@ -5,6 +5,8 @@ import { $injector } from '../../../../../../src/injection';
 import { createMediaReducer } from '../../../../../../src/store/media/media.reducer';
 import { positionReducer } from '../../../../../../src/store/position/position.reducer';
 import { TestUtils } from '../../../../../test-utils';
+import { layersReducer } from '../../../../../../src/store/layers/layers.reducer';
+import { addLayer } from '../../../../../../src/store/layers/layers.action';
 
 window.customElements.define(LegendContent.tag, LegendContent);
 
@@ -13,6 +15,7 @@ describe('LegendContent', () => {
 		TestUtils.setupStoreAndDi(state, {
 			ea: eaReducer,
 			position: positionReducer,
+			layers: layersReducer,
 			media: createMediaReducer()
 		});
 		$injector.registerSingleton('TranslationService', { translate: (key) => key }).registerSingleton('EnvironmentService', { portrait: false });
@@ -102,6 +105,36 @@ describe('LegendContent', () => {
 			setLegendItems([layerItem1, layerItem1]);
 
 			expect(element.shadowRoot.querySelectorAll('img').length).toBe(1);
+		});
+
+		it('shows subtitle whenever a layer with opacity < 1 is active', async () => {
+			const element = await setup();
+			addLayer('id1', { opacity: 0.5 });
+			activateLegend();
+
+			setLegendItems([layerItem1, layerItem1]);
+
+			expect(element.shadowRoot.querySelector('.ea-legend__subtitle').innerText).toEqual('ea_legend_subtitle');
+		});
+
+		it('does not show subtitle when there is no layer with opacity < 1 active', async () => {
+			const element = await setup();
+			addLayer('id1');
+			activateLegend();
+
+			setLegendItems([layerItem1, layerItem1]);
+
+			expect(element.shadowRoot.querySelector('.ea-legend__subtitle').innerText).toEqual('');
+		});
+
+		it('does not show subtitle when there is no visible layer with opacity < 1', async () => {
+			const element = await setup();
+			addLayer('id1', { opacity: 0.5, visible: false });
+			activateLegend();
+
+			setLegendItems([layerItem1, layerItem1]);
+
+			expect(element.shadowRoot.querySelector('.ea-legend__subtitle').innerText).toEqual('');
 		});
 	});
 });
