@@ -7,6 +7,7 @@ const Update_legend_active = 'update_legend_active';
 const Update_resolution = 'update_resolution';
 const Update_legend_items = 'update_legend_items';
 const Update_IsPortrait_HasMinWidth = 'update_isPortrait';
+const Update_ShowSubtitle = 'update_show_subtitle';
 
 export class LegendContent extends MvuElement {
 	constructor() {
@@ -15,7 +16,8 @@ export class LegendContent extends MvuElement {
 			legendItems: [],
 			resolution: 0,
 			isPortrait: false,
-			hasMinWidth: false
+			hasMinWidth: false,
+			showSubtitle: false
 		});
 
 		const { StoreService, TranslationService, EnvironmentService } = $injector.inject('StoreService', 'TranslationService', 'EnvironmentService');
@@ -40,6 +42,12 @@ export class LegendContent extends MvuElement {
 
 			case Update_IsPortrait_HasMinWidth:
 				return { ...model, ...data };
+
+			case Update_ShowSubtitle: {
+				const activeLayers = data;
+				const showSubtitle = activeLayers.some((l) => l.visible && l.opacity < 1);
+				return { ...model, showSubtitle };
+			}
 		}
 	}
 
@@ -62,6 +70,11 @@ export class LegendContent extends MvuElement {
 		this.observe(
 			(state) => state.media,
 			(media) => this.signal(Update_IsPortrait_HasMinWidth, { isPortrait: media.portrait, hasMinWidth: media.minWidth })
+		);
+		this.observe(
+			(state) => state.layers.active,
+			(layers) => this.signal(Update_ShowSubtitle, layers),
+			true
 		);
 	}
 
@@ -92,6 +105,7 @@ export class LegendContent extends MvuElement {
 				<div class="ea-legend-filler"></div>
 				<div class="ea-legend-content">
 					<div class="ea-legend__title">${translate('ea_legend_title')}</div>
+					<div class="ea-legend__subtitle">${model.showSubtitle ? translate('ea_legend_subtitle') : ''}</div>
 					${content}
 				</div>
 			</div>
