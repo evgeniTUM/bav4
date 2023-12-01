@@ -18,7 +18,7 @@ export function themeSelectionElement(model, onChange) {
 
 	const onThemeChange = (e) => {
 		const themeId = e.target.value;
-		onChange(selectedThemeGroupName, parseInt(themeId));
+		onChange(selectedThemeGroupName, themeId);
 	};
 
 	if (themeGroups.length === 0) return html``;
