@@ -117,11 +117,11 @@ const loadThemeGroupsMock = async () => {
 			groupName: 'Biomasse',
 			themes: [
 				{
-					themeId: 1,
+					themeId: 'wfs_biomasseanlagen',
 					displayName: 'Biomasseanlagen'
 				},
 				{
-					themeId: 4,
+					themeId: 'id2',
 					displayName: 'Strom aus Biomasse - Installierte Leistung'
 				}
 			]
@@ -130,11 +130,11 @@ const loadThemeGroupsMock = async () => {
 			groupName: 'Energie',
 			themes: [
 				{
-					themeId: 2,
+					themeId: 'id3',
 					displayName: 'KWK-Anlagen'
 				},
 				{
-					themeId: 3,
+					themeId: 'id4',
 					displayName: 'Abfallheizkraftwerke'
 				}
 			]
@@ -143,7 +143,8 @@ const loadThemeGroupsMock = async () => {
 };
 
 const themeMetadataMock = async (themeId) => {
-	if (themeId === 1) {
+	console.log(themeId);
+	if (themeId === 'wfs_biomasseanlagen') {
 		const getMetaInfo = (fieldSpec, data) => {
 			if (fieldSpec.type === Types.NUMERIC) {
 				const values = data.map((d) => Number(d[fieldSpec.originalKey]));
@@ -182,7 +183,7 @@ const themeMetadataMock = async (themeId) => {
 };
 
 const queryFeaturesMock = async (themeId, regionFilters, propertyFilters, sorting, pageSize, page) => {
-	if (themeId === 1) {
+	if (themeId === 'wfs_biomasseanlagen') {
 		const results = filter(DATA, propertyFilters);
 		const sortingFn = sorting.sortDirections === SortDirections.ASCENDING ? (a, b) => a < b : (a, b) => a > b;
 		const sortedResult = sorting ? results.sort((a, b) => sortingFn(a[sorting.originalKey], b[sorting.originalKey])) : results;
@@ -224,7 +225,7 @@ const queryFeaturesMock = async (themeId, regionFilters, propertyFilters, sortin
 export const loadThemeGroups = async () => {
 	const { HttpService: httpService, ConfigService: configService } = $injector.inject('HttpService', 'ConfigService');
 
-	const url = configService.getValueAsPath('BACKEND_URL') + 'research/themeGroups';
+	const url = configService.getValueAsPath('BACKEND_URL') + 'research/themes';
 
 	const result = await httpService.get(`${url}`);
 
@@ -241,7 +242,7 @@ export const researchProviders = {
 	 * @function
 	 * @returns {Promise<themeGroups>}
 	 */
-	loadThemeGroups: loadThemeGroupsMock,
+	loadThemeGroups: loadThemeGroups,
 
 	/**
 	 * Loads the metadata for specified theme id.
