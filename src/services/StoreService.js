@@ -35,6 +35,7 @@ import { elevationProfileReducer } from '../store/elevationProfile/elevationProf
 import { chipsReducer } from '../store/chips/chips.reducer';
 import { stateForEncodingReducer } from '../store/stateForEncoding/stateForEncoding.reducer';
 import { iframeContainerReducer } from '../store/iframeContainer/iframeContainer.reducer';
+import { routingReducer } from '../store/routing/routing.reducer';
 
 /**
  * Service which configures, initializes and holds the redux store.
@@ -79,7 +80,8 @@ export class StoreService {
 			elevationProfile: elevationProfileReducer,
 			chips: chipsReducer,
 			stateForEncoding: stateForEncodingReducer,
-			iframeContainer: iframeContainerReducer
+			iframeContainer: iframeContainerReducer,
+			routing: routingReducer
 		});
 
 		this._store = createStore(rootReducer);
@@ -92,6 +94,7 @@ export class StoreService {
 				GeolocationPlugin: geolocationPlugin,
 				MeasurementPlugin: measurementPlugin,
 				DrawPlugin: drawPlugin,
+				RoutingPlugin: routingPlugin,
 				PositionPlugin: positionPlugin,
 				ContextClickPlugin: contextClickPlugin,
 				HighlightPlugin: highlightPlugin,
@@ -123,6 +126,7 @@ export class StoreService {
 				'GeolocationPlugin',
 				'MeasurementPlugin',
 				'DrawPlugin',
+				'RoutingPlugin',
 				'PositionPlugin',
 				'ContextClickPlugin',
 				'HighlightPlugin',
@@ -158,6 +162,7 @@ export class StoreService {
 				await positionPlugin.register(this._store);
 				await measurementPlugin.register(this._store);
 				await drawPlugin.register(this._store);
+				await routingPlugin.register(this._store);
 				await geolocationPlugin.register(this._store);
 				await contextClickPlugin.register(this._store);
 				await highlightPlugin.register(this._store);

@@ -1,6 +1,6 @@
 import { TestUtils } from '../test-utils.js';
 import { featureInfoReducer } from '../../src/store/featureInfo/featureInfo.reducer';
-import { setTab } from '../../src/store/mainMenu/mainMenu.action';
+import { close, setTab } from '../../src/store/mainMenu/mainMenu.action';
 import { TabIds } from '../../src/domain/mainMenu';
 import { abortOrReset, registerQuery, resolveQuery } from '../../src/store/featureInfo/featureInfo.action.js';
 import { createNoInitialStateMainMenuReducer } from '../../src/store/mainMenu/mainMenu.reducer.js';
@@ -10,6 +10,9 @@ import { QueryParameters } from '../../src/domain/queryParameters.js';
 import { EventLike } from '../../src/utils/storeUtils.js';
 import { searchReducer } from '../../src/store/search/search.reducer.js';
 import { setQuery } from '../../src/store/search/search.action.js';
+import { setCurrentTool } from '../../src/store/tools/tools.action.js';
+import { toolsReducer } from '../../src/store/tools/tools.reducer.js';
+import { Tools } from '../../src/domain/tools.js';
 
 describe('MainMenuPlugin', () => {
 	const environmentServiceMock = {
@@ -32,7 +35,8 @@ describe('MainMenuPlugin', () => {
 		const store = TestUtils.setupStoreAndDi(initialState, {
 			mainMenu: createNoInitialStateMainMenuReducer(),
 			featureInfo: featureInfoReducer,
-			search: searchReducer
+			search: searchReducer,
+			tools: toolsReducer
 		});
 		$injector.registerSingleton('EnvironmentService', environmentServiceMock);
 		return store;
@@ -210,21 +214,35 @@ describe('MainMenuPlugin', () => {
 	});
 
 	describe('when featureInfo.aborted property changes', () => {
-		describe('and MainMenu is initially closed', () => {
-			it('restores the previous panel', async () => {
-				const queryId = 'foo';
+		describe('current tab is not the FeatureInfo tab', () => {
+			it('does nothing', async () => {
 				const store = setup({
 					mainMenu: {
 						open: false
-					},
-					featureInfo: {
-						queries: [queryId],
-						querying: true,
-						current: [{ title: 'title', content: 'content' }]
 					}
 				});
 				const instanceUnderTest = new MainMenuPlugin();
 				await instanceUnderTest.register(store);
+				setTab(TabIds.MAPS);
+
+				abortOrReset();
+
+				expect(store.getState().mainMenu.tab).toBe(TabIds.MAPS);
+				expect(store.getState().mainMenu.open).toBeFalse();
+			});
+		});
+
+		describe('and MainMenu is initially closed', () => {
+			it('restores the previous panel', async () => {
+				const store = setup({
+					mainMenu: {
+						open: false
+					}
+				});
+				const instanceUnderTest = new MainMenuPlugin();
+				await instanceUnderTest.register(store);
+				setTab(TabIds.FEATUREINFO);
+				close();
 
 				abortOrReset();
 
@@ -235,19 +253,14 @@ describe('MainMenuPlugin', () => {
 
 		describe('and MainMenu is initially open', () => {
 			it('restores the previous panel', async () => {
-				const queryId = 'foo';
 				const store = setup({
 					mainMenu: {
 						open: true
-					},
-					featureInfo: {
-						queries: [queryId],
-						querying: true,
-						current: [{ title: 'title', content: 'content' }]
 					}
 				});
 				const instanceUnderTest = new MainMenuPlugin();
 				await instanceUnderTest.register(store);
+				setTab(TabIds.FEATUREINFO);
 
 				abortOrReset();
 
@@ -259,10 +272,8 @@ describe('MainMenuPlugin', () => {
 
 	describe('when mainMenu.tabIndex changes', () => {
 		it('stores some properties', async () => {
-			const tabIndex = TabIds.MAPS;
 			const store = setup({
 				mainMenu: {
-					tab: tabIndex,
 					open: true
 				}
 			});
@@ -308,6 +319,28 @@ describe('MainMenuPlugin', () => {
 
 			expect(store.getState().mainMenu.open).toBeFalse();
 			expect(store.getState().mainMenu.tab).not.toBe(TabIds.SEARCH);
+		});
+	});
+
+	describe('when toolId changes', () => {
+		it('opens and closes the routing panel and restores the previous panel', async () => {
+			const store = setup({
+				mainMenu: {
+					open: false
+				}
+			});
+			const instanceUnderTest = new MainMenuPlugin();
+			await instanceUnderTest.register(store);
+
+			setCurrentTool(Tools.ROUTING);
+
+			expect(store.getState().mainMenu.tab).toBe(TabIds.ROUTING);
+			expect(store.getState().mainMenu.open).toBeTrue();
+
+			setCurrentTool(null);
+
+			expect(store.getState().mainMenu.tab).toBe(TabIds.MAPS);
+			expect(store.getState().mainMenu.open).toBeTrue();
 		});
 	});
 });

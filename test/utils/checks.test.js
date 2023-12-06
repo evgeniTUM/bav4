@@ -1,5 +1,16 @@
 import { html } from 'lit-html';
-import { isCoordinate, isExternalGeoResourceId, isHttpUrl, isNumber, isObject, isPromise, isString, isTemplateResult } from '../../src/utils/checks';
+import {
+	isCoordinate,
+	isExternalGeoResourceId,
+	isHttpUrl,
+	isNumber,
+	isObject,
+	isPromise,
+	isString,
+	isTemplateResult,
+	isFunction,
+	isCoordinateLike
+} from '../../src/utils/checks';
 
 describe('provides checks for commons types', () => {
 	it('checks for an object', () => {
@@ -8,6 +19,7 @@ describe('provides checks for commons types', () => {
 		expect(isObject([21])).toBeFalse();
 		expect(isObject('some')).toBeFalse();
 		expect(isObject(5)).toBeFalse();
+		expect(isObject([])).toBeFalse();
 
 		expect(isObject({})).toBeTrue();
 	});
@@ -17,9 +29,21 @@ describe('provides checks for commons types', () => {
 		expect(isString(null)).toBeFalse();
 		expect(isString(123)).toBeFalse();
 		expect(isString({})).toBeFalse();
+		expect(isString([])).toBeFalse();
 
 		expect(isString('true')).toBeTrue();
 		expect(isString(String('true'))).toBeTrue();
+	});
+
+	it('checks for a function', () => {
+		expect(isFunction()).toBeFalse();
+		expect(isFunction(null)).toBeFalse();
+		expect(isFunction(123)).toBeFalse();
+		expect(isFunction({})).toBeFalse();
+		expect(isFunction([])).toBeFalse();
+
+		expect(isFunction(() => {})).toBeTrue();
+		expect(isFunction(function () {})).toBeTrue();
 	});
 
 	it('checks for a number (strict)', () => {
@@ -27,6 +51,7 @@ describe('provides checks for commons types', () => {
 		expect(isNumber(null)).toBeFalse();
 		expect(isNumber('123')).toBeFalse();
 		expect(isNumber({})).toBeFalse();
+		expect(isNumber([])).toBeFalse();
 
 		expect(isNumber(123)).toBeTrue();
 		expect(isNumber(123.123)).toBeTrue();
@@ -37,6 +62,7 @@ describe('provides checks for commons types', () => {
 		expect(isNumber(undefined, false)).toBeFalse();
 		expect(isNumber(null, false)).toBeFalse();
 		expect(isNumber({}, false)).toBeFalse();
+		expect(isNumber([], false)).toBeFalse();
 		expect(isNumber('', false)).toBeFalse();
 
 		expect(isNumber('123', false)).toBeTrue();
@@ -56,6 +82,17 @@ describe('provides checks for commons types', () => {
 		expect(isCoordinate([1, 2, 3])).toBeFalse();
 
 		expect(isCoordinate([21, 42])).toBeTrue();
+	});
+
+	it('checks for a coordinate like', () => {
+		expect(isCoordinateLike()).toBeFalse();
+		expect(isCoordinateLike(null)).toBeFalse();
+		expect(isCoordinateLike([21])).toBeFalse();
+		expect(isCoordinateLike({})).toBeFalse();
+		expect(isCoordinateLike(['21', 42])).toBeFalse();
+		expect(isCoordinateLike(['21', '42'])).toBeFalse();
+		expect(isCoordinateLike([1, 2, 3])).toBeTrue();
+		expect(isCoordinateLike([21, 42])).toBeTrue();
 	});
 
 	it('checks for a promise', () => {

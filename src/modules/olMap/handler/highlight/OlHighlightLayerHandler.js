@@ -11,9 +11,9 @@ import {
 	eabMarkerStyleFunction,
 	highlightAnimatedCoordinateFeatureStyleFunction,
 	highlightCoordinateFeatureStyleFunction,
-	highlightGeometryFeatureStyleFunction,
+	highlightGeometryOrCoordinateFeatureStyleFunction,
 	highlightTemporaryCoordinateFeatureStyleFunction,
-	highlightTemporaryGeometryFeatureStyleFunction
+	highlightTemporaryGeometryOrCoordinateFeatureStyleFunction
 } from './styleUtils';
 import { Vector as VectorSource } from 'ol/source';
 import { Vector as VectorLayer } from 'ol/layer';
@@ -102,10 +102,10 @@ export class OlHighlightLayerHandler extends OlLayerHandler {
 		//we have a HighlightCoordinate
 		if (data.coordinate) {
 			switch (feature.type) {
-				case HighlightFeatureType.DEFAULT:
+				case HighlightFeatureType.MARKER:
 					olFeature.setStyle(highlightCoordinateFeatureStyleFunction);
 					break;
-				case HighlightFeatureType.TEMPORARY:
+				case HighlightFeatureType.MARKER_TMP:
 					olFeature.setStyle(highlightTemporaryCoordinateFeatureStyleFunction);
 					break;
 				case HighlightFeatureType.QUERY_RUNNING:
@@ -113,14 +113,21 @@ export class OlHighlightLayerHandler extends OlLayerHandler {
 					break;
 				case HighlightFeatureType.QUERY_SUCCESS:
 					olFeature.setStyle(eabMarkerStyleFunction);
+					break;
+				case HighlightFeatureType.DEFAULT:
+					olFeature.setStyle(highlightGeometryOrCoordinateFeatureStyleFunction);
+					break;
+				case HighlightFeatureType.DEFAULT_TMP:
+					olFeature.setStyle(highlightTemporaryGeometryOrCoordinateFeatureStyleFunction);
+					break;
 			}
 		} else {
 			switch (feature.type) {
 				case HighlightFeatureType.DEFAULT:
-					olFeature.setStyle(highlightGeometryFeatureStyleFunction);
+					olFeature.setStyle(highlightGeometryOrCoordinateFeatureStyleFunction);
 					break;
-				case HighlightFeatureType.TEMPORARY:
-					olFeature.setStyle(highlightTemporaryGeometryFeatureStyleFunction);
+				case HighlightFeatureType.DEFAULT_TMP:
+					olFeature.setStyle(highlightTemporaryGeometryOrCoordinateFeatureStyleFunction);
 					break;
 			}
 		}

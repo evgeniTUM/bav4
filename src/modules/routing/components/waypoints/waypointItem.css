@@ -1,0 +1,74 @@
+.container {
+	display: flex;
+	align-items: center;
+	padding: 1.5em 1em;
+	position: relative;
+}
+.icon {
+	height: 2.5em;
+	width: 2.5em;
+	margin-right: 0;
+	padding: 0;
+	position: relative;
+	left: -0.7em;
+	display: grid;
+	align-content: center;
+	justify-content: center;
+}
+
+.icon-bg {
+	z-index: 1;
+}
+
+.start .icon {
+	background-image: url('../assets/start.svg');
+	background-size: cover;
+}
+
+.destination .icon {
+	background-image: url('../assets/destination.svg');
+	background-size: cover;
+}
+
+.intermediate .icon {
+	background-image: url('../assets/intermediate.svg');
+	background-size: cover;
+	height: 2em;
+	width: 2em;
+	left: -0.4em;
+}
+
+.line {
+	position: absolute;
+	height: 100%;
+	width: 0.3em;
+	left: 1.45em;
+	background: cadetblue;
+	z-index: 0;
+}
+
+.start + .line {
+	top: 50%;
+	height: 50%;
+}
+
+.destination + .line {
+	top: 0;
+	height: 50%;
+}
+
+.text {
+	margin-left: 2.5em;
+}
+
+.waypoint__buttons {
+	display: flex;
+	justify-content: right;
+	margin: auto;
+}
+
+.waypoint-index {
+	font-weight: bold;
+	font-size: 0.9em;
+	color: black;
+}

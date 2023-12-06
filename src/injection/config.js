@@ -56,6 +56,8 @@ import { IframeContainerPlugin } from '../plugins/IframeContainerPlugin';
 import { ToolsPlugin } from '../plugins/ToolsPlugin';
 import { IframeGeometryIdPlugin } from '../plugins/IframeGeometryIdPlugin';
 import { BeforeUnloadPlugin } from '../plugins/BeforeUnloadPlugin';
+import { BvvRoutingService } from '../services/RoutingService';
+import { RoutingPlugin } from '../plugins/RoutingPlugin';
 
 import { eaConfig } from '../ea/injection/eaConfig';
 
@@ -70,7 +72,7 @@ $injector
 	.registerSingleton('StoreService', new StoreService())
 	.registerSingleton('GeoResourceService', new GeoResourceService())
 	.registerSingleton('TopicsService', new TopicsService())
-	.register('ElevationService', ElevationService)
+	.registerSingleton('ElevationService', new ElevationService())
 	.register('SearchResultService', SearchResultService)
 	.register('ShareService', ShareService)
 	.register('UnitsService', UnitsService)
@@ -91,8 +93,10 @@ $injector
 	.registerSingleton('MfpService', new BvvMfpService())
 	.registerSingleton('ChipsConfigurationService', new ChipsConfigurationService())
 	.registerSingleton('FeedbackService', new FeedbackService())
+	.registerSingleton('RoutingService', new BvvRoutingService())
 
 	.registerSingleton('DrawPlugin', new DrawPlugin())
+	.registerSingleton('RoutingPlugin', new RoutingPlugin())
 	.registerSingleton('TopicsPlugin', new TopicsPlugin())
 	.registerSingleton('ChipsPlugin', new ChipsPlugin())
 	.registerSingleton('LayersPlugin', new LayersPlugin())
