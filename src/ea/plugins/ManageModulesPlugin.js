@@ -16,9 +16,10 @@ import { MixerModuleContent } from '../modules/toolbox/components/mixer/MixerMod
 import { RedesignModuleContent } from '../modules/toolbox/components/redesign/RedesignModuleContent';
 import { ResearchModuleContent } from '../modules/toolbox/components/research/ResearchModuleContent';
 import { clearMap } from '../store/geofeature/geofeature.action';
-import { deactivateAllGeoResources, EaModulesQueryParameters, EaModules, setCurrentModule } from '../store/module/ea.action';
+import { deactivateAllGeoResources, setCurrentModule } from '../store/module/ea.action';
 import { EnergyReportingModuleContent } from '../modules/toolbox/components/contribution/EnergyReportingModuleContent';
 import { setTooltipText } from '../store/locationSelection/locationSelection.action';
+import { EaModules, EaModulesQueryParameters } from '../domain/moduleTypes';
 
 export class ManageModulesPlugin extends BaPlugin {
 	constructor() {
@@ -36,7 +37,7 @@ export class ManageModulesPlugin extends BaPlugin {
 
 	/**
 	 * @override
-	 * @param {Store} store
+	 * @param {Object} store
 	 */
 	async register(store) {
 		const processEaModuleQueryParameter = () => {

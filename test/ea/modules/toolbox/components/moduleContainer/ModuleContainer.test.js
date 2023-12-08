@@ -1,5 +1,6 @@
+import { EaModules } from '../../../../../../src/ea/domain/moduleTypes';
 import { ModuleContainer } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/ModuleContainer';
-import { EaModules, setCurrentModule } from '../../../../../../src/ea/store/module/ea.action';
+import { setCurrentModule } from '../../../../../../src/ea/store/module/ea.action';
 import { eaReducer } from '../../../../../../src/ea/store/module/ea.reducer';
 import { $injector } from '../../../../../../src/injection';
 import { createMediaReducer } from '../../../../../../src/store/media/media.reducer';

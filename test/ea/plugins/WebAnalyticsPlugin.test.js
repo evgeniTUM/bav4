@@ -1,6 +1,7 @@
 import { Tools } from '../../../src/domain/tools.js';
+import { EaModules } from '../../../src/ea/domain/moduleTypes.js';
 import { WebAnalyticsPlugin } from '../../../src/ea/plugins/WebAnalyticsPlugin.js';
-import { activateWebAnalytics, deactivateWebAnalytics, EaModules, setCurrentModule } from '../../../src/ea/store/module/ea.action.js';
+import { activateWebAnalytics, deactivateWebAnalytics, setCurrentModule } from '../../../src/ea/store/module/ea.action.js';
 import { eaReducer } from '../../../src/ea/store/module/ea.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
 import { addLayer, removeLayer } from '../../../src/store/layers/layers.action.js';

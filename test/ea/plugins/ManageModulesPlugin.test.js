@@ -9,7 +9,7 @@ import { RedesignModuleContent } from '../../../src/ea/modules/toolbox/component
 import { ResearchModuleContent } from '../../../src/ea/modules/toolbox/components/research/ResearchModuleContent.js';
 import { ManageModulesPlugin } from '../../../src/ea/plugins/ManageModulesPlugin.js';
 import { CLEAR_MAP } from '../../../src/ea/store/geofeature/geofeature.reducer.js';
-import { activateGeoResource, deactivateGeoResource, EaModulesQueryParameters, setCurrentModule } from '../../../src/ea/store/module/ea.action.js';
+import { activateGeoResource, deactivateGeoResource, setCurrentModule } from '../../../src/ea/store/module/ea.action.js';
 import { DEACTIVATE_ALL_GEORESOURCES, eaReducer, SET_CURRENT_MODULE } from '../../../src/ea/store/module/ea.reducer.js';
 import { $injector } from '../../../src/injection/index.js';
 import { FEATURE_INFO_REQUEST_ABORT } from '../../../src/store/featureInfo/featureInfo.reducer.js';
@@ -22,6 +22,7 @@ import { TestUtils } from '../../test-utils.js';
 import { EnergyReportingModuleContent } from '../../../src/ea/modules/toolbox/components/contribution/EnergyReportingModuleContent.js';
 import { addLayer } from '../../../src/store/layers/layers.action.js';
 import { locationSelection } from '../../../src/ea/store/locationSelection/locationSelection.reducer.js';
+import { EaModulesQueryParameters } from '../../../src/ea/domain/moduleTypes.js';
 
 describe('ManageModulesPlugin', () => {
 	const windowMock = {

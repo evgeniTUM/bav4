@@ -5,7 +5,7 @@ import { GeothermModuleContent } from '../../../../../src/ea/modules/toolbox/com
 import { MixerModuleContent } from '../../../../../src/ea/modules/toolbox/components/mixer/MixerModuleContent';
 import { RedesignModuleContent } from '../../../../../src/ea/modules/toolbox/components/redesign/RedesignModuleContent';
 import { ResearchModuleContent } from '../../../../../src/ea/modules/toolbox/components/research/ResearchModuleContent';
-import { EaModules } from '../../../../../src/ea/store/module/ea.action';
+import { EaModules } from '../../../../../src/ea/domain/moduleTypes';
 
 describe('Energy Atlas Module', () => {
 	it('correct number of modules', () => {

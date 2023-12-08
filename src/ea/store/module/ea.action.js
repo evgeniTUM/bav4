@@ -1,11 +1,4 @@
 import { $injector } from '../../../injection';
-import { Analyse3DModuleContent } from '../../modules/toolbox/components/analyse3d/Analyse3DModuleContent';
-import { EnergyMarketModuleContent } from '../../modules/toolbox/components/contribution/EnergyMarketModuleContent';
-import { EnergyReportingModuleContent } from '../../modules/toolbox/components/contribution/EnergyReportingModuleContent';
-import { GeothermModuleContent } from '../../modules/toolbox/components/geotherm/GeothermModuleContent';
-import { MixerModuleContent } from '../../modules/toolbox/components/mixer/MixerModuleContent';
-import { RedesignModuleContent } from '../../modules/toolbox/components/redesign/RedesignModuleContent';
-import { ResearchModuleContent } from '../../modules/toolbox/components/research/ResearchModuleContent';
 import {
 	ACTIVATE_GEORESOURCE,
 	ACTIVATE_LEGEND,
@@ -24,35 +17,6 @@ import {
 	SET_CURSOR_STYLE
 } from './ea.reducer';
 
-/**
- * Available modules.
- * @enum
- */
-export const EaModules = Object.freeze([
-	MixerModuleContent,
-	RedesignModuleContent,
-	EnergyMarketModuleContent,
-	EnergyReportingModuleContent,
-	ResearchModuleContent,
-	Analyse3DModuleContent,
-	GeothermModuleContent
-]);
-
-/**
- * Mappings for query parameter "COMP".
- * @enum
- */
-export const EaModulesQueryParameters = Object.freeze([
-	{ name: MixerModuleContent.name, parameter: 'mischpult' },
-	{ name: RedesignModuleContent.name, parameter: 'mischpult-redesign' },
-	{ name: EnergyMarketModuleContent.name, parameter: 'boerse' },
-	{ name: EnergyReportingModuleContent.name, parameter: 'melden' },
-	{ name: ResearchModuleContent.name, parameter: 'recherche' },
-	{ name: Analyse3DModuleContent.name, parameter: '3d-analyse' },
-	{ name: Analyse3DModuleContent.name, parameter: 'windanalyse' },
-	{ name: GeothermModuleContent.name, parameter: 'standort' }
-]);
-
 const getStore = () => {
 	const { StoreService: storeService } = $injector.inject('StoreService');
 	return storeService.getStore();
@@ -60,7 +24,7 @@ const getStore = () => {
 
 /**
  * Sets the tag of the currently active module.
- * @param {initeger} features
+ * @param {Number} id
  */
 export const setCurrentModule = (id) => {
 	getStore().dispatch({
@@ -93,7 +57,6 @@ export const deactivateGeoResource = (id) => {
 
 /**
  * Deactivates all wms geo resources.
- * @param {String} id GeoResource id
  */
 export const deactivateAllGeoResources = () => {
 	getStore().dispatch({

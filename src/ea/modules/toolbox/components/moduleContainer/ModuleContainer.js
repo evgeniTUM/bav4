@@ -3,8 +3,9 @@ import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { $injector } from '../../../../../injection';
 import { MvuElement } from '../../../../../modules/MvuElement';
 import { open } from '../../../../../store/mainMenu/mainMenu.action';
-import { EaModules, setCurrentModule } from '../../../../store/module/ea.action';
+import { setCurrentModule } from '../../../../store/module/ea.action';
 import css from './moduleContainer.css';
+import { EaModules } from '../../../../domain/moduleTypes';
 
 const Update_IsPortrait_HasMinWidth = 'update_isPortrait_hasMinWidth';
 const Update_ModuleId = 'update_moduleId';

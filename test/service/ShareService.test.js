@@ -10,8 +10,9 @@ import { ShareService } from '../../src/services/ShareService';
 import { TestUtils } from '../test-utils';
 import { round } from '../../src/utils/numberUtils';
 import { BvvCoordinateRepresentations, GlobalCoordinateRepresentations } from '../../src/domain/coordinateRepresentation';
-import { EaModules, EaModulesQueryParameters, setCurrentModule } from '../../src/ea/store/module/ea.action';
+import { setCurrentModule } from '../../src/ea/store/module/ea.action';
 import { eaReducer } from '../../src/ea/store/module/ea.reducer';
+import { EaModules, EaModulesQueryParameters } from '../../src/ea/domain/moduleTypes';
 
 describe('ShareService', () => {
 	const coordinateService = {

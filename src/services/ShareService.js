@@ -4,8 +4,8 @@
 import { $injector } from '../injection';
 import { round } from '../utils/numberUtils';
 import { QueryParameters } from '../domain/queryParameters';
-import { EaModulesQueryParameters } from '../ea/store/module/ea.action';
 import { GlobalCoordinateRepresentations } from '../domain/coordinateRepresentation';
+import { EaModulesQueryParameters } from '../ea/domain/moduleTypes';
 
 /**
  * @class

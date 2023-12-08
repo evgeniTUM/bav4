@@ -1,11 +1,11 @@
-import { Analyse3DModuleContent } from '../../../../src/ea/modules/toolbox/components/analyse3d/Analyse3DModuleContent';
-import { EnergyMarketModuleContent } from '../../../../src/ea/modules/toolbox/components/contribution/EnergyMarketModuleContent';
-import { EnergyReportingModuleContent } from '../../../../src/ea/modules/toolbox/components/contribution/EnergyReportingModuleContent';
-import { GeothermModuleContent } from '../../../../src/ea/modules/toolbox/components/geotherm/GeothermModuleContent';
-import { MixerModuleContent } from '../../../../src/ea/modules/toolbox/components/mixer/MixerModuleContent';
-import { RedesignModuleContent } from '../../../../src/ea/modules/toolbox/components/redesign/RedesignModuleContent';
-import { ResearchModuleContent } from '../../../../src/ea/modules/toolbox/components/research/ResearchModuleContent';
-import { EaModules, EaModulesQueryParameters } from '../../../../src/ea/store/module/ea.action';
+import { EaModules, EaModulesQueryParameters } from '../../../src/ea/domain/moduleTypes';
+import { Analyse3DModuleContent } from '../../../src/ea/modules/toolbox/components/analyse3d/Analyse3DModuleContent';
+import { EnergyMarketModuleContent } from '../../../src/ea/modules/toolbox/components/contribution/EnergyMarketModuleContent';
+import { EnergyReportingModuleContent } from '../../../src/ea/modules/toolbox/components/contribution/EnergyReportingModuleContent';
+import { GeothermModuleContent } from '../../../src/ea/modules/toolbox/components/geotherm/GeothermModuleContent';
+import { MixerModuleContent } from '../../../src/ea/modules/toolbox/components/mixer/MixerModuleContent';
+import { RedesignModuleContent } from '../../../src/ea/modules/toolbox/components/redesign/RedesignModuleContent';
+import { ResearchModuleContent } from '../../../src/ea/modules/toolbox/components/research/ResearchModuleContent';
 
 describe('toolAction', () => {
 	it('exports a EaModules enum', () => {
