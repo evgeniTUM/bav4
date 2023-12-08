@@ -1,7 +1,6 @@
 import { $injector } from '../../../../../../../../src/injection';
 import { EaMiscContentPanel } from '../../../../../../../../src/ea/modules/menu/components/mainMenu/content/misc/EaMiscContentPanel';
 import { AbstractMvuContentPanel } from '../../../../../../../../src/modules/menu/components/mainMenu/content/AbstractMvuContentPanel';
-import { ThemeToggle } from '../../../../../../../../src/modules/uiTheme/components/toggle/ThemeToggle';
 import { TestUtils } from '../../../../../../../test-utils';
 
 window.customElements.define(EaMiscContentPanel.tag, EaMiscContentPanel);
@@ -26,11 +25,6 @@ describe('EaMiscContentPanel', () => {
 	});
 
 	describe('when initialized', () => {
-		it('renders the view', async () => {
-			const element = await setup();
-			expect(element.shadowRoot.querySelectorAll(ThemeToggle.tag)).toHaveSize(0);
-		});
-
 		it('checks the list ', async () => {
 			const element = await setup();
 			expect(element.shadowRoot.querySelectorAll('collapsable-content').length).toBe(5);

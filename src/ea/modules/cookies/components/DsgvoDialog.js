@@ -93,9 +93,8 @@ export class DsgvoDialog extends MvuElement {
 									<div class="setting-title">${translate('ea_dsgvo_basic_cookies_title')}</div>
 									<div>${translate('ea_dsgvo_basic_cookies_text')}</div>
 								</div>
-								<ba-toggle .checked=${true} .disabled=${true} .title=${translate('ea_dsgvo_basic_cookies_title')}>
-									<span style="margin-right: 0.5em">${translate('ea_dsgvo_always_on')}</span>
-								</ba-toggle>
+								<span style="margin-right: 0.5em">&nbsp;&nbsp;&nbsp;${translate('ea_dsgvo_always_on')}</span>
+								<ba-switch .checked=${true} .disabled=${true} .title=${translate('ea_dsgvo_basic_cookies_title')}> </ba-switch>
 							</div>
 
 							<div class="setting">
@@ -103,12 +102,12 @@ export class DsgvoDialog extends MvuElement {
 									<div class="setting-title">${translate('ea_dsgvo_webanalytics_cookies_title')}</div>
 									<div>${translate('ea_dsgvo_webanalytics_cookies_text')}</div>
 								</div>
-								<ba-toggle
+								<ba-switch
 									id="toggle-webanalyse"
 									.checked=${settings.webanalyse}
 									.title=${translate('ea_dsgvo_webanalytics_cookies_title')}
 									@toggle=${onToggle}
-								></ba-toggle>
+								></ba-switch>
 							</div>
 
 							<div class="row settings-button-container">

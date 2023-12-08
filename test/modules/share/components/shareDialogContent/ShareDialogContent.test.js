@@ -145,7 +145,7 @@ describe('ShareDialogContent', () => {
 			const element = await setup();
 			element.urls = shareUrls;
 
-			const toggleElement = element.shadowRoot.querySelector('ba-toggle');
+			const toggleElement = element.shadowRoot.querySelector('ba-switch');
 
 			expect(toggleElement.title).toBe('share_dialog_toggle_inactive_tooltip');
 
