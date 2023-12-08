@@ -140,20 +140,6 @@ describe('ShareDialogContent', () => {
 
 			expect(copySpy).toHaveBeenCalledWith(shareUrls.adminId);
 		});
-
-		it('shows different toggle tooltips', async () => {
-			const element = await setup();
-			element.urls = shareUrls;
-
-			const toggleElement = element.shadowRoot.querySelector('ba-switch');
-
-			expect(toggleElement.title).toBe('share_dialog_toggle_inactive_tooltip');
-
-			// switch the toggle element
-			toggleElement.click();
-
-			expect(toggleElement.title).toBe('share_dialog_toggle_active_tooltip');
-		});
 	});
 
 	describe('when ShareApi is missing', () => {
