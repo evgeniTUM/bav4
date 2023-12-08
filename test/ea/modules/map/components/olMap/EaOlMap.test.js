@@ -158,6 +158,17 @@ describe('EaOlMap', () => {
 		}
 	};
 
+	const routingHandlerMock = {
+		activate() {},
+		deactivate() {},
+		get id() {
+			return 'routingLayerHandlerMockId';
+		},
+		get options() {
+			return getDefaultLayerOptions();
+		}
+	};
+
 	const vectorLayerServiceMock = {};
 
 	let store;
@@ -208,7 +219,8 @@ describe('EaOlMap', () => {
 			.registerSingleton('OlSelectLocationHandler', selectLocationLayerHandlerMock)
 			.registerSingleton('OlMfpHandler', mfpHandlerMock)
 			.registerSingleton('OlGeoFeatureLayerHandler', geoFeatureLayerHandlerMock)
-			.registerSingleton('ElevationProfileHandler', elevationProfileHandlerMock);
+			.registerSingleton('ElevationProfileHandler', elevationProfileHandlerMock)
+			.registerSingleton('OlRoutingHandler', routingHandlerMock);
 
 		return TestUtils.render(EaOlMap.tag);
 	};
