@@ -12,7 +12,7 @@ const enum_operation = {
 };
 
 /** @typedef {enum_operation}OPERATION_KEYS  {'ADD'|'OR'}
- * 
+ *
  */
 
 /**
@@ -24,7 +24,7 @@ const enum_sorting = {
 	DESC: 2
 };
 
-/** @typedef {enum_sorting} SORTING_KEYS {'ASC'|'DESC'} 
+/** @typedef {enum_sorting} SORTING_KEYS {'ASC'|'DESC'}
  */
 
 /**
@@ -63,7 +63,6 @@ const enum_types = {
  * @property {number} type
  * @property {Array<Child>} children
  */
-
 
 /**
  * @typedef FeatureProperty
@@ -116,21 +115,21 @@ const enum_types = {
  * @property {number} max
  */
 
-/** 
+/**
  *  @typedef ThemeMetadata
  * @property {number} themeId;
  * @property {number} featureCount
- * @property {Array<PropertyDefinition>} propertyDefinitions 
+ * @property {Array<PropertyDefinition>} propertyDefinitions
  */
 
-/** 
+/**
  * @typedef Sorting
  * @property {string} originalKey
  * @property {SORTING_KEYS} sortDirections
  *
  */
- 
- /**
+
+/**
  * @typedef FeatureRequest
  * @property {string} featureResourceId
  * @property {number} srid
@@ -140,7 +139,7 @@ const enum_types = {
  * @property {Sorting} sorting
  * @property {Array<number>} regionFilters
  * @property {PropertyFilter} propertyFilters
- * 
+ *
  */
 
 /**

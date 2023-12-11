@@ -78,7 +78,6 @@ export function resultsElement(queryResult, fieldsToShow, geoResourceId) {
 	const onClick = (result) => () => {
 		const { MapService: mapService, CoordinateService: coordinateService } = $injector.inject('MapService', 'CoordinateService');
 
-		console.log(geoResourceId);
 		activateGeoResource(geoResourceId);
 
 		const position_UTM32N = [Number(result['Ostwert_UTM32N']), Number(result['Nordwert_UTM32N'])];

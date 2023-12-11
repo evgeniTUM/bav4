@@ -143,7 +143,6 @@ const loadThemeGroupsMock = async () => {
 };
 
 const themeMetadataMock = async (themeId) => {
-	console.log(themeId);
 	if (themeId === 'wfs_biomasseanlagen') {
 		const getMetaInfo = (fieldSpec, data) => {
 			if (fieldSpec.type === Types.NUMERIC) {

@@ -26,19 +26,13 @@ const initialModel = {
 	page: 0,
 	sortField: null
 };
+
 export class ResearchModuleContent extends AbstractModuleContentPanel {
 	constructor() {
 		super(initialModel);
 
-		const {
-			ConfigService: configService,
-			EnvironmentService: environmentService,
-			TranslationService: translationService,
-			ResearchService: researchService
-		} = $injector.inject('ConfigService', 'EnvironmentService', 'TranslationService', 'ResearchService');
+		const { TranslationService: translationService, ResearchService: researchService } = $injector.inject('TranslationService', 'ResearchService');
 
-		this._configService = configService;
-		this._environmentService = environmentService;
 		this._translationService = translationService;
 		this._researchService = researchService;
 		this._subscribers = [];
@@ -122,7 +116,7 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 	createView(model) {
 		const translate = (key) => this._translationService.translate(key);
 
-		const onToggle = (e) => {
+		const onToggle = () => {
 			// this.signal(Update, { openSections: [e.target.id] });
 		};
 
