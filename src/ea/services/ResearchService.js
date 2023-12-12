@@ -2,18 +2,22 @@ import { researchProviders } from './provider/research.provider';
 
 export class ResearchService {
 	constructor(providers = researchProviders) {
-		this.providers = providers;
+		this._providers = providers;
 	}
 
 	async loadThemeGroups() {
-		return this.providers.loadThemeGroups();
+		return this._providers.loadThemeGroups();
+	}
+
+	async loadRegionTree() {
+		return this._providers.loadRegionTree();
 	}
 
 	async queryMetadata(theme) {
-		return this.providers.themeMetadata(theme);
+		return this._providers.themeMetadata(theme);
 	}
 
 	async queryFeatures(themeId, regionFilters, propertyFilters, sorting, pageSize, page) {
-		return this.providers.queryFeatures(themeId, regionFilters, propertyFilters, sorting, pageSize, page);
+		return this._providers.queryFeatures(themeId, regionFilters, propertyFilters, sorting, pageSize, page);
 	}
 }

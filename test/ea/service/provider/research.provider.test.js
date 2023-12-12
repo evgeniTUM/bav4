@@ -14,29 +14,31 @@ describe('Research provider', () => {
 		$injector.registerSingleton('ConfigService', configService).registerSingleton('HttpService', httpService);
 	});
 
-	it('loads theme groups', async () => {
-		const backendUrl = 'https://backend.url';
+	describe('themegroups', () => {
+		it('loads theme groups', async () => {
+			const backendUrl = 'https://backend.url';
 
-		const themeGroupsExpected = {
-			foo: 'bar'
-		};
-		const configServiceSpy = spyOn(configService, 'getValueAsPath').withArgs('BACKEND_URL').and.returnValue(backendUrl);
-		const httpServiceSpy = spyOn(httpService, 'get').and.returnValue(Promise.resolve(new Response(JSON.stringify(themeGroupsExpected))));
+			const themeGroupsExpected = {
+				foo: 'bar'
+			};
+			const configServiceSpy = spyOn(configService, 'getValueAsPath').withArgs('BACKEND_URL').and.returnValue(backendUrl);
+			const httpServiceSpy = spyOn(httpService, 'get').and.returnValue(Promise.resolve(new Response(JSON.stringify(themeGroupsExpected))));
 
-		const themeGroupsActual = await loadThemeGroups();
+			const themeGroupsActual = await loadThemeGroups();
 
-		expect(configServiceSpy).toHaveBeenCalled();
-		expect(httpServiceSpy).toHaveBeenCalled();
-		expect(themeGroupsActual).toEqual(themeGroupsExpected);
-	});
+			expect(configServiceSpy).toHaveBeenCalled();
+			expect(httpServiceSpy).toHaveBeenCalled();
+			expect(themeGroupsActual).toEqual(themeGroupsExpected);
+		});
 
-	it('rejects when backend request cannot be fulfilled', async () => {
-		const backendUrl = 'https://backend.url';
-		const configServiceSpy = spyOn(configService, 'getValueAsPath').withArgs('BACKEND_URL').and.returnValue(backendUrl);
-		const httpServiceSpy = spyOn(httpService, 'get').and.returnValue(Promise.resolve(new Response(null, { status: 404 })));
+		it('rejects when backend request cannot be fulfilled', async () => {
+			const backendUrl = 'https://backend.url';
+			const configServiceSpy = spyOn(configService, 'getValueAsPath').withArgs('BACKEND_URL').and.returnValue(backendUrl);
+			const httpServiceSpy = spyOn(httpService, 'get').and.returnValue(Promise.resolve(new Response(null, { status: 404 })));
 
-		await expectAsync(loadThemeGroups()).toBeRejectedWithError('Theme Groups could not be retrieved');
-		expect(configServiceSpy).toHaveBeenCalled();
-		expect(httpServiceSpy).toHaveBeenCalled();
+			await expectAsync(loadThemeGroups()).toBeRejectedWithError('Theme Groups could not be retrieved');
+			expect(configServiceSpy).toHaveBeenCalled();
+			expect(httpServiceSpy).toHaveBeenCalled();
+		});
 	});
 });

@@ -235,6 +235,25 @@ export const loadThemeGroups = async () => {
 	throw new Error('Theme Groups could not be retrieved');
 };
 
+/**
+ * Uses the EAB endpoint to load the region tree.
+ * @function
+ * @type {module:services/ResearchService~researchProvider}
+ */
+export const loadRegionTree = async () => {
+	const { HttpService: httpService, ConfigService: configService } = $injector.inject('HttpService', 'ConfigService');
+
+	const url = configService.getValueAsPath('BACKEND_URL') + 'research/regionTree';
+
+	const result = await httpService.get(`${url}`);
+
+	if (result.ok) {
+		const payload = await result.json();
+		return payload;
+	}
+	throw new Error('RegionTree could not be retrieved');
+};
+
 export const researchProviders = {
 	/**
 	 * Loads the grouped themes available.
@@ -242,6 +261,13 @@ export const researchProviders = {
 	 * @returns {Promise<themeGroups>}
 	 */
 	loadThemeGroups: loadThemeGroups,
+
+	/**
+	 * Loads the grouped themes available.
+	 * @function
+	 * @returns {Promise<themeGroups>}
+	 */
+	loadRegionTree: loadThemeGroups,
 
 	/**
 	 * Loads the metadata for specified theme id.

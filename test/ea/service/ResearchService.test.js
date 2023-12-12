@@ -1,92 +1,78 @@
-import { $injector } from '../../../src/injection';
 import { ResearchService } from '../../../src/ea/services/ResearchService';
 import { researchProviders } from '../../../src/ea/services/provider/research.provider';
 
 describe('ResearchService', () => {
-	const configService = {
-		getValue: () => {}
+	const researchProviderMock = {
+		loadThemeGroups: async () => {},
+		loadRegionTree: async () => {},
+		themeMetadata: async () => {},
+		queryFeatures: async () => {}
 	};
 
-	beforeAll(() => {
-		$injector.registerSingleton('ConfigService', configService);
-	});
-
-	const loadMockTopics = async () => {
-		return [];
-	};
-
-	const setup = (provider = loadMockTopics) => {
+	const setup = (provider = researchProviderMock) => {
 		return new ResearchService(provider);
 	};
 
 	describe('init', () => {
-		it('initializes the service', async () => {
-			const instanceUnderTest = setup();
-			expect(instanceUnderTest._topics).toBeNull();
-
-			const topics = await instanceUnderTest.init();
-
-			expect(topics.length).toBe(2);
-		});
-
 		it('initializes the service with default providers', async () => {
 			const instanceUnderTest = new ResearchService();
 			expect(instanceUnderTest._providers).toEqual(researchProviders);
 		});
-
-		it('just provides the topics when already initialized', async () => {
-			const instanceUnderTest = setup();
-
-			const topic = await instanceUnderTest.init();
-
-			expect(topic.length).toBe(1);
-		});
-
-		describe('provider cannot fulfill', () => {
-			it('loads two fallback topics when we are in standalone mode', async () => {
-				const instanceUnderTest = setup(async () => {
-					throw new Error('Topics could not be loaded');
-				});
-				const warnSpy = spyOn(console, 'warn');
-
-				const topics = await instanceUnderTest.init();
-
-				expect(topics.length).toBe(2);
-				expect(topics[0].baseGeoRs.raster[0]).toBe('tpo');
-				expect(topics[0].baseGeoRs.raster[1]).toBe('tpo_mono');
-				expect(topics[0].baseGeoRs.vector[0]).toBe('bmde_vector');
-				expect(topics[0].baseGeoRs.vector[1]).toBe('bmde_vector_relief');
-				expect(topics[1].baseGeoRs.raster[0]).toBe('tpo');
-				expect(topics[1].baseGeoRs.raster[1]).toBe('tpo_mono');
-				expect(warnSpy).toHaveBeenCalledWith('Topics could not be fetched from backend. Using fallback topics ...');
-			});
-
-			it('throws an error when we are NOT in standalone mode', async () => {
-				const error = new Error('Topics could not be loaded');
-				const instanceUnderTest = setup(async () => {
-					throw error;
-				});
-
-				await expectAsync(instanceUnderTest.init()).toBeRejectedWith(jasmine.objectContaining({ message: 'No topics available', cause: error }));
-			});
-		});
 	});
 
-	describe('all', () => {
-		it('provides all topics', () => {
+	describe('delegation to provider', () => {
+		it('provides theme groups', async () => {
 			const instanceUnderTest = setup();
 
-			const Topics = instanceUnderTest.all();
+			const expected = { id: 'themeGroups' };
+			spyOn(researchProviderMock, 'loadThemeGroups').and.returnValue(expected);
 
-			expect(Topics.length).toBe(1);
+			const actual = await instanceUnderTest.loadThemeGroups();
+
+			expect(actual).toEqual(expected);
 		});
 
-		it('logs a warn statement when service hat not been initialized', () => {
+		it('provides region Groups', async () => {
 			const instanceUnderTest = setup();
-			const warnSpy = spyOn(console, 'warn');
 
-			expect(instanceUnderTest.all()).toEqual([]);
-			expect(warnSpy).toHaveBeenCalledWith('TopicsService not yet initialized');
+			const expected = { id: 'regionGroups' };
+			spyOn(researchProviderMock, 'loadRegionTree').and.returnValue(expected);
+
+			const actual = await instanceUnderTest.loadRegionTree();
+
+			expect(actual).toEqual(expected);
+		});
+
+		it('provides theme metadata', async () => {
+			const instanceUnderTest = setup();
+
+			const themeId = 42;
+			const expected = { id: 'themeMetadata' };
+			spyOn(researchProviderMock, 'themeMetadata').withArgs(themeId).and.returnValue(expected);
+
+			const actual = await instanceUnderTest.queryMetadata(themeId);
+
+			expect(actual).toEqual(expected);
+		});
+
+		it('query features', async () => {
+			const instanceUnderTest = setup();
+
+			const themeId = 42;
+			const regionFilters = [1, 2];
+			const propertyFilter = ['f1', 'f2'];
+			const sorting = { id: 'sorting' };
+			const pageSize = 100;
+			const page = 1;
+			const expected = { id: 'queryFeatures' };
+
+			spyOn(researchProviderMock, 'queryFeatures')
+				.withArgs(themeId, regionFilters, propertyFilter, sorting, pageSize, page)
+				.and.returnValue(expected);
+
+			const actual = await instanceUnderTest.queryFeatures(themeId, regionFilters, propertyFilter, sorting, pageSize, page);
+
+			expect(actual).toEqual(expected);
 		});
 	});
 });
