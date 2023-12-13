@@ -221,7 +221,7 @@ export class Header extends MvuElement {
 			setTab(TabIds.EXTENSION);
 			openMainMenu();
 		};
-		
+
 		const openRoutingTab = () => {
 			setTab(TabIds.ROUTING);
 			setCurrentTool(Tools.ROUTING);

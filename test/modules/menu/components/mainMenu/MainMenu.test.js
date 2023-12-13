@@ -9,7 +9,6 @@ import { $injector } from '../../../../../src/injection';
 import { setTab } from '../../../../../src/store/mainMenu/mainMenu.action';
 import { DevInfo } from '../../../../../src/modules/utils/components/devInfo/DevInfo';
 import { SearchResultsPanel } from '../../../../../src/modules/search/components/menu/SearchResultsPanel';
-import { TopicsContentPanel } from '../../../../../src/modules/topics/components/menu/TopicsContentPanel';
 import { createNoInitialStateMediaReducer } from '../../../../../src/store/media/media.reducer';
 import {
 	disableResponsiveParameterObservation,
@@ -18,10 +17,12 @@ import {
 } from '../../../../../src/store/media/media.action';
 import { FeatureInfoPanel } from '../../../../../src/modules/featureInfo/components/featureInfoPanel/FeatureInfoPanel';
 import { MapsContentPanel } from '../../../../../src/modules/menu/components/mainMenu/content/maps/MapsContentPanel';
-import { BvvMiscContentPanel } from '../../../../../src/modules/menu/components/mainMenu/content/misc/BvvMiscContentPanel';
 import { RoutingPanel } from '../../../../../src/modules/menu/components/mainMenu/content/routing/RoutingPanel';
 import { REGISTER_FOR_VIEWPORT_CALCULATION_ATTRIBUTE_NAME, TEST_ID_ATTRIBUTE_NAME } from '../../../../../src/utils/markup';
 import { AbstractMvuContentPanel } from '../../../../../src/modules/menu/components/mainMenu/content/AbstractMvuContentPanel';
+import { AdditionalMenu } from '../../../../../src/ea/modules/menu/components/mainMenu/content/additionalMenu/AdditionalMenu';
+import { EaMiscContentPanel } from '../../../../../src/ea/modules/menu/components/mainMenu/content/misc/EaMiscContentPanel';
+import { EaTopicsContentPanel } from '../../../../../src/ea/modules/topics/components/menu/EaTopicsContentPanel';
 
 window.customElements.define(MainMenu.tag, MainMenu);
 
@@ -29,7 +30,7 @@ window.customElements.define(MainMenu.tag, MainMenu);
 class MapsContentPanelMock extends AbstractMvuContentPanel {
 	createView() {}
 }
-class BvvMiscContentPanelMock extends AbstractMvuContentPanel {
+class EaMiscContentPanelMock extends AbstractMvuContentPanel {
 	createView() {}
 }
 class RoutingPanelMock extends AbstractMvuContentPanel {
@@ -38,18 +39,22 @@ class RoutingPanelMock extends AbstractMvuContentPanel {
 class SearchResultsPanelMock extends AbstractMvuContentPanel {
 	createView() {}
 }
-class TopicsContentPanelMock extends AbstractMvuContentPanel {
+class EaTopicsContentPanelMock extends AbstractMvuContentPanel {
 	createView() {}
 }
 class FeatureInfoPanelMock extends AbstractMvuContentPanel {
 	createView() {}
 }
+class AdditionalMenuMock extends AbstractMvuContentPanel {
+	createView() {}
+}
 window.customElements.define(MapsContentPanel.tag, MapsContentPanelMock);
-window.customElements.define(BvvMiscContentPanel.tag, BvvMiscContentPanelMock);
+window.customElements.define(EaMiscContentPanel.tag, EaMiscContentPanelMock);
 window.customElements.define(RoutingPanel.tag, RoutingPanelMock);
 window.customElements.define(SearchResultsPanel.tag, SearchResultsPanelMock);
-window.customElements.define(TopicsContentPanel.tag, TopicsContentPanelMock);
+window.customElements.define(EaTopicsContentPanel.tag, EaTopicsContentPanelMock);
 window.customElements.define(FeatureInfoPanel.tag, FeatureInfoPanelMock);
+window.customElements.define(AdditionalMenu.tag, AdditionalMenuMock);
 
 describe('MainMenu', () => {
 	const setup = (state = {}, config = {}) => {
@@ -190,7 +195,7 @@ describe('MainMenu', () => {
 			const element = await setup();
 
 			const contentPanels = element.shadowRoot.querySelectorAll('.tabcontent');
-			expect(contentPanels.length).toBe(6);
+			expect(contentPanels.length).toBe(7);
 			for (let i = 0; i < contentPanels.length; i++) {
 				switch (i) {
 					case TabIds.SEARCH:
@@ -210,6 +215,9 @@ describe('MainMenu', () => {
 						break;
 					case TabIds.RoutingPanel:
 						expect(contentPanels[i].innerHTML.toString().includes(RoutingPanel.tag)).toBeTrue();
+						break;
+					case TabIds.EXTENSION:
+						expect(contentPanels[i].innerHTML.toString().includes(RoutingPanel.tag)).toBeTrue();
 				}
 			}
 		});
@@ -217,20 +225,21 @@ describe('MainMenu', () => {
 		it('contains test-id attributes', async () => {
 			const element = await setup();
 
-			expect(element.shadowRoot.querySelectorAll(`[${TEST_ID_ATTRIBUTE_NAME}]`)).toHaveSize(6);
+			expect(element.shadowRoot.querySelectorAll(`[${TEST_ID_ATTRIBUTE_NAME}]`)).toHaveSize(7);
 			expect(element.shadowRoot.querySelector(SearchResultsPanel.tag).hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
-			expect(element.shadowRoot.querySelector(TopicsContentPanel.tag).hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
+			expect(element.shadowRoot.querySelector(EaTopicsContentPanel.tag).hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 			expect(element.shadowRoot.querySelector(FeatureInfoPanel.tag).hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 			expect(element.shadowRoot.querySelector(MapsContentPanel.tag).hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
-			expect(element.shadowRoot.querySelector(BvvMiscContentPanel.tag).hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
+			expect(element.shadowRoot.querySelector(EaMiscContentPanel.tag).hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 			expect(element.shadowRoot.querySelector(RoutingPanel.tag).hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
+			expect(element.shadowRoot.querySelector(AdditionalMenu.tag).hasAttribute(TEST_ID_ATTRIBUTE_NAME)).toBeTrue();
 		});
 
 		it('displays the content panel for default index = 0', async () => {
 			const element = await setup();
 
 			const contentPanels = element.shadowRoot.querySelectorAll('.tabcontent');
-			expect(contentPanels.length).toBe(6);
+			expect(contentPanels.length).toBe(7);
 			for (let i = 0; i < contentPanels.length; i++) {
 				expect(contentPanels[i].classList.contains('is-active')).toBe(Object.values(TabIds)[i] === 0);
 			}
@@ -247,7 +256,7 @@ describe('MainMenu', () => {
 			const element = await setup(state);
 
 			const contentPanels = element.shadowRoot.querySelectorAll('.tabcontent');
-			expect(contentPanels.length).toBe(6);
+			expect(contentPanels.length).toBe(7);
 			for (let i = 0; i < contentPanels.length; i++) {
 				expect(contentPanels[i].classList.contains('is-active')).toBe(Object.values(TabIds)[i] === activeTabIndex);
 			}
@@ -342,6 +351,9 @@ describe('MainMenu', () => {
 
 			setTab(TabIds.ROUTING);
 			check(TabIds.ROUTING, contentPanels);
+
+			setTab(TabIds.EXTENSION);
+			check(TabIds.EXTENSION, contentPanels);
 		});
 
 		it('adds or removes a special Css class for the FeatureInfoContentPanel', async () => {
