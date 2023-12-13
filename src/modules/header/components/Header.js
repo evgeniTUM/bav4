@@ -121,6 +121,10 @@ export class Header extends MvuElement {
 	createView(model) {
 		const { isOpen, tabIndex, isFetching, layers, isPortrait, hasMinWidth, searchTerm } = model;
 
+		const showModalInfo = () => {
+			openModal('Showcase', html`<ba-showcase></ba-showcase>`);
+		};
+
 		const getOrientationClass = () => {
 			return isPortrait ? 'is-portrait' : 'is-landscape';
 		};
@@ -222,12 +226,6 @@ export class Header extends MvuElement {
 			openMainMenu();
 		};
 
-		const openRoutingTab = () => {
-			setTab(TabIds.ROUTING);
-			setCurrentTool(Tools.ROUTING);
-			openMainMenu();
-		};
-
 		const clearSearchInput = () => {
 			const input = this.shadowRoot.getElementById('input');
 			input.value = '';
@@ -274,7 +272,7 @@ export class Header extends MvuElement {
 								</div>
 							<span class="header__search-clear ${getIsClearClass()}" @click="${clearSearchInput}">        							
 							</span>       
-							<button @click="${openRoutingTab}" class="header__routing-button" title="${translate('header_tab_routing_button')}">
+							<button @click="${showModalInfo}" class="header__modal-button hide" title="modal">
 							&nbsp;
 							</button>
 						</div>
