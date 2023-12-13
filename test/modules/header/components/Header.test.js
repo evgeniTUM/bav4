@@ -15,7 +15,6 @@ import { REGISTER_FOR_VIEWPORT_CALCULATION_ATTRIBUTE_NAME, TEST_ID_ATTRIBUTE_NAM
 import { setQuery } from '../../../../src/store/search/search.action';
 import { setIsPortrait } from '../../../../src/store/media/media.action';
 import { toolsReducer } from '../../../../src/store/tools/tools.reducer';
-import { Tools } from '../../../../src/domain/tools';
 
 window.customElements.define(Header.tag, Header);
 
