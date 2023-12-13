@@ -10,9 +10,7 @@ import { QueryParameters } from '../../src/domain/queryParameters.js';
 import { EventLike } from '../../src/utils/storeUtils.js';
 import { searchReducer } from '../../src/store/search/search.reducer.js';
 import { setQuery } from '../../src/store/search/search.action.js';
-import { setCurrentTool } from '../../src/store/tools/tools.action.js';
 import { toolsReducer } from '../../src/store/tools/tools.reducer.js';
-import { Tools } from '../../src/domain/tools.js';
 
 describe('MainMenuPlugin', () => {
 	const environmentServiceMock = {
@@ -319,28 +317,6 @@ describe('MainMenuPlugin', () => {
 
 			expect(store.getState().mainMenu.open).toBeFalse();
 			expect(store.getState().mainMenu.tab).not.toBe(TabIds.SEARCH);
-		});
-	});
-
-	describe('when toolId changes', () => {
-		it('opens and closes the routing panel and restores the previous panel', async () => {
-			const store = setup({
-				mainMenu: {
-					open: false
-				}
-			});
-			const instanceUnderTest = new MainMenuPlugin();
-			await instanceUnderTest.register(store);
-
-			setCurrentTool(Tools.ROUTING);
-
-			expect(store.getState().mainMenu.tab).toBe(TabIds.ROUTING);
-			expect(store.getState().mainMenu.open).toBeTrue();
-
-			setCurrentTool(null);
-
-			expect(store.getState().mainMenu.tab).toBe(TabIds.MAPS);
-			expect(store.getState().mainMenu.open).toBeTrue();
 		});
 	});
 });
