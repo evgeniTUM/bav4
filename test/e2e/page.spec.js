@@ -80,7 +80,7 @@ test.describe('page', () => {
 
 			expect(await page.locator(path + 'ba-header').count()).toBe(1);
 			expect(await page.locator(path + 'ba-footer').count()).toBe(1);
-			expect(await page.locator(path + 'ea-main-menu').count()).toBe(1);
+			expect(await page.locator(path + 'ba-main-menu').count()).toBe(1);
 			expect(await page.locator(path + 'ea-ol-map').count()).toBe(1);
 			expect(await page.locator(path + 'ba-chips').count()).toBe(1);
 			expect(await page.locator(path + 'ba-map-button-container').count()).toBe(1);

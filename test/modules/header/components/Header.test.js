@@ -15,7 +15,6 @@ import { REGISTER_FOR_VIEWPORT_CALCULATION_ATTRIBUTE_NAME, TEST_ID_ATTRIBUTE_NAM
 import { setQuery } from '../../../../src/store/search/search.action';
 import { setIsPortrait } from '../../../../src/store/media/media.action';
 import { toolsReducer } from '../../../../src/store/tools/tools.reducer';
-import { Tools } from '../../../../src/domain/tools';
 
 window.customElements.define(Header.tag, Header);
 
@@ -193,9 +192,9 @@ describe('Header', () => {
 			const element = await setup();
 
 			expect(element.shadowRoot.querySelectorAll('.header')).toHaveSize(1);
-			expect(element.shadowRoot.querySelectorAll('.header__routing-button')).toHaveSize(1);
-			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__routing-button')).display).toBe('block');
-
+			expect(element.shadowRoot.querySelectorAll('.header__modal-button')).toHaveSize(1);
+			expect(window.getComputedStyle(element.shadowRoot.querySelector('.header__modal-button')).display).toBe('none');
+			//
 			expect(element.shadowRoot.querySelectorAll('.header__button-container')).toHaveSize(1);
 			expect(element.shadowRoot.querySelector('.header__button-container').children.length).toBe(4);
 			expect(element.shadowRoot.querySelector('.header__button-container').children[0].classList.contains('is-active')).toBeTrue();
@@ -365,16 +364,6 @@ describe('Header', () => {
 			TestUtils.simulateTouchEvent('touchend', closeButton, center.x - 200, center.y);
 
 			expect(mapButton.matches(':focus')).toBeFalse();
-		});
-	});
-
-	describe('when routing button is clicked', () => {
-		it('changes the current active tool', async () => {
-			const element = await setup();
-
-			element.shadowRoot.querySelector('.header__routing-button').click();
-
-			expect(store.getState().tools.current).toBe(Tools.ROUTING);
 		});
 	});
 

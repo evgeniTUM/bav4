@@ -5,18 +5,19 @@ import { html } from 'lit-html';
 import css from './mainMenu.css';
 import { $injector } from '../../../../injection';
 import { DevInfo } from '../../../utils/components/devInfo/DevInfo';
-import { TopicsContentPanel } from '../../../topics/components/menu/TopicsContentPanel';
 import { SearchResultsPanel } from '../../../search/components/menu/SearchResultsPanel';
 import { toggle } from '../../../../store/mainMenu/mainMenu.action';
 import { TabIds } from '../../../../domain/mainMenu';
 import { FeatureInfoPanel } from '../../../featureInfo/components/featureInfoPanel/FeatureInfoPanel';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { MapsContentPanel } from './content/maps/MapsContentPanel';
-import { BvvMiscContentPanel } from './content/misc/BvvMiscContentPanel';
 import { RoutingPanel } from './content/routing/RoutingPanel';
 import { MvuElement } from '../../../MvuElement';
 import VanillaSwipe from 'vanilla-swipe';
 import { isString } from '../../../../utils/checks';
+import { AdditionalMenu } from '../../../../ea/modules/menu/components/mainMenu/content/additionalMenu/AdditionalMenu';
+import { EaMiscContentPanel } from '../../../../ea/modules/menu/components/mainMenu/content/misc/EaMiscContentPanel';
+import { EaTopicsContentPanel } from '../../../../ea/modules/topics/components/menu/EaTopicsContentPanel';
 
 const Update_Main_Menu = 'update_main_menu';
 const Update_Media = 'update_media';
@@ -189,15 +190,17 @@ export class MainMenu extends MvuElement {
 			case TabIds.MAPS:
 				return html`${unsafeHTML(`<${MapsContentPanel.tag} data-test-id />`)}`;
 			case TabIds.MISC:
-				return html`${unsafeHTML(`<${BvvMiscContentPanel.tag} data-test-id />`)}`;
+				return html`${unsafeHTML(`<${EaMiscContentPanel.tag} data-test-id />`)}`;
 			case TabIds.ROUTING:
 				return html`${unsafeHTML(`<${RoutingPanel.tag} data-test-id />`)}`;
 			case TabIds.SEARCH:
 				return html`${unsafeHTML(`<${SearchResultsPanel.tag} data-test-id />`)}`;
 			case TabIds.TOPICS:
-				return html`${unsafeHTML(`<${TopicsContentPanel.tag} data-test-id />`)}`;
+				return html`${unsafeHTML(`<${EaTopicsContentPanel.tag} data-test-id />`)}`;
 			case TabIds.FEATUREINFO:
 				return html`${unsafeHTML(`<${FeatureInfoPanel.tag} data-test-id />`)}`;
+			case TabIds.EXTENSION:
+				return html`${unsafeHTML(`<${AdditionalMenu.tag} data-test-id />`)}`;
 		}
 	}
 

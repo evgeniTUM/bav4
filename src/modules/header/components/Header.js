@@ -10,8 +10,7 @@ import { setQuery } from '../../../store/search/search.action';
 import { disableResponsiveParameterObservation, enableResponsiveParameterObservation } from '../../../store/media/media.action';
 import { MvuElement } from '../../MvuElement';
 import VanillaSwipe from 'vanilla-swipe';
-import { setCurrentTool } from '../../../store/tools/tools.action';
-import { Tools } from '../../../domain/tools';
+import { openModal } from '../../../store/modal/modal.action';
 
 const Update_IsOpen_TabIndex = 'update_isOpen_tabIndex';
 const Update_Fetching = 'update_fetching';
@@ -121,6 +120,10 @@ export class Header extends MvuElement {
 	createView(model) {
 		const { isOpen, tabIndex, isFetching, layers, isPortrait, hasMinWidth, searchTerm } = model;
 
+		const showModalInfo = () => {
+			openModal('Showcase', html`<ba-showcase></ba-showcase>`);
+		};
+
 		const getOrientationClass = () => {
 			return isPortrait ? 'is-portrait' : 'is-landscape';
 		};
@@ -221,12 +224,6 @@ export class Header extends MvuElement {
 			setTab(TabIds.EXTENSION);
 			openMainMenu();
 		};
-		
-		const openRoutingTab = () => {
-			setTab(TabIds.ROUTING);
-			setCurrentTool(Tools.ROUTING);
-			openMainMenu();
-		};
 
 		const clearSearchInput = () => {
 			const input = this.shadowRoot.getElementById('input');
@@ -274,7 +271,7 @@ export class Header extends MvuElement {
 								</div>
 							<span class="header__search-clear ${getIsClearClass()}" @click="${clearSearchInput}">        							
 							</span>       
-							<button @click="${openRoutingTab}" class="header__routing-button" title="${translate('header_tab_routing_button')}">
+							<button @click="${showModalInfo}" class="header__modal-button hide" title="modal">
 							&nbsp;
 							</button>
 						</div>
