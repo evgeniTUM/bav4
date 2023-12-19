@@ -3,7 +3,7 @@ import { AbstractModuleContentPanel } from '../moduleContainer/AbstractModuleCon
 import { $injector } from '../../../../../injection';
 import css from './research.css';
 import { resultsElement, themeSelectionElement, filterElement } from './research-elements';
-import { FieldProperties, SortDirections, Types } from '../../../../domain/researchTypes';
+import { SortDirections, Types } from '../../../../domain/researchTypes';
 
 const Update = 'update';
 const Update_NextPage = 'update_next_page';
@@ -19,7 +19,7 @@ const initialModel = {
 	selectedThemeGroupName: null,
 	selectedThemeId: null,
 	propertyFilters: {},
-	themeSpec: { propertyDefinitions: [], featureCount: 0 },
+	themeSpec: { propertydefinitions: [], featureCount: 0 },
 	queryResult: undefined,
 	openSections: ['step1', 'step2', 'step3'],
 	openTab: 1,
@@ -41,15 +41,15 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 	async loadTheme(selectedThemeId, themeGroups, selectedThemeGroupName) {
 		const themeSpec = await this._researchService.queryMetadata(selectedThemeId);
 		const propertyFilters = {};
-		themeSpec.propertyDefinitions.forEach((f) => {
-			if (f.type === Types.NUMERIC) propertyFilters[f.originalKey] = { min: f.min, max: f.max };
+		themeSpec.propertydefinitions.forEach((f) => {
+			if (f.type === Types.NUMERIC || f.type === Types.INTEGER) propertyFilters[f.originalkey] = { min: f.minLimit, max: f.maxLimit };
 		});
 
-		const sortField = themeSpec.propertyDefinitions[0]?.originalKey;
+		const sortField = themeSpec.propertydefinitions[0]?.originalkey;
 
 		const newModel = { ...initialModel, themeGroups, selectedThemeGroupName, selectedThemeId, themeSpec, propertyFilters, sortField };
 		const sorting = {
-			originalKey: sortField,
+			originalkey: sortField,
 			sortDirectio: SortDirections.ASCENDING
 		};
 
@@ -123,7 +123,7 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 		const updateResults = async (newModel) => {
 			const queryFilters = Object.values(newModel.propertyFilters).filter((f) => !(f.values && f.values.length === 0));
 			const sorting = {
-				originalKey: model.sortField,
+				originalkey: model.sortField,
 				sortDirectio: SortDirections.ASCENDING
 			};
 			const queryResult = await this._researchService.queryFeatures(newModel.selectedThemeId, [], queryFilters, sorting, PAGING_SIZE, newModel.page);
@@ -131,15 +131,22 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 		};
 
 		const onChange = (f) => async (change) => {
-			if (change.type === Types.NUMERIC) {
+			if (change.type === Types.NUMERIC || change.type === Types.INTEGER) {
 				const { min, max } = change;
 				const propertyFilters = { ...model.propertyFilters };
-				propertyFilters[f.originalKey] = { ...f, min: Number(min), max: Number(max) };
+				window.console.log('propertyFilters');
+				window.console.log(propertyFilters);
+				propertyFilters[f.originalkey] = { ...f, min: Number(min), max: Number(max) };
 				await updateResults({ ...model, propertyFilters, page: 0 });
 			} else if (change.type === Types.ENUM) {
 				const { values } = change;
 				const propertyFilters = { ...model.propertyFilters };
-				propertyFilters[f.originalKey] = { ...f, values };
+				propertyFilters[f.originalkey] = { ...f, values };
+				await updateResults({ ...model, propertyFilters, page: 0 });
+			} else {
+				const { values } = change;
+				const propertyFilters = { ...model.propertyFilters };
+				propertyFilters[f.originalkey] = { ...f, values };
 				await updateResults({ ...model, propertyFilters, page: 0 });
 			}
 		};
@@ -150,11 +157,11 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 			await updateResults({ ...model, page: newPage });
 		};
 
-		const propertyFilters = model.themeSpec?.propertyDefinitions?.map((f) =>
-			filterElement({ ...f, maxLimit: f.max, minLimit: f.min }, model.propertyFilters[f.originalKey], onChange(f))
+		const propertyFilters = model.themeSpec?.propertydefinitions?.map((f) =>
+			filterElement({ ...f }, model.propertyFilters[f.originalkey], onChange(f))
 		);
 
-		const fieldsToShow = model.themeSpec.propertyDefinitions.filter((f) => f.properties.includes(FieldProperties.VIEWABLE));
+		const fieldsToShow = model.themeSpec.propertydefinitions.filter((f) => f.displayable === true);
 		const features = resultsElement(model.queryResult, fieldsToShow, model.themeSpec.geoResourceId);
 
 		const onTabChanged = (tab) => () => {

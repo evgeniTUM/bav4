@@ -6,10 +6,11 @@
  * @readonly
  * @enum { number }
  */
-const enum_operation = {
+/**const enum_operation = {
 	ADD: 1,
 	OR: 2
 };
+*/
 
 /** @typedef {enum_operation}OPERATION_KEYS  {'ADD'|'OR'}
  *
@@ -19,11 +20,12 @@ const enum_operation = {
  * @readonly
  * @enum { number }
  */
-const enum_sorting = {
+/**const enum_sorting = {
 	ASC: 1,
 	DESC: 2
 };
 
+*/
 /** @typedef {enum_sorting} SORTING_KEYS {'ASC'|'DESC'}
  */
 
@@ -32,7 +34,7 @@ const enum_sorting = {
  * @readonly
  * @enum { number }
  */
-const enum_types = {
+/**const enum_types = {
 	NUMERIC: 1,
 	INTEGER: 2,
 	DATE: 3,
@@ -42,7 +44,7 @@ const enum_types = {
 	MARKUP: 7,
 	EMAIL: 8,
 	TELEFON: 9
-};
+};*/
 
 /** @typedef {enum_types} TYPE_KEYS possible values : { NUMERIC | INTEGER | DATE | CHARACTER | GEOMETRY |VERWKZ |MARKUP | EMAIL | TELEFON }*/
 

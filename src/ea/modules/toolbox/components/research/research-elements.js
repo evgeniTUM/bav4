@@ -4,7 +4,7 @@ import { getPointResolution } from '../../../../../../node_modules/ol/proj';
 import { Circle } from '../../../../../../node_modules/ol/geom';
 import { fit } from '../../../../../store/position/position.action';
 import { setClick } from '../../../../../store/pointer/pointer.action';
-import { FieldProperties, Types } from '../../../../domain/researchTypes';
+import { Types } from '../../../../domain/researchTypes';
 import { activateGeoResource } from '../../../../store/module/ea.action';
 
 export function themeSelectionElement(model, onChange) {
@@ -38,9 +38,9 @@ export function themeSelectionElement(model, onChange) {
 }
 
 export function filterElement(fieldSpec, propertyFilter, onChange) {
-	if (fieldSpec.properties.includes(FieldProperties.QUERYABLE)) {
-		if (fieldSpec.type === Types.NUMERIC) {
-			const { displayName, minLimit, maxLimit } = fieldSpec;
+	if (fieldSpec.queryable === true) {
+		if (fieldSpec.type === Types.NUMERIC || fieldSpec.type === Types.INTEGER) {
+			const { displayname, minLimit, maxLimit } = fieldSpec;
 			const { min, max } = propertyFilter;
 
 			const changeMin = (event) => onChange({ type: Types.NUMERIC, min: event.target.value, max });
@@ -48,23 +48,36 @@ export function filterElement(fieldSpec, propertyFilter, onChange) {
 
 			return html`
 				<div>
-					${displayName}
-					<input @change=${changeMin} type="range" id="${displayName}-min" name="${displayName}" min="${minLimit}" max="${max}" value=${min} />
-					<label for="${displayName}-max">Min: ${min}</label>
-					<input @change=${changeMax} type="range" id="${displayName}-max" name="${displayName}" min="${min}" max="${maxLimit}" value=${max} />
-					<label for="${displayName}-min">Max: ${max}</label>
+					${displayname}
+					<input @change=${changeMin} type="range" id="${displayname}-min" name="${displayname}" min="${minLimit}" max="${max}" value=${min} />
+					<label for="${displayname}-max">Min: ${min}</label>
+					<input @change=${changeMax} type="range" id="${displayname}-max" name="${displayname}" min="${min}" max="${maxLimit}" value=${max} />
+					<label for="${displayname}-min">Max: ${max}</label>
 				</div>
 			`;
 		} else if (fieldSpec.type === Types.ENUM) {
-			const { displayName, values } = fieldSpec;
+			const { displayname, values } = fieldSpec;
 			const onValuesChanged = (event) => {
 				const options = Array.from(event.target.options);
 				const values = options.filter((o) => o.selected).map((o) => o.value);
 				onChange({ type: 'enum', values });
 			};
 			return html`
-				<label for=${displayName}><span style="font-weight: bold">${displayName}</span></label>
-				<select @change=${onValuesChanged} name=${displayName} id=${displayName} multiple>
+				<label for=${displayname}><span style="font-weight: bold">${displayname}</span></label>
+				<select @change=${onValuesChanged} name=${displayname} id=${displayname} multiple>
+					${values.map((v) => html` <option value=${v} ?checked=${values.includes(v)}>${v}</option> `)}
+				</select>
+			`;
+		} else if (fieldSpec.type === Types.CHARACTER) {
+			const { displayname, values } = fieldSpec;
+			const onValuesChanged = (event) => {
+				const options = Array.from(event.target.options);
+				const values = options.filter((o) => o.selected).map((o) => o.value);
+				onChange({ type: 'char', values });
+			};
+			return html`
+				<label for=${displayname}><span style="font-weight: bold">${displayname}</span></label>
+				<select @change=${onValuesChanged} name=${displayname} id=${displayname} multiple>
 					${values.map((v) => html` <option value=${v} ?checked=${values.includes(v)}>${v}</option> `)}
 				</select>
 			`;
