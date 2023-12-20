@@ -1,3 +1,4 @@
+import { classMap } from 'lit-html/directives/class-map.js';
 import { html } from 'lit-html';
 import { $injector } from '../../../../../injection';
 import { getPointResolution } from '../../../../../../node_modules/ol/proj';
@@ -37,54 +38,51 @@ export function themeSelectionElement(model, onChange) {
 	`;
 }
 
-export function filterElement(fieldSpec, propertyFilter, onChange) {
-	if (fieldSpec.queryable === true) {
-		if (fieldSpec.type === Types.NUMERIC || fieldSpec.type === Types.INTEGER) {
-			const { displayname, minLimit, maxLimit } = fieldSpec;
-			const { min, max } = propertyFilter;
+export function numericFilterElement(fieldSpec, propertyFilter, onChange) {
+	if (fieldSpec.type === Types.NUMERIC || fieldSpec.type === Types.INTEGER) {
+		const { displayname, minLimit, maxLimit } = fieldSpec;
+		const { min, max } = propertyFilter;
 
-			const changeMin = (event) => onChange({ type: Types.NUMERIC, min: event.target.value, max });
-			const changeMax = (event) => onChange({ type: Types.NUMERIC, min, max: event.target.value });
+		const changeMin = (event) => onChange({ type: Types.NUMERIC, min: event.target.value, max });
+		const changeMax = (event) => onChange({ type: Types.NUMERIC, min, max: event.target.value });
 
-			return html`
-				<div>
-					${displayname}
-					<input @change=${changeMin} type="range" id="${displayname}-min" name="${displayname}" min="${minLimit}" max="${max}" value=${min} />
-					<label for="${displayname}-max">Min: ${min}</label>
-					<input @change=${changeMax} type="range" id="${displayname}-max" name="${displayname}" min="${min}" max="${maxLimit}" value=${max} />
-					<label for="${displayname}-min">Max: ${max}</label>
-				</div>
-			`;
-		} else if (fieldSpec.type === Types.ENUM) {
-			const { displayname, values } = fieldSpec;
-			const onValuesChanged = (event) => {
-				const options = Array.from(event.target.options);
-				const values = options.filter((o) => o.selected).map((o) => o.value);
-				onChange({ type: 'enum', values });
-			};
-			return html`
-				<label for=${displayname}><span style="font-weight: bold">${displayname}</span></label>
-				<select @change=${onValuesChanged} name=${displayname} id=${displayname} multiple>
-					${values.map((v) => html` <option value=${v} ?checked=${values.includes(v)}>${v}</option> `)}
-				</select>
-			`;
-		} else if (fieldSpec.type === Types.CHARACTER) {
-			const { displayname, values } = fieldSpec;
-			const onValuesChanged = (event) => {
-				const options = Array.from(event.target.options);
-				const values = options.filter((o) => o.selected).map((o) => o.value);
-				onChange({ type: 'char', values });
-			};
-			return html`
-				<label for=${displayname}><span style="font-weight: bold">${displayname}</span></label>
-				<select @change=${onValuesChanged} name=${displayname} id=${displayname} multiple>
-					${values.map((v) => html` <option value=${v} ?checked=${values.includes(v)}>${v}</option> `)}
-				</select>
-			`;
-		}
+		return html`
+			<div>
+				${displayname}
+				<input @change=${changeMin} type="range" id="${displayname}-min" name="${displayname}" min="${minLimit}" max="${max}" value=${min} />
+				<label for="${displayname}-max">Min: ${min}</label>
+				<input @change=${changeMax} type="range" id="${displayname}-max" name="${displayname}" min="${min}" max="${maxLimit}" value=${max} />
+				<label for="${displayname}-min">Max: ${max}</label>
+			</div>
+		`;
 	}
 
 	return html``;
+}
+
+export function enumerationFilterElement(fieldSpec, selectedValues, activeFilter, onChange, onToggle) {
+	const { displayname, values } = fieldSpec;
+	console.log('outside', selectedValues);
+	const onValuesChanged = (value) => (event) => {
+		console.log('inside', selectedValues);
+		const newSelectedValues = event.target.checked ? [...selectedValues, value] : selectedValues.filter((v) => v !== value);
+		onChange({ type: 'char', values: newSelectedValues });
+	};
+	const options = values.map(
+		(v) =>
+			html` <div>
+				<label for="${v}"> <input type="checkbox" id="${v}" name="${v}" @change=${onValuesChanged(v)} /> ${v} </label>
+			</div>`
+	);
+	const classes = {
+		collapsed: activeFilter !== displayname
+	};
+	return html`
+		<div class="enumeration" id=${displayname}>
+			<label for=${displayname}><span style="font-weight: bold" @click=${onToggle}>${displayname}</span></label>
+			<div class="enumeration-options ${classMap(classes)}">${options}</div>
+		</div>
+	`;
 }
 
 export function resultsElement(queryResult, fieldsToShow, geoResourceId) {
