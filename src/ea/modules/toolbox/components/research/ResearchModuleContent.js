@@ -1,9 +1,9 @@
 import { html } from 'lit-html';
-import { AbstractModuleContentPanel } from '../moduleContainer/AbstractModuleContentPanel';
 import { $injector } from '../../../../../injection';
+import { SortDirections, Types } from '../../../../domain/researchTypes';
+import { AbstractModuleContentPanel } from '../moduleContainer/AbstractModuleContentPanel';
+import { enumerationFilterElement, numericFilterElement, resultsElement, themeSelectionElement } from './research-elements';
 import css from './research.css';
-import { resultsElement, themeSelectionElement, enumerationFilterElement, numericFilterElement } from './research-elements';
-import { FieldProperties, SortDirections, Types } from '../../../../domain/researchTypes';
 
 const Update = 'update';
 const Update_ToggleActiveFilter = 'update_toggle_active_filter';
@@ -46,7 +46,7 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 		themeSpec.propertydefinitions.forEach((f) => {
 			if (f.type === Types.NUMERIC || f.type === Types.INTEGER) propertyFilters[f.originalkey] = { min: f.minLimit, max: f.maxLimit };
 			else if (f.type === Types.CHARACTER) {
-				propertyFilters[f.originalKey] = [];
+				propertyFilters[f.originalkey] = [];
 			}
 		});
 
@@ -140,14 +140,12 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 			if (change.type === Types.NUMERIC || change.type === Types.INTEGER) {
 				const { min, max } = change;
 				const propertyFilters = { ...model.propertyFilters };
-				window.console.log('propertyFilters');
-				window.console.log(propertyFilters);
-				propertyFilters[f.originalkey] = { ...f, min: Number(min), max: Number(max) };
+				propertyFilters[f.originalkey] = { min: Number(min), max: Number(max) };
 				await updateResults({ ...model, propertyFilters, page: 0 });
 			} else if (change.type === Types.CHARACTER) {
 				const { values } = change;
 				const propertyFilters = { ...model.propertyFilters };
-				propertyFilters[f.originalkey] = { ...f, values };
+				propertyFilters[f.originalkey] = values;
 				await updateResults({ ...model, propertyFilters, page: 0 });
 			}
 		};
@@ -161,12 +159,13 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 		const onEnumFilterToggle = (displayname) => () => {
 			this.signal(Update_ToggleActiveFilter, displayname);
 		};
-		const propertyFilters = model.themeSpec?.propertydefinitions?.map((f) =>
+
+		const filters = model.themeSpec?.propertydefinitions?.map((f) =>
 			[Types.CHARACTER].includes(f.type)
-				? enumerationFilterElement(f, model.propertyFilters[f.originalKey], model.activeEnumFilter, onChange(f), onEnumFilterToggle(f.displayname))
+				? enumerationFilterElement(f, model.propertyFilters[f.originalkey], model.activeEnumFilter, onChange(f), onEnumFilterToggle(f.displayname))
 				: [Types.NUMERIC, Types.INTEGER].includes(f.type)
-				  ? numericFilterElement(f, model.propertyFilters[f.originalkey], onChange(f))
-				  : html``
+				? numericFilterElement(f, model.propertyFilters[f.originalkey], onChange(f))
+				: html``
 		);
 
 		const fieldsToShow = model.themeSpec.propertydefinitions.filter((f) => f.displayable === true);
@@ -198,7 +197,7 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 					.open=${model.openSections.includes('step2')}
 					@toggle=${onToggle}
 				>
-					${propertyFilters}
+					${filters}
 				</collapsable-content>
 			`,
 			html`

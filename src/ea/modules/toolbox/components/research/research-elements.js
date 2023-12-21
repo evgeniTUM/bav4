@@ -62,9 +62,7 @@ export function numericFilterElement(fieldSpec, propertyFilter, onChange) {
 
 export function enumerationFilterElement(fieldSpec, selectedValues, activeFilter, onChange, onToggle) {
 	const { displayname, values } = fieldSpec;
-	console.log('outside', selectedValues);
 	const onValuesChanged = (value) => (event) => {
-		console.log('inside', selectedValues);
 		const newSelectedValues = event.target.checked ? [...selectedValues, value] : selectedValues.filter((v) => v !== value);
 		onChange({ type: 'char', values: newSelectedValues });
 	};
