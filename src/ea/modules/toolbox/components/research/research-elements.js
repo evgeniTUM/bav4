@@ -71,7 +71,7 @@ export function enumerationFilterElement(fieldSpec, selectedValues, activeFilter
 	const options = values.map(
 		(v) =>
 			html` <div>
-				<label for="${v}"> <input type="checkbox" id="${v}" name="${v}" @change=${onValuesChanged(v)} /> ${v} </label>
+				<label for="${v}"> <input type="checkbox" id="${v}" name="${v}" @change=${onValuesChanged(v)} />${v}</label>
 			</div>`
 	);
 	const classes = {
@@ -80,7 +80,9 @@ export function enumerationFilterElement(fieldSpec, selectedValues, activeFilter
 	return html`
 		<div class="enumeration" id=${displayname}>
 			<label for=${displayname}><span style="font-weight: bold" @click=${onToggle}>${displayname}</span></label>
-			<div class="enumeration-options ${classMap(classes)}">${options}</div>
+			<div class="enumeration-anchor">
+				<div class="enumeration-popup ${classMap(classes)}">${options}</div>
+			</div>
 		</div>
 	`;
 }

@@ -24,10 +24,16 @@ option:checked {
 	background-color: gray;
 }
 
-.enumeration {
+.enumeration input {
+	width: auto;
+	margin-right: 0.5em;
 }
 
-.enumeration-options {
+.enumeration-anchor {
+	position: relative;
+}
+
+.enumeration-popup {
 	display: block;
 	position: absolute;
 	background-color: #f9f9f9;
@@ -37,6 +43,6 @@ option:checked {
 	z-index: 1;
 }
 
-.enumeration-options.collapsed {
+.enumeration-popup.collapsed {
 	display: none;
 }
