@@ -24,16 +24,20 @@ option:checked {
 	background-color: gray;
 }
 
+.filter-entry {
+	margin-bottom: 1em;
+}
+
 .enumeration-filter input {
 	width: auto;
 	margin-right: 0.5em;
 }
 
-.enumeration-anchor {
+.enumeration-filter .enumeration-anchor {
 	position: relative;
 }
 
-.enumeration-popup {
+.enumeration-filter .enumeration-popup {
 	display: block;
 	position: absolute;
 	background-color: #f9f9f9;
@@ -43,6 +47,40 @@ option:checked {
 	z-index: 1;
 }
 
-.enumeration-popup.collapsed {
+.enumeration-filter .enumeration-popup.collapsed {
 	display: none;
+}
+
+.numeric-filter {
+	display: flex;
+}
+
+.numeric-filter .title {
+	-moz-hyphens: auto;
+	-o-hyphens: auto;
+	-webkit-hyphens: auto;
+	-ms-hyphens: auto;
+	hyphens: auto;
+	margin-right: 2em;
+	width: 30%;
+}
+
+.numeric-filter .sliders_control {
+	position: relative;
+	flex: 1;
+}
+
+.numeric-filter input[type='range']::-webkit-slider-thumb {
+	pointer-events: all;
+	cursor: pointer;
+}
+
+.numeric-filter input[type='range']::-moz-range-thumb {
+	pointer-events: all;
+	cursor: pointer;
+}
+
+.numeric-filter input[type='range'] {
+	position: absolute;
+	pointer-events: none;
 }

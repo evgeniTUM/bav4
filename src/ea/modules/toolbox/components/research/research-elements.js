@@ -43,16 +43,28 @@ export function numericFilterElement(fieldSpec, propertyFilter, onChange) {
 		const { displayname, minLimit, maxLimit } = fieldSpec;
 		const { min, max } = propertyFilter;
 
+		const onInputMin = (event) => {
+			const value = Math.min(event.target.value, max);
+			event.target.value = value;
+		};
+
+		const onInputMax = (event) => {
+			const value = Math.max(event.target.value, min);
+			event.target.value = value;
+		};
+
 		const changeMin = (event) => onChange({ type: Types.NUMERIC, min: event.target.value, max });
 		const changeMax = (event) => onChange({ type: Types.NUMERIC, min, max: event.target.value });
 
 		return html`
-			<div class="numeric-filter">
-				${displayname}
-				<input @change=${changeMin} type="range" id="${displayname}-min" name="${displayname}" min="${minLimit}" max="${max}" value=${min} />
-				<label for="${displayname}-min">Min: ${min}</label>
-				<input @change=${changeMax} type="range" id="${displayname}-max" name="${displayname}" min="${min}" max="${maxLimit}" value=${max} />
-				<label for="${displayname}-max">Max: ${max}</label>
+			<div class="numeric-filter filter-entry">
+				<div class="title">${displayname}</div>
+				<label for="min">Min:${min}</label>
+				<div class="sliders_control">
+					<input @input=${onInputMin} @change=${changeMin} type="range" id="min" min="${minLimit}" max="${maxLimit}" .value=${min} />
+					<input @input=${onInputMax} @change=${changeMax} type="range" id="max" min="${minLimit}" max="${maxLimit}" .value=${max} />
+				</div>
+				<label for="max">Max:${max}</label>
 			</div>
 		`;
 	}
@@ -81,9 +93,11 @@ export function enumerationFilterElement(fieldSpec, selectedValues, activeFilter
 	const onSelectAll = () => onChange({ type: 'char', values });
 	const onReset = () => onChange({ type: 'char', values: [] });
 
+	const titleSuffix = selectedValues.length > 0 ? html`[${selectedValues.join(', ')}]` : html``;
+
 	return html`
-		<div class="enumeration-filter" id=${displayname}>
-			<label for=${displayname}><span style="font-weight: bold" @click=${onToggle}>${displayname}</span></label>
+		<div class="enumeration-filter filter-entry" id=${displayname}>
+			<label for=${displayname} @click=${onToggle}>${displayname} ${titleSuffix}</label>
 			<div class="enumeration-anchor">
 				<div class="enumeration-popup ${classMap(classes)}">
 					${options}
