@@ -164,8 +164,8 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 			[Types.CHARACTER].includes(f.type)
 				? enumerationFilterElement(f, model.propertyFilters[f.originalkey], model.activeEnumFilter, onChange(f), onEnumFilterToggle(f.displayname))
 				: [Types.NUMERIC, Types.INTEGER].includes(f.type)
-				? numericFilterElement(f, model.propertyFilters[f.originalkey], onChange(f))
-				: html``
+				  ? numericFilterElement(f, model.propertyFilters[f.originalkey], onChange(f))
+				  : html``
 		);
 
 		const fieldsToShow = model.themeSpec.propertydefinitions.filter((f) => f.displayable === true);
