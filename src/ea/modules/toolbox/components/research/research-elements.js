@@ -47,12 +47,12 @@ export function numericFilterElement(fieldSpec, propertyFilter, onChange) {
 		const changeMax = (event) => onChange({ type: Types.NUMERIC, min, max: event.target.value });
 
 		return html`
-			<div>
+			<div class="numeric-filter">
 				${displayname}
 				<input @change=${changeMin} type="range" id="${displayname}-min" name="${displayname}" min="${minLimit}" max="${max}" value=${min} />
-				<label for="${displayname}-max">Min: ${min}</label>
+				<label for="${displayname}-min">Min: ${min}</label>
 				<input @change=${changeMax} type="range" id="${displayname}-max" name="${displayname}" min="${min}" max="${maxLimit}" value=${max} />
-				<label for="${displayname}-min">Max: ${max}</label>
+				<label for="${displayname}-max">Max: ${max}</label>
 			</div>
 		`;
 	}
@@ -69,17 +69,29 @@ export function enumerationFilterElement(fieldSpec, selectedValues, activeFilter
 	const options = values.map(
 		(v) =>
 			html` <div>
-				<label for="${v}"> <input type="checkbox" id="${v}" name="${v}" @change=${onValuesChanged(v)} />${v}</label>
+				<label for="${v}">
+					<input type="checkbox" id="${v}" name="${v}" @change=${onValuesChanged(v)} .checked=${selectedValues.includes(v)} />${v}</label
+				>
 			</div>`
 	);
 	const classes = {
 		collapsed: activeFilter !== displayname
 	};
+
+	const onSelectAll = () => onChange({ type: 'char', values });
+	const onReset = () => onChange({ type: 'char', values: [] });
+
 	return html`
-		<div class="enumeration" id=${displayname}>
+		<div class="enumeration-filter" id=${displayname}>
 			<label for=${displayname}><span style="font-weight: bold" @click=${onToggle}>${displayname}</span></label>
 			<div class="enumeration-anchor">
-				<div class="enumeration-popup ${classMap(classes)}">${options}</div>
+				<div class="enumeration-popup ${classMap(classes)}">
+					${options}
+					<div class="enumeration-popup__buttons">
+						<ba-button .label=${'Select all'} @click=${onSelectAll}></ba-button>
+						<ba-button .label=${'Reset'} @click=${onReset}></ba-button>
+					</div>
+				</div>
 			</div>
 		</div>
 	`;
