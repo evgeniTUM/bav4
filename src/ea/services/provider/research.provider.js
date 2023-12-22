@@ -11,7 +11,7 @@ const DATA = csv2json(csvContent);
 const filter = (data, filters) => {
 	const check = (data, filter) => {
 		if (filter.type === Types.NUMERIC) return data[filter.originalKey] < filter.max && data[filter.originalKey] > filter.min;
-		if (filter.type === Types.ENUM) return filter.values.includes(data[filter.originalKey]);
+		if (filter.type === Types.CHARACTER) return filter.values.includes(data[filter.originalKey]);
 		return true;
 	};
 	return data.filter((data) => filters.every((filter) => check(data, filter)));

@@ -1,3 +1,4 @@
+import { Types } from '../../../../../../src/ea/domain/researchTypes';
 import { AbstractModuleContentPanel } from '../../../../../../src/ea/modules/toolbox/components/moduleContainer/AbstractModuleContentPanel';
 import { ResearchModuleContent } from '../../../../../../src/ea/modules/toolbox/components/research/ResearchModuleContent';
 import { $injector } from '../../../../../../src/injection';
@@ -22,19 +23,56 @@ const THEME_GROUPS = [
 	}
 ];
 
-const themeMetadataMockFn = (themeId) => ({
-	themeId,
-	featureCount: 100,
-	geoResourceId: 'a701a9ef-5af4-453e-8669-fd939246845f',
-	propertyDefinitions: []
-});
+const THEME_METADATA = {
+	themeid: 'id1',
+	featureresource: 'feature1',
+	propertydefinitions: [
+		{
+			originalkey: 'key1',
+			displayname: 'name1',
+			type: Types.INTEGER,
+			queryable: true,
+			displayable: true,
+			exportable: true,
+			min: 1,
+			max: 100
+		},
+		{
+			originalkey: 'key2',
+			displayname: 'name2',
+			type: Types.INTEGER,
+			queryable: false,
+			displayable: true,
+			exportable: true,
+			min: 5,
+			max: 10
+		},
+		{
+			originalkey: 'key3',
+			displayname: 'name3',
+			type: Types.CHARACTER,
+			queryable: true,
+			displayable: true,
+			exportable: true,
+			values: ['a', 'b', 'c']
+		},
+		{
+			originalkey: 'key4',
+			displayname: 'name4',
+			type: Types.GEOMETRY,
+			queryable: true,
+			displayable: true,
+			exportable: true
+		}
+	]
+};
 
 describe('ResearchModuleContent', () => {
 	const testState = {};
 
 	const researchServiceMock = {
 		loadThemeGroups: () => THEME_GROUPS,
-		queryMetadata: themeMetadataMockFn,
+		queryMetadata: () => THEME_METADATA,
 		queryFeatures: () => {}
 	};
 
@@ -89,6 +127,26 @@ describe('ResearchModuleContent', () => {
 			expect(theme.value).toEqual('id3');
 			expect(Array.from(theme.options).map((o) => o.label)).toEqual(['name3', 'name4']);
 			expect(Array.from(theme.options).map((o) => o.value)).toEqual(['id3', 'id4']);
+		});
+	});
+
+	describe('theme metadata', () => {
+		it('shows the correct filters for theme', async () => {
+			const element = await setup();
+
+			await TestUtils.timeout();
+			await TestUtils.timeout();
+			await TestUtils.timeout();
+			await TestUtils.timeout();
+
+			const step2 = element.shadowRoot.querySelector('#step2');
+			const children = Array.from(step2.children);
+			expect(children).toHaveSize(3);
+
+			const numericFilter = step2.querySelector('.numeric-filter');
+			expect(numericFilter).not.toBeNull();
+			expect(numericFilter.querySelector('label[for="name1-min"]').textContent).toEqual('Min: ');
+			// expect(numericFilter.querySelector('#name1-max')).toEqual(100);
 		});
 	});
 });
