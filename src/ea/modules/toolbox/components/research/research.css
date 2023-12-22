@@ -28,6 +28,21 @@ option:checked {
 	margin-bottom: 1em;
 }
 
+.enumeration-filter {
+	border: 1px solid gray;
+	border-radius: 3px;
+	width: 100%;
+	background: var(--primary-bg--color);
+	background-image: url('./assets/caret-down-fill.svg');
+	background-repeat: no-repeat;
+	background-position: calc(100% - 0.5em) center;
+	background-size: 0.7em;
+}
+
+.enumeration-filter .title {
+	width: 100%;
+}
+
 .enumeration-filter input {
 	width: auto;
 	margin-right: 0.5em;
@@ -35,13 +50,15 @@ option:checked {
 
 .enumeration-filter .enumeration-anchor {
 	position: relative;
+	width: 100%;
 }
 
 .enumeration-filter .enumeration-popup {
 	display: block;
 	position: absolute;
-	background-color: #f9f9f9;
-	min-width: 160px;
+	background-color: white;
+	border: 1px solid var(--primary-color);
+	width: 100%;
 	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 	padding: 12px 16px;
 	z-index: 1;
@@ -49,6 +66,11 @@ option:checked {
 
 .enumeration-filter .enumeration-popup.collapsed {
 	display: none;
+}
+
+.enumeration-filter .enumeration-popup__buttons {
+	display: flex;
+	justify-content: space-between;
 }
 
 .numeric-filter {
@@ -65,7 +87,7 @@ option:checked {
 	width: 30%;
 }
 
-.numeric-filter .sliders_control {
+.numeric-filter .slider {
 	position: relative;
 	flex: 1;
 }
@@ -82,5 +104,6 @@ option:checked {
 
 .numeric-filter input[type='range'] {
 	position: absolute;
+	top: -0.5em;
 	pointer-events: none;
 }
