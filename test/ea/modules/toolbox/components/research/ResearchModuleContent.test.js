@@ -135,9 +135,6 @@ describe('ResearchModuleContent', () => {
 			const element = await setup();
 
 			await TestUtils.timeout();
-			await TestUtils.timeout();
-			await TestUtils.timeout();
-			await TestUtils.timeout();
 
 			const step2 = element.shadowRoot.querySelector('#step2');
 			const children = Array.from(step2.children);
@@ -145,7 +142,9 @@ describe('ResearchModuleContent', () => {
 
 			const numericFilter = step2.querySelector('.numeric-filter');
 			expect(numericFilter).not.toBeNull();
-			expect(numericFilter.querySelector('label[for="name1-min"]').textContent).toEqual('Min: ');
+			expect(numericFilter.querySelector('#min').value).toEqual(5);
+			expect(numericFilter.querySelector('#max').value).toEqual(5);
+			// expect(numericFilter.querySelector('label[for="min"]').textContent).toEqual('Min: 1');
 			// expect(numericFilter.querySelector('#name1-max')).toEqual(100);
 		});
 	});

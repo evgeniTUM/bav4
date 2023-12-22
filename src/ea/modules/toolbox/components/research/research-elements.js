@@ -60,7 +60,7 @@ export function numericFilterElement(fieldSpec, propertyFilter, onChange) {
 			<div class="numeric-filter filter-entry">
 				<div class="title">${displayname}</div>
 				<label for="min">Min:${min}</label>
-				<div class="sliders_control">
+				<div class="slider">
 					<input @input=${onInputMin} @change=${changeMin} type="range" id="min" min="${minLimit}" max="${maxLimit}" .value=${min} />
 					<input @input=${onInputMax} @change=${changeMax} type="range" id="max" min="${minLimit}" max="${maxLimit}" .value=${max} />
 				</div>
@@ -97,13 +97,13 @@ export function enumerationFilterElement(fieldSpec, selectedValues, activeFilter
 
 	return html`
 		<div class="enumeration-filter filter-entry" id=${displayname}>
-			<label for=${displayname} @click=${onToggle}>${displayname} ${titleSuffix}</label>
+			<div class="title" @click=${onToggle}><label for=${displayname}>${displayname} ${titleSuffix}</label></div>
 			<div class="enumeration-anchor">
 				<div class="enumeration-popup ${classMap(classes)}">
 					${options}
 					<div class="enumeration-popup__buttons">
-						<ba-button .label=${'Select all'} @click=${onSelectAll}></ba-button>
-						<ba-button .label=${'Reset'} @click=${onReset}></ba-button>
+						<ba-button .type=${'primary'} .label=${'Select all'} @click=${onSelectAll}></ba-button>
+						<ba-button .type=${'primary'} .label=${'Reset'} @click=${onReset}></ba-button>
 					</div>
 				</div>
 			</div>

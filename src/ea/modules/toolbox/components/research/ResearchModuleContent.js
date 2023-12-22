@@ -161,9 +161,9 @@ export class ResearchModuleContent extends AbstractModuleContentPanel {
 		};
 
 		const filters = model.themeSpec?.propertydefinitions?.map((f) =>
-			[Types.CHARACTER].includes(f.type)
+			[Types.CHARACTER].includes(f.type) && f.queryable
 				? enumerationFilterElement(f, model.propertyFilters[f.originalkey], model.activeEnumFilter, onChange(f), onEnumFilterToggle(f.displayname))
-				: [Types.NUMERIC, Types.INTEGER].includes(f.type)
+				: [Types.NUMERIC, Types.INTEGER].includes(f.type) && f.queryable
 				  ? numericFilterElement(f, model.propertyFilters[f.originalkey], onChange(f))
 				  : html``
 		);
