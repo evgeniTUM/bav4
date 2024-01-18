@@ -11,10 +11,12 @@ import { createUniqueId } from '../../../../../../utils/numberUtils';
 import { clearPreviewGeoresourceId, setPreviewGeoresourceId } from '../../../../../../ea/store/module/ea.action';
 import { fitLayer } from '../../../../../../store/position/position.action';
 import { GeoResourceFuture } from '../../../../../../domain/geoResources';
+import { checkIfResolutionValid } from '../../../../../../ea/utils/eaUtils';
 
 const Update_GeoResourceSearchResult = 'update_geoResourceSearchResult';
 const Update_LoadingPreviewFlag = 'update_loadingPreviewFlag';
 const Update_ActiveLayers = 'update_activeLayers';
+const Update_MapResolution = 'update_mapResolution';
 
 /**
  * Amount of time waiting before adding a layer in ms.
@@ -38,9 +40,15 @@ export class GeoResourceResultItem extends MvuElement {
 			activeLayers: []
 		});
 
-		const { GeoResourceService: geoResourceService } = $injector.inject('GeoResourceService');
+		const { GeoResourceService: geoResourceService, WmsCapabilitiesService: wmsCapabilitiesService } = $injector.inject(
+			'GeoResourceService',
+			'WmsCapabilitiesService'
+		);
+
 		this._geoResourceService = geoResourceService;
 		this._timeoutId = null;
+		this._wmsCapabilitiesService = wmsCapabilitiesService;
+		this._wmsLayers = null;
 	}
 
 	update(type, data, model) {
@@ -51,6 +59,8 @@ export class GeoResourceResultItem extends MvuElement {
 				return { ...model, loadingPreview: data };
 			case Update_ActiveLayers:
 				return { ...model, activeLayers: data.map((l) => ({ geoResourceId: l.geoResourceId, id: l.id })) };
+			case Update_MapResolution:
+				return { ...model, mapResolution: data };
 		}
 	}
 
@@ -58,6 +68,11 @@ export class GeoResourceResultItem extends MvuElement {
 		this.observe(
 			(state) => state.layers.active,
 			(activeLayers) => this.signal(Update_ActiveLayers, activeLayers),
+			true
+		);
+		this.observe(
+			(state) => state.ea.mapResolution,
+			(mapResolution) => this.signal(Update_MapResolution, mapResolution),
 			true
 		);
 	}
@@ -71,7 +86,9 @@ export class GeoResourceResultItem extends MvuElement {
 	}
 
 	createView(model) {
-		const { geoResourceSearchResult, loadingPreview } = model;
+		const { geoResourceSearchResult, loadingPreview, mapResolution } = model;
+
+		const validResolution = checkIfResolutionValid(geoResourceSearchResult.geoResourceId, this, mapResolution);
 
 		const isLayerActive = (geoResourceId) => {
 			return model.activeLayers
@@ -144,17 +161,25 @@ export class GeoResourceResultItem extends MvuElement {
 				<li
 					class="ba-list-item ${getActivePreviewClass()}"
 					tabindex="0"
-					@click=${() => onClick(geoResourceSearchResult)}
 					@mouseenter=${() => onMouseEnter(geoResourceSearchResult)}
 					@mouseleave=${() => onMouseLeave(geoResourceSearchResult)}
 				>
 					<span class="ba-list-item__pre ">
-						<span class="${getActiveLayerClass()} ba-list-item__icon"> </span>
-					</span>
-					<span class="ba-list-item__text ">
-						${loadingPreview
-							? html`<ba-spinner .label=${geoResourceSearchResult.labelFormatted}></ba-spinner>`
-							: html`${unsafeHTML(geoResourceSearchResult.labelFormatted)}`}
+						<ba-checkbox
+							class="ba-list-item__text"
+							@toggle=${onClick(geoResourceSearchResult)}
+							.disabled=${!validResolution}
+							.checked=${isLayerActive(geoResourceSearchResult.geoResourceId)}
+							tabindex="0"
+							>
+							<span class="ba-list-item__text ">
+								${
+									loadingPreview
+										? html`<ba-spinner .label=${geoResourceSearchResult.labelFormatted}></ba-spinner>`
+										: html`${unsafeHTML(geoResourceSearchResult.labelFormatted)}`
+								}
+							</span>
+						</ba-checkobx>
 					</span>
 				</li>
 			`;
