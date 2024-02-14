@@ -11,6 +11,8 @@ import { $injector } from '../../../../../../../src/injection';
 import { positionReducer } from '../../../../../../../src/store/position/position.reducer';
 import { Spinner } from '../../../../../../../src/modules/commons/components/spinner/Spinner';
 import { GeoResourceFuture } from '../../../../../../../src/domain/geoResources';
+import { eaReducer } from '../../../../../../../src/ea/store/module/ea.reducer.js';
+import { setMapResolution } from '../../../../../../../src/ea/store/module/ea.action.js';
 
 window.customElements.define(GeoResourceResultItem.tag, GeoResourceResultItem);
 
@@ -26,6 +28,10 @@ describe('GeoResourceResultItem', () => {
 		addOrReplace: () => {}
 	};
 
+	const wmsCapabilitiesService = {
+		getWmsLayers: () => []
+	};
+
 	let store;
 	const setup = (state = {}) => {
 		const initialState = {
@@ -35,10 +41,12 @@ describe('GeoResourceResultItem', () => {
 		store = TestUtils.setupStoreAndDi(initialState, {
 			layers: layersReducer,
 			mainMenu: createNoInitialStateMainMenuReducer(),
-			position: positionReducer
+			position: positionReducer,
+			ea: eaReducer
 		});
 
 		$injector.registerSingleton('GeoResourceService', geoResourceService);
+		$injector.registerSingleton('WmsCapabilitiesService', wmsCapabilitiesService);
 
 		return TestUtils.render(GeoResourceResultItem.tag);
 	};
@@ -63,6 +71,60 @@ describe('GeoResourceResultItem', () => {
 			element.data = data;
 
 			expect(element.shadowRoot.querySelector('li').innerText).toBe('labelFormatted');
+		});
+
+		it('checkbox is not checked if layer not active', async () => {
+			const geoResourceId = 'geoResourceId';
+			const data = new GeoResourceSearchResult(geoResourceId, 'label', 'labelFormatted');
+			const element = await setup();
+			element.data = data;
+
+			const checkbox = element.shadowRoot.querySelector('#toggle_layer');
+
+			expect(checkbox.checked).toBeFalse();
+		});
+
+		it('checkbox is checked if layer already active', async () => {
+			const geoResourceId = 'geoResourceId';
+			const layer = createDefaultLayer('id1', geoResourceId);
+			const data = new GeoResourceSearchResult(geoResourceId, 'label', 'labelFormatted');
+			const element = await setup({
+				layers: {
+					active: [layer]
+				}
+			});
+			element.data = data;
+
+			const checkbox = element.shadowRoot.querySelector('#toggle_layer');
+
+			expect(checkbox.checked).toBeTrue();
+		});
+
+		fit('checkbox is disabled if layer not visible', async () => {
+			const geoResourceId = 'geoResourceId';
+			spyOn(wmsCapabilitiesService, 'getWmsLayers')
+				.withArgs(geoResourceId)
+				.and.returnValue([
+					{
+						minResolution: 80,
+						maxResolution: 20
+					}
+				]);
+
+			const layer = createDefaultLayer(geoResourceId);
+			const data = new GeoResourceSearchResult(geoResourceId, 'label', 'labelFormatted');
+			const element = await setup({
+				layers: {
+					active: [layer]
+				}
+			});
+			element.data = data;
+
+			setMapResolution(10);
+			await TestUtils.timeout();
+			const checkbox = element.shadowRoot.querySelector('#toggle_layer');
+
+			expect(checkbox.disabled).toBeTrue();
 		});
 	});
 
@@ -207,11 +269,14 @@ describe('GeoResourceResultItem', () => {
 				const element = await setupOnClickTests();
 				spyOn(geoResourceService, 'byId').withArgs(geoResourceId).and.returnValue({ opacity: 0.5 });
 
-				const target = element.shadowRoot.querySelector('li');
+				const checkbox = element.shadowRoot.querySelector('#toggle_layer');
 
-				target.click();
+				checkbox.dispatchEvent(
+					new CustomEvent('toggle', {
+						detail: { checked: true }
+					})
+				);
 
-				expect(store.getState().layers.active.length).toBe(1);
 				expect(store.getState().layers.active[0].opacity).toBe(0.5);
 			});
 		});
@@ -279,9 +344,13 @@ describe('GeoResourceResultItem', () => {
 
 				it('removes all layers with this geoResourceId', async () => {
 					const element = await setupOnClickTests();
-					const target = element.shadowRoot.querySelector('li');
+					const checkbox = element.shadowRoot.querySelector('#toggle_layer');
 
-					target.click();
+					checkbox.dispatchEvent(
+						new CustomEvent('toggle', {
+							detail: { checked: true }
+						})
+					);
 
 					expect(store.getState().layers.active.length).toBe(0);
 				});

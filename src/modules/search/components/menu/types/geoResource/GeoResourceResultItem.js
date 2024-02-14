@@ -88,7 +88,7 @@ export class GeoResourceResultItem extends MvuElement {
 	createView(model) {
 		const { geoResourceSearchResult, loadingPreview, mapResolution } = model;
 
-		const validResolution = checkIfResolutionValid(geoResourceSearchResult.geoResourceId, this, mapResolution);
+		const validResolution = geoResourceSearchResult && checkIfResolutionValid(geoResourceSearchResult.geoResourceId, this, mapResolution);
 
 		const isLayerActive = (geoResourceId) => {
 			return model.activeLayers
@@ -141,16 +141,11 @@ export class GeoResourceResultItem extends MvuElement {
 				const geoR = this._geoResourceService.byId(result.geoResourceId);
 				const opacity = geoR?.opacity || 1;
 
-				//we ask the GeoResourceService for an optionally updated label
 				addLayer(id, { geoResourceId: result.geoResourceId, opacity });
 			}
 		};
 		const getActivePreviewClass = () => {
 			return loadingPreview ? 'loading' : '';
-		};
-
-		const getActiveLayerClass = () => {
-			return isLayerActive(geoResourceSearchResult.geoResourceId) ? 'ba-list-item__icon_active' : '';
 		};
 
 		if (geoResourceSearchResult) {
@@ -166,8 +161,9 @@ export class GeoResourceResultItem extends MvuElement {
 				>
 					<span class="ba-list-item__pre ">
 						<ba-checkbox
+							id="toggle_layer"
 							class="ba-list-item__text"
-							@toggle=${onClick(geoResourceSearchResult)}
+							@toggle=${() => onClick(geoResourceSearchResult)}
 							.disabled=${!validResolution}
 							.checked=${isLayerActive(geoResourceSearchResult.geoResourceId)}
 							tabindex="0"
