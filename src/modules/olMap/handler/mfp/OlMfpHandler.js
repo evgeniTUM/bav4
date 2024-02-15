@@ -181,7 +181,7 @@ export class OlMfpHandler extends OlLayerHandler {
 						? clearPreview
 						: () => {
 								this._delayedUpdateMfpPreview(this._getVisibleCenterPoint());
-						  };
+							};
 					action();
 				}
 			),

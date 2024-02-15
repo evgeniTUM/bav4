@@ -6,7 +6,7 @@ import { Injector } from '../../src/injection/core/injector.js';
 describe('injector configuration', () => {
 	it('registers the expected dependencies', () => {
 		expect($injector.isReady()).toBeTrue();
-		expect($injector.count()).toBe(83);
+		expect($injector.count()).toBe(85);
 
 		expect($injector.getScope('ProjectionService')).toBe(Injector.SCOPE_SINGLETON);
 		expect($injector.getScope('HttpService')).toBe(Injector.SCOPE_PERLOOKUP);
@@ -54,6 +54,7 @@ describe('injector configuration', () => {
 		expect($injector.getScope('ContextClickPlugin')).toBe(Injector.SCOPE_SINGLETON);
 		expect($injector.getScope('FeatureInfoPlugin')).toBe(Injector.SCOPE_SINGLETON);
 		expect($injector.getScope('MainMenuPlugin')).toBe(Injector.SCOPE_SINGLETON);
+		expect($injector.getScope('NavigationRailPlugin')).toBe(Injector.SCOPE_SINGLETON);
 		expect($injector.getScope('ImportPlugin')).toBe(Injector.SCOPE_SINGLETON);
 		expect($injector.getScope('SearchPlugin')).toBe(Injector.SCOPE_SINGLETON);
 		expect($injector.getScope('ExportMfpPlugin')).toBe(Injector.SCOPE_SINGLETON);
@@ -82,6 +83,7 @@ describe('injector configuration', () => {
 		expect($injector.getScope('OlElevationProfileHandler')).toBe(Injector.SCOPE_PERLOOKUP);
 		expect($injector.getScope('OlMfpHandler')).toBe(Injector.SCOPE_PERLOOKUP);
 		expect($injector.getScope('OlRoutingHandler')).toBe(Injector.SCOPE_PERLOOKUP);
+		expect($injector.getScope('OlSelectableFeatureHandler')).toBe(Injector.SCOPE_PERLOOKUP);
 
 		// EAB modules
 		expect($injector.getScope('WmsCapabilitiesService')).toBe(Injector.SCOPE_SINGLETON);

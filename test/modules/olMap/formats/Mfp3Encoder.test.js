@@ -73,6 +73,11 @@ describe('BvvMfp3Encoder', () => {
 		}
 	};
 
+	const iconServiceMock = {
+		decodeColor: () => [0, 0, 0],
+		getIconResult: () => null
+	};
+
 	const defaultProperties = {
 		layoutId: 'foo',
 		scale: 1,
@@ -88,7 +93,8 @@ describe('BvvMfp3Encoder', () => {
 		.registerSingleton('UrlService', urlServiceMock)
 		.registerSingleton('ShareService', shareServiceMock)
 		.registerSingleton('MfpService', mfpServiceMock)
-		.registerSingleton('LayerService', layerServiceMock);
+		.registerSingleton('LayerService', layerServiceMock)
+		.registerSingleton('IconService', iconServiceMock);
 	proj4.defs('EPSG:25832', '+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +axis=neu');
 	register(proj4);
 	const setup = (initProperties) => {
@@ -935,6 +941,7 @@ describe('BvvMfp3Encoder', () => {
 				customParams: { transparent: true }
 			});
 		});
+
 		it("resolves wms layer with groupOpacity to a mfp 'wms' spec", () => {
 			const sourceMock = {
 				getUrl: () => 'https://some.url/to/wms',
@@ -1029,10 +1036,26 @@ describe('BvvMfp3Encoder', () => {
 				const styles = [
 					new Style({
 						image: new IconStyle({
+							size: [42, 42],
 							anchor: [42, 42],
 							anchorXUnits: 'pixels',
 							anchorYUnits: 'pixels',
 							src: 'https://some.url/to/image/foo.png'
+						})
+					})
+				];
+				return styles;
+			};
+
+			const getSvgImageStyle = () => {
+				const styles = [
+					new Style({
+						image: new IconStyle({
+							size: [42, 42],
+							anchor: [21, 42],
+							anchorXUnits: 'pixels',
+							anchorYUnits: 'pixels',
+							src: 'data:image/svg+xml;base64,foo'
 						})
 					})
 				];
@@ -1046,6 +1069,7 @@ describe('BvvMfp3Encoder', () => {
 				const styles = [
 					new Style({
 						image: new IconStyle({
+							size: [42, 42],
 							anchor: [42, 42],
 							anchorXUnits: 'pixels',
 							anchorYUnits: 'pixels',
@@ -1191,12 +1215,12 @@ describe('BvvMfp3Encoder', () => {
 									type: 'point',
 									zIndex: 0,
 									rotation: 0,
-									graphicWidth: 56.25,
-									graphicHeight: 56.25,
+									graphicWidth: 34.02777777777778,
+									graphicHeight: 34.02777777777778,
 									pointRadius: 5,
 									fillColor: '#ffffff',
 									fillOpacity: 0.4,
-									strokeWidth: 2.6785714285714284,
+									strokeWidth: 2.0833333333333335,
 									strokeColor: '#3399cc',
 									strokeOpacity: 1,
 									strokeLinecap: 'round',
@@ -1248,12 +1272,12 @@ describe('BvvMfp3Encoder', () => {
 									type: 'point',
 									zIndex: 0,
 									rotation: 0,
-									graphicWidth: 56.25,
-									graphicHeight: 56.25,
+									graphicWidth: 34.02777777777778,
+									graphicHeight: 34.02777777777778,
 									pointRadius: 5,
 									fillColor: '#ffffff',
 									fillOpacity: 0.4,
-									strokeWidth: 2.6785714285714284,
+									strokeWidth: 2.0833333333333335,
 									strokeColor: '#3399cc',
 									strokeOpacity: 1,
 									strokeLinecap: 'round',
@@ -1305,12 +1329,12 @@ describe('BvvMfp3Encoder', () => {
 									type: 'point',
 									zIndex: 0,
 									rotation: 0,
-									graphicWidth: 56.25,
-									graphicHeight: 56.25,
+									graphicWidth: 34.02777777777778,
+									graphicHeight: 34.02777777777778,
 									pointRadius: 5,
 									fillColor: '#ffffff',
 									fillOpacity: 0.4,
-									strokeWidth: 2.6785714285714284,
+									strokeWidth: 2.0833333333333335,
 									strokeColor: '#3399cc',
 									strokeOpacity: 1,
 									strokeLinecap: 'round',
@@ -1364,8 +1388,68 @@ describe('BvvMfp3Encoder', () => {
 									rotation: 0,
 									fillOpacity: 1,
 									strokeOpacity: 0,
+									graphicWidth: jasmine.any(Number),
+									graphicHeight: jasmine.any(Number),
 									graphicXOffset: jasmine.any(Number),
 									graphicYOffset: jasmine.any(Number),
+									externalGraphic: 'https://some.url/to/image/foo.png'
+								}
+							]
+						}
+					}
+				});
+			});
+
+			it('writes a point feature with feature style and replaces svg image with raster image', () => {
+				const iconServiceSpy = spyOn(iconServiceMock, 'getIconResult')
+					.withArgs('data:image/svg+xml;base64,foo')
+					.and.returnValue({ id: 'foo', getUrl: () => 'https://some.url/to/image/foo.png' });
+				const featureWithStyle = new Feature({ geometry: new Point([30, 30]) });
+				featureWithStyle.setStyle(getSvgImageStyle());
+				const vectorSource = new VectorSource({ wrapX: false, features: [featureWithStyle] });
+				const vectorLayer = new VectorLayer({ id: 'foo', source: vectorSource, style: null });
+				const groupOpacity = 1;
+				spyOn(vectorLayer, 'getExtent').and.callFake(() => [20, 20, 50, 50]);
+				const geoResourceMock = getGeoResourceMock();
+				spyOn(geoResourceServiceMock, 'byId').and.callFake(() => geoResourceMock);
+				const encoder = setup();
+				encoder._pageExtent = [20, 20, 50, 50];
+				const actualSpec = encoder._encodeVector(vectorLayer, groupOpacity);
+
+				expect(iconServiceSpy).toHaveBeenCalled();
+				expect(actualSpec).toEqual({
+					opacity: 1,
+					type: 'geojson',
+					name: 'foo',
+					geoJson: {
+						features: [
+							{
+								type: 'Feature',
+								geometry: {
+									type: 'Point',
+									coordinates: jasmine.any(Array)
+								},
+								properties: {
+									_gx_style: 0
+								}
+							}
+						],
+						type: 'FeatureCollection'
+					},
+					style: {
+						version: '2',
+						'[_gx_style = 0]': {
+							symbolizers: [
+								{
+									type: 'point',
+									zIndex: 0,
+									rotation: 0,
+									fillOpacity: 1,
+									strokeOpacity: 0,
+									graphicWidth: jasmine.any(Number),
+									graphicHeight: jasmine.any(Number),
+									graphicXOffset: 0,
+									graphicYOffset: -21,
 									externalGraphic: 'https://some.url/to/image/foo.png'
 								}
 							]
@@ -1417,14 +1501,14 @@ describe('BvvMfp3Encoder', () => {
 									fillOpacity: 0.4,
 									fillColor: '#ffffff',
 									strokeOpacity: 0,
-									graphicWidth: 56.25,
-									graphicHeight: 56.25,
+									graphicWidth: 34.02777777777778,
+									graphicHeight: 34.02777777777778,
 									pointRadius: 5,
 									label: 'FooBarBaz',
 									labelAlign: 'cm',
 									fontColor: '#000000',
-									fontFamily: 'SANS-SERIF',
-									fontSize: 10,
+									fontFamily: 'sans-serif',
+									fontSize: 16.666666666666668,
 									fontWeight: 'normal'
 								}
 							]
@@ -1476,14 +1560,14 @@ describe('BvvMfp3Encoder', () => {
 									fillOpacity: 0.4,
 									fillColor: '#ffffff',
 									strokeOpacity: 0,
-									graphicWidth: 56.25,
-									graphicHeight: 56.25,
+									graphicWidth: 34.02777777777778,
+									graphicHeight: 34.02777777777778,
 									pointRadius: 5,
 									label: 'FooBarBaz',
 									labelAlign: 'lt',
 									fontColor: '#000000',
-									fontFamily: 'SANS-SERIF',
-									fontSize: 10,
+									fontFamily: 'sans-serif',
+									fontSize: 16.666666666666668,
 									fontWeight: 'normal'
 								}
 							]
@@ -1535,14 +1619,14 @@ describe('BvvMfp3Encoder', () => {
 									fillOpacity: 0.4,
 									fillColor: '#ffffff',
 									strokeOpacity: 0,
-									graphicWidth: 56.25,
-									graphicHeight: 56.25,
+									graphicWidth: 34.02777777777778,
+									graphicHeight: 34.02777777777778,
 									pointRadius: 5,
 									label: 'FooBarBaz',
 									labelAlign: 'lb',
 									fontColor: '#000000',
-									fontFamily: 'SANS-SERIF',
-									fontSize: 10,
+									fontFamily: 'sans-serif',
+									fontSize: 16.666666666666668,
 									fontWeight: 'normal'
 								}
 							]
@@ -1632,12 +1716,12 @@ describe('BvvMfp3Encoder', () => {
 									type: 'point',
 									zIndex: 0,
 									rotation: 0,
-									graphicWidth: 56.25,
-									graphicHeight: 56.25,
+									graphicWidth: 34.02777777777778,
+									graphicHeight: 34.02777777777778,
 									pointRadius: 5,
 									fillColor: '#ffffff',
 									fillOpacity: 0.4,
-									strokeWidth: 2.6785714285714284,
+									strokeWidth: 2.0833333333333335,
 									strokeColor: '#3399cc',
 									strokeOpacity: 1,
 									strokeLinecap: 'round',
@@ -1694,12 +1778,12 @@ describe('BvvMfp3Encoder', () => {
 									type: 'point',
 									zIndex: 0,
 									rotation: 0,
-									graphicWidth: 56.25,
-									graphicHeight: 56.25,
+									graphicWidth: 34.02777777777778,
+									graphicHeight: 34.02777777777778,
 									pointRadius: 5,
 									fillColor: '#ffffff',
 									fillOpacity: 0.4,
-									strokeWidth: 2.6785714285714284,
+									strokeWidth: 2.0833333333333335,
 									strokeColor: '#3399cc',
 									strokeOpacity: 1,
 									strokeLinecap: 'round',
@@ -1758,15 +1842,15 @@ describe('BvvMfp3Encoder', () => {
 										fillOpacity: 0.4,
 										fillColor: '#ffffff',
 										strokeOpacity: 0,
-										graphicWidth: 56.25,
-										graphicHeight: 56.25,
+										graphicWidth: 34.02777777777778,
+										graphicHeight: 34.02777777777778,
 										pointRadius: 5,
 										label: 'FooBarBaz',
 										labelAlign: 'cm',
 										labelRotation: expectedLabelRotation,
 										fontColor: '#000000',
-										fontFamily: 'SANS-SERIF',
-										fontSize: 10,
+										fontFamily: 'sans-serif',
+										fontSize: 16.666666666666668,
 										fontWeight: 'normal'
 									}
 								]
@@ -1886,7 +1970,7 @@ describe('BvvMfp3Encoder', () => {
 									type: 'line',
 									zIndex: 0,
 									fillOpacity: 0,
-									strokeWidth: 2.6785714285714284,
+									strokeWidth: 2.0833333333333335,
 									strokeColor: '#3399cc',
 									strokeOpacity: 1,
 									strokeLinecap: 'round',
@@ -1949,7 +2033,7 @@ describe('BvvMfp3Encoder', () => {
 									type: 'line',
 									zIndex: 0,
 									fillOpacity: 0,
-									strokeWidth: 2.6785714285714284,
+									strokeWidth: 2.0833333333333335,
 									strokeColor: '#3399cc',
 									strokeOpacity: 1,
 									strokeLinecap: 'round',
@@ -2022,7 +2106,7 @@ describe('BvvMfp3Encoder', () => {
 									zIndex: 0,
 									fillOpacity: 0.4,
 									fillColor: '#ffffff',
-									strokeWidth: 2.6785714285714284,
+									strokeWidth: 2.0833333333333335,
 									strokeColor: '#3399cc',
 									strokeOpacity: 1,
 									strokeLinecap: 'round',
@@ -2033,7 +2117,7 @@ describe('BvvMfp3Encoder', () => {
 									zIndex: 0,
 									fillColor: '#ffffff',
 									fillOpacity: 0.4,
-									strokeWidth: 2.6785714285714284,
+									strokeWidth: 2.0833333333333335,
 									strokeColor: '#3399cc',
 									strokeOpacity: 1,
 									strokeLinecap: 'round',
@@ -2096,7 +2180,7 @@ describe('BvvMfp3Encoder', () => {
 									fillColor: '#ffffff',
 									fillOpacity: 0.168,
 									strokeOpacity: 0.42,
-									strokeWidth: 2.6785714285714284,
+									strokeWidth: 2.0833333333333335,
 									strokeColor: '#3399cc',
 									strokeLinecap: 'round',
 									strokeLineJoin: 'round'
@@ -2295,7 +2379,7 @@ describe('BvvMfp3Encoder', () => {
 								{
 									type: 'polygon',
 									zIndex: 0,
-									strokeWidth: 6.428571428571429,
+									strokeWidth: 5,
 									strokeColor: '#ff0000',
 									strokeOpacity: 1,
 									strokeLinecap: 'round',
@@ -2371,7 +2455,7 @@ describe('BvvMfp3Encoder', () => {
 									type: 'line',
 									zIndex: 0,
 									fillOpacity: 0,
-									strokeWidth: 2.6785714285714284,
+									strokeWidth: 2.0833333333333335,
 									strokeColor: '#3399cc',
 									strokeOpacity: 1,
 									strokeLinecap: 'round',
@@ -2481,7 +2565,7 @@ describe('BvvMfp3Encoder', () => {
 									type: 'line',
 									zIndex: 0,
 									fillOpacity: 0,
-									strokeWidth: 2.6785714285714284,
+									strokeWidth: 2.0833333333333335,
 									strokeColor: '#3399cc',
 									strokeOpacity: 1,
 									strokeLinecap: 'round',
@@ -2495,7 +2579,7 @@ describe('BvvMfp3Encoder', () => {
 									type: 'line',
 									zIndex: 0,
 									fillOpacity: 0,
-									strokeWidth: 2.6785714285714284,
+									strokeWidth: 2.0833333333333335,
 									strokeColor: '#3399cc',
 									strokeOpacity: 1,
 									strokeLinecap: 'round',
@@ -2909,7 +2993,7 @@ describe('BvvMfp3Encoder', () => {
 		const dpi = 72;
 		it('adjusts only valid distances', () => {
 			expect(BvvMfp3Encoder.adjustDistance(null, dpi)).toBeNull();
-			expect(BvvMfp3Encoder.adjustDistance(100, dpi)).toBe(125);
+			expect(BvvMfp3Encoder.adjustDistance(100, dpi)).toBe(97.22222222222223);
 		});
 	});
 });

@@ -62,8 +62,8 @@ test.describe('page', () => {
 			expect(description).toBe(templateParameters.description);
 		});
 
-		test('should contain 6 top level ba-components', async ({ page }) => {
-			expect(await page.locator('body > *').count()).toBe(6);
+		test('should contain 7 top level ba-components', async ({ page }) => {
+			expect(await page.locator('body > *').count()).toBe(7);
 
 			expect(await page.locator('body > ea-page-container').count()).toBe(1);
 			expect(await page.locator('body > ba-dnd-import-panel').count()).toBe(1);
@@ -71,6 +71,7 @@ test.describe('page', () => {
 			expect(await page.locator('body > ba-map-context-menu').count()).toBe(1);
 			expect(await page.locator('body > ea-dsgvo-dialog').count()).toBe(1);
 			expect(await page.locator('body > ba-notification-panel').count()).toBe(1);
+			expect(await page.locator('body > ba-navigation-rail').count()).toBe(1);
 		});
 
 		test('should contain ea-page-container with 11 components', async ({ page }) => {

@@ -55,18 +55,13 @@ export class ProposalContextContent extends MvuElement {
 
 		const { TranslationService: translationService } = $injector.inject('TranslationService');
 		this._translationService = translationService;
-		this._unsubscribe = null;
 	}
 
 	onInitialize() {
-		this._unsubscribeFromStore = this.observe(
+		this.observe(
 			(state) => state.routing.proposal,
 			(proposal) => this.signal(Update_Proposal, proposal)
 		);
-	}
-
-	onDisconnect() {
-		this._unsubscribeFromStore();
 	}
 
 	update(type, data, model) {
@@ -96,8 +91,9 @@ export class ProposalContextContent extends MvuElement {
 		const getButton = (buttonConfig, proposal) => {
 			return buttonConfig.matcher(proposal.type)
 				? html`<button id=${buttonConfig.id} @click=${() => onClick(buttonConfig.action)}>
-						<span class="icon ${buttonConfig.id}"></span><span class="text">${translate(buttonConfig.label)}</span>
-				  </button>`
+						<span class="icon ${buttonConfig.id}"></span>
+						<span class="text">${translate(buttonConfig.label)}</span>
+					</button>`
 				: null;
 		};
 

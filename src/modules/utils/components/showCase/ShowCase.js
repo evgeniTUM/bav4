@@ -2,20 +2,22 @@
  * @module modules/utils/components/showCase/ShowCase
  */
 import { html } from 'lit-html';
-import { BaElement } from '../../../BaElement';
 import { $injector } from '../../../../injection';
 import { changeZoomAndCenter } from '../../../../store/position/position.action';
-import arrowUpSvg from './assets/arrow-up.svg';
+import rocketSvg from './assets/rocket.svg';
+import rocketRoundSvg from './assets/rocketRound.svg';
 import { activate as activateMeasurement, deactivate as deactivateMeasurement } from '../../../../store/measurement/measurement.action';
 import { addLayer } from '../../../../store/layers/layers.action';
 import { emitNotification, LevelTypes } from '../../../../store/notifications/notifications.action';
 import { closeModal, openModal } from '../../../../store/modal/modal.action';
 import css from './showCase.css';
-import { observe } from '../../../../utils/storeUtils';
 import { MenuTypes } from '../../../commons/components/overflowMenu/OverflowMenu';
 import { closeBottomSheet, openBottomSheet } from '../../../../store/bottomSheet/bottomSheet.action';
 import { closeProfile, openProfile } from '../../../../store/elevationProfile/elevationProfile.action';
 import { sleep } from '../../../../utils/timer';
+import { MvuElement } from '../../../MvuElement';
+
+const Update_Profile_Active = 'update_profile_active';
 
 /**
  * Displays a showcase of common and reusable components or
@@ -23,10 +25,9 @@ import { sleep } from '../../../../utils/timer';
  * @class
  * @author thiloSchlemmer
  */
-export class ShowCase extends BaElement {
+export class ShowCase extends MvuElement {
 	constructor() {
-		super();
-
+		super({ activeProfile: false });
 		const { CoordinateService, EnvironmentService, ShareService, UrlService, FileStorageService, ImportVectorDataService } = $injector.inject(
 			'CoordinateService',
 			'EnvironmentService',
@@ -46,10 +47,25 @@ export class ShowCase extends BaElement {
 		this._fileStorageService = FileStorageService;
 	}
 
+	onInitialize() {
+		this.observe(
+			(state) => state.elevationProfile.active,
+			(active) => this.signal(Update_Profile_Active, active)
+		);
+	}
+
+	update(type, data, model) {
+		switch (type) {
+			case Update_Profile_Active:
+				return { ...model, activeProfile: data };
+		}
+	}
+
 	/**
 	 * @override
 	 */
-	createView() {
+	createView(model) {
+		const { profileActive } = model;
 		const onClick0 = async () => {
 			//create a GeoResource
 			const geoResourceFuture = this._importVectorDataService.forUrl('https://www.geodaten.bayern.de/ba-data/Themen/kml/huetten.kml');
@@ -94,8 +110,7 @@ export class ShowCase extends BaElement {
 				}
 			};
 
-			const unsubscribe = observe(
-				this._storeService.getStore(),
+			const unsubscribe = this.observe(
 				(state) => state.modal,
 				(modal) => resolveBeforeClosing(modal)
 			);
@@ -166,7 +181,7 @@ export class ShowCase extends BaElement {
 		};
 
 		const onClickOpenProfile = () => {
-			if (this._storeService.getStore().getState().elevationProfile.active) {
+			if (profileActive) {
 				closeProfile();
 			} else {
 				closeModal();
@@ -185,8 +200,7 @@ export class ShowCase extends BaElement {
 				return before === min ? before + 1 : before === max ? min : before + 1;
 			};
 			const getVersionForDragging = () => {
-				const unsubscribe = observe(
-					this._storeService.getStore(),
+				const unsubscribe = this.observe(
 					(state) => state.pointer.beingDragged,
 					() => {
 						closeBottomSheet();
@@ -227,10 +241,10 @@ export class ShowCase extends BaElement {
 			version = nextVersion(version, 1, 3);
 		};
 		const menuitems = [
-			{ label: 'Apple', icon: arrowUpSvg, action: () => emitNotification('Apple', LevelTypes.INFO) },
-			{ label: 'Lemon', icon: arrowUpSvg, action: () => emitNotification('Lemon', LevelTypes.INFO) },
+			{ label: 'Apple', icon: rocketSvg, action: () => emitNotification('Apple', LevelTypes.INFO) },
+			{ label: 'Lemon', icon: rocketSvg, action: () => emitNotification('Lemon', LevelTypes.INFO) },
 			{ label: 'Orange', action: () => emitNotification('Orange', LevelTypes.INFO) },
-			{ label: 'Banana', icon: arrowUpSvg, disabled: true, action: () => emitNotification('Banana', LevelTypes.INFO) }
+			{ label: 'Banana', icon: rocketRoundSvg, disabled: true, action: () => emitNotification('Banana', LevelTypes.INFO) }
 		];
 
 		return html`
@@ -324,20 +338,37 @@ export class ShowCase extends BaElement {
 							<ba-button id="button3" .label=${'loading style'} .type=${'loading'}></ba-button>
 						</div>
 						<div class="row" style="margin-top:2em">
-							<ba-button id="button0" .label=${'primary style'} .icon=${arrowUpSvg} .type=${'primary'} @click=${onClick0}></ba-button>
-							<ba-button id="button1" .label=${'secondary style'} .icon=${arrowUpSvg} @click=${onClick1}></ba-button>
-							<ba-button id="button2" .label=${'disabled'} .icon=${arrowUpSvg} .type=${'primary'} .disabled=${true}></ba-button>
-							<ba-button id="button3" .label=${'disabled'} .icon=${arrowUpSvg} .disabled=${true}></ba-button>
-							<ba-button id="button3" .label=${'loading style'} .icon=${arrowUpSvg} .type=${'loading'}></ba-button>
+							<ba-button id="button0" .label=${'primary style'} .icon=${rocketSvg} .type=${'primary'} @click=${onClick0}></ba-button>
+							<ba-button id="button1" .label=${'secondary style'} .icon=${rocketSvg} @click=${onClick1}></ba-button>
+							<ba-button id="button2" .label=${'disabled'} .icon=${rocketSvg} .type=${'primary'} .disabled=${true}></ba-button>
+							<ba-button id="button3" .label=${'disabled'} .icon=${rocketSvg} .disabled=${true}></ba-button>
+							<ba-button id="button3" .label=${'loading style'} .icon=${rocketSvg} .type=${'loading'}></ba-button>
+						</div>
+					</div>
+					<h3>ba-badges</h3>
+					<div class="example">
+						<div class="row">
+							<ba-badge .color=${'var(--text3)'} .background=${'var(--primary-color)'} .label=${'Badge'}></ba-badge>
+							<ba-badge .background=${'var(--secondary-bg-color)'} .label=${'Badge'} .color=${'var(--text2)'}></ba-badge>
+							<ba-badge .background=${'var(--secondary-color)'} .label=${'42'} .color=${'var(--text3)'}></ba-badge>
+							<ba-badge .icon=${rocketSvg} .size=${'1.1'}></ba-badge>
+							<ba-badge
+								.icon=${rocketSvg}
+								.size=${'1.5'}
+								.color=${'var(--text3)'}
+								.background=${'var(--primary-color)'}
+								.label=${'Badge'}
+								.title=${'Badge title'}
+							></ba-badge>
 						</div>
 					</div>
 
 					<h3>ba-icons</h3>
 					<div class="example icons">
-						<ba-icon .icon="${arrowUpSvg}" .title=${'some'} @click=${onClick0}></ba-icon>
-						<ba-icon .icon="${arrowUpSvg}" .disabled=${true} @click=${onClick0}></ba-icon>
-						<ba-icon .icon="${arrowUpSvg}" .size=${1} @click=${onClick0}></ba-icon>
-						<ba-icon .icon="${arrowUpSvg}" .size=${2.5} @click=${onClick0}></ba-icon>
+						<ba-icon .icon="${rocketSvg}" .title=${'some'} @click=${onClick0}></ba-icon>
+						<ba-icon .icon="${rocketRoundSvg}" .disabled=${true} @click=${onClick0}></ba-icon>
+						<ba-icon .icon="${rocketRoundSvg}" .size=${1} @click=${onClick0}></ba-icon>
+						<ba-icon .icon="${rocketRoundSvg}" .size=${2.5} @click=${onClick0}></ba-icon>
 					</div>
 
 					<h3>Overflow-Menu</h3>
